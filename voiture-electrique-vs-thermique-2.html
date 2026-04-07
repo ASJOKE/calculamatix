@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Électrique vs Thermique — Calculateur complet | Calculamatix</title>
+  <meta name="description" content="Calculez si passer à une voiture électrique est rentable : TCO sur 10 ans, bilan carbone, score personnalisé. Données ADEME 2025-2026." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #090909; --card: #141414; --border: #222;
+      --yellow: #FFD93D; --green: #3BFF9E; --blue: #3BB5FF;
+      --purple: #C084FC; --red: #FF5C5C; --amber: #FFAA3B;
+      --text: #F0EDE6; --muted: #555;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; padding-bottom: 80px; }
+    body::before { content:''; position:fixed; inset:0; opacity:.4; pointer-events:none; z-index:0;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E"); }
+
+    nav { position:relative; z-index:10; max-width:1060px; margin:0 auto; padding:24px 24px 0; display:flex; align-items:center; justify-content:space-between; }
+    .logo { font-family:'Unbounded',sans-serif; font-weight:900; font-size:18px; text-decoration:none; color:var(--text); }
+    .logo span { color:var(--yellow); }
+    .back { font-size:13px; color:var(--muted); text-decoration:none; transition:color .15s; }
+    .back:hover { color:var(--text); }
+
+    .hero { position:relative; z-index:10; max-width:1060px; margin:0 auto; padding:40px 24px 28px; }
+    .htag { display:inline-flex; align-items:center; gap:6px; font-size:11px; color:var(--green); background:rgba(59,255,158,.08); border:1px solid rgba(59,255,158,.2); padding:4px 14px; border-radius:100px; margin-bottom:14px; }
+    h1 { font-family:'Unbounded',sans-serif; font-weight:900; font-size:clamp(22px,4vw,48px); letter-spacing:-2px; line-height:1.05; margin-bottom:10px; }
+    h1 span { color:var(--yellow); }
+    .hero p { font-size:14px; color:var(--muted); line-height:1.7; max-width:600px; }
+
+    .score-wrap { position:relative; z-index:10; max-width:1060px; margin:0 auto 20px; padding:0 24px; }
+    .score-box { background:#141414; border:1px solid #242424; border-radius:20px; padding:22px 26px; display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+    .score-ring { position:relative; width:80px; height:80px; flex-shrink:0; }
+    .score-ring svg { position:absolute; inset:0; transform:rotate(-90deg); }
+    .score-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    .score-n { font-family:'Unbounded',sans-serif; font-size:20px; font-weight:900; }
+    .score-l { font-size:9px; color:var(--muted); }
+    .score-info { flex:1; min-width:180px; }
+    .score-title { font-family:'Unbounded',sans-serif; font-size:15px; font-weight:800; margin-bottom:5px; }
+    .score-desc { font-size:12px; color:#777; line-height:1.6; }
+    .pills { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+    .pill { font-size:11px; padding:3px 10px; border-radius:100px; font-weight:500; }
+    .pg { background:rgba(59,255,158,.1); color:var(--green); border:1px solid rgba(59,255,158,.2); }
+    .pb { background:rgba(255,92,92,.1); color:var(--red); border:1px solid rgba(255,92,92,.2); }
+    .pn { background:rgba(255,170,59,.1); color:var(--amber); border:1px solid rgba(255,170,59,.2); }
+    .score-kpis { display:flex; flex-direction:column; gap:8px; min-width:150px; }
+
+    .tabs-wrap { position:relative; z-index:10; max-width:1060px; margin:0 auto 20px; padding:0 24px; }
+    .tabs { display:flex; gap:4px; background:#0d0d0d; border:1px solid var(--border); border-radius:14px; padding:5px; width:fit-content; flex-wrap:wrap; }
+    .tab { background:transparent; border:none; color:var(--muted); padding:9px 15px; border-radius:10px; font-size:13px; font-family:inherit; font-weight:500; cursor:pointer; transition:all .15s; white-space:nowrap; }
+    .tab.on { background:var(--yellow); color:#000; font-weight:700; }
+
+    .panel { display:none; }
+    .panel.on { display:block; }
+
+    .wrap { position:relative; z-index:10; max-width:1060px; margin:0 auto; padding:0 24px; display:flex; flex-direction:column; gap:14px; }
+    .g2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+
+    .card { background:var(--card); border:1px solid var(--border); border-radius:18px; padding:20px; }
+    .ctitle { font-family:'Unbounded',sans-serif; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:16px; }
+    .fhint { font-size:10px; color:#333; margin-top:5px; line-height:1.5; }
+
+    .f { margin-bottom:13px; }
+    .f:last-child { margin-bottom:0; }
+    .f label { display:flex; justify-content:space-between; font-size:12px; color:#666; margin-bottom:6px; }
+    .fval { font-family:'DM Mono',monospace; color:var(--yellow); font-size:12px; }
+
+    input[type=range] { width:100%; -webkit-appearance:none; height:4px; background:#252525; border-radius:2px; outline:none; cursor:pointer; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; background:var(--yellow); border-radius:50%; box-shadow:0 0 8px rgba(255,217,61,.4); }
+
+    select, input[type=number] { width:100%; background:#1e1e1e; border:1px solid #2a2a2a; border-radius:10px; color:var(--text); padding:10px 13px; font-size:14px; font-family:inherit; outline:none; transition:border-color .15s; }
+    input[type=number] { font-family:'DM Mono',monospace; }
+    select:focus, input[type=number]:focus { border-color:var(--yellow); }
+
+    .trow { display:flex; gap:8px; }
+    .tbtn { flex:1; background:#1a1a1a; border:1px solid #2a2a2a; border-radius:10px; color:#666; padding:10px 6px; font-size:12px; font-family:inherit; cursor:pointer; transition:all .15s; text-align:center; }
+    .tbtn.on { background:rgba(255,217,61,.1); border-color:rgba(255,217,61,.4); color:var(--yellow); font-weight:600; }
+
+    .divider { display:flex; align-items:center; gap:10px; margin:8px 0; }
+    .divider span { font-size:10px; color:#333; text-transform:uppercase; letter-spacing:1px; white-space:nowrap; }
+    .divider::before, .divider::after { content:''; flex:1; height:1px; background:#1e1e1e; }
+
+    .m { background:#1a1a1a; border:1px solid var(--border); border-radius:12px; padding:14px; text-align:center; }
+    .ml { font-size:10px; color:var(--muted); margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; }
+    .mv { font-family:'DM Mono',monospace; font-size:18px; font-weight:500; }
+    .ms { font-size:10px; color:var(--muted); margin-top:3px; }
+    .mh { background:rgba(59,255,158,.05); border-color:rgba(59,255,158,.2); }
+
+    .verdict { border-radius:14px; padding:16px 20px; border:1px solid; display:flex; gap:12px; }
+    .vi { font-size:18px; flex-shrink:0; }
+    .vt { font-family:'Unbounded',sans-serif; font-size:12px; font-weight:700; margin-bottom:4px; }
+    .vb { font-size:12px; color:#777; line-height:1.6; }
+    .vg { background:rgba(59,255,158,.05); border-color:rgba(59,255,158,.2); }
+    .vg .vt { color:var(--green); }
+    .vo { background:rgba(255,170,59,.05); border-color:rgba(255,170,59,.2); }
+    .vo .vt { color:var(--amber); }
+    .vr { background:rgba(255,92,92,.05); border-color:rgba(255,92,92,.2); }
+    .vr .vt { color:var(--red); }
+
+    .cw { position:relative; width:100%; height:220px; margin-top:12px; }
+    .cwt { position:relative; width:100%; height:260px; margin-top:12px; }
+
+    .ditem { display:flex; justify-content:space-between; padding:8px 12px; background:#1a1a1a; border:1px solid #222; border-radius:8px; }
+    .ditem span:first-child { font-size:12px; color:#666; }
+    .ditem span:last-child { font-family:'DM Mono',monospace; font-size:12px; }
+
+    .bar-row { margin-bottom:10px; }
+    .bar-label { font-size:12px; color:#666; margin-bottom:5px; }
+    .bar-sub { display:flex; gap:8px; align-items:center; margin-bottom:3px; }
+    .bar-name { font-size:10px; color:#555; width:60px; flex-shrink:0; }
+    .bar-track { flex:1; height:14px; background:#1a1a1a; border-radius:5px; overflow:hidden; }
+    .bar-fill { height:100%; border-radius:5px; }
+    .bar-val { font-family:'DM Mono',monospace; font-size:11px; min-width:65px; text-align:right; flex-shrink:0; }
+
+    .sources { background:#0d0d0d; border:1px solid #1a1a1a; border-radius:12px; padding:14px 16px; font-size:11px; color:#3a3a3a; line-height:1.8; }
+
+    @media(max-width:640px) {
+      .g2, .g3 { grid-template-columns:1fr; }
+      .score-box { flex-direction:column; }
+      .tab { padding:8px 10px; font-size:11px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Tous les calculateurs</a>
+</nav>
+
+<div class="hero">
+  <div class="htag">🔋 Auto</div>
+  <h1>Électrique vs<br><span>Thermique</span></h1>
+  <p>Le calculateur le plus complet pour savoir si passer à l'électrique vaut le coup pour vous. TCO sur 10 ans, bilan carbone, score personnalisé. Données ADEME &amp; Carbone 4.</p>
+</div>
+
+<div class="score-wrap">
+  <div class="score-box">
+    <div class="score-ring">
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r="34" fill="none" stroke="#1e1e1e" stroke-width="6"/>
+        <circle cx="40" cy="40" r="34" fill="none" stroke="#FFD93D" stroke-width="6"
+          stroke-linecap="round" stroke-dasharray="213.6" id="sarc" stroke-dashoffset="213.6"/>
+      </svg>
+      <div class="score-center">
+        <div class="score-n" id="snum">—</div>
+        <div class="score-l">/ 100</div>
+      </div>
+    </div>
+    <div class="score-info">
+      <div class="score-title" id="stitle">Ajustez les paramètres</div>
+      <div class="score-desc" id="sdesc">Votre score personnalisé apparaîtra ici.</div>
+      <div class="pills" id="spills"></div>
+    </div>
+    <div class="score-kpis">
+      <div class="m"><div class="ml">Éco. annuelle</div><div class="mv" id="beco" style="color:var(--green)">—</div></div>
+      <div class="m"><div class="ml">Retour invest.</div><div class="mv" id="broi" style="color:var(--yellow)">—</div></div>
+      <div class="m"><div class="ml">CO₂ évité/an</div><div class="mv" id="bco2" style="color:var(--blue)">—</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('th',this)">🔥 Voiture actuelle</button>
+    <button class="tab" onclick="showTab('ev',this)">⚡ Électrique</button>
+    <button class="tab" onclick="showTab('us',this)">🛣️ Votre usage</button>
+    <button class="tab" onclick="showTab('ec',this)">💰 Bilan économique</button>
+    <button class="tab" onclick="showTab('co',this)">🌿 Bilan carbone</button>
+  </div>
+</div>
+
+<!-- THERMIQUE -->
+<div class="panel on" id="p-th"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Votre voiture thermique actuelle</div>
+      <div class="f"><label>Valeur actuelle <span class="fval" id="lv">8 000 €</span></label>
+        <input type="range" id="tval" min="500" max="40000" step="500" value="8000"></div>
+      <div class="f"><label>Carburant</label>
+        <select id="tcarb">
+          <option value="1.82">SP95-E10 (~1.82 €/L)</option>
+          <option value="1.90" selected>SP95 (~1.90 €/L)</option>
+          <option value="2.00">SP98 (~2.00 €/L)</option>
+          <option value="1.75">Diesel (~1.75 €/L)</option>
+        </select></div>
+      <div class="f"><label>Consommation <span class="fval" id="lc">7.0 L/100km</span></label>
+        <input type="range" id="tconso" min="4" max="15" step="0.1" value="7.0"></div>
+      <div class="f"><label>Entretien annuel <span class="fval" id="le">500 €</span></label>
+        <input type="range" id="tent" min="100" max="2000" step="50" value="500">
+        <div class="fhint">Moyenne France 2025 : 380–535€/an (Roole Data)</div></div>
+      <div class="f"><label>Assurance annuelle <span class="fval" id="la">700 €</span></label>
+        <input type="range" id="tass" min="200" max="3000" step="50" value="700"></div>
+      <div class="f"><label>Émissions CO₂ officielles (g/km)</label>
+        <input type="number" id="tco2" value="150" min="50" max="400">
+        <div class="fhint">Rubrique V.7 de votre carte grise</div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="border-color:rgba(255,92,92,.2);background:rgba(255,92,92,.03);">
+        <div class="ctitle" style="color:var(--red)">Coût annuel thermique</div>
+        <div class="g2" style="gap:10px;margin-bottom:10px;">
+          <div class="m"><div class="ml">Carburant</div><div class="mv" id="tccarb" style="color:var(--red)">—</div></div>
+          <div class="m"><div class="ml">Entretien</div><div class="mv" id="tcent" style="color:var(--amber)">—</div></div>
+        </div>
+        <div class="m" style="background:rgba(255,92,92,.08);border-color:rgba(255,92,92,.3);">
+          <div class="ml">TOTAL / AN</div><div class="mv" id="tctot" style="color:var(--red);font-size:22px">—</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Émissions CO₂</div>
+        <div class="g2" style="gap:10px;">
+          <div class="m"><div class="ml">g CO₂/km réel</div><div class="mv" id="tco2km" style="color:var(--red)">—</div></div>
+          <div class="m"><div class="ml">kg CO₂/an</div><div class="mv" id="tco2an" style="color:var(--red)">—</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ÉLECTRIQUE -->
+<div class="panel" id="p-ev"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">La voiture électrique envisagée</div>
+      <div class="f"><label>Prix d'achat <span class="fval" id="epv">35 000 €</span></label>
+        <input type="range" id="eprix" min="15000" max="90000" step="500" value="35000">
+        <div class="fhint">Prix moyen VE neuf France 2025 : ~35 000–42 000€</div></div>
+      <div class="divider"><span>Aides à l'achat</span></div>
+      <div class="f"><label>Bonus écologique <span class="fval" id="ebv">4 000 €</span></label>
+        <input type="range" id="ebonus" min="0" max="7000" step="100" value="4000">
+        <div class="fhint">2025-2026 : 3 100–7 000€ selon revenus et modèle</div></div>
+      <div class="f"><label>Prime à la conversion <span class="fval" id="ecv">0 €</span></label>
+        <input type="range" id="econversion" min="0" max="6000" step="100" value="0">
+        <div class="fhint">Jusqu'à 6 000€ si vous mettez votre ancien véhicule à la casse</div></div>
+      <div class="divider"><span>Recharge</span></div>
+      <div class="f"><label>Installation borne à domicile (€)</label>
+        <input type="number" id="eborne" value="900">
+        <div class="fhint">600–1500€. Crédit d'impôt 75% possible</div></div>
+      <div class="f"><label>Consommation <span class="fval" id="ecov">17 kWh/100km</span></label>
+        <input type="range" id="econso" min="10" max="30" step="0.5" value="17"></div>
+      <div class="f"><label>Prix kWh domicile <span class="fval" id="ekdv">0.20 €</span></label>
+        <input type="range" id="ekwhd" min="0.10" max="0.35" step="0.01" value="0.20">
+        <div class="fhint">HC : ~0.14€ · HP : ~0.22€ · Tarif réglementé 2025</div></div>
+      <div class="f"><label>Prix kWh borne publique <span class="fval" id="ekpv">0.40 €</span></label>
+        <input type="range" id="ekwhp" min="0.20" max="0.80" step="0.01" value="0.40"></div>
+      <div class="divider"><span>Autres coûts</span></div>
+      <div class="f"><label>Entretien annuel VE <span class="fval" id="eeav">250 €</span></label>
+        <input type="range" id="eent" min="50" max="800" step="25" value="250">
+        <div class="fhint">Moyenne 2025 : 120–381€/an — 30% moins qu'un thermique (ADEME)</div></div>
+      <div class="f"><label>Assurance annuelle VE <span class="fval" id="easv">800 €</span></label>
+        <input type="range" id="eass" min="300" max="4000" step="50" value="800">
+        <div class="fhint">+10-15% vs thermique équivalent en moyenne (2024-2025)</div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="border-color:rgba(59,255,158,.2);background:rgba(59,255,158,.03);">
+        <div class="ctitle" style="color:var(--green)">Coût annuel électrique</div>
+        <div class="g2" style="gap:10px;margin-bottom:10px;">
+          <div class="m"><div class="ml">Énergie dom.</div><div class="mv" id="eedom" style="color:var(--green)">—</div></div>
+          <div class="m"><div class="ml">Énergie pub.</div><div class="mv" id="eepub" style="color:var(--amber)">—</div></div>
+        </div>
+        <div class="m mh"><div class="ml">TOTAL / AN</div><div class="mv" id="eetot" style="color:var(--green);font-size:22px">—</div></div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Acquisition nette</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="ditem"><span>Prix affiché</span><span id="d-prix">—</span></div>
+          <div class="ditem"><span>Bonus + prime conversion</span><span id="d-aides" style="color:var(--green)">—</span></div>
+          <div class="ditem"><span>Valeur revente thermique</span><span id="d-revente" style="color:var(--blue)">—</span></div>
+          <div class="ditem"><span>Borne (après crédit impôt 75%)</span><span id="d-borne" style="color:var(--muted)">—</span></div>
+          <div class="ditem" style="background:rgba(255,217,61,.05);border-color:rgba(255,217,61,.2);">
+            <span style="font-weight:600;color:var(--text)">Surcoût net réel</span>
+            <span id="d-surcout" style="color:var(--yellow);font-weight:700">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- USAGE -->
+<div class="panel" id="p-us"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Votre profil de conduite</div>
+      <div class="f"><label>Kilométrage annuel <span class="fval" id="ukmv">15 000 km</span></label>
+        <input type="range" id="ukm" min="2000" max="60000" step="500" value="15000">
+        <div class="fhint">Moyenne française : 12 000 km/an</div></div>
+      <div class="f"><label>Durée de possession <span class="fval" id="udv">7 ans</span></label>
+        <input type="range" id="uduree" min="2" max="15" step="1" value="7"></div>
+      <div class="f"><label>% recharge à domicile <span class="fval" id="udomv">80 %</span></label>
+        <input type="range" id="udom" min="0" max="100" step="5" value="80">
+        <div class="fhint">Parking privatif → 80–100% · Pas de parking → 20–50%</div></div>
+      <div class="f"><label>Type de trajet principal</label>
+        <select id="utrajet">
+          <option value="urban">Urbain / banlieue (&lt; 50 km/jour)</option>
+          <option value="mixed" selected>Mixte (50–100 km/jour)</option>
+          <option value="highway">Grands trajets autoroute (&gt; 100 km/jour)</option>
+        </select></div>
+      <div class="f"><label>Accès recharge domicile ?</label>
+        <div class="trow">
+          <button class="tbtn on" id="domY" onclick="setDom(true)">✓ Oui (garage / parking)</button>
+          <button class="tbtn" id="domN" onclick="setDom(false)">✗ Non</button>
+        </div></div>
+      <div class="f"><label>Zone ZFE (Paris, Lyon...) ?</label>
+        <div class="trow">
+          <button class="tbtn" id="zfeY" onclick="setZFE(true)">✓ Oui</button>
+          <button class="tbtn on" id="zfeN" onclick="setZFE(false)">✗ Non</button>
+        </div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card">
+        <div class="ctitle">Comparaison au 100km</div>
+        <div style="display:flex;flex-direction:column;gap:8px;" id="cmp100"></div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Compatibilité avec l'électrique</div>
+        <div class="g2" style="gap:8px;" id="compat"></div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ÉCONOMIQUE -->
+<div class="panel" id="p-ec"><div class="wrap">
+  <div class="g3">
+    <div class="m"><div class="ml">Économie annuelle nette</div><div class="mv" id="eecan" style="color:var(--green)">—</div><div class="ms">carburant + entretien + assurance</div></div>
+    <div class="m"><div class="ml">Surcoût net à l'achat</div><div class="mv" id="escan" style="color:var(--red)">—</div><div class="ms">après toutes aides et revente</div></div>
+    <div class="m mh"><div class="ml">Retour sur investissement</div><div class="mv" id="eroi" style="color:var(--yellow)">—</div><div class="ms">années pour rentabiliser</div></div>
+  </div>
+  <div class="verdict vg" id="everd">
+    <div class="vi" id="evi">⚖️</div>
+    <div><div class="vt" id="evt">—</div><div class="vb" id="evb">—</div></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Coût total cumulé sur <span id="edl">7</span> ans</div>
+    <div class="cwt"><canvas id="echart"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Économies nettes cumulées</div>
+    <div class="cw"><canvas id="echart2"></canvas></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Détail thermique sur <span id="edl2">7</span> ans</div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="dth"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Détail électrique sur <span id="edl3">7</span> ans</div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="del"></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- CARBONE -->
+<div class="panel" id="p-co"><div class="wrap">
+  <div class="g3">
+    <div class="m"><div class="ml">CO₂ thermique sur période</div><div class="mv" id="co2th" style="color:var(--red)">—</div><div class="ms">usage uniquement</div></div>
+    <div class="m"><div class="ml">CO₂ électrique sur période</div><div class="mv" id="co2ev" style="color:var(--green)">—</div><div class="ms">usage + fabrication batterie</div></div>
+    <div class="m mh"><div class="ml">CO₂ économisé total</div><div class="mv" id="co2ec" style="color:var(--blue)">—</div><div class="ms">sur votre durée de possession</div></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Point d'équilibre carbone</div>
+    <div style="font-size:13px;color:#666;margin-bottom:14px;line-height:1.6;">Le VE produit plus de CO₂ à la fabrication (batterie). Il faut parcourir un certain kilométrage pour "rembourser" cette dette et devenir réellement moins polluant.</div>
+    <div class="g2" style="gap:10px;margin-bottom:14px;">
+      <div class="m"><div class="ml">Dette carbone fabrication</div><div class="mv" id="co2dette" style="color:var(--amber)">—</div><div class="ms">surcoût VE vs thermique (ADEME 2024)</div></div>
+      <div class="m"><div class="ml">Point d'équilibre</div><div class="mv" id="co2break" style="color:var(--yellow)">—</div><div class="ms">km nécessaires en France</div></div>
+    </div>
+    <div class="verdict vg" id="coverd">
+      <div class="vi" id="covi">🌿</div>
+      <div><div class="vt" id="covt">—</div><div class="vb" id="covb">—</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">CO₂ cumulé sur <span id="cdl">7</span> ans — thermique vs électrique</div>
+    <div class="cwt"><canvas id="cochart"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Émissions par poste — cycle de vie complet</div>
+    <div style="margin-top:10px;" id="cobars"></div>
+  </div>
+  <div class="sources">
+    <strong>Sources :</strong> ADEME « Impact environnemental du véhicule électrique » 2024 · Carbone 4 2025 · Transport &amp; Environment 2024 · RTE mix électrique France 2025 (90% décarboné, ~52 gCO₂/kWh). Dette carbone fabrication batterie VE : +3 800 kg CO₂ vs thermique. Émissions usage VE France : ~12 gCO₂e/km. Émissions usage thermique : valeur carte grise × 1.2 (facteur réel WLTP).
+  </div>
+</div></div>
+
+<script>
+var hasDOM = true, hasZFE = false;
+var chartEco = null, chartEco2 = null, chartCO2 = null;
+var activeTab = 'th';
+var R = {};
+
+Chart.defaults.color = '#666';
+Chart.defaults.font.family = 'DM Sans, sans-serif';
+
+function g(id) { return document.getElementById(id); }
+function fmtN(n, d) { d = d || 0; return n.toLocaleString('fr-FR', {minimumFractionDigits:d, maximumFractionDigits:d}); }
+function fmtE(n) { return fmtN(n) + ' €'; }
+function fmtT(n) { return fmtN(n/1000, 1) + ' t'; }
+
+function setDom(v) {
+  hasDOM = v;
+  g('domY').className = v ? 'tbtn on' : 'tbtn';
+  g('domN').className = v ? 'tbtn' : 'tbtn on';
+  g('udom').value = v ? 80 : 20;
+  recalc();
+}
+function setZFE(v) {
+  hasZFE = v;
+  g('zfeY').className = v ? 'tbtn on' : 'tbtn';
+  g('zfeN').className = v ? 'tbtn' : 'tbtn on';
+  recalc();
+}
+
+function showTab(name, btn) {
+  document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('on'); });
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('on'); });
+  g('p-' + name).classList.add('on');
+  btn.classList.add('on');
+  activeTab = name;
+  setTimeout(function() { renderCharts(name); }, 80);
+}
+
+function destroyChart(c) { if (c) { try { c.destroy(); } catch(e) {} } return null; }
+
+function renderCharts(name) {
+  if (!R.years) return;
+  var years = R.years;
+
+  if (name === 'ec') {
+    chartEco = destroyChart(chartEco);
+    chartEco2 = destroyChart(chartEco2);
+    var c1 = g('echart'); if (!c1) return;
+    chartEco = new Chart(c1, {
+      type: 'line',
+      data: { labels: years.map(function(y){return 'An '+y;}), datasets: [
+        { label: 'Thermique', data: R.cumulTh, borderColor: 'rgba(255,92,92,.9)', backgroundColor: 'rgba(255,92,92,.06)', fill: true, tension: .3, pointRadius: 2, borderWidth: 2 },
+        { label: 'Électrique', data: R.cumulEv, borderColor: 'rgba(59,255,158,.9)', backgroundColor: 'rgba(59,255,158,.06)', fill: true, tension: .3, pointRadius: 2, borderWidth: 2 }
+      ]},
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: '#888', font: { size: 11 } } }, tooltip: { callbacks: { label: function(c){ return c.dataset.label + ' : ' + fmtE(c.raw); } } } },
+        scales: { x: { grid: { display: false }, ticks: { color: '#666' }, border: { color: 'transparent' } }, y: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { callback: function(v){ return fmtE(v); }, color: '#666' }, border: { color: 'transparent' } } }
+      }
+    });
+    var c2 = g('echart2'); if (!c2) return;
+    chartEco2 = new Chart(c2, {
+      type: 'bar',
+      data: { labels: years.slice(1).map(function(y){return 'An '+y;}), datasets: [{
+        label: 'Économies nettes', data: R.cumulEco.slice(1),
+        backgroundColor: R.cumulEco.slice(1).map(function(v){ return v>=0?'rgba(59,255,158,.5)':'rgba(255,92,92,.4)'; }),
+        borderColor: R.cumulEco.slice(1).map(function(v){ return v>=0?'rgba(59,255,158,.9)':'rgba(255,92,92,.8)'; }),
+        borderWidth: 1, borderRadius: 4
+      }]},
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(c){ return (c.raw>=0?'Gain : +':'Perte : ')+fmtE(Math.abs(c.raw)); } } } },
+        scales: { x: { grid: { display: false }, ticks: { color: '#666' }, border: { color: 'transparent' } }, y: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { callback: function(v){ return fmtE(v); }, color: '#666' }, border: { color: 'transparent' } } }
+      }
+    });
+  }
+
+  if (name === 'co') {
+    chartCO2 = destroyChart(chartCO2);
+    var c3 = g('cochart'); if (!c3) return;
+    chartCO2 = new Chart(c3, {
+      type: 'line',
+      data: { labels: years.map(function(y){return 'An '+y;}), datasets: [
+        { label: 'Thermique (CO₂ cumulé)', data: R.co2Th, borderColor: 'rgba(255,92,92,.9)', backgroundColor: 'rgba(255,92,92,.06)', fill: true, tension: .3, pointRadius: 2, borderWidth: 2 },
+        { label: 'Électrique (fabrication incluse)', data: R.co2Ev, borderColor: 'rgba(59,255,158,.9)', backgroundColor: 'rgba(59,255,158,.06)', fill: true, tension: .3, pointRadius: 2, borderWidth: 2 }
+      ]},
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: '#888', font: { size: 11 } } }, tooltip: { callbacks: { label: function(c){ return c.dataset.label + ' : ' + fmtN(c.raw/1000,2) + ' t'; } } } },
+        scales: { x: { grid: { display: false }, ticks: { color: '#666' }, border: { color: 'transparent' } }, y: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { callback: function(v){ return fmtN(v/1000,1)+'t'; }, color: '#666' }, border: { color: 'transparent' } } }
+      }
+    });
+  }
+}
+
+function recalc() {
+  try {
+    var tVal   = +g('tval').value;
+    var tCarb  = +g('tcarb').value;
+    var tConso = +g('tconso').value;
+    var tEnt   = +g('tent').value;
+    var tAss   = +g('tass').value;
+    var tCO2g  = +g('tco2').value || 150;
+    var ePrix  = +g('eprix').value;
+    var eBonus = +g('ebonus').value;
+    var eConv  = +g('econversion').value;
+    var eBorne = +g('eborne').value || 900;
+    var eConso = +g('econso').value;
+    var eKwhD  = +g('ekwhd').value;
+    var eKwhP  = +g('ekwhp').value;
+    var eEnt   = +g('eent').value;
+    var eAss   = +g('eass').value;
+    var uKm    = +g('ukm').value;
+    var uDuree = +g('uduree').value;
+    var uDom   = +g('udom').value / 100;
+    var uTrajet = g('utrajet').value;
+
+    // Labels
+    g('lv').textContent = fmtE(tVal);
+    g('lc').textContent = fmtN(tConso,1)+' L/100km';
+    g('le').textContent = fmtE(tEnt);
+    g('la').textContent = fmtE(tAss);
+    g('epv').textContent = fmtE(ePrix);
+    g('ebv').textContent = fmtE(eBonus);
+    g('ecv').textContent = fmtE(eConv);
+    g('ecov').textContent = fmtN(eConso,1)+' kWh/100km';
+    g('ekdv').textContent = fmtN(eKwhD,2)+' €';
+    g('ekpv').textContent = fmtN(eKwhP,2)+' €';
+    g('eeav').textContent = fmtE(eEnt);
+    g('easv').textContent = fmtE(eAss);
+    g('ukmv').textContent = fmtN(uKm)+' km';
+    g('udv').textContent = uDuree+' ans';
+    g('udomv').textContent = Math.round(uDom*100)+' %';
+
+    // Thermique
+    var tCarbAn = (uKm/100)*tConso*tCarb;
+    var tCoutAn = tCarbAn + tEnt + tAss;
+    var tCO2an  = uKm * tCO2g * 1.2 / 1000;
+
+    g('tccarb').textContent = fmtE(tCarbAn);
+    g('tcent').textContent = fmtE(tEnt);
+    g('tctot').textContent = fmtE(tCoutAn);
+    g('tco2km').textContent = fmtN(tCO2g*1.2)+' g';
+    g('tco2an').textContent = fmtN(tCO2an)+' kg';
+
+    // Électrique
+    var eEnDom  = (uKm/100)*eConso*eKwhD*uDom;
+    var eEnPub  = (uKm/100)*eConso*eKwhP*(1-uDom);
+    var eCoutAn = eEnDom + eEnPub + eEnt + eAss;
+    var eAides  = eBonus + eConv;
+    var eBorneN = eBorne * 0.25;
+    var eSurcout = Math.max(0, ePrix - eAides - tVal + eBorneN);
+
+    g('eedom').textContent = fmtE(eEnDom);
+    g('eepub').textContent = fmtE(eEnPub);
+    g('eetot').textContent = fmtE(eCoutAn);
+    g('d-prix').textContent = fmtE(ePrix);
+    g('d-aides').textContent = '−'+fmtE(eAides);
+    g('d-revente').textContent = '−'+fmtE(tVal);
+    g('d-borne').textContent = '+'+fmtE(Math.round(eBorneN));
+    g('d-surcout').textContent = fmtE(eSurcout);
+
+    // Économies
+    var ecoAn = tCoutAn - eCoutAn;
+    var roi = ecoAn > 0 ? eSurcout / ecoAn : Infinity;
+    var years = [];
+    for (var i = 0; i <= uDuree; i++) years.push(i);
+
+    // CO₂
+    var CO2_DETTE = 3800;
+    var eElecKm = (eConso/100)*0.052;
+    var eElecAn = uKm * eElecKm;
+    var tCO2tot = tCO2an * uDuree;
+    var eCO2tot = eElecAn * uDuree + CO2_DETTE;
+    var CO2eco  = tCO2tot - eCO2tot;
+    var diff    = tCO2g*1.2/1000 - eElecKm;
+    var breakKm = diff > 0 ? CO2_DETTE / diff : Infinity;
+    var breakYr = breakKm / uKm;
+
+    // Store chart data
+    R = {
+      years: years,
+      cumulTh:  years.map(function(y){ return y*tCoutAn; }),
+      cumulEv:  years.map(function(y){ return eSurcout + y*eCoutAn; }),
+      cumulEco: years.map(function(y){ return y*ecoAn - eSurcout; }),
+      co2Th:    years.map(function(y){ return y*tCO2an; }),
+      co2Ev:    years.map(function(y){ return CO2_DETTE + y*eElecAn; })
+    };
+
+    // Refresh charts if tab is already visible
+    if (activeTab === 'ec') renderCharts('ec');
+    if (activeTab === 'co') renderCharts('co');
+
+    // Score
+    var score = 40;
+    var pills = [];
+    if (uKm >= 20000) { score += 15; pills.push({t:'🏎 Gros rouleur',c:'pg'}); }
+    else if (uKm >= 12000) { score += 8; }
+    else { pills.push({t:'🐢 Peu de km',c:'pb'}); }
+    if (hasDOM && uDom >= 0.7) { score += 15; pills.push({t:'🏠 Recharge domicile',c:'pg'}); }
+    else if (!hasDOM) { score -= 10; pills.push({t:'⚠ Pas de domicile',c:'pb'}); }
+    if (roi < Infinity && roi <= uDuree) { score += roi < 4 ? 20 : roi < 7 ? 12 : 6; if (roi < 5) pills.push({t:'✓ ROI '+fmtN(roi,1)+' ans',c:'pg'}); }
+    else if (roi > uDuree) { score -= 8; pills.push({t:'⚠ ROI '+fmtN(roi,1)+' ans',c:'pb'}); }
+    if (hasZFE) { score += 8; pills.push({t:'📍 ZFE',c:'pn'}); }
+    if (uTrajet === 'urban') { score += 5; pills.push({t:'🏙 Urbain idéal',c:'pg'}); }
+    else if (uTrajet === 'highway') { score -= 5; pills.push({t:'🛣 Autoroute',c:'pb'}); }
+    if (CO2eco > 8000) { score += 5; pills.push({t:'🌿 −'+fmtN(CO2eco/1000,1)+'t CO₂',c:'pg'}); }
+    score = Math.max(0, Math.min(100, Math.round(score)));
+
+    var arc = g('sarc');
+    arc.style.strokeDashoffset = 213.6 - (score/100)*213.6;
+    var sc = score >= 70 ? '#3BFF9E' : score >= 45 ? '#FFD93D' : '#FF5C5C';
+    arc.style.stroke = sc;
+    g('snum').textContent = score;
+    g('snum').style.color = sc;
+    var titles = ['Peu recommandé','Mitigé — à conditions','Bonne idée','Très recommandé','Excellent choix !'];
+    var descs  = ['Dans votre situation, le passage à l\'électrique n\'est pas optimal économiquement.','Certains points méritent attention : kilométrage, recharge domicile, ROI.','Le passage à l\'électrique est une bonne décision pour votre profil.','Votre profil est très favorable à l\'électrique. Économies et écologie s\'alignent.','Profil idéal pour l\'électrique !'];
+    var ti = score<30?0:score<50?1:score<65?2:score<80?3:4;
+    g('stitle').textContent = titles[ti];
+    g('sdesc').textContent = descs[ti];
+    g('spills').innerHTML = pills.map(function(p){return '<span class="pill '+p.c+'">'+p.t+'</span>';}).join('');
+    g('beco').textContent = (ecoAn>=0?'+':'')+fmtE(ecoAn);
+    g('beco').style.color = ecoAn>=0?'var(--green)':'var(--red)';
+    g('broi').textContent = roi<Infinity?fmtN(roi,1)+' ans':'> '+uDuree+' ans';
+    g('bco2').textContent = '−'+fmtN(CO2eco/1000,1)+' t/an';
+
+    // Usage tab
+    var cmpData = [
+      ['Coût énergie au 100km', fmtN(tConso*tCarb,2)+' €', fmtN(((eConso*eKwhD*uDom)+(eConso*eKwhP*(1-uDom))),2)+' €'],
+      ['Entretien annuel', fmtE(tEnt), fmtE(eEnt)],
+      ['Assurance annuelle', fmtE(tAss), fmtE(eAss)],
+    ];
+    g('cmp100').innerHTML = cmpData.map(function(r){
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;gap:10px;">'
+        +'<span style="font-size:12px;color:#666;flex:1">'+r[0]+'</span>'
+        +'<span style="font-size:11px;background:rgba(255,92,92,.1);color:var(--red);padding:3px 8px;border-radius:6px;font-family:DM Mono,monospace">'+r[1]+'</span>'
+        +'<span style="font-size:11px;background:rgba(59,255,158,.1);color:var(--green);padding:3px 8px;border-radius:6px;font-family:DM Mono,monospace">'+r[2]+'</span>'
+        +'</div>';
+    }).join('');
+
+    var compatItems = [
+      {l:'Recharge domicile',ok:hasDOM,t:hasDOM?'✓ Disponible':'✗ Non dispo'},
+      {l:'Kilométrage',ok:uKm>=10000,t:uKm>=10000?'✓ '+fmtN(uKm)+' km':'⚠ '+fmtN(uKm)+' km'},
+      {l:'Type de trajet',ok:uTrajet!=='highway',t:uTrajet==='urban'?'✓ Urbain':uTrajet==='mixed'?'~ Mixte':'⚠ Autoroute'},
+      {l:'Zone ZFE',ok:hasZFE,t:hasZFE?'⚡ Concerné':'~ Non concerné'},
+    ];
+    g('compat').innerHTML = compatItems.map(function(it){
+      return '<div class="m" style="background:'+(it.ok?'rgba(59,255,158,.05)':'rgba(255,92,92,.05)')+';border-color:'+(it.ok?'rgba(59,255,158,.2)':'rgba(255,92,92,.15)')+';">'
+        +'<div class="ml">'+it.l+'</div>'
+        +'<div style="font-size:12px;font-weight:600;margin-top:4px;color:'+(it.ok?'var(--green)':'var(--red)')+'">'+it.t+'</div>'
+        +'</div>';
+    }).join('');
+
+    // Économique tab
+    ['edl','edl2','edl3'].forEach(function(id){ var el=g(id); if(el) el.textContent=uDuree; });
+    g('eecan').textContent = (ecoAn>=0?'+':'')+fmtE(ecoAn);
+    g('eecan').style.color = ecoAn>=0?'var(--green)':'var(--red)';
+    g('escan').textContent = fmtE(eSurcout);
+    g('eroi').textContent = roi<Infinity?fmtN(roi,1)+' ans':'> '+uDuree+' ans';
+
+    var ev = g('everd');
+    if (roi<Infinity && roi<=uDuree) {
+      ev.className='verdict vg'; g('evi').textContent='✓';
+      g('evt').textContent='Rentable en '+fmtN(roi,1)+' ans — gain de '+fmtE(ecoAn*uDuree-eSurcout)+' sur '+uDuree+' ans';
+      g('evb').textContent='Vous économisez '+fmtE(ecoAn)+'/an. Gain net total après amortissement : '+fmtE(Math.max(0,ecoAn*uDuree-eSurcout))+'.';
+    } else if (ecoAn<0) {
+      ev.className='verdict vr'; g('evi').textContent='✗';
+      g('evt').textContent='L\'électrique coûte plus cher dans votre configuration';
+      g('evb').textContent=fmtE(eCoutAn)+'/an pour l\'électrique vs '+fmtE(tCoutAn)+'/an pour le thermique. Le surcoût de '+fmtE(eSurcout)+' ne se rentabilise pas.';
+    } else {
+      ev.className='verdict vo'; g('evi').textContent='⚠';
+      g('evt').textContent='ROI estimé à '+fmtN(roi,1)+' ans — au-delà de votre durée de '+uDuree+' ans';
+      g('evb').textContent='Vous économisez '+fmtE(ecoAn)+'/an mais le surcoût initial de '+fmtE(eSurcout)+' prend '+fmtN(roi,1)+' ans à s\'amortir.';
+    }
+
+    function di(l,v,c){ return '<div class="ditem"><span>'+l+'</span><span style="color:'+(c||'var(--text)')+'">'+v+'</span></div>'; }
+    g('dth').innerHTML = di('Carburant ×'+uDuree+' ans',fmtE(tCarbAn*uDuree),'var(--red)')
+      +di('Entretien ×'+uDuree+' ans',fmtE(tEnt*uDuree),'var(--amber)')
+      +di('Assurance ×'+uDuree+' ans',fmtE(tAss*uDuree),'')
+      +di('TOTAL COÛT',fmtE(tCoutAn*uDuree),'var(--red)');
+    g('del').innerHTML = di('Surcoût achat net',fmtE(eSurcout),'var(--red)')
+      +di('Énergie ×'+uDuree+' ans',fmtE((eEnDom+eEnPub)*uDuree),'var(--green)')
+      +di('Entretien ×'+uDuree+' ans',fmtE(eEnt*uDuree),'')
+      +di('Assurance ×'+uDuree+' ans',fmtE(eAss*uDuree),'')
+      +di('TOTAL COÛT',fmtE(eSurcout+eCoutAn*uDuree),'var(--green)');
+
+    // Carbone tab
+    g('cdl').textContent = uDuree;
+    g('co2th').textContent = fmtT(tCO2tot);
+    g('co2ev').textContent = fmtT(eCO2tot);
+    g('co2ec').textContent = '−'+fmtT(CO2eco);
+    g('co2dette').textContent = fmtT(CO2_DETTE);
+    g('co2break').textContent = breakKm<Infinity?fmtN(breakKm)+' km':'—';
+
+    var cv=g('coverd');
+    if (breakYr<=2) {
+      cv.className='verdict vg'; g('covi').textContent='🌿';
+      g('covt').textContent='Équilibre carbone en '+fmtN(breakYr,1)+' ans — très rapide !';
+      g('covb').textContent='À '+fmtN(uKm)+' km/an, le VE compense sa dette carbone en '+fmtN(breakKm)+' km. Sur '+uDuree+' ans : −'+fmtN(CO2eco/1000,1)+' t CO₂.';
+    } else if (breakYr<=uDuree) {
+      cv.className='verdict vo'; g('covi').textContent='♻️';
+      g('covt').textContent='Équilibre carbone en '+fmtN(breakYr,1)+' ans ('+fmtN(breakKm)+' km)';
+      g('covb').textContent='Le VE devient plus propre après '+fmtN(breakKm)+' km, soit '+fmtN(breakYr,1)+' ans à votre rythme.';
+    } else {
+      cv.className='verdict vr'; g('covi').textContent='⚠';
+      g('covt').textContent='Équilibre carbone non atteint avant '+uDuree+' ans';
+      g('covb').textContent='Avec '+fmtN(uKm)+' km/an, il faut '+fmtN(breakKm)+' km ('+fmtN(breakYr,1)+' ans) pour compenser la dette de fabrication.';
+    }
+
+    var barsData = [
+      {l:'Fabrication du véhicule',th:6700,ev:10500},
+      {l:'Usage sur '+uDuree+' ans',th:Math.round(tCO2an*uDuree),ev:Math.round(eElecAn*uDuree)},
+      {l:'Fin de vie / recyclage',th:800,ev:600},
+    ];
+    var maxB = Math.max.apply(null, barsData.map(function(b){return Math.max(b.th,b.ev);}));
+    g('cobars').innerHTML = barsData.map(function(b){
+      return '<div class="bar-row">'
+        +'<div class="bar-label">'+b.l+'</div>'
+        +'<div class="bar-sub"><span class="bar-name">Thermique</span><div class="bar-track"><div class="bar-fill" style="width:'+((b.th/maxB)*100)+'%;background:rgba(255,92,92,.6)"></div></div><span class="bar-val" style="color:var(--red)">'+fmtN(b.th)+' kg</span></div>'
+        +'<div class="bar-sub"><span class="bar-name">Électrique</span><div class="bar-track"><div class="bar-fill" style="width:'+((b.ev/maxB)*100)+'%;background:rgba(59,255,158,.5)"></div></div><span class="bar-val" style="color:var(--green)">'+fmtN(b.ev)+' kg</span></div>'
+        +'</div>';
+    }).join('<hr style="border:none;border-top:1px solid #1e1e1e;margin:6px 0">');
+
+  } catch(err) {
+    console.error('recalc error:', err);
+  }
+}
+
+// Bind all inputs
+document.querySelectorAll('input[type=range], input[type=number], select').forEach(function(el) {
+  el.addEventListener('input', recalc);
+  el.addEventListener('change', recalc);
+});
+
+recalc();
+</script>
+</body>
+</html>
