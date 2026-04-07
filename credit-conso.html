@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculateur Crédit Conso — Coût Réel | Calculamatix</title>
+  <meta name="description" content="Le vrai coût de votre crédit à la consommation : TAEG réel, tableau d'amortissement, comparateur d'offres, remboursement anticipé. Données Banque de France 2026." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #141414;
+      --yellow: #FFD93D;
+      --orange: #FF6B2B;
+      --green: #3BFF9E;
+      --blue: #3BB5FF;
+      --purple: #C084FC;
+      --red: #FF5C5C;
+      --amber: #FFAA3B;
+      --text: #F0EDE6;
+      --muted: #555;
+      --card-bg: #161616;
+      --card-border: #242424;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: relative;
+      z-index: 10;
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 24px 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo { font-family: 'Unbounded', sans-serif; font-weight: 900; font-size: 18px; text-decoration: none; color: var(--text); letter-spacing: -0.5px; }
+    .logo span { color: var(--yellow); }
+    .back-btn { font-size: 13px; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.15s; }
+    .back-btn:hover { color: var(--text); }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      z-index: 10;
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 44px 24px 36px;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--amber);
+      background: rgba(255,170,59,0.08);
+      border: 1px solid rgba(255,170,59,0.2);
+      padding: 4px 14px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+
+    .hero h1 {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 900;
+      font-size: clamp(24px, 4.5vw, 52px);
+      letter-spacing: -2px;
+      line-height: 1.05;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 span { color: var(--yellow); }
+
+    .hero p { font-size: 14px; color: var(--muted); max-width: 600px; line-height: 1.7; }
+
+    /* ─── TABS ─── */
+    .tabs-wrap {
+      position: relative;
+      z-index: 10;
+      max-width: 1060px;
+      margin: 0 auto 28px;
+      padding: 0 24px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      background: #111;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 5px;
+      width: fit-content;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 9px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .tab.active {
+      background: var(--yellow);
+      color: #000;
+      font-weight: 700;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ─── WRAP ─── */
+    .wrap {
+      position: relative;
+      z-index: 10;
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+    /* ─── CARDS ─── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+    }
+
+    .card-title {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    /* ─── FIELDS ─── */
+    .field { margin-bottom: 16px; }
+    .field:last-child { margin-bottom: 0; }
+
+    .field label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .field label .val {
+      font-family: 'DM Mono', monospace;
+      color: var(--yellow);
+      font-size: 12px;
+    }
+
+    .text-input, .num-input, .select-input {
+      width: 100%;
+      background: #1e1e1e;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      color: var(--text);
+      padding: 11px 14px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .num-input { font-family: 'DM Mono', monospace; }
+    .text-input:focus, .num-input:focus, .select-input:focus { border-color: var(--yellow); }
+
+    /* ─── RANGE ─── */
+    input[type=range] {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 4px;
+      background: #252525;
+      border-radius: 2px;
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: var(--yellow);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255,217,61,0.4);
+    }
+
+    /* ─── METRICS ─── */
+    .metric {
+      background: #1a1a1a;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .metric .lbl { font-size: 10px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .metric .val { font-family: 'DM Mono', monospace; font-size: 20px; font-weight: 500; }
+    .metric .sub { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+    /* ─── VERDICT ─── */
+    .verdict {
+      border-radius: 16px;
+      padding: 20px 24px;
+      border: 1px solid;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .verdict-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .verdict-content {}
+    .verdict-title { font-family: 'Unbounded', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .verdict-body { font-size: 13px; color: #888; line-height: 1.6; }
+
+    .verdict.good { background: rgba(59,255,158,0.05); border-color: rgba(59,255,158,0.2); }
+    .verdict.ok { background: rgba(255,170,59,0.05); border-color: rgba(255,170,59,0.2); }
+    .verdict.bad { background: rgba(255,92,92,0.05); border-color: rgba(255,92,92,0.2); }
+    .verdict.good .verdict-title { color: var(--green); }
+    .verdict.ok .verdict-title { color: var(--amber); }
+    .verdict.bad .verdict-title { color: var(--red); }
+
+    /* ─── CHART ─── */
+    .chart-wrap { position: relative; width: 100%; height: 220px; margin-top: 14px; }
+
+    /* ─── AMORTIZATION TABLE ─── */
+    .table-wrap { max-height: 340px; overflow-y: auto; border-radius: 12px; }
+    .table-wrap::-webkit-scrollbar { width: 4px; }
+    .table-wrap::-webkit-scrollbar-track { background: #111; }
+    .table-wrap::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead tr { border-bottom: 1px solid #222; position: sticky; top: 0; background: var(--card-bg); }
+    th { text-align: right; padding: 10px 12px; font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    th:first-child { text-align: left; }
+    td { padding: 9px 12px; border-bottom: 1px solid rgba(255,255,255,0.03); font-family: 'DM Mono', monospace; font-size: 12px; text-align: right; }
+    td:first-child { text-align: left; font-family: 'DM Sans', sans-serif; color: var(--muted); font-size: 12px; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+    tbody tr.highlight { background: rgba(255,217,61,0.05); border-bottom: 1px solid rgba(255,217,61,0.1); }
+
+    /* ─── COMPARE ─── */
+    .offer-col {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+    }
+
+    .offer-col.winner {
+      border-color: rgba(59,255,158,0.4);
+      background: rgba(59,255,158,0.03);
+    }
+
+    .offer-label {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .winner-badge {
+      background: var(--green);
+      color: #000;
+      font-size: 9px;
+      padding: 2px 8px;
+      border-radius: 100px;
+    }
+
+    /* ─── PREPAY ─── */
+    .prepay-result {
+      background: rgba(192,132,252,0.06);
+      border: 1px solid rgba(192,132,252,0.2);
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-top: 16px;
+    }
+
+    .prepay-title { font-family: 'Unbounded', sans-serif; font-size: 13px; font-weight: 700; color: var(--purple); margin-bottom: 10px; }
+    .prepay-body { font-size: 13px; color: #888; line-height: 1.6; }
+
+    /* ─── USURE BADGE ─── */
+    .usure-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-weight: 500;
+      margin-top: 8px;
+    }
+    .usure-ok { background: rgba(59,255,158,0.1); color: var(--green); border: 1px solid rgba(59,255,158,0.2); }
+    .usure-warn { background: rgba(255,92,92,0.1); color: var(--red); border: 1px solid rgba(255,92,92,0.2); }
+
+    /* ─── INFO BOX ─── */
+    .info-box {
+      background: #141414;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 12px;
+      color: #555;
+      line-height: 1.6;
+    }
+    .info-box strong { color: #888; }
+
+    .disclaimer {
+      font-size: 11px;
+      color: #333;
+      text-align: center;
+      line-height: 1.7;
+      padding: 0 12px;
+      margin-top: 8px;
+    }
+
+    /* ─── SEO ─── */
+    .seo-section {
+      max-width: 1060px;
+      margin: 60px auto 0;
+      padding: 40px 24px 0;
+      border-top: 1px solid #181818;
+    }
+    .seo-section h2 { font-family: 'Unbounded', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 14px; }
+    .seo-section p { font-size: 14px; color: #444; line-height: 1.8; margin-bottom: 14px; }
+
+    @media (max-width: 640px) {
+      .grid2, .grid3, .grid4 { grid-template-columns: 1fr; }
+      .tabs { gap: 4px; }
+      .tab { padding: 8px 12px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back-btn" href="index.html">← Tous les calculateurs</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">💰 Argent</div>
+  <h1>Crédit conso —<br><span>Le vrai coût</span></h1>
+  <p>TAEG réel, tableau d'amortissement mois par mois, comparateur d'offres et simulateur de remboursement anticipé. Tout ce que votre banque ne vous montre pas.</p>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('simple')">🧮 Simulateur</button>
+    <button class="tab" onclick="switchTab('inverse')">🎯 Par mensualité</button>
+    <button class="tab" onclick="switchTab('compare')">⚖️ Comparer 2 offres</button>
+    <button class="tab" onclick="switchTab('prepay')">⚡ Remboursement anticipé</button>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 1 : SIMULATEUR ═══════════════ -->
+<div id="tab-simple" class="tab-panel active">
+  <div class="wrap">
+
+    <div class="grid2">
+      <!-- Paramètres -->
+      <div class="card">
+        <div class="card-title">Votre crédit</div>
+
+        <div class="field">
+          <label>Montant emprunté <span class="val" id="s-montantVal">10 000 €</span></label>
+          <input type="range" id="s-montant" min="500" max="75000" step="100" value="10000" oninput="calcSimple()">
+        </div>
+
+        <div class="field">
+          <label>Durée <span class="val" id="s-dureeVal">36 mois</span></label>
+          <input type="range" id="s-duree" min="6" max="84" step="6" value="36" oninput="calcSimple()">
+        </div>
+
+        <div class="field">
+          <label>Taux nominal annuel <span class="val" id="s-tauxVal">5.50 %</span></label>
+          <input type="range" id="s-taux" min="0.5" max="22" step="0.1" value="5.5" oninput="calcSimple()">
+        </div>
+
+        <div class="field">
+          <label>Frais de dossier (€)</label>
+          <input type="number" class="num-input" id="s-frais" value="150" min="0" max="2000" oninput="calcSimple()">
+        </div>
+
+        <div class="field">
+          <label>Assurance mensuelle (€)</label>
+          <input type="number" class="num-input" id="s-assurance" value="8" min="0" max="200" step="0.5" oninput="calcSimple()">
+        </div>
+      </div>
+
+      <!-- Résultats clés -->
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="card" style="border-color:rgba(255,217,61,0.2);background:rgba(255,217,61,0.03);">
+          <div class="card-title" style="color:var(--yellow)">Résultats</div>
+          <div class="grid2" style="gap:10px;margin-bottom:10px;">
+            <div class="metric">
+              <div class="lbl">Mensualité</div>
+              <div class="val" id="s-mensualite" style="color:var(--yellow);font-size:24px">—</div>
+              <div class="sub">par mois</div>
+            </div>
+            <div class="metric">
+              <div class="lbl">Mensualité + assurance</div>
+              <div class="val" id="s-mensualiteTotal" style="color:var(--amber)">—</div>
+              <div class="sub">coût mensuel réel</div>
+            </div>
+          </div>
+          <div class="grid2" style="gap:10px;margin-bottom:10px;">
+            <div class="metric">
+              <div class="lbl">Total remboursé</div>
+              <div class="val" id="s-totalRembourse" style="color:var(--text)">—</div>
+              <div class="sub">capital + intérêts + assurance</div>
+            </div>
+            <div class="metric">
+              <div class="lbl">Coût total du crédit</div>
+              <div class="val" id="s-coutTotal" style="color:var(--red)">—</div>
+              <div class="sub">ce que vous payez en plus</div>
+            </div>
+          </div>
+          <div class="grid2" style="gap:10px;">
+            <div class="metric">
+              <div class="lbl">Taux nominal</div>
+              <div class="val" id="s-tauxNominal" style="color:var(--blue)">—</div>
+            </div>
+            <div class="metric">
+              <div class="lbl">TAEG réel calculé</div>
+              <div class="val" id="s-taeg" style="color:var(--purple)">—</div>
+            </div>
+          </div>
+          <div id="s-usureBadge" style="margin-top:10px"></div>
+        </div>
+
+        <div id="s-verdict" class="verdict good">
+          <div class="verdict-icon" id="s-verdictIcon">✓</div>
+          <div class="verdict-content">
+            <div class="verdict-title" id="s-verdictTitle">—</div>
+            <div class="verdict-body" id="s-verdictBody">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Graphique -->
+    <div class="card">
+      <div class="card-title">Répartition capital vs intérêts dans le temps</div>
+      <div class="chart-wrap"><canvas id="s-chart"></canvas></div>
+    </div>
+
+    <!-- Tableau d'amortissement -->
+    <div class="card">
+      <div class="card-title">Tableau d'amortissement complet</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Mois</th>
+              <th>Mensualité</th>
+              <th>Intérêts</th>
+              <th>Capital remb.</th>
+              <th>Capital restant</th>
+            </tr>
+          </thead>
+          <tbody id="s-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>Taux d'usure Q2 2026 (Banque de France) :</strong> ≤ 3 000€ → 23,56% · de 3 001 à 6 000€ → 15,87% · > 6 000€ → 8,67%. Tout TAEG dépassant ces seuils est illégal en France.
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 2 : INVERSÉ ═══════════════ -->
+<div id="tab-inverse" class="tab-panel">
+  <div class="wrap">
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Votre budget mensuel</div>
+
+        <div class="field">
+          <label>Mensualité max que vous pouvez payer <span class="val" id="i-mensualiteVal">300 €</span></label>
+          <input type="range" id="i-mensualite" min="50" max="2000" step="10" value="300" oninput="calcInverse()">
+        </div>
+
+        <div class="field">
+          <label>Durée souhaitée <span class="val" id="i-dureeVal">36 mois</span></label>
+          <input type="range" id="i-duree" min="6" max="84" step="6" value="36" oninput="calcInverse()">
+        </div>
+
+        <div class="field">
+          <label>Taux nominal annuel proposé <span class="val" id="i-tauxVal">5.50 %</span></label>
+          <input type="range" id="i-taux" min="0.5" max="22" step="0.1" value="5.5" oninput="calcInverse()">
+        </div>
+
+        <div class="field">
+          <label>Vos revenus nets mensuels (€)</label>
+          <input type="number" class="num-input" id="i-revenus" value="2500" min="500" oninput="calcInverse()">
+        </div>
+
+        <div class="field">
+          <label>Charges mensuelles existantes (€)</label>
+          <input type="number" class="num-input" id="i-charges" value="400" min="0" oninput="calcInverse()">
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="card" style="border-color:rgba(59,181,255,0.2);background:rgba(59,181,255,0.03);">
+          <div class="card-title" style="color:var(--blue)">Ce que vous pouvez emprunter</div>
+          <div class="grid2" style="gap:10px;margin-bottom:10px;">
+            <div class="metric">
+              <div class="lbl">Montant empruntable</div>
+              <div class="val" id="i-montant" style="color:var(--blue);font-size:24px">—</div>
+              <div class="sub">capital disponible</div>
+            </div>
+            <div class="metric">
+              <div class="lbl">Coût total</div>
+              <div class="val" id="i-cout" style="color:var(--red)">—</div>
+              <div class="sub">intérêts payés</div>
+            </div>
+          </div>
+          <div class="grid2" style="gap:10px;">
+            <div class="metric">
+              <div class="lbl">Taux d'endettement actuel</div>
+              <div class="val" id="i-endettement" style="color:var(--text)">—</div>
+              <div class="sub">charges / revenus</div>
+            </div>
+            <div class="metric">
+              <div class="lbl">Taux d'endettement après</div>
+              <div class="val" id="i-endettementApres" style="color:var(--text)">—</div>
+              <div class="sub">seuil max 35%</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="i-verdictEndet" class="verdict good">
+          <div class="verdict-icon" id="i-verdictIcon">✓</div>
+          <div class="verdict-content">
+            <div class="verdict-title" id="i-verdictTitle">—</div>
+            <div class="verdict-body" id="i-verdictBody">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 3 : COMPARATEUR ═══════════════ -->
+<div id="tab-compare" class="tab-panel">
+  <div class="wrap">
+    <div class="grid2">
+      <!-- Offre A -->
+      <div class="offer-col" id="col-a">
+        <div class="offer-label" id="label-a">OFFRE A</div>
+
+        <div class="field">
+          <label>Montant (€)</label>
+          <input type="number" class="num-input" id="ca-montant" value="10000" oninput="calcCompare()">
+        </div>
+        <div class="field">
+          <label>Durée (mois)</label>
+          <input type="number" class="num-input" id="ca-duree" value="36" min="6" max="84" oninput="calcCompare()">
+        </div>
+        <div class="field">
+          <label>Taux nominal (%)</label>
+          <input type="number" class="num-input" id="ca-taux" value="5.5" step="0.1" oninput="calcCompare()">
+        </div>
+        <div class="field">
+          <label>Frais de dossier (€)</label>
+          <input type="number" class="num-input" id="ca-frais" value="150" oninput="calcCompare()">
+        </div>
+        <div class="field">
+          <label>Assurance mensuelle (€)</label>
+          <input type="number" class="num-input" id="ca-assurance" value="8" step="0.5" oninput="calcCompare()">
+        </div>
+
+        <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px;">
+          <div class="metric"><div class="lbl">Mensualité</div><div class="val" id="ca-mens" style="color:var(--yellow)">—</div></div>
+          <div class="metric"><div class="lbl">Total remboursé</div><div class="val" id="ca-total" style="color:var(--text)">—</div></div>
+          <div class="metric"><div class="lbl">Coût du crédit</div><div class="val" id="ca-cout" style="color:var(--red)">—</div></div>
+          <div class="metric"><div class="lbl">TAEG réel</div><div class="val" id="ca-taeg" style="color:var(--purple)">—</div></div>
+        </div>
+      </div>
+
+      <!-- Offre B -->
+      <div class="offer-col" id="col-b">
+        <div class="offer-label" id="label-b">OFFRE B</div>
+
+        <div class="field">
+          <label>Montant (€)</label>
+          <input type="number" class="num-input" id="cb-montant" value="10000" oninput="calcCompare()">
+        </div>
+        <div class="field">
+          <label>Durée (mois)</label>
+          <input type="number" class="num-input" id="cb-duree" value="48" min="6" max="84" oninput="calcCompare()">
+        </div>
+        <div class="field">
+          <label>Taux nominal (%)</label>
+          <input type="number" class="num-input" id="cb-taux" value="4.9" step="0.1" oninput="calcCompare()">
+        </div>
+        <div class="field">
+          <label>Frais de dossier (€)</label>
+          <input type="number" class="num-input" id="cb-frais" value="300" oninput="calcCompare()">
+        </div>
+        <div class="field">
+          <label>Assurance mensuelle (€)</label>
+          <input type="number" class="num-input" id="cb-assurance" value="10" step="0.5" oninput="calcCompare()">
+        </div>
+
+        <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px;">
+          <div class="metric"><div class="lbl">Mensualité</div><div class="val" id="cb-mens" style="color:var(--yellow)">—</div></div>
+          <div class="metric"><div class="lbl">Total remboursé</div><div class="val" id="cb-total" style="color:var(--text)">—</div></div>
+          <div class="metric"><div class="lbl">Coût du crédit</div><div class="val" id="cb-cout" style="color:var(--red)">—</div></div>
+          <div class="metric"><div class="lbl">TAEG réel</div><div class="val" id="cb-taeg" style="color:var(--purple)">—</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="c-verdict" class="verdict ok" style="display:none">
+      <div class="verdict-icon">⚖️</div>
+      <div class="verdict-content">
+        <div class="verdict-title" id="c-verdictTitle">—</div>
+        <div class="verdict-body" id="c-verdictBody">—</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Coût total comparé</div>
+      <div class="chart-wrap"><canvas id="c-chart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 4 : REMBOURSEMENT ANTICIPÉ ═══════════════ -->
+<div id="tab-prepay" class="tab-panel">
+  <div class="wrap">
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Votre crédit actuel</div>
+
+        <div class="field">
+          <label>Montant emprunté (€)</label>
+          <input type="number" class="num-input" id="p-montant" value="15000" oninput="calcPrepay()">
+        </div>
+        <div class="field">
+          <label>Durée totale (mois)</label>
+          <input type="number" class="num-input" id="p-duree" value="60" min="6" max="84" oninput="calcPrepay()">
+        </div>
+        <div class="field">
+          <label>Taux nominal (%)</label>
+          <input type="number" class="num-input" id="p-taux" value="5.5" step="0.1" oninput="calcPrepay()">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Votre remboursement anticipé</div>
+
+        <div class="field">
+          <label>Au bout de combien de mois ? <span class="val" id="p-moisVal">12</span></label>
+          <input type="range" id="p-mois" min="1" max="83" step="1" value="12" oninput="calcPrepay()">
+        </div>
+
+        <div class="field">
+          <label>Montant remboursé en avance (€) <span class="val" id="p-sommeVal">3 000 €</span></label>
+          <input type="range" id="p-somme" min="100" max="15000" step="100" value="3000" oninput="calcPrepay()">
+        </div>
+
+        <div class="field">
+          <label>Pénalité de remboursement anticipé (%)</label>
+          <input type="number" class="num-input" id="p-penalite" value="1" step="0.1" min="0" max="3" oninput="calcPrepay()">
+          <div style="font-size:11px;color:#444;margin-top:6px;">Légalement plafonnée à 1% si > 1 an restant, 0,5% si < 1 an</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid4">
+      <div class="metric">
+        <div class="lbl">Mensualité de base</div>
+        <div class="val" id="p-mensBase" style="color:var(--text)">—</div>
+      </div>
+      <div class="metric">
+        <div class="lbl">Intérêts économisés</div>
+        <div class="val" id="p-economie" style="color:var(--green)">—</div>
+      </div>
+      <div class="metric">
+        <div class="lbl">Pénalité</div>
+        <div class="val" id="p-penaliteVal" style="color:var(--red)">—</div>
+      </div>
+      <div class="metric">
+        <div class="lbl">Gain net réel</div>
+        <div class="val" id="p-gainNet" style="color:var(--yellow)">—</div>
+      </div>
+    </div>
+
+    <div id="p-result" class="prepay-result">
+      <div class="prepay-title" id="p-title">—</div>
+      <div class="prepay-body" id="p-body">—</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Capital restant — avant vs après remboursement anticipé</div>
+      <div class="chart-wrap"><canvas id="p-chart"></canvas></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SEO -->
+<section class="seo-section">
+  <h2>Comprendre le vrai coût d'un crédit à la consommation</h2>
+  <p>Le taux affiché par votre banque — le taux nominal — ne représente qu'une partie du coût réel de votre crédit. Le TAEG (Taux Annuel Effectif Global), obligatoire depuis la loi Lagarde de 2011, intègre tous les frais : intérêts, frais de dossier, assurance emprunteur et frais de garantie.</p>
+  <p>En France, le crédit à la consommation est encadré par le taux d'usure, fixé chaque trimestre par la Banque de France. Au 1er trimestre 2026, ce plafond est de 8,67% pour les prêts supérieurs à 6 000€. Tout TAEG dépassant ce seuil est légalement interdit.</p>
+  <p>Le remboursement anticipé est légalement possible sur tout crédit conso. Les pénalités sont plafonnées par la loi : 1% du capital remboursé si la durée restante dépasse 1 an, 0,5% dans le cas contraire.</p>
+</section>
+
+<p class="disclaimer" style="max-width:1060px;margin:20px auto 0;">Calculamatix · Résultats indicatifs — données Banque de France Q2 2026 · Pas de conseil financier</p>
+
+<script>
+Chart.defaults.color = '#666';
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+
+const $ = id => document.getElementById(id);
+const fmt = (n, d=2) => n.toLocaleString('fr-FR', {minimumFractionDigits:d, maximumFractionDigits:d});
+const fmtE = (n) => fmt(n, 2) + ' €';
+const fmtP = (n) => fmt(n, 2) + ' %';
+
+// Taux d'usure Q2 2026
+function getUsure(montant) {
+  if (montant <= 3000) return 23.56;
+  if (montant <= 6000) return 15.87;
+  return 8.67;
+}
+
+// Calcul mensualité (formule prêt à annuités constantes)
+function calcMensualite(montant, tauxAnnuel, mois) {
+  if (tauxAnnuel === 0) return montant / mois;
+  const tm = tauxAnnuel / 100 / 12;
+  return montant * tm * Math.pow(1 + tm, mois) / (Math.pow(1 + tm, mois) - 1);
+}
+
+// Calcul TAEG (méthode Newton-Raphson sur flux)
+function calcTAEG(montant, mensualite, mois, frais, assuranceMensuelle) {
+  const totalMensuel = mensualite + assuranceMensuelle;
+  // On cherche r tel que : montant - frais = somme(totalMensuel / (1+r/12)^k)
+  const capital = montant - frais; // Frais payés d'avance réduisent le net reçu
+  let r = 0.06; // Init
+  for (let iter = 0; iter < 1000; iter++) {
+    const rm = r / 12;
+    let pv = 0;
+    for (let k = 1; k <= mois; k++) pv += totalMensuel / Math.pow(1 + rm, k);
+    const f = pv - montant; // On compare au montant total (frais inclus dans le coût)
+    const df = -pv * mois / (12 * (1 + rm));
+    const rNew = r - f / df;
+    if (Math.abs(rNew - r) < 1e-10) break;
+    r = rNew;
+  }
+  return Math.max(0, r * 100);
+}
+
+// Tableau amortissement
+function buildAmortissement(montant, tauxAnnuel, mois) {
+  const tm = tauxAnnuel / 100 / 12;
+  const mens = calcMensualite(montant, tauxAnnuel, mois);
+  let capital = montant;
+  const rows = [];
+  for (let i = 1; i <= mois; i++) {
+    const interets = capital * tm;
+    const capitalRembourse = mens - interets;
+    capital = Math.max(0, capital - capitalRembourse);
+    rows.push({ mois: i, mens, interets, capitalRembourse, capitalRestant: capital });
+  }
+  return { rows, mens };
+}
+
+// ─── TAB 1 : SIMPLE ───
+let sChart;
+function calcSimple() {
+  const montant = +$('s-montant').value;
+  const duree = +$('s-duree').value;
+  const taux = +$('s-taux').value;
+  const frais = +$('s-frais').value || 0;
+  const assurance = +$('s-assurance').value || 0;
+
+  $('s-montantVal').textContent = fmt(montant, 0) + ' €';
+  $('s-dureeVal').textContent = duree + ' mois';
+  $('s-tauxVal').textContent = fmtP(taux);
+
+  const { rows, mens } = buildAmortissement(montant, taux, duree);
+  const mensTotal = mens + assurance;
+  const totalRembourse = mensTotal * duree + frais;
+  const coutTotal = totalRembourse - montant;
+  const taeg = calcTAEG(montant, mens, duree, frais, assurance);
+  const usure = getUsure(montant);
+  const usureOk = taeg <= usure;
+
+  $('s-mensualite').textContent = fmtE(mens);
+  $('s-mensualiteTotal').textContent = fmtE(mensTotal);
+  $('s-totalRembourse').textContent = fmtE(totalRembourse);
+  $('s-coutTotal').textContent = fmtE(coutTotal);
+  $('s-tauxNominal').textContent = fmtP(taux);
+  $('s-taeg').textContent = fmtP(taeg);
+
+  // Badge usure
+  $('s-usureBadge').innerHTML = `<span class="usure-badge ${usureOk ? 'usure-ok' : 'usure-warn'}">
+    ${usureOk ? '✓' : '⚠'} TAEG ${usureOk ? 'inférieur' : 'SUPÉRIEUR'} au taux d'usure (${fmtP(usure)})
+  </span>`;
+
+  // Verdict
+  const pct = (coutTotal / montant) * 100;
+  const vb = $('s-verdict');
+  if (!usureOk) {
+    vb.className = 'verdict bad';
+    $('s-verdictIcon').textContent = '🚫';
+    $('s-verdictTitle').textContent = 'Crédit potentiellement usuraire';
+    $('s-verdictBody').textContent = `Le TAEG calculé (${fmtP(taeg)}) dépasse le taux d'usure légal (${fmtP(usure)}) pour un crédit de ${fmt(montant,0)}€. Une banque ne peut légalement pas vous proposer ce crédit à ces conditions.`;
+  } else if (pct < 10) {
+    vb.className = 'verdict good';
+    $('s-verdictIcon').textContent = '✓';
+    $('s-verdictTitle').textContent = 'Crédit peu coûteux';
+    $('s-verdictBody').textContent = `Vous remboursez ${fmtP(pct)} de plus que le capital emprunté. Pour ${fmt(montant,0)}€ empruntés, vous déboursez ${fmtE(coutTotal)} en frais et intérêts sur ${duree} mois.`;
+  } else if (pct < 25) {
+    vb.className = 'verdict ok';
+    $('s-verdictIcon').textContent = '⚠';
+    $('s-verdictTitle').textContent = 'Coût modéré — à surveiller';
+    $('s-verdictBody').textContent = `Ce crédit vous coûte ${fmtP(pct)} de plus que le capital. Sur ${duree} mois vous payez ${fmtE(coutTotal)} en plus. Vérifiez si d'autres offres existent avec un TAEG plus bas.`;
+  } else {
+    vb.className = 'verdict bad';
+    $('s-verdictIcon').textContent = '✗';
+    $('s-verdictTitle').textContent = 'Crédit très coûteux';
+    $('s-verdictBody').textContent = `Attention : vous remboursez ${fmtP(pct)} de plus que la somme empruntée, soit ${fmtE(coutTotal)} de frais. Ce crédit mérite d'être comparé à d'autres offres ou d'être écourté.`;
+  }
+
+  // Graphique
+  const labels = rows.map(r => 'M' + r.mois);
+  const cumCapital = [], cumInterets = [];
+  let cc = 0, ci = 0;
+  rows.forEach(r => { cc += r.capitalRembourse; ci += r.interets; cumCapital.push(cc); cumInterets.push(ci); });
+
+  if (sChart) sChart.destroy();
+  sChart = new Chart($('s-chart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Capital remboursé', data: cumCapital, backgroundColor: 'rgba(59,181,255,0.6)', borderColor: 'rgba(59,181,255,0.9)', borderWidth: 0, borderRadius: 2, stack: 'a' },
+        { label: 'Intérêts cumulés', data: cumInterets, backgroundColor: 'rgba(255,92,92,0.5)', borderColor: 'rgba(255,92,92,0.8)', borderWidth: 0, borderRadius: 2, stack: 'a' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#888', font: { size: 11 } } }, tooltip: { callbacks: { label: c => c.dataset.label + ' : ' + fmtE(c.raw) } } },
+      scales: {
+        x: { stacked: true, grid: { display: false }, ticks: { color: '#555', maxTicksLimit: 12, font: { size: 10 } }, border: { color: 'transparent' } },
+        y: { stacked: true, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { callback: v => fmt(v,0)+'€', color: '#666', font: { size: 10 } }, border: { color: 'transparent' } }
+      }
+    }
+  });
+
+  // Tableau
+  const tbody = $('s-tbody');
+  tbody.innerHTML = '';
+  rows.forEach(r => {
+    const tr = document.createElement('tr');
+    const isLast = r.mois === rows.length;
+    if (isLast) tr.className = 'highlight';
+    tr.innerHTML = `
+      <td style="color:${isLast ? 'var(--yellow)' : 'var(--muted)'}">Mois ${r.mois}${isLast ? ' 🎯' : ''}</td>
+      <td style="color:var(--text)">${fmtE(r.mens)}</td>
+      <td style="color:var(--red)">${fmtE(r.interets)}</td>
+      <td style="color:var(--blue)">${fmtE(r.capitalRembourse)}</td>
+      <td style="color:var(--muted)">${fmtE(r.capitalRestant)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ─── TAB 2 : INVERSÉ ───
+function calcInverse() {
+  const mensualite = +$('i-mensualite').value;
+  const duree = +$('i-duree').value;
+  const taux = +$('i-taux').value;
+  const revenus = +$('i-revenus').value || 1;
+  const charges = +$('i-charges').value || 0;
+
+  $('i-mensualiteVal').textContent = fmtE(mensualite);
+  $('i-dureeVal').textContent = duree + ' mois';
+  $('i-tauxVal').textContent = fmtP(taux);
+
+  // Inverser la formule mensualité → capital
+  let montant;
+  if (taux === 0) {
+    montant = mensualite * duree;
+  } else {
+    const tm = taux / 100 / 12;
+    montant = mensualite * (1 - Math.pow(1 + tm, -duree)) / tm;
+  }
+
+  const totalRembourse = mensualite * duree;
+  const coutTotal = totalRembourse - montant;
+
+  const endettementAvant = (charges / revenus) * 100;
+  const endettementApres = ((charges + mensualite) / revenus) * 100;
+
+  $('i-montant').textContent = fmtE(montant);
+  $('i-cout').textContent = fmtE(coutTotal);
+  $('i-endettement').textContent = fmtP(endettementAvant);
+  $('i-endettementApres').textContent = fmtP(endettementApres);
+
+  // Couleur taux endettement
+  const col = endettementApres > 35 ? 'var(--red)' : endettementApres > 30 ? 'var(--amber)' : 'var(--green)';
+  $('i-endettementApres').style.color = col;
+
+  const vb = $('i-verdictEndet');
+  if (endettementApres > 35) {
+    vb.className = 'verdict bad';
+    $('i-verdictIcon').textContent = '✗';
+    $('i-verdictTitle').textContent = `Taux d'endettement trop élevé (${fmtP(endettementApres)})`;
+    $('i-verdictBody').textContent = `Avec cette mensualité, votre taux d'endettement atteint ${fmtP(endettementApres)}, au-dessus du seuil recommandé de 35%. La plupart des banques refuseront ce dossier. Réduisez la mensualité ou allongez la durée.`;
+  } else if (endettementApres > 30) {
+    vb.className = 'verdict ok';
+    $('i-verdictIcon').textContent = '⚠';
+    $('i-verdictTitle').textContent = `Endettement limite (${fmtP(endettementApres)})`;
+    $('i-verdictBody').textContent = `Votre taux d'endettement serait de ${fmtP(endettementApres)}. C'est dans la limite mais serré. Certaines banques acceptent jusqu'à 35% selon le profil. Vous pourriez emprunter ${fmtE(montant)} sur ${duree} mois.`;
+  } else {
+    vb.className = 'verdict good';
+    $('i-verdictIcon').textContent = '✓';
+    $('i-verdictTitle').textContent = `Profil solide — ${fmtP(endettementApres)} d'endettement`;
+    $('i-verdictBody').textContent = `Avec une mensualité de ${fmtE(mensualite)}, vous pouvez emprunter ${fmtE(montant)} sur ${duree} mois. Votre taux d'endettement resterait à ${fmtP(endettementApres)}, bien en dessous du seuil de 35%.`;
+  }
+}
+
+// ─── TAB 3 : COMPARATEUR ───
+let cChart;
+function offreCalc(prefix) {
+  const montant = +$(prefix+'montant').value || 0;
+  const duree = +$(prefix+'duree').value || 12;
+  const taux = +$(prefix+'taux').value || 0;
+  const frais = +$(prefix+'frais').value || 0;
+  const assurance = +$(prefix+'assurance').value || 0;
+  const mens = calcMensualite(montant, taux, duree);
+  const mensTotal = mens + assurance;
+  const total = mensTotal * duree + frais;
+  const cout = total - montant;
+  const taeg = calcTAEG(montant, mens, duree, frais, assurance);
+  return { montant, duree, taux, frais, assurance, mens, mensTotal, total, cout, taeg };
+}
+
+function calcCompare() {
+  const a = offreCalc('ca-');
+  const b = offreCalc('cb-');
+
+  $('ca-mens').textContent = fmtE(a.mensTotal);
+  $('ca-total').textContent = fmtE(a.total);
+  $('ca-cout').textContent = fmtE(a.cout);
+  $('ca-taeg').textContent = fmtP(a.taeg);
+
+  $('cb-mens').textContent = fmtE(b.mensTotal);
+  $('cb-total').textContent = fmtE(b.total);
+  $('cb-cout').textContent = fmtE(b.cout);
+  $('cb-taeg').textContent = fmtP(b.taeg);
+
+  // Déterminer le gagnant
+  const aWins = a.cout < b.cout;
+  $('col-a').className = 'offer-col' + (aWins ? ' winner' : '');
+  $('col-b').className = 'offer-col' + (!aWins ? ' winner' : '');
+  $('label-a').innerHTML = 'OFFRE A' + (aWins ? ' <span class="winner-badge">✓ MOINS CHÈRE</span>' : '');
+  $('label-b').innerHTML = 'OFFRE B' + (!aWins ? ' <span class="winner-badge">✓ MOINS CHÈRE</span>' : '');
+
+  const winner = aWins ? 'A' : 'B';
+  const diff = Math.abs(a.cout - b.cout);
+  $('c-verdict').style.display = 'flex';
+  $('c-verdict').className = 'verdict good';
+  $('c-verdictTitle').textContent = `L'offre ${winner} est moins chère de ${fmtE(diff)}`;
+  $('c-verdictBody').textContent = `Sur la durée totale du crédit, l'offre ${winner} vous coûte ${fmtE(diff)} de moins en intérêts, frais et assurance cumulés. Le TAEG réel de l'offre A est ${fmtP(a.taeg)} vs ${fmtP(b.taeg)} pour l'offre B — c'est le seul chiffre qui compte vraiment pour comparer.`;
+
+  if (cChart) cChart.destroy();
+  cChart = new Chart($('c-chart'), {
+    type: 'bar',
+    data: {
+      labels: ['Capital', 'Intérêts & frais'],
+      datasets: [
+        { label: 'Offre A', data: [a.montant, a.cout], backgroundColor: ['rgba(59,181,255,0.6)', 'rgba(255,92,92,0.6)'], borderRadius: 6, borderSkipped: false },
+        { label: 'Offre B', data: [b.montant, b.cout], backgroundColor: ['rgba(59,181,255,0.3)', 'rgba(255,92,92,0.3)'], borderRadius: 6, borderSkipped: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#888', font: { size: 11 } } }, tooltip: { callbacks: { label: c => c.dataset.label + ' : ' + fmtE(c.raw) } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#888' }, border: { color: 'transparent' } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { callback: v => fmt(v,0)+'€', color: '#666' }, border: { color: 'transparent' } }
+      }
+    }
+  });
+}
+
+// ─── TAB 4 : REMBOURSEMENT ANTICIPÉ ───
+let pChart;
+function calcPrepay() {
+  const montant = +$('p-montant').value || 0;
+  const duree = +$('p-duree').value || 12;
+  const taux = +$('p-taux').value || 0;
+  const moisAnticipe = +$('p-mois').value;
+  const somme = +$('p-somme').value;
+  const penalitePct = +$('p-penalite').value || 0;
+
+  $('p-moisVal').textContent = moisAnticipe;
+  $('p-sommeVal').textContent = fmt(somme, 0) + ' €';
+
+  const { rows, mens } = buildAmortissement(montant, taux, duree);
+
+  // Capital restant au mois de remboursement anticipé
+  const rowAnticipe = rows[Math.min(moisAnticipe - 1, rows.length - 1)];
+  const capitalRestant = rowAnticipe.capitalRestant;
+
+  // Intérêts qu'on aurait payé sans remboursement anticipé
+  const interetsRestants = rows.slice(moisAnticipe).reduce((s, r) => s + r.interets, 0);
+
+  // Intérêts économisés avec le remboursement partiel
+  const proportionRembourse = Math.min(somme / capitalRestant, 1);
+  const economieInterets = interetsRestants * proportionRembourse;
+
+  const penalite = somme * penalitePct / 100;
+  const gainNet = economieInterets - penalite;
+
+  $('p-mensBase').textContent = fmtE(mens);
+  $('p-economie').textContent = fmtE(economieInterets);
+  $('p-penaliteVal').textContent = fmtE(penalite);
+  $('p-gainNet').textContent = fmtE(gainNet);
+  $('p-gainNet').style.color = gainNet > 0 ? 'var(--yellow)' : 'var(--red)';
+
+  const pt = $('p-title'), pb = $('p-body');
+  if (gainNet > 0) {
+    pt.textContent = `✓ Remboursement anticipé rentable — vous gagnez ${fmtE(gainNet)}`;
+    pb.textContent = `En remboursant ${fmtE(somme)} au bout du mois ${moisAnticipe}, vous économisez ${fmtE(economieInterets)} d'intérêts. Après la pénalité de ${fmtE(penalite)}, le gain net est de ${fmtE(gainNet)}. C'est une opération avantageuse.`;
+  } else {
+    pt.textContent = `⚠ Gain faible après pénalité (${fmtE(gainNet)})`;
+    pb.textContent = `La pénalité de remboursement (${fmtE(penalite)}) grève une partie des économies réalisées (${fmtE(economieInterets)}). Vérifiez si votre contrat prévoit une exonération de pénalité dans certains cas.`;
+  }
+
+  // Graphique
+  const labels = rows.map(r => 'M' + r.mois);
+  const capitalNormal = rows.map(r => r.capitalRestant);
+  const capitalAvecPrepay = rows.map((r, i) => {
+    if (i < moisAnticipe) return r.capitalRestant;
+    return Math.max(0, r.capitalRestant - somme * proportionRembourse);
+  });
+
+  if (pChart) pChart.destroy();
+  pChart = new Chart($('p-chart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Sans remboursement anticipé', data: capitalNormal, borderColor: 'rgba(255,92,92,0.8)', backgroundColor: 'rgba(255,92,92,0.05)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2 },
+        { label: 'Avec remboursement anticipé', data: capitalAvecPrepay, borderColor: 'rgba(59,255,158,0.8)', backgroundColor: 'rgba(59,255,158,0.05)', fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#888', font: { size: 11 } } }, tooltip: { callbacks: { label: c => c.dataset.label + ' : ' + fmtE(c.raw) } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#555', maxTicksLimit: 12, font: { size: 10 } }, border: { color: 'transparent' } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { callback: v => fmt(v,0)+'€', color: '#666' }, border: { color: 'transparent' } }
+      }
+    }
+  });
+}
+
+// ─── TABS ───
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  $('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Init
+calcSimple();
+calcInverse();
+calcCompare();
+calcPrepay();
+</script>
+
+</body>
+</html>
