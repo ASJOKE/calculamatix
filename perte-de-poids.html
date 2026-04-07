@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculateur de perte de poids | Calculamatix</title>
+  <meta name="description" content="Calcule ton déficit calorique, ton BMR (Mifflin-St Jeor), ton TDEE et en combien de semaines tu atteins ton objectif de poids." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e0e0e;
+      --yellow: #FFD93D;
+      --orange: #FF6B2B;
+      --green: #3BFF9E;
+      --blue: #3BB5FF;
+      --purple: #A855F7;
+      --red: #FF5C5C;
+      --amber: #FFAA3B;
+      --text: #F0EDE6;
+      --muted: #555;
+      --card-bg: #1a1a1a;
+      --card-border: #272727;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: relative;
+      z-index: 10;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 24px 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 900;
+      font-size: 18px;
+      text-decoration: none;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--yellow); }
+
+    .back-btn {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.15s;
+    }
+    .back-btn:hover { color: var(--text); }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      z-index: 10;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 40px 24px 32px;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--green);
+      background: rgba(59,255,158,0.08);
+      border: 1px solid rgba(59,255,158,0.2);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+
+    .hero h1 {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 900;
+      font-size: clamp(24px, 4vw, 42px);
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+
+    .hero h1 span { color: var(--yellow); }
+
+    .hero p {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.6;
+    }
+
+    /* ─── WRAP ─── */
+    .wrap {
+      position: relative;
+      z-index: 10;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+    /* ─── CARDS ─── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+    }
+
+    .card-title {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    /* ─── INPUTS ─── */
+    .field { margin-bottom: 16px; }
+    .field:last-child { margin-bottom: 0; }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .field label .val {
+      color: var(--yellow);
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+    }
+
+    .text-input {
+      width: 100%;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 10px;
+      color: var(--text);
+      padding: 10px 14px;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .text-input:focus { border-color: var(--yellow); }
+
+    .num-input {
+      width: 100%;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 10px;
+      color: var(--text);
+      padding: 10px 14px;
+      font-size: 15px;
+      font-family: 'DM Mono', monospace;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .num-input:focus { border-color: var(--yellow); }
+
+    /* ─── RANGE ─── */
+    .range-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    input[type=range] {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 4px;
+      background: #2a2a2a;
+      border-radius: 2px;
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: var(--yellow);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255,217,61,0.4);
+    }
+
+    /* ─── BTN GROUP ─── */
+    .btn-group { display: flex; gap: 8px; }
+
+    .btn-group button {
+      flex: 1;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 10px;
+      color: #666;
+      padding: 10px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-group button.active {
+      background: rgba(255,217,61,0.12);
+      border-color: rgba(255,217,61,0.4);
+      color: var(--yellow);
+      font-weight: 600;
+    }
+
+    /* ─── ACTIVITY / DEFICIT BUTTONS ─── */
+    .option-btn {
+      width: 100%;
+      background: #1e1e1e;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.15s;
+      margin-bottom: 8px;
+    }
+    .option-btn:last-child { margin-bottom: 0; }
+
+    .option-btn.active {
+      background: rgba(59,181,255,0.08);
+      border-color: rgba(59,181,255,0.3);
+    }
+
+    .option-btn .opt-label {
+      font-size: 14px;
+      color: #888;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+    .option-btn.active .opt-label { color: var(--blue); }
+
+    .option-btn .opt-desc {
+      font-size: 12px;
+      color: #444;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .deficit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .deficit-btn {
+      background: #1e1e1e;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 14px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+    }
+    .deficit-btn.active {
+      background: rgba(59,181,255,0.08);
+      border-color: rgba(59,181,255,0.3);
+    }
+
+    .deficit-btn .d-label {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #888;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .deficit-btn.active .d-label { color: var(--blue); }
+
+    .deficit-btn .d-desc {
+      font-size: 11px;
+      color: #444;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* ─── RESULTS ─── */
+    .results-card {
+      background: rgba(59,181,255,0.03);
+      border: 1px solid rgba(59,181,255,0.15);
+      border-radius: 20px;
+      padding: 24px;
+    }
+
+    .results-title {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--blue);
+      margin-bottom: 20px;
+    }
+
+    /* ─── STAT BOXES ─── */
+    .stat-box {
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-box .s-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-box .s-val {
+      font-family: 'DM Mono', monospace;
+      font-size: 22px;
+      font-weight: 500;
+    }
+
+    .stat-box .s-unit {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ─── BMI ─── */
+    .bmi-box {
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .bmi-box .s-label { font-size: 11px; margin-bottom: 8px; color: var(--muted); }
+    .bmi-box .s-val { font-family: 'DM Mono', monospace; font-size: 24px; font-weight: 500; }
+    .bmi-box .s-desc { font-size: 11px; margin-top: 4px; }
+
+    /* ─── TABLE ─── */
+    .table-wrap {
+      max-height: 280px;
+      overflow-y: auto;
+      border-radius: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    thead tr {
+      border-bottom: 1px solid #222;
+    }
+
+    th {
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    th:not(:first-child) { text-align: right; }
+
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      font-family: 'DM Mono', monospace;
+    }
+
+    td:not(:first-child) { text-align: right; }
+
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+    .disclaimer {
+      font-size: 11px;
+      color: #333;
+      text-align: center;
+      line-height: 1.6;
+      padding: 0 12px;
+    }
+
+    @media (max-width: 600px) {
+      .grid2, .grid3 { grid-template-columns: 1fr; }
+      .deficit-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="../index.html">Calcula<span>matix</span></a>
+  <a class="back-btn" href="../index.html">← Tous les calculateurs</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">🏃 Santé</div>
+  <h1>Perte de poids<br><span>Estimateur</span></h1>
+  <p>Calcule ton déficit calorique, ton BMR et en combien de semaines tu atteins ton objectif. Basé sur la formule Mifflin-St Jeor.</p>
+</div>
+
+<div class="wrap">
+
+  <!-- Patient -->
+  <div class="card">
+    <div class="card-title">Données personnelles</div>
+    <div class="grid2">
+      <div style="grid-column: 1/-1;">
+        <div class="field">
+          <label>Prénom / Identifiant</label>
+          <input class="text-input" id="name" placeholder="Ton prénom..." />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Âge</label>
+        <input class="num-input" type="number" id="age" value="26" min="15" max="90" />
+      </div>
+
+      <div class="field">
+        <label>Sexe</label>
+        <div class="btn-group">
+          <button id="btnM" class="active" onclick="setSex('M')">♂ Homme</button>
+          <button id="btnF" onclick="setSex('F')">♀ Femme</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Taille — <span class="val" id="heightVal">166</span> cm</label>
+        <input type="range" id="height" min="140" max="210" value="166" oninput="update()" />
+      </div>
+
+      <div class="field">
+        <label>Poids actuel — <span class="val" id="weightVal">73.5</span> kg</label>
+        <input type="range" id="weight" min="40" max="200" step="0.5" value="73.5" oninput="update()" />
+      </div>
+
+      <div class="field">
+        <label>Poids objectif — <span class="val" id="goalVal" style="color:var(--green)">65</span> kg</label>
+        <input type="range" id="goal" min="40" max="200" step="0.5" value="65" oninput="update()" />
+      </div>
+
+      <div class="field">
+        <label>Calories sport/jour — <span class="val" id="extraVal" style="color:var(--purple)">200</span> kcal</label>
+        <input type="range" id="extra" min="0" max="800" step="50" value="200" oninput="update()" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity -->
+  <div class="card">
+    <div class="card-title">Niveau d'activité</div>
+    <div id="activityBtns">
+      <button class="option-btn active" data-val="1.2" onclick="setActivity(1.2, this)">
+        <span class="opt-label">Sédentaire</span>
+        <span class="opt-desc">Peu ou pas d'exercice</span>
+      </button>
+      <button class="option-btn" data-val="1.375" onclick="setActivity(1.375, this)">
+        <span class="opt-label">Légèrement actif</span>
+        <span class="opt-desc">Exercice léger 1-3j/sem</span>
+      </button>
+      <button class="option-btn" data-val="1.55" onclick="setActivity(1.55, this)">
+        <span class="opt-label">Modérément actif</span>
+        <span class="opt-desc">Exercice modéré 3-5j/sem</span>
+      </button>
+      <button class="option-btn" data-val="1.725" onclick="setActivity(1.725, this)">
+        <span class="opt-label">Très actif</span>
+        <span class="opt-desc">Sport intense 6-7j/sem</span>
+      </button>
+      <button class="option-btn" data-val="1.9" onclick="setActivity(1.9, this)">
+        <span class="opt-label">Extrêmement actif</span>
+        <span class="opt-desc">Sport + travail physique</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Deficit -->
+  <div class="card">
+    <div class="card-title">Niveau de déficit alimentaire</div>
+    <div class="deficit-grid" id="deficitBtns">
+      <button class="deficit-btn" data-val="300" onclick="setDeficit(300, this)">
+        <span class="d-label">Doux</span>
+        <span class="d-desc">−300 kcal/j — très progressif</span>
+      </button>
+      <button class="deficit-btn active" data-val="500" onclick="setDeficit(500, this)">
+        <span class="d-label">Modéré</span>
+        <span class="d-desc">−500 kcal/j — recommandé</span>
+      </button>
+      <button class="deficit-btn" data-val="750" onclick="setDeficit(750, this)">
+        <span class="d-label">Soutenu</span>
+        <span class="d-desc">−750 kcal/j — ambitieux</span>
+      </button>
+      <button class="deficit-btn" data-val="1000" onclick="setDeficit(1000, this)">
+        <span class="d-label">Agressif</span>
+        <span class="d-desc">−1000 kcal/j — limite</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="results-card" id="resultsCard">
+    <div class="results-title" id="resultsTitle">Résultats</div>
+
+    <div class="grid3" style="margin-bottom:14px;">
+      <div class="stat-box" style="background:rgba(168,85,247,0.08); border:1px solid rgba(168,85,247,0.2);">
+        <div class="s-label">BMR</div>
+        <div class="s-val" style="color:var(--purple)" id="rBmr">—</div>
+        <div class="s-unit">kcal/j</div>
+      </div>
+      <div class="stat-box" style="background:rgba(59,181,255,0.08); border:1px solid rgba(59,181,255,0.2);">
+        <div class="s-label">TDEE</div>
+        <div class="s-val" style="color:var(--blue)" id="rTdee">—</div>
+        <div class="s-unit">kcal/j</div>
+      </div>
+      <div class="stat-box" style="background:rgba(59,255,158,0.08); border:1px solid rgba(59,255,158,0.2);">
+        <div class="s-label">Apport cible</div>
+        <div class="s-val" style="color:var(--green)" id="rIntake">—</div>
+        <div class="s-unit">kcal/j</div>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-bottom:14px;">
+      <div class="stat-box" style="background:rgba(255,170,59,0.08); border:1px solid rgba(255,170,59,0.2);">
+        <div class="s-label">Perte / semaine</div>
+        <div class="s-val" style="color:var(--amber)" id="rLoss">—</div>
+        <div class="s-unit">kg</div>
+      </div>
+      <div class="stat-box" style="background:rgba(255,92,92,0.08); border:1px solid rgba(255,92,92,0.2);">
+        <div class="s-label">Semaines nécessaires</div>
+        <div class="s-val" style="color:var(--red)" id="rWeeks">—</div>
+        <div class="s-unit">semaines</div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="bmi-box" id="bmiCurrent"></div>
+      <div class="bmi-box" id="bmiGoal"></div>
+    </div>
+  </div>
+
+  <!-- Weekly projection -->
+  <div class="card">
+    <div class="card-title">Projection semaine par semaine</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Semaine</th>
+            <th>Poids estimé</th>
+            <th>Perdu total</th>
+          </tr>
+        </thead>
+        <tbody id="weekTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <p class="disclaimer">
+    Estimations basées sur Mifflin-St Jeor × activité. Résultats individuels variables selon métabolisme, compliance et composition corporelle.
+  </p>
+
+</div>
+
+<script>
+  let sex = 'M';
+  let activity = 1.2;
+  let deficit = 500;
+
+  function setSex(s) {
+    sex = s;
+    document.getElementById('btnM').classList.toggle('active', s === 'M');
+    document.getElementById('btnF').classList.toggle('active', s === 'F');
+    update();
+  }
+
+  function setActivity(val, btn) {
+    activity = val;
+    document.querySelectorAll('#activityBtns .option-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    update();
+  }
+
+  function setDeficit(val, btn) {
+    deficit = val;
+    document.querySelectorAll('#deficitBtns .deficit-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    update();
+  }
+
+  function calcBMR(weight, height, age, sex) {
+    if (sex === 'M') return 10 * weight + 6.25 * height - 5 * age + 5;
+    return 10 * weight + 6.25 * height - 5 * age - 161;
+  }
+
+  function bmiColor(b) {
+    if (b < 18.5) return { color: '#3BB5FF', label: 'Insuffisance pondérale' };
+    if (b < 25)   return { color: '#3BFF9E', label: 'Poids normal' };
+    if (b < 30)   return { color: '#FFAA3B', label: 'Surpoids' };
+    return { color: '#FF5C5C', label: 'Obésité' };
+  }
+
+  function update() {
+    const weight = +document.getElementById('weight').value;
+    const height = +document.getElementById('height').value;
+    const age = +document.getElementById('age').value;
+    const goal = +document.getElementById('goal').value;
+    const extra = +document.getElementById('extra').value;
+    const name = document.getElementById('name').value;
+
+    // Update slider labels
+    document.getElementById('weightVal').textContent = weight;
+    document.getElementById('heightVal').textContent = height;
+    document.getElementById('goalVal').textContent = goal;
+    document.getElementById('extraVal').textContent = extra;
+
+    // Update goal slider max
+    document.getElementById('goal').max = weight;
+    if (goal > weight) document.getElementById('goal').value = weight;
+
+    // Calculations
+    const bmr = calcBMR(weight, height, age, sex);
+    const tdee = bmr * activity;
+    const totalDeficit = deficit + extra;
+    const intake = tdee - deficit;
+    const lossPerWeek = (totalDeficit * 7) / 7700;
+    const weeksNeeded = Math.max(1, Math.ceil((weight - Math.min(goal, weight)) / lossPerWeek));
+    const bmi = weight / ((height / 100) ** 2);
+    const goalBmi = goal / ((height / 100) ** 2);
+
+    // Display results
+    document.getElementById('rBmr').textContent = Math.round(bmr);
+    document.getElementById('rTdee').textContent = Math.round(tdee);
+    document.getElementById('rIntake').textContent = Math.round(intake);
+    document.getElementById('rLoss').textContent = lossPerWeek.toFixed(2);
+    document.getElementById('rWeeks').textContent = weeksNeeded + ' sem.';
+    document.getElementById('resultsTitle').textContent = name ? `Résultats — ${name}` : 'Résultats';
+
+    // BMI boxes
+    const bc = bmiColor(bmi);
+    const bg = bmiColor(goalBmi);
+    document.getElementById('bmiCurrent').innerHTML = `
+      <div class="s-label">IMC actuel</div>
+      <div class="s-val" style="color:${bc.color}">${bmi.toFixed(1)}</div>
+      <div class="s-desc" style="color:${bc.color};font-size:11px;margin-top:4px">${bc.label}</div>
+    `;
+    document.getElementById('bmiCurrent').style.cssText = `background:${bc.color}15;border:1px solid ${bc.color}30;border-radius:14px;padding:16px;text-align:center;`;
+    document.getElementById('bmiGoal').innerHTML = `
+      <div class="s-label">IMC objectif</div>
+      <div class="s-val" style="color:${bg.color}">${goalBmi.toFixed(1)}</div>
+      <div class="s-desc" style="color:${bg.color};font-size:11px;margin-top:4px">${bg.label}</div>
+    `;
+    document.getElementById('bmiGoal').style.cssText = `background:${bg.color}15;border:1px solid ${bg.color}30;border-radius:14px;padding:16px;text-align:center;`;
+
+    // Weekly table
+    const tbody = document.getElementById('weekTable');
+    tbody.innerHTML = '';
+    let w = weight;
+    const maxWeeks = Math.min(weeksNeeded + 1, 52);
+    for (let i = 1; i <= maxWeeks; i++) {
+      w = Math.max(w - lossPerWeek, goal);
+      const lost = weight - w;
+      const isGoal = w <= goal;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="color:${isGoal ? '#3BFF9E' : '#F0EDE6'}">S${i} ${isGoal ? '🎯' : ''}</td>
+        <td style="color:${isGoal ? '#3BFF9E' : '#3BB5FF'}">${w.toFixed(1)} kg</td>
+        <td style="color:#555">−${lost.toFixed(1)} kg</td>
+      `;
+      tbody.appendChild(tr);
+      if (w <= goal) break;
+    }
+  }
+
+  document.getElementById('age').addEventListener('input', update);
+  update();
+</script>
+
+</body>
+</html>

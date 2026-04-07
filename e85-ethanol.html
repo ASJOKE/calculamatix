@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E85 vs SP95 — Rentabilité | Calculamatix</title>
+  <meta name="description" content="Calculez si le passage à l'éthanol E85 est rentable pour votre voiture. Économies annuelles, retour sur investissement, amortissement du kit." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e0e0e;
+      --bg2: #161616;
+      --yellow: #FFD93D;
+      --orange: #FF6B2B;
+      --green: #3BFF9E;
+      --red: #FF5C5C;
+      --amber: #FFAA3B;
+      --text: #F0EDE6;
+      --muted: #555;
+      --card-bg: #1a1a1a;
+      --card-border: #272727;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: relative;
+      z-index: 10;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 24px 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 900;
+      font-size: 18px;
+      text-decoration: none;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--yellow); }
+
+    .back-btn {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.15s;
+    }
+    .back-btn:hover { color: var(--text); }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      z-index: 10;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 24px 32px;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--orange);
+      background: rgba(255,107,43,0.1);
+      border: 1px solid rgba(255,107,43,0.25);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+
+    .hero h1 {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 900;
+      font-size: clamp(22px, 4vw, 40px);
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+
+    .hero h1 span { color: var(--yellow); }
+
+    .hero p {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 560px;
+      line-height: 1.6;
+    }
+
+    /* ─── LAYOUT ─── */
+    .wrap {
+      position: relative;
+      z-index: 10;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+    /* ─── CARDS ─── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+    }
+
+    .card-title {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    /* ─── FIELDS ─── */
+    .field { margin-bottom: 18px; }
+    .field:last-child { margin-bottom: 0; }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .field select {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 14px;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .field select:focus { border-color: var(--yellow); }
+
+    /* ─── RANGE ─── */
+    .range-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .range-row input[type=range] {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 4px;
+      background: #2a2a2a;
+      border-radius: 2px;
+      outline: none;
+    }
+    .range-row input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: var(--yellow);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255,217,61,0.4);
+    }
+
+    .range-val {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--yellow);
+      min-width: 64px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .field-hint {
+      font-size: 11px;
+      color: #444;
+      margin-top: 6px;
+    }
+
+    /* ─── VERDICT ─── */
+    .verdict {
+      border-radius: 16px;
+      padding: 20px 24px;
+      border: 1px solid;
+    }
+
+    .verdict.good {
+      background: rgba(59,255,158,0.06);
+      border-color: rgba(59,255,158,0.2);
+    }
+    .verdict.ok {
+      background: rgba(255,170,59,0.06);
+      border-color: rgba(255,170,59,0.2);
+    }
+    .verdict.bad {
+      background: rgba(255,92,92,0.06);
+      border-color: rgba(255,92,92,0.2);
+    }
+
+    .verdict-title {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .verdict.good .verdict-title { color: var(--green); }
+    .verdict.ok .verdict-title { color: var(--amber); }
+    .verdict.bad .verdict-title { color: var(--red); }
+
+    .verdict-body {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.6;
+    }
+
+    /* ─── METRICS ─── */
+    .metric {
+      background: #1e1e1e;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .metric .lbl {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .metric .val {
+      font-family: 'DM Mono', monospace;
+      font-size: 22px;
+      font-weight: 500;
+    }
+
+    .metric .sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .metric.green .val { color: var(--green); }
+    .metric.amber .val { color: var(--amber); }
+    .metric.red .val { color: var(--red); }
+
+    /* ─── CHARTS ─── */
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      margin-top: 12px;
+    }
+
+    /* ─── INFO GRID ─── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .info-item {
+      background: #1e1e1e;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 12px;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .info-item strong {
+      display: block;
+      color: var(--text);
+      font-size: 12px;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    /* ─── TAGS ─── */
+    .tags { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-weight: 500;
+    }
+    .tag.green { background: rgba(59,255,158,0.1); color: var(--green); border: 1px solid rgba(59,255,158,0.2); }
+    .tag.red { background: rgba(255,92,92,0.1); color: var(--red); border: 1px solid rgba(255,92,92,0.2); }
+    .tag.amber { background: rgba(255,170,59,0.1); color: var(--amber); border: 1px solid rgba(255,170,59,0.2); }
+
+    /* ─── COMPAT WARNING ─── */
+    #compatWarning {
+      display: none;
+      background: rgba(255,92,92,0.06);
+      border: 1px solid rgba(255,92,92,0.2);
+      border-radius: 14px;
+      padding: 16px 20px;
+    }
+
+    #compatWarning .verdict-title { color: var(--red); }
+
+    /* ─── DISCLAIMER ─── */
+    .disclaimer {
+      font-size: 12px;
+      color: #444;
+      line-height: 1.7;
+      background: #161616;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+
+    .disclaimer strong { color: #666; }
+
+    @media (max-width: 640px) {
+      .grid2, .grid3 { grid-template-columns: 1fr; }
+      .info-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="../index.html">Calcula<span>matix</span></a>
+  <a class="back-btn" href="../index.html">← Tous les calculateurs</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">🚗 Auto</div>
+  <h1>E85 vs SP95<br><span>Rentabilité</span></h1>
+  <p>Est-ce que passer à l'éthanol E85 vaut vraiment le coup pour votre situation ? La réponse en quelques secondes.</p>
+</div>
+
+<div class="wrap">
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Votre véhicule & usage</div>
+
+      <div class="field">
+        <label>Kilométrage annuel</label>
+        <div class="range-row">
+          <input type="range" id="km" min="2000" max="60000" step="500" value="15000">
+          <span class="range-val"><span id="kmV">15 000</span> km</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Consommation actuelle (L/100km)</label>
+        <div class="range-row">
+          <input type="range" id="conso" min="4" max="16" step="0.1" value="8">
+          <span class="range-val"><span id="consoV">8.0</span> L</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Type de carburant actuel</label>
+        <select id="fuelType">
+          <option value="e10">SP95-E10</option>
+          <option value="sp95">SP95</option>
+          <option value="sp98">SP98</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Année du véhicule</label>
+        <select id="carYear">
+          <option value="after2000">Après 2000</option>
+          <option value="before2000">Avant 2000</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Prix & kit éthanol</div>
+
+      <div class="field">
+        <label>Prix actuel de votre carburant (€/L)</label>
+        <div class="range-row">
+          <input type="range" id="priceRef" min="1.40" max="2.20" step="0.01" value="1.75">
+          <span class="range-val"><span id="priceRefV">1.75</span> €</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Prix E85 à la pompe (€/L)</label>
+        <div class="range-row">
+          <input type="range" id="priceE85" min="0.70" max="1.30" step="0.01" value="0.99">
+          <span class="range-val"><span id="priceE85V">0.99</span> €</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Coût du kit / boîtier éthanol (€)</label>
+        <div class="range-row">
+          <input type="range" id="kitCost" min="100" max="1600" step="50" value="550">
+          <span class="range-val"><span id="kitCostV">550</span> €</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Surconsommation estimée (%)</label>
+        <div class="range-row">
+          <input type="range" id="overCons" min="15" max="35" step="1" value="26">
+          <span class="range-val">+<span id="overConsV">26</span>%</span>
+        </div>
+        <div class="field-hint">Moyenne constatée : +26% (fourchette 20–30%)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compat warning -->
+  <div id="compatWarning">
+    <div class="verdict-title">⚠ Compatibilité limitée avant 2000</div>
+    <div class="verdict-body">Les kits homologués ne sont accessibles qu'aux véhicules d'après 2000. Un kit non homologué engage votre responsabilité. Les vieux joints sont plus vulnérables à l'éthanol.</div>
+  </div>
+
+  <!-- Verdict -->
+  <div id="verdictBox" class="verdict good">
+    <div class="verdict-title" id="verdictTitle">Calcul en cours...</div>
+    <div class="verdict-body" id="verdictBody"></div>
+  </div>
+
+  <!-- Metrics -->
+  <div class="grid3">
+    <div class="metric green">
+      <div class="lbl">Économie / 100 km</div>
+      <div class="val" id="savPer100">—</div>
+      <div class="sub">vs carburant actuel</div>
+    </div>
+    <div class="metric green">
+      <div class="lbl">Économie annuelle</div>
+      <div class="val" id="savYear">—</div>
+      <div class="sub">sur votre kilométrage</div>
+    </div>
+    <div class="metric amber">
+      <div class="lbl">Retour sur invest.</div>
+      <div class="val" id="payback">—</div>
+      <div class="sub">pour amortir le kit</div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Coût annuel comparé</div>
+      <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Économies cumulées sur 10 ans</div>
+      <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Details -->
+  <div class="grid3">
+    <div class="metric">
+      <div class="lbl">Conso E85 réelle</div>
+      <div class="val" id="consoE85" style="color:var(--text)">—</div>
+      <div class="sub">L/100km</div>
+    </div>
+    <div class="metric">
+      <div class="lbl">Coût /100km actuel</div>
+      <div class="val" id="costRef" style="color:var(--text)">—</div>
+      <div class="sub">carburant actuel</div>
+    </div>
+    <div class="metric">
+      <div class="lbl">Coût /100km E85</div>
+      <div class="val" id="costE85" style="color:var(--text)">—</div>
+      <div class="sub">avec surconsommation</div>
+    </div>
+  </div>
+
+  <!-- Avantages / inconvénients -->
+  <div class="card">
+    <div class="card-title">Ce qu'il faut savoir sur l'E85</div>
+    <div class="info-grid">
+      <div class="info-item"><strong>Énergie inférieure</strong>L'éthanol produit ~38% d'énergie en moins que l'essence, d'où la surconsommation.</div>
+      <div class="info-item"><strong>Indice d'octane élevé</strong>Entre 100 et 106 contre 95–98 pour l'essence — gain de puissance prouvé.</div>
+      <div class="info-item"><strong>Moins polluant</strong>Moins de CO, CO₂ et particules fines à la combustion vs essence classique.</div>
+      <div class="info-item"><strong>Joints & durites</strong>Les véhicules modernes ont des joints FKM résistants. Pas de souci en pratique.</div>
+      <div class="info-item"><strong>Huile moteur</strong>L'éthanol peut diluer l'huile mais sans conséquences avec des vidanges régulières.</div>
+      <div class="info-item"><strong>Démarrage à froid</strong>Possible difficulté sous −5°C sans boîtier adapté. Les boîtiers haut de gamme gèrent ça.</div>
+    </div>
+    <div class="tags">
+      <span class="tag green">+ Prix à la pompe</span>
+      <span class="tag green">+ Puissance / couple</span>
+      <span class="tag green">+ Moins polluant</span>
+      <span class="tag red">– Surconsommation</span>
+      <span class="tag red">– Coût du kit</span>
+      <span class="tag amber">~ Compatibilité variable</span>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    <strong>Information légale :</strong> En France, seul un boîtier homologué installé par un garagiste agréé est légal sur voie ouverte (véhicules >2000). Un kit non homologué engage votre responsabilité civile et pénale. Ce simulateur est fourni à titre informatif. Les calculs sont basés sur des données moyennes — votre consommation réelle peut varier.
+  </div>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let barChart, lineChart;
+
+// Set Chart.js global defaults once
+Chart.defaults.color = '#888';
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+
+function fmt(n,d=2){ return n.toFixed(d); }
+function fmtEur(n){ return fmt(n,2)+'€'; }
+function fmtKm(n){ return Math.round(n).toLocaleString('fr-FR')+' km'; }
+
+function calc(){
+  const km = +$('km').value;
+  const conso = +$('conso').value;
+  const priceRef = +$('priceRef').value;
+  const priceE85 = +$('priceE85').value;
+  const kit = +$('kitCost').value;
+  const over = +$('overCons').value / 100;
+  const carYear = $('carYear').value;
+
+  $('kmV').textContent = km.toLocaleString('fr-FR');
+  $('consoV').textContent = fmt(conso,1);
+  $('priceRefV').textContent = fmt(priceRef,2);
+  $('priceE85V').textContent = fmt(priceE85,2);
+  $('kitCostV').textContent = kit;
+  $('overConsV').textContent = Math.round(over*100);
+
+  $('compatWarning').style.display = carYear === 'before2000' ? 'block' : 'none';
+
+  const consoE85 = conso * (1 + over);
+  const costRefPer100 = conso * priceRef;
+  const costE85Per100 = consoE85 * priceE85;
+  const savingsPer100 = costRefPer100 - costE85Per100;
+  const savingsYear = (km / 100) * savingsPer100;
+  const paybackKm = savingsPer100 > 0 ? kit / (savingsPer100 / 100) : Infinity;
+  const paybackYears = paybackKm / km;
+
+  $('consoE85').textContent = fmt(consoE85,1)+' L';
+  $('costRef').textContent = fmtEur(costRefPer100);
+  $('costE85').textContent = fmtEur(costE85Per100);
+  $('savPer100').textContent = savingsPer100 > 0 ? '-'+fmtEur(savingsPer100) : '+'+fmtEur(-savingsPer100);
+  $('savYear').textContent = savingsPer100 > 0 ? '-'+Math.round(savingsYear)+'€' : 'Pas d\'économie';
+  $('paybackKm').textContent = paybackKm < Infinity ? fmtKm(paybackKm) : '∞';
+
+  if(paybackYears < Infinity && paybackYears < 100){
+    const y = Math.floor(paybackYears);
+    const m = Math.round((paybackYears - y) * 12);
+    $('payback').textContent = y > 0 ? y+'a '+m+'m' : m+' mois';
+  } else {
+    $('payback').textContent = '∞';
+  }
+
+  const vb = $('verdictBox');
+  if(savingsPer100 <= 0){
+    vb.className = 'verdict bad';
+    $('verdictTitle').textContent = '✗ Pas rentable dans votre situation';
+    $('verdictBody').textContent = `Le coût de l'E85 (${fmtEur(costE85Per100)}/100km) dépasse votre carburant actuel (${fmtEur(costRefPer100)}/100km). Ajustez les prix ou vérifiez les données.`;
+  } else if(paybackYears > 5){
+    vb.className = 'verdict ok';
+    $('verdictTitle').textContent = '⚠ Rentable sur le long terme';
+    $('verdictBody').textContent = `Vous économisez ${Math.round(savingsYear)}€/an mais le kit s'amortit en ${fmt(paybackYears,1)} ans (${fmtKm(paybackKm)}). Intéressant surtout si vous gardez le véhicule longtemps.`;
+  } else {
+    vb.className = 'verdict good';
+    $('verdictTitle').textContent = '✓ Rentable — bonne opération !';
+    $('verdictBody').textContent = `Vous économisez ${Math.round(savingsYear)}€/an. Le kit est amorti en ${fmt(paybackYears,1)} an${paybackYears>1.2?'s':''} (${fmtKm(paybackKm)}). Après ça, chaque kilomètre vous fait gagner de l'argent.`;
+  }
+
+  updateCharts((km/100)*costRefPer100, (km/100)*costE85Per100, savingsYear, kit);
+}
+
+function updateCharts(annualRef, annualE85, savYear, kit){
+  if(barChart) barChart.destroy();
+  if(lineChart) lineChart.destroy();
+
+  barChart = new Chart($('barChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Carburant actuel', 'E85'],
+      datasets: [{
+        data: [Math.round(annualRef), Math.round(annualE85)],
+        backgroundColor: ['rgba(255,92,92,0.6)', 'rgba(59,255,158,0.6)'],
+        borderColor: ['rgba(255,92,92,1)', 'rgba(59,255,158,1)'],
+        borderWidth: 1,
+        borderRadius: 8,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => Math.round(c.raw)+'€' } } },
+      scales: {
+        y: { ticks: { callback: v => v+'€', color: '#888', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.06)' }, border: { color: 'transparent' } },
+        x: { grid: { display: false }, ticks: { color: '#888', font: { size: 12 } }, border: { color: 'transparent' } }
+      }
+    }
+  });
+
+  const years = [0,1,2,3,4,5,6,7,8,9,10];
+  const cumSavings = years.map(y => Math.round(y * savYear - kit));
+  lineChart = new Chart($('lineChart'), {
+    type: 'line',
+    data: {
+      labels: years.map(y => 'An '+y),
+      datasets: [
+        { label: 'Économies cumulées', data: cumSavings, borderColor: '#FFD93D', backgroundColor: 'rgba(255,217,61,0.06)', fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: '#FFD93D' },
+        { label: 'Seuil zéro', data: years.map(()=>0), borderColor: 'rgba(255,255,255,0.1)', borderDash: [4,4], pointRadius: 0 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => Math.round(c.raw)+'€' } } },
+      scales: {
+        y: { ticks: { callback: v => v+'€', color: '#888', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.06)' }, border: { color: 'transparent' } },
+        x: { ticks: { color: '#888', font: { size: 10 }, maxRotation: 0 }, grid: { display: false }, border: { color: 'transparent' } }
+      }
+    }
+  });
+}
+
+['km','conso','priceRef','priceE85','kitCost','overCons','fuelType','carYear'].forEach(id => {
+  $(id).addEventListener('input', calc);
+  $(id).addEventListener('change', calc);
+});
+calc();
+</script>
+
+</body>
+</html>
