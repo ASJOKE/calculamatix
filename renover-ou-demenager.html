@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rénover ou Déménager — Le vrai calcul | Calculamatix</title>
+  <meta name="description" content="Rénover votre logement actuel ou déménager ? Comparez le coût total réel : travaux, aides, plus-value DPE, frais de notaire, agence et déménageur. Données 2026."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#090909;--card:#141414;--border:#222;
+      --yellow:#FFD93D;--green:#3BFF9E;--blue:#3BB5FF;
+      --purple:#C084FC;--red:#FF5C5C;--amber:#FFAA3B;
+      --text:#F0EDE6;--muted:#555;
+      --reno:#FF6B2B;--demo:#3BB5FF;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:80px}
+    body::before{content:'';position:fixed;inset:0;opacity:.4;pointer-events:none;z-index:0;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E")}
+
+    nav{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:18px;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--yellow)}
+    .back{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+    .back:hover{color:var(--text)}
+
+    .hero{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:40px 24px 28px}
+    .htag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--purple);background:rgba(192,132,252,.08);border:1px solid rgba(192,132,252,.2);padding:4px 14px;border-radius:100px;margin-bottom:14px}
+    h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(22px,4vw,48px);letter-spacing:-2px;line-height:1.05;margin-bottom:10px}
+    h1 span{color:var(--yellow)}
+    .hero p{font-size:14px;color:var(--muted);line-height:1.7;max-width:640px}
+
+    /* VERDICT BANNER */
+    .verdict-banner{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .vb-box{border-radius:20px;padding:22px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;border:2px solid}
+    .vb-emoji{font-size:40px;flex-shrink:0}
+    .vb-info{flex:1;min-width:200px}
+    .vb-title{font-family:'Unbounded',sans-serif;font-size:16px;font-weight:900;margin-bottom:6px}
+    .vb-desc{font-size:13px;line-height:1.6}
+    .vb-kpis{display:flex;gap:12px;flex-wrap:wrap}
+    .vb-kpi{background:rgba(0,0,0,.3);border-radius:12px;padding:12px 16px;text-align:center;min-width:110px}
+    .vb-kpi-l{font-size:10px;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;opacity:.7}
+    .vb-kpi-v{font-family:'DM Mono',monospace;font-size:16px;font-weight:700}
+
+    /* TABS */
+    .tabs-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .tabs{display:flex;gap:4px;background:#0d0d0d;border:1px solid var(--border);border-radius:14px;padding:5px;width:fit-content;flex-wrap:wrap}
+    .tab{background:transparent;border:none;color:var(--muted);padding:9px 15px;border-radius:10px;font-size:13px;font-family:inherit;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+    .tab.on{background:var(--yellow);color:#000;font-weight:700}
+    .panel{display:none}
+    .panel.on{display:block}
+
+    .wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:14px}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px}
+    .card-reno{border-color:rgba(255,107,43,.25);background:rgba(255,107,43,.04)}
+    .card-demo{border-color:rgba(59,181,255,.25);background:rgba(59,181,255,.04)}
+    .ctitle{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px}
+    .ctitle-reno{color:var(--reno)}
+    .ctitle-demo{color:var(--demo)}
+    .fhint{font-size:10px;color:#333;margin-top:5px;line-height:1.5}
+
+    .f{margin-bottom:13px}
+    .f:last-child{margin-bottom:0}
+    .f label{display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:6px}
+    .fval{font-family:'DM Mono',monospace;color:var(--yellow);font-size:12px}
+
+    input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:#252525;border-radius:2px;outline:none;cursor:pointer}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--yellow);border-radius:50%;box-shadow:0 0 8px rgba(255,217,61,.4)}
+
+    select,input[type=number]{width:100%;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;color:var(--text);padding:10px 13px;font-size:14px;font-family:inherit;outline:none;transition:border-color .15s}
+    input[type=number]{font-family:'DM Mono',monospace}
+    select:focus,input[type=number]:focus{border-color:var(--yellow)}
+
+    .divider{display:flex;align-items:center;gap:10px;margin:10px 0}
+    .divider span{font-size:10px;color:#333;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:#1e1e1e}
+
+    .m{background:#1a1a1a;border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+    .ml{font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+    .mv{font-family:'DM Mono',monospace;font-size:18px;font-weight:500}
+    .ms{font-size:10px;color:var(--muted);margin-top:3px}
+    .m-reno{background:rgba(255,107,43,.07);border-color:rgba(255,107,43,.25)}
+    .m-demo{background:rgba(59,181,255,.07);border-color:rgba(59,181,255,.25)}
+
+    .verdict{border-radius:14px;padding:16px 20px;border:1px solid;display:flex;gap:12px}
+    .vi{font-size:18px;flex-shrink:0}
+    .vt{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;margin-bottom:4px}
+    .vb2{font-size:12px;color:#777;line-height:1.6}
+    .vg{background:rgba(59,255,158,.05);border-color:rgba(59,255,158,.2)}
+    .vg .vt{color:var(--green)}
+    .vo{background:rgba(255,170,59,.05);border-color:rgba(255,170,59,.2)}
+    .vo .vt{color:var(--amber)}
+    .vr{background:rgba(255,92,92,.05);border-color:rgba(255,92,92,.2)}
+    .vr .vt{color:var(--red)}
+
+    .cw{position:relative;width:100%;height:240px;margin-top:12px}
+    .cwt{position:relative;width:100%;height:280px;margin-top:12px}
+
+    .ditem{display:flex;justify-content:space-between;padding:8px 12px;background:#1a1a1a;border:1px solid #222;border-radius:8px}
+    .ditem span:first-child{font-size:12px;color:#666}
+    .ditem span:last-child{font-family:'DM Mono',monospace;font-size:12px}
+
+    .compare-row{display:flex;align-items:center;padding:10px 14px;background:#1a1a1a;border:1px solid #222;border-radius:10px;gap:12px}
+    .compare-label{font-size:12px;color:#666;flex:1}
+    .compare-reno{font-family:'DM Mono',monospace;font-size:12px;min-width:90px;text-align:right}
+    .compare-demo{font-family:'DM Mono',monospace;font-size:12px;min-width:90px;text-align:right}
+    .compare-winner{font-size:11px;padding:2px 8px;border-radius:100px;white-space:nowrap}
+    .win-reno{background:rgba(255,107,43,.15);color:var(--reno)}
+    .win-demo{background:rgba(59,181,255,.15);color:var(--demo)}
+    .win-eq{background:rgba(255,170,59,.15);color:var(--amber)}
+
+    .sources{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px;padding:14px 16px;font-size:11px;color:#3a3a3a;line-height:1.8}
+
+    @media(max-width:640px){
+      .g2,.g3,.g4{grid-template-columns:1fr}
+      .vb-box{flex-direction:column}
+      .tab{padding:8px 10px;font-size:11px}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Tous les calculateurs</a>
+</nav>
+
+<div class="hero">
+  <div class="htag">🏠 Immobilier</div>
+  <h1>Rénover ou<br><span>Déménager ?</span></h1>
+  <p>La vraie comparaison que personne ne fait : tous les frais cachés du déménagement (notaire, agence, déménageur) face au vrai coût des travaux (avec aides et plus-value DPE). Données 2026.</p>
+</div>
+
+<!-- VERDICT BANNER -->
+<div class="verdict-banner">
+  <div class="vb-box" id="vbBox" style="background:rgba(255,217,61,.04);border-color:rgba(255,217,61,.3);">
+    <div class="vb-emoji" id="vbEmoji">🤔</div>
+    <div class="vb-info">
+      <div class="vb-title" id="vbTitle" style="color:var(--yellow)">Remplissez vos paramètres</div>
+      <div class="vb-desc" id="vbDesc" style="color:#777">Votre recommandation personnalisée apparaîtra ici en temps réel.</div>
+    </div>
+    <div class="vb-kpis">
+      <div class="vb-kpi"><div class="vb-kpi-l">Coût rénover</div><div class="vb-kpi-v" id="vbReno">—</div></div>
+      <div class="vb-kpi"><div class="vb-kpi-l">Coût déménager</div><div class="vb-kpi-v" id="vbDemo">—</div></div>
+      <div class="vb-kpi"><div class="vb-kpi-l">Différence</div><div class="vb-kpi-v" id="vbDiff">—</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('logement',this)">🏡 Votre logement</button>
+    <button class="tab" onclick="showTab('renover',this)">🔨 Option : Rénover</button>
+    <button class="tab" onclick="showTab('demenager',this)">🚚 Option : Déménager</button>
+    <button class="tab" onclick="showTab('comparatif',this)">⚖️ Comparatif</button>
+    <button class="tab" onclick="showTab('proj',this)">📈 Projections</button>
+  </div>
+</div>
+
+<!-- ===== LOGEMENT ===== -->
+<div class="panel on" id="p-logement"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Votre logement actuel</div>
+      <div class="f">
+        <label>Valeur actuelle estimée <span class="fval" id="lval">280 000 €</span></label>
+        <input type="range" id="valActuel" min="50000" max="1000000" step="5000" value="280000">
+      </div>
+      <div class="f">
+        <label>Surface habitable <span class="fval" id="lsurf">100 m²</span></label>
+        <input type="range" id="surf" min="20" max="300" step="5" value="100">
+      </div>
+      <div class="f">
+        <label>DPE actuel</label>
+        <select id="dpe">
+          <option value="A">A — Excellent (< 70 kWh/m²/an)</option>
+          <option value="B">B — Très bon (70-110)</option>
+          <option value="C">C — Bon (110-180)</option>
+          <option value="D" selected>D — Moyen (180-250)</option>
+          <option value="E">E — Énergie élevée (250-330)</option>
+          <option value="F">F — Passoire thermique (330-420) ⚠️</option>
+          <option value="G">G — Passoire critique (> 420) 🚫</option>
+        </select>
+        <div class="fhint" id="dpeHint">Les logements F sont interdits à la location depuis 2025. G depuis jan. 2025.</div>
+      </div>
+      <div class="f">
+        <label>Facture énergie actuelle / an <span class="fval" id="lfacture">2 400 €</span></label>
+        <input type="range" id="facture" min="500" max="8000" step="100" value="2400">
+      </div>
+      <div class="f">
+        <label>Vous êtes</label>
+        <select id="statut">
+          <option value="proprietaire" selected>Propriétaire occupant</option>
+          <option value="bailleur">Propriétaire bailleur</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card">
+        <div class="ctitle">Pourquoi envisagez-vous ce changement ?</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;">
+            <input type="checkbox" id="raison1" style="width:16px;height:16px;accent-color:var(--yellow)"> 
+            <span style="font-size:13px;color:#888">Logement trop froid / facture énergie trop élevée</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;">
+            <input type="checkbox" id="raison2" style="width:16px;height:16px;accent-color:var(--yellow)">
+            <span style="font-size:13px;color:#888">Logement trop petit / manque de place</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;">
+            <input type="checkbox" id="raison3" style="width:16px;height:16px;accent-color:var(--yellow)">
+            <span style="font-size:13px;color:#888">Logement vétuste / travaux lourds nécessaires</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;">
+            <input type="checkbox" id="raison4" style="width:16px;height:16px;accent-color:var(--yellow)">
+            <span style="font-size:13px;color:#888">Changement de localisation souhaité</span>
+          </label>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Impact DPE sur la valeur</div>
+        <div style="font-size:12px;color:#666;line-height:1.7;" id="dpeImpact">—</div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== RÉNOVER ===== -->
+<div class="panel" id="p-renover"><div class="wrap">
+  <div class="g2">
+    <div class="card card-reno">
+      <div class="ctitle ctitle-reno">🔨 Travaux envisagés</div>
+      <div class="fhint" style="margin-bottom:14px;color:#555;">Cochez les travaux que vous souhaitez réaliser. Les prix sont issus des données ADEME et HelloWatt 2026.</div>
+
+      <div class="divider"><span>Isolation (priorité n°1)</span></div>
+      <div class="f">
+        <label>Isolation des combles (€) <span class="fval" id="lcombles">0 €</span></label>
+        <input type="range" id="wCombles" min="0" max="8000" step="500" value="0">
+        <div class="fhint">Moyenne 2026 : 2 500–4 000€ pour 100m². Rentable dès an 1. TVA 5.5% RGE</div>
+      </div>
+      <div class="f">
+        <label>Isolation murs extérieur ITE (€) <span class="fval" id="lite">0 €</span></label>
+        <input type="range" id="wITE" min="0" max="40000" step="1000" value="0">
+        <div class="fhint">120–270 €/m² de mur. Pour 100m² hab. : 15 000–25 000€ en moyenne</div>
+      </div>
+      <div class="f">
+        <label>Isolation plancher bas (€) <span class="fval" id="lplancher">0 €</span></label>
+        <input type="range" id="wPlancher" min="0" max="8000" step="500" value="0">
+        <div class="fhint">3 000–5 000€ pour 100m². ~10% des pertes de chaleur</div>
+      </div>
+
+      <div class="divider"><span>Chauffage</span></div>
+      <div class="f">
+        <label>Pompe à chaleur air-eau (€) <span class="fval" id="lpac">0 €</span></label>
+        <input type="range" id="wPAC" min="0" max="20000" step="500" value="0">
+        <div class="fhint">10 000–18 000€ installée. Économies : -50 à -70% sur la facture de chauffage</div>
+      </div>
+      <div class="f">
+        <label>Chaudière gaz à condensation (€) <span class="fval" id="lchaud">0 €</span></label>
+        <input type="range" id="wChaud" min="0" max="8000" step="500" value="0">
+        <div class="fhint">4 000–7 000€. Économies : -15 à -25% vs chaudière classique</div>
+      </div>
+
+      <div class="divider"><span>Menuiseries</span></div>
+      <div class="f">
+        <label>Fenêtres double/triple vitrage (€) <span class="fval" id="lfenetres">0 €</span></label>
+        <input type="range" id="wFenetres" min="0" max="20000" step="500" value="0">
+        <div class="fhint">~1 000€/fenêtre posée. 10 fenêtres = 10 000€. TVA 10%</div>
+      </div>
+
+      <div class="divider"><span>Rénovation intérieure</span></div>
+      <div class="f">
+        <label>Salle de bain (€) <span class="fval" id="lsdb">0 €</span></label>
+        <input type="range" id="wSDB" min="0" max="20000" step="500" value="0">
+        <div class="fhint">6 000–12 000€ pour une SDB de 6-9m²</div>
+      </div>
+      <div class="f">
+        <label>Cuisine (€) <span class="fval" id="lcuisine">0 €</span></label>
+        <input type="range" id="wCuisine" min="0" max="25000" step="500" value="0">
+        <div class="fhint">6 000–15 000€ selon équipements et finitions</div>
+      </div>
+      <div class="f">
+        <label>Électricité / plomberie (€) <span class="fval" id="lelec">0 €</span></label>
+        <input type="range" id="wElec" min="0" max="20000" step="500" value="0">
+        <div class="fhint">Électricité complète : 40–130 €/m². Plomberie : variable</div>
+      </div>
+      <div class="f">
+        <label>Toiture (€) <span class="fval" id="ltoiture">0 €</span></label>
+        <input type="range" id="wToiture" min="0" max="40000" step="1000" value="0">
+        <div class="fhint">170–320 €/m² de toiture. Pour 80m² de toit : 13 000–25 000€</div>
+      </div>
+      <div class="f">
+        <label>Rafraîchissement (peinture, sol...) (€) <span class="fval" id="lrafr">0 €</span></label>
+        <input type="range" id="wRafr" min="0" max="20000" step="500" value="0">
+        <div class="fhint">150–300 €/m² pour rénovation légère complète</div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card card-reno">
+        <div class="ctitle ctitle-reno">Récapitulatif travaux</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="ditem"><span>Total travaux brut</span><span id="r-brut" style="color:var(--reno)">—</span></div>
+          <div class="ditem"><span>TVA réduite 5.5% (énergie)</span><span id="r-tva" style="color:var(--green)">incluse</span></div>
+          <div class="ditem"><span>Aides estimées (CEE + éco-PTZ)</span><span id="r-aides" style="color:var(--green)">—</span></div>
+          <div class="ditem" style="background:rgba(255,107,43,.07);border-color:rgba(255,107,43,.25);">
+            <span style="font-weight:600;color:var(--text)">Reste à charge net</span>
+            <span id="r-net" style="color:var(--reno);font-weight:700">—</span>
+          </div>
+        </div>
+        <div style="background:#1a1a1a;border-radius:10px;padding:12px;margin-top:12px;font-size:11px;color:#444;line-height:1.6;">
+          ⚠️ <strong style="color:#666">MaPrimeRénov' fermée</strong> depuis jan. 2026 (budget non voté). Rouverte partiellement fev. 2026 selon les annonces. TVA 5.5% maintenue. Éco-PTZ jusqu'à 50 000€ à 0% toujours actif.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ctitle">Bénéfices de la rénovation</div>
+        <div class="g2" style="gap:8px;">
+          <div class="m m-reno"><div class="ml">Économies énergie/an</div><div class="mv" id="r-ecoEner" style="color:var(--green)">—</div></div>
+          <div class="m m-reno"><div class="ml">Plus-value DPE estimée</div><div class="mv" id="r-plusval" style="color:var(--blue)">—</div></div>
+          <div class="m m-reno"><div class="ml">Amortissement travaux</div><div class="mv" id="r-amor" style="color:var(--yellow)">—</div></div>
+          <div class="m m-reno"><div class="ml">DPE cible estimé</div><div class="mv" id="r-dpeCible" style="color:var(--green)">—</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== DÉMÉNAGER ===== -->
+<div class="panel" id="p-demenager"><div class="wrap">
+  <div class="g2">
+    <div class="card card-demo">
+      <div class="ctitle ctitle-demo">🚚 Vendre votre bien actuel</div>
+      <div class="f">
+        <label>Frais d'agence vente <span class="fval" id="lagence">3.5 %</span></label>
+        <input type="range" id="wAgence" min="0" max="10" step="0.5" value="3.5">
+        <div class="fhint">Agences traditionnelles : 4-8% · Agences en ligne : 1-3% · Sans agence : 0%</div>
+      </div>
+      <div class="f">
+        <label>Diagnostics obligatoires (€)</label>
+        <input type="number" id="wDiag" value="500">
+        <div class="fhint">DPE, électricité, gaz, amiante... Moyenne 2025 : ~350-600€ selon bien</div>
+      </div>
+      <div class="divider"><span>Acheter le nouveau bien</span></div>
+      <div class="f">
+        <label>Prix du nouveau logement <span class="fval" id="lnouveau">320 000 €</span></label>
+        <input type="range" id="wNouveau" min="50000" max="1200000" step="5000" value="320000">
+      </div>
+      <div class="f">
+        <label>Type de bien visé</label>
+        <select id="typeNouveau">
+          <option value="ancien" selected>Ancien (frais notaire ~8%)</option>
+          <option value="neuf">Neuf (frais notaire ~2.5%)</option>
+        </select>
+      </div>
+      <div class="divider"><span>Frais de déménagement</span></div>
+      <div class="f">
+        <label>Déménageur professionnel (€) <span class="fval" id="ldemsoc">1 500 €</span></label>
+        <input type="range" id="wDem" min="0" max="5000" step="100" value="1500">
+        <div class="fhint">Studio/T2 : 500-1 500€ · Maison : 1 500-3 500€ · Longue distance : jusqu'à 5 000€</div>
+      </div>
+      <div class="f">
+        <label>Aménagement nouveau logement (€) <span class="fval" id="lamenag">5 000 €</span></label>
+        <input type="range" id="wAmenag" min="0" max="30000" step="500" value="5000">
+        <div class="fhint">Rideaux, meubles manquants, petits travaux d'adaptation...</div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card card-demo">
+        <div class="ctitle ctitle-demo">Coût total déménagement</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="ditem"><span>Frais d'agence (vente)</span><span id="d-agence" style="color:var(--red)">—</span></div>
+          <div class="ditem"><span>Diagnostics immobiliers</span><span id="d-diag" style="color:var(--red)">—</span></div>
+          <div class="ditem"><span>Frais de notaire (achat)</span><span id="d-notaire" style="color:var(--red)">—</span></div>
+          <div class="ditem"><span>Déménageur professionnel</span><span id="d-dem" style="color:var(--red)">—</span></div>
+          <div class="ditem"><span>Aménagement nouveau logement</span><span id="d-amenag" style="color:var(--amber)">—</span></div>
+          <div class="ditem" style="background:rgba(59,181,255,.07);border-color:rgba(59,181,255,.25);">
+            <span style="font-weight:600;color:var(--text)">TOTAL FRAIS DÉMÉNAGEMENT</span>
+            <span id="d-total" style="color:var(--demo);font-weight:700">—</span>
+          </div>
+        </div>
+        <div style="background:#1a1a1a;border-radius:10px;padding:12px;margin-top:12px;font-size:11px;color:#444;line-height:1.6;">
+          💡 La plus-value immobilière est <strong style="color:#666">exonérée</strong> pour la résidence principale en France (CGI art. 150 U). Aucun impôt sur la revente de votre logement principal.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ctitle">Ce que cachent les agences</div>
+        <div style="font-size:12px;color:#666;line-height:1.7;">
+          <div style="margin-bottom:8px;">📌 Sur un bien à <strong id="cc-prix" style="color:var(--text)">280 000€</strong>, les frais de notaire seul représentent <strong id="cc-notaire" style="color:var(--red)">~22 400€</strong></div>
+          <div style="margin-bottom:8px;">📌 Les frais d'agence + notaire + déménageur = souvent <strong id="cc-total-pct" style="color:var(--red)">10-15%</strong> du prix du bien</div>
+          <div>📌 Ces frais sont <strong style="color:var(--amber)">perdus immédiatement</strong>, contrairement aux travaux qui valorisent votre bien</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== COMPARATIF ===== -->
+<div class="panel" id="p-comparatif"><div class="wrap">
+  <div class="g2" style="gap:14px;">
+    <div class="m m-reno" style="padding:20px;">
+      <div class="ml" style="color:var(--reno)">🔨 RÉNOVER</div>
+      <div class="mv" id="c-reno" style="color:var(--reno);font-size:26px">—</div>
+      <div class="ms">reste à charge net</div>
+    </div>
+    <div class="m m-demo" style="padding:20px;">
+      <div class="ml" style="color:var(--demo)">🚚 DÉMÉNAGER</div>
+      <div class="mv" id="c-demo" style="color:var(--demo);font-size:26px">—</div>
+      <div class="ms">frais totaux directs</div>
+    </div>
+  </div>
+
+  <div class="verdict vg" id="c-verdict">
+    <div class="vi" id="c-vi">⚖️</div>
+    <div><div class="vt" id="c-vt">—</div><div class="vb2" id="c-vb">—</div></div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Comparaison poste par poste</div>
+    <div style="display:grid;grid-template-columns:1fr 100px 100px 80px;gap:6px;margin-bottom:8px;padding:0 14px;">
+      <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">Poste</span>
+      <span style="font-size:10px;color:var(--reno);text-transform:uppercase;letter-spacing:.5px;text-align:right;">Rénover</span>
+      <span style="font-size:10px;color:var(--demo);text-transform:uppercase;letter-spacing:.5px;text-align:right;">Déménager</span>
+      <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;text-align:right;">Avantage</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;" id="c-rows"></div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Ce que le calcul brut ne montre pas</div>
+    <div class="g2" style="gap:10px;">
+      <div class="m"><div class="ml">Plus-value travaux sur bien actuel</div><div class="mv" id="c-plusvalReno" style="color:var(--green)">—</div><div class="ms">gain à la revente future</div></div>
+      <div class="m"><div class="ml">Économies énergie cumulées (10 ans)</div><div class="mv" id="c-ecoEner10" style="color:var(--green)">—</div><div class="ms">après rénovation</div></div>
+      <div class="m"><div class="ml">Frais déménagement = argent perdu</div><div class="mv" id="c-perdu" style="color:var(--red)">—</div><div class="ms">sans contrepartie patrimoniale</div></div>
+      <div class="m"><div class="ml">Bilan net rénover à 10 ans</div><div class="mv" id="c-bilanReno" style="color:var(--yellow)">—</div><div class="ms">travaux − écos − plus-value</div></div>
+    </div>
+  </div>
+
+  <div class="sources">
+    <strong>Sources :</strong> Frais notaire ancien 7-8% (économie.gouv.fr, DMTO 5% depuis avril 2025) · Frais agence 4-8% (Capifrance, Immonot 2025) · Diagnostics ~350-600€ (Kiwidiag 2025) · Déménageur professionnel 500-3 500€ (demenageur.com) · Rénovation énergétique globale 400-700 €/m² (ADEME, Effy 2026) · Isolation combles 2 500-4 000€ / 100m² · PAC air-eau 10 000-18 000€ · Fenêtres ~1 000€/unité · Économies rénovation énergie : 793€/an moyenne (étude ANAH/MaPrimeRénov') · Plus-value DPE : +15-20% passage F→B (Notaires de France, Observatoire du Crédit Logement) · TVA 5.5% sur travaux énergétiques RGE.
+  </div>
+</div></div>
+
+<!-- ===== PROJECTIONS ===== -->
+<div class="panel" id="p-proj"><div class="wrap">
+  <div class="card">
+    <div class="ctitle">Coût net cumulé sur 15 ans — Rénover vs Déménager</div>
+    <div style="font-size:12px;color:#555;margin-bottom:4px;">Rénover intègre les économies d'énergie annuelles et la plus-value. Déménager inclut les nouveaux frais d'usage (si le nouveau bien est plus cher).</div>
+    <div class="cwt"><canvas id="chart-main"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Évolution des économies d'énergie après rénovation</div>
+    <div style="font-size:12px;color:#555;margin-bottom:4px;">Chaque année, avec la hausse des prix de l'énergie, les économies augmentent.</div>
+    <div class="cw"><canvas id="chart-eco"></canvas></div>
+  </div>
+</div></div>
+
+<script>
+var activeTab = 'logement';
+var chartMain = null, chartEco = null;
+var R = {};
+
+Chart.defaults.color = '#666';
+Chart.defaults.font.family = 'DM Sans, sans-serif';
+
+function g(id){ return document.getElementById(id); }
+function fmtN(n,d){ d=d||0; return n.toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function fmtE(n){ return fmtN(Math.round(n))+' €'; }
+function fmtP(n,d){ return fmtN(n,d||1)+' %'; }
+
+function showTab(name,btn){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  g('p-'+name).classList.add('on');
+  btn.classList.add('on');
+  activeTab = name;
+  setTimeout(function(){ renderCharts(name); }, 80);
+}
+
+function destroyChart(c){ if(c){ try{ c.destroy(); }catch(e){} } return null; }
+
+function renderCharts(name){
+  if(!R.years || name !== 'proj') return;
+  var labels = R.years.map(function(y){ return 'An '+y; });
+
+  chartMain = destroyChart(chartMain);
+  var cm = g('chart-main'); if(!cm) return;
+  chartMain = new Chart(cm,{
+    type:'line',
+    data:{labels:labels, datasets:[
+      {label:'🔨 Rénover (coût net cumulé)',data:R.cumulReno,borderColor:'rgba(255,107,43,.9)',backgroundColor:'rgba(255,107,43,.06)',fill:true,tension:.3,pointRadius:2,borderWidth:2},
+      {label:'🚚 Déménager (coût net cumulé)',data:R.cumulDemo,borderColor:'rgba(59,181,255,.9)',backgroundColor:'rgba(59,181,255,.06)',fill:true,tension:.3,pointRadius:2,borderWidth:2}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#888',font:{size:11}}},tooltip:{callbacks:{label:function(c){ return c.dataset.label+' : '+fmtE(c.raw); }}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#666'},border:{color:'transparent'}},
+              y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return fmtE(v); },color:'#666'},border:{color:'transparent'}}}
+    }
+  });
+
+  chartEco = destroyChart(chartEco);
+  var ce = g('chart-eco'); if(!ce) return;
+  chartEco = new Chart(ce,{
+    type:'bar',
+    data:{labels:R.years.slice(1).map(function(y){ return 'An '+y; }),
+      datasets:[{label:'Économies énergie',data:R.ecoAn.slice(1),
+        backgroundColor:'rgba(59,255,158,.5)',borderColor:'rgba(59,255,158,.9)',
+        borderWidth:1,borderRadius:4
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){ return 'Économies : '+fmtE(c.raw)+'/an'; }}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#666'},border:{color:'transparent'}},
+              y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return fmtE(v); },color:'#666'},border:{color:'transparent'}}}
+    }
+  });
+}
+
+function recalc(){
+  try{
+    // Logement
+    var valActuel = +g('valActuel').value;
+    var surf      = +g('surf').value;
+    var dpe       = g('dpe').value;
+    var facture   = +g('facture').value;
+
+    // Travaux
+    var wCombles = +g('wCombles').value;
+    var wITE     = +g('wITE').value;
+    var wPlancher= +g('wPlancher').value;
+    var wPAC     = +g('wPAC').value;
+    var wChaud   = +g('wChaud').value;
+    var wFen     = +g('wFenetres').value;
+    var wSDB     = +g('wSDB').value;
+    var wCuisine = +g('wCuisine').value;
+    var wElec    = +g('wElec').value;
+    var wToiture = +g('wToiture').value;
+    var wRafr    = +g('wRafr').value;
+
+    // Déménager
+    var pctAgence = +g('wAgence').value / 100;
+    var wDiag    = +g('wDiag').value || 500;
+    var prixNouv = +g('wNouveau').value;
+    var typeNouv = g('typeNouveau').value;
+    var wDem     = +g('wDem').value;
+    var wAmenag  = +g('wAmenag').value;
+
+    // Labels
+    g('lval').textContent    = fmtE(valActuel);
+    g('lsurf').textContent   = surf+' m²';
+    g('lfacture').textContent= fmtE(facture);
+    g('lcombles').textContent= fmtE(wCombles);
+    g('lite').textContent    = fmtE(wITE);
+    g('lplancher').textContent=fmtE(wPlancher);
+    g('lpac').textContent    = fmtE(wPAC);
+    g('lchaud').textContent  = fmtE(wChaud);
+    g('lfenetres').textContent=fmtE(wFen);
+    g('lsdb').textContent    = fmtE(wSDB);
+    g('lcuisine').textContent= fmtE(wCuisine);
+    g('lelec').textContent   = fmtE(wElec);
+    g('ltoiture').textContent= fmtE(wToiture);
+    g('lrafr').textContent   = fmtE(wRafr);
+    g('lagence').textContent = fmtP(pctAgence*100);
+    g('lnouveau').textContent= fmtE(prixNouv);
+    g('ldemsoc').textContent = fmtE(wDem);
+    g('lamenag').textContent = fmtE(wAmenag);
+
+    // DPE impact
+    var dpeTexts = {
+      'A':'Excellent DPE. Votre logement est au top de la performance énergétique. Pas de dépréciation.',
+      'B':'Très bon DPE. Logement valorisé, facile à louer/vendre.',
+      'C':'Bon DPE. Aucune contrainte réglementaire à court terme.',
+      'D':'DPE moyen. Pas d\'urgence mais une rénovation améliorerait le confort et la valeur.',
+      'E':'DPE élevé. Hausse des charges, risque de dépréciation à terme. Rénovation conseillée.',
+      'F':'⚠️ Passoire thermique ! Interdit à la location depuis jan. 2025. Dépréciation significative de la valeur (−10 à −20%). Travaux urgents si vous louez.',
+      'G':'🚫 Passoire critique ! Interdit à la location depuis jan. 2025. Dépréciation forte (−15 à −25%). Impossible à louer sans travaux. Priorité absolue.',
+    };
+    g('dpeImpact').textContent = dpeTexts[dpe] || '';
+    g('dpeHint').textContent = dpe==='F'||dpe==='G' ? '⚠️ Ce bien est interdit à la location. Travaux obligatoires.' : 'Les passoires F et G sont interdites à la location depuis 2025.';
+
+    // ── RÉNOVER ──
+    var travauxEnerge = wCombles + wITE + wPlancher + wPAC + wChaud + wFen;
+    var travauxAutres = wSDB + wCuisine + wElec + wToiture + wRafr;
+    var totalTravaux  = travauxEnerge + travauxAutres;
+
+    // Aides estimées (CEE ~10-15% des travaux énergétiques, éco-PTZ pas une aide directe)
+    var aides = travauxEnerge * 0.12;
+
+    // Économies énergie estimées (basé sur les travaux)
+    var ecoFact = 0;
+    if(wCombles > 0) ecoFact += 0.15;
+    if(wITE > 0)     ecoFact += 0.25;
+    if(wPlancher>0)  ecoFact += 0.08;
+    if(wPAC > 0)     ecoFact += 0.50;
+    else if(wChaud>0)ecoFact += 0.15;
+    if(wFen > 0)     ecoFact += 0.10;
+    ecoFact = Math.min(ecoFact, 0.80);
+    var ecoEnerAn = facture * ecoFact;
+
+    // Plus-value DPE estimée
+    var dpePlus = {A:0, B:0, C:0, D:0.03, E:0.07, F:0.15, G:0.20};
+    var dpeCibleBonus = {'PAC':'B','Chaud':'C','Combles':'C','ITE':'B'};
+    // DPE cible estimé
+    var dpeCible = dpe;
+    var dpeOrder = ['G','F','E','D','C','B','A'];
+    var dpeIdx = dpeOrder.indexOf(dpe);
+    if(ecoFact > 0.5 && dpeIdx < 5) dpeCible = dpeOrder[dpeIdx+2] || 'A';
+    else if(ecoFact > 0.25 && dpeIdx < 6) dpeCible = dpeOrder[dpeIdx+1] || 'A';
+
+    var plusvalDPE = valActuel * (dpePlus[dpe] || 0);
+    var renoNet    = totalTravaux - aides;
+
+    g('r-brut').textContent    = fmtE(totalTravaux);
+    g('r-aides').textContent   = '−'+fmtE(Math.round(aides));
+    g('r-net').textContent     = fmtE(renoNet);
+    g('r-ecoEner').textContent = ecoEnerAn > 0 ? '−'+fmtE(ecoEnerAn)+'/an' : '—';
+    g('r-plusval').textContent = plusvalDPE > 0 ? '+'+fmtE(plusvalDPE) : 'Déjà optimisé';
+    var amor = ecoEnerAn > 0 ? Math.ceil(renoNet / ecoEnerAn) : 99;
+    g('r-amor').textContent    = amor < 99 ? amor+' ans' : '—';
+    g('r-dpeCible').textContent= dpeCible !== dpe ? 'DPE '+dpeCible+' estimé' : 'DPE '+dpe+' maintenu';
+
+    // ── DÉMÉNAGER ──
+    var fraisAgence  = valActuel * pctAgence;
+    var tauxNotaire  = typeNouv === 'neuf' ? 0.025 : 0.08;
+    var fraisNotaire = prixNouv * tauxNotaire;
+    var totalDemo    = fraisAgence + wDiag + fraisNotaire + wDem + wAmenag;
+
+    g('d-agence').textContent  = fmtE(fraisAgence);
+    g('d-diag').textContent    = fmtE(wDiag);
+    g('d-notaire').textContent = fmtE(fraisNotaire);
+    g('d-dem').textContent     = fmtE(wDem);
+    g('d-amenag').textContent  = fmtE(wAmenag);
+    g('d-total').textContent   = fmtE(totalDemo);
+
+    g('cc-prix').textContent    = fmtE(valActuel);
+    g('cc-notaire').textContent = '~'+fmtE(prixNouv * 0.08);
+    g('cc-total-pct').textContent = fmtP((totalDemo/valActuel)*100)+' du bien vendu';
+
+    // ── VERDICT ──
+    var diff = totalDemo - renoNet;
+    var gagnant = diff > 0 ? 'reno' : diff < 0 ? 'demo' : 'egal';
+
+    var vbBox = g('vbBox');
+    g('vbReno').textContent = fmtE(renoNet);
+    g('vbDemo').textContent = fmtE(totalDemo);
+    g('vbDiff').textContent = (diff>=0?'+':'')+fmtE(diff);
+
+    if(gagnant === 'reno'){
+      vbBox.style.background = 'rgba(255,107,43,.06)';
+      vbBox.style.borderColor = 'rgba(255,107,43,.4)';
+      g('vbEmoji').textContent = '🔨';
+      g('vbTitle').textContent = 'Rénover coûte '+fmtE(diff)+' moins cher';
+      g('vbTitle').style.color = 'var(--reno)';
+      g('vbDesc').textContent = 'Dans votre situation, rénover est financièrement plus avantageux. Les travaux valorisent votre bien et réduisent vos charges, là où les frais de déménagement sont définitivement perdus.';
+    } else if(gagnant === 'demo'){
+      vbBox.style.background = 'rgba(59,181,255,.06)';
+      vbBox.style.borderColor = 'rgba(59,181,255,.4)';
+      g('vbEmoji').textContent = '🚚';
+      g('vbTitle').textContent = 'Déménager coûte '+fmtE(-diff)+' moins cher';
+      g('vbTitle').style.color = 'var(--demo)';
+      g('vbDesc').textContent = 'Les travaux envisagés sont plus coûteux que les frais de déménagement. Attention toutefois : les travaux valorisent votre patrimoine et génèrent des économies d\'énergie durables.';
+    } else {
+      vbBox.style.background = 'rgba(255,217,61,.04)';
+      vbBox.style.borderColor = 'rgba(255,217,61,.3)';
+      g('vbEmoji').textContent = '⚖️';
+      g('vbTitle').textContent = 'Coût comparable — critères qualitatifs décisifs';
+      g('vbTitle').style.color = 'var(--yellow)';
+      g('vbDesc').textContent = 'Les deux options coûtent à peu près pareil. La décision doit alors prendre en compte d\'autres facteurs : attachement au lieu, localisation, taille, projet de vie.';
+    }
+
+    // Comparatif panel
+    g('c-reno').textContent = fmtE(renoNet);
+    g('c-demo').textContent = fmtE(totalDemo);
+
+    var cv = g('c-verdict');
+    if(gagnant === 'reno'){
+      cv.className='verdict vg'; g('c-vi').textContent='🔨';
+      g('c-vt').textContent = 'Rénover est plus avantageux — économie de '+fmtE(diff);
+      g('c-vb').textContent = 'Au bilan direct, rénover coûte '+fmtE(renoNet)+' vs '+fmtE(totalDemo)+' pour déménager. En ajoutant la plus-value DPE ('+fmtE(plusvalDPE)+') et les économies d\'énergie ('+fmtE(ecoEnerAn)+'/an), l\'avantage de la rénovation se creuse encore sur 5-10 ans.';
+    } else if(gagnant === 'demo'){
+      cv.className='verdict vo'; g('c-vi').textContent='🚚';
+      g('c-vt').textContent = 'Déménager est moins cher à court terme — économie de '+fmtE(-diff);
+      g('c-vb').textContent = 'Les frais de déménagement ('+fmtE(totalDemo)+') sont inférieurs aux travaux envisagés ('+fmtE(renoNet)+'). Mais rappel : les travaux valorisent votre patrimoine et génèrent des économies d\'énergie durables, contrairement aux frais de déménagement qui sont définitivement perdus.';
+    } else {
+      cv.className='verdict vo'; g('c-vi').textContent='⚖️';
+      g('c-vt').textContent = 'Coûts quasi-identiques — analysez les critères qualitatifs';
+      g('c-vb').textContent = 'Le différentiel financier est faible. Posez-vous les vraies questions : Êtes-vous attaché à votre lieu de vie ? Le nouveau logement répond-il mieux à vos besoins ? La rénovation est-elle techniquement réalisable ?';
+    }
+
+    // Comparaison poste par poste
+    var rows = [
+      {l:'Frais directs one-shot', r:renoNet, d:totalDemo},
+      {l:'Économies énergie / an', r:-ecoEnerAn, d:0, note:'gain rénover'},
+      {l:'Plus-value patrimoniale', r:-plusvalDPE, d:0, note:'gain rénover'},
+      {l:'Argent définitivement perdu', r:0, d:totalDemo},
+    ];
+    g('c-plusvalReno').textContent = '+'+fmtE(plusvalDPE);
+    g('c-ecoEner10').textContent   = '+'+fmtE(ecoEnerAn*10);
+    g('c-perdu').textContent       = fmtE(totalDemo);
+    var bilanReno = renoNet - plusvalDPE - ecoEnerAn*10;
+    g('c-bilanReno').textContent   = (bilanReno<=0?'':'')+fmtE(bilanReno);
+    g('c-bilanReno').style.color   = bilanReno<=0?'var(--green)':'var(--amber)';
+
+    g('c-rows').innerHTML = [
+      {l:'Coût initial brut', r:totalTravaux, d:totalDemo},
+      {l:'Aides & primes estimées', r:-aides, d:0, idem:true},
+      {l:'Coût net à payer', r:renoNet, d:totalDemo, bold:true},
+      {l:'Plus-value bien actuel', r:plusvalDPE, d:0, invert:true},
+      {l:'Économies énergie /an', r:ecoEnerAn, d:0, invert:true},
+    ].map(function(row){
+      var rBetter = row.invert ? (row.r > row.d) : (row.r < row.d && row.r > 0);
+      var dBetter = row.invert ? (row.d > row.r) : (row.d < row.r && row.d > 0);
+      var rStyle  = row.invert ? 'var(--green)' : row.r > 0 ? 'var(--reno)' : 'var(--muted)';
+      var dStyle  = row.d > 0 ? 'var(--demo)' : 'var(--muted)';
+      var win = rBetter ? '<span class="compare-winner win-reno">🔨</span>' : dBetter ? '<span class="compare-winner win-demo">🚚</span>' : '<span class="compare-winner win-eq">=</span>';
+      return '<div class="compare-row" style="'+(row.bold?'background:rgba(255,255,255,.03);border-color:#333;':'')+'">'
+        +'<span class="compare-label" style="'+(row.bold?'font-weight:600;color:var(--text);':'')+'">'+(row.invert?'✓ ':'')+row.l+'</span>'
+        +'<span class="compare-reno" style="color:'+rStyle+'">'+(row.r>0?fmtE(row.r):'—')+'</span>'
+        +'<span class="compare-demo" style="color:'+dStyle+'">'+(row.d>0?fmtE(row.d):'—')+'</span>'
+        +win
+        +'</div>';
+    }).join('');
+
+    // Projections data (15 ans)
+    var DUREE = 15;
+    var years = [];
+    for(var i=0; i<=DUREE; i++) years.push(i);
+
+    var cumulReno = [], cumulDemo = [], ecoAn = [];
+    var cReno = renoNet, cDemo = totalDemo;
+    cumulReno.push(cReno);
+    cumulDemo.push(cDemo);
+    ecoAn.push(0);
+
+    var ecoActuelle = ecoEnerAn;
+    for(var y=1; y<=DUREE; y++){
+      ecoActuelle = ecoActuelle * 1.04; // hausse prix énergie +4%/an
+      ecoAn.push(ecoActuelle);
+      cReno -= ecoActuelle;
+      cumulReno.push(Math.round(cReno));
+      // Déménager: si nouveau bien plus cher, charge crédit supplémentaire
+      var deltaCredit = Math.max(0, (prixNouv - valActuel) * 0.004); // ~0.4%/an coût supplémentaire
+      cDemo += deltaCredit;
+      cumulDemo.push(Math.round(cDemo));
+    }
+
+    R = { years:years, cumulReno:cumulReno, cumulDemo:cumulDemo, ecoAn:ecoAn };
+    if(activeTab === 'proj') renderCharts('proj');
+
+  }catch(err){ console.error('recalc:',err); }
+}
+
+document.querySelectorAll('input[type=range], input[type=number], select').forEach(function(el){
+  el.addEventListener('input', recalc);
+  el.addEventListener('change', recalc);
+});
+
+recalc();
+</script>
+</body>
+</html>
