@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Louer vs Acheter — Le vrai calcul | Calculamatix</title>
+  <meta name="description" content="Calculez si acheter est vraiment plus rentable que louer dans votre situation : coût d'opportunité de l'apport, frais cachés, point d'équilibre, plus-value. Données Meilleurtaux & INSEE 2025."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#090909;--card:#141414;--border:#222;
+      --yellow:#FFD93D;--green:#3BFF9E;--blue:#3BB5FF;
+      --purple:#C084FC;--red:#FF5C5C;--amber:#FFAA3B;
+      --text:#F0EDE6;--muted:#555;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:80px}
+    body::before{content:'';position:fixed;inset:0;opacity:.4;pointer-events:none;z-index:0;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E")}
+
+    nav{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:18px;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--yellow)}
+    .back{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+    .back:hover{color:var(--text)}
+
+    .hero{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:40px 24px 28px}
+    .htag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--blue);background:rgba(59,181,255,.08);border:1px solid rgba(59,181,255,.2);padding:4px 14px;border-radius:100px;margin-bottom:14px}
+    h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(22px,4vw,48px);letter-spacing:-2px;line-height:1.05;margin-bottom:10px}
+    h1 span{color:var(--yellow)}
+    .hero p{font-size:14px;color:var(--muted);line-height:1.7;max-width:640px}
+
+    /* SCORE */
+    .score-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .score-box{background:#141414;border:1px solid #242424;border-radius:20px;padding:22px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+    .score-ring{position:relative;width:80px;height:80px;flex-shrink:0}
+    .score-ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+    .score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .score-n{font-family:'Unbounded',sans-serif;font-size:16px;font-weight:900;line-height:1}
+    .score-l{font-size:9px;color:var(--muted);margin-top:2px}
+    .score-info{flex:1;min-width:200px}
+    .score-title{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:800;margin-bottom:5px}
+    .score-desc{font-size:12px;color:#777;line-height:1.6}
+    .pills{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+    .pill{font-size:11px;padding:3px 10px;border-radius:100px;font-weight:500}
+    .pg{background:rgba(59,255,158,.1);color:var(--green);border:1px solid rgba(59,255,158,.2)}
+    .pb{background:rgba(255,92,92,.1);color:var(--red);border:1px solid rgba(255,92,92,.2)}
+    .pn{background:rgba(255,170,59,.1);color:var(--amber);border:1px solid rgba(255,170,59,.2)}
+    .score-kpis{display:flex;flex-direction:column;gap:8px;min-width:150px}
+
+    /* TABS */
+    .tabs-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .tabs{display:flex;gap:4px;background:#0d0d0d;border:1px solid var(--border);border-radius:14px;padding:5px;width:fit-content;flex-wrap:wrap}
+    .tab{background:transparent;border:none;color:var(--muted);padding:9px 15px;border-radius:10px;font-size:13px;font-family:inherit;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+    .tab.on{background:var(--yellow);color:#000;font-weight:700}
+
+    .panel{display:none}
+    .panel.on{display:block}
+
+    .wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:14px}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px}
+    .ctitle{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px}
+    .fhint{font-size:10px;color:#333;margin-top:5px;line-height:1.5}
+
+    .f{margin-bottom:13px}
+    .f:last-child{margin-bottom:0}
+    .f label{display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:6px}
+    .fval{font-family:'DM Mono',monospace;color:var(--yellow);font-size:12px}
+
+    input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:#252525;border-radius:2px;outline:none;cursor:pointer}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--yellow);border-radius:50%;box-shadow:0 0 8px rgba(255,217,61,.4)}
+
+    select,input[type=number]{width:100%;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;color:var(--text);padding:10px 13px;font-size:14px;font-family:inherit;outline:none;transition:border-color .15s}
+    input[type=number]{font-family:'DM Mono',monospace}
+    select:focus,input[type=number]:focus{border-color:var(--yellow)}
+
+    .divider{display:flex;align-items:center;gap:10px;margin:10px 0}
+    .divider span{font-size:10px;color:#333;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:#1e1e1e}
+
+    .m{background:#1a1a1a;border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+    .ml{font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+    .mv{font-family:'DM Mono',monospace;font-size:18px;font-weight:500}
+    .ms{font-size:10px;color:var(--muted);margin-top:3px}
+    .mh{background:rgba(59,255,158,.05);border-color:rgba(59,255,158,.2)}
+    .mhb{background:rgba(59,181,255,.05);border-color:rgba(59,181,255,.2)}
+
+    .verdict{border-radius:14px;padding:16px 20px;border:1px solid;display:flex;gap:12px}
+    .vi{font-size:18px;flex-shrink:0}
+    .vt{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;margin-bottom:4px}
+    .vb{font-size:12px;color:#777;line-height:1.6}
+    .vg{background:rgba(59,255,158,.05);border-color:rgba(59,255,158,.2)}
+    .vg .vt{color:var(--green)}
+    .vo{background:rgba(255,170,59,.05);border-color:rgba(255,170,59,.2)}
+    .vo .vt{color:var(--amber)}
+    .vr{background:rgba(255,92,92,.05);border-color:rgba(255,92,92,.2)}
+    .vr .vt{color:var(--red)}
+
+    .cw{position:relative;width:100%;height:240px;margin-top:12px}
+    .cwt{position:relative;width:100%;height:280px;margin-top:12px}
+
+    .ditem{display:flex;justify-content:space-between;padding:8px 12px;background:#1a1a1a;border:1px solid #222;border-radius:8px}
+    .ditem span:first-child{font-size:12px;color:#666}
+    .ditem span:last-child{font-family:'DM Mono',monospace;font-size:12px}
+
+    .city-btn{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;color:#888;padding:7px 12px;font-size:11px;font-family:inherit;cursor:pointer;transition:all .15s;white-space:nowrap}
+    .city-btn:hover{border-color:#444;color:var(--text)}
+
+    .sources{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px;padding:14px 16px;font-size:11px;color:#3a3a3a;line-height:1.8}
+
+    @media(max-width:640px){
+      .g2,.g3,.g4{grid-template-columns:1fr}
+      .score-box{flex-direction:column}
+      .tab{padding:8px 10px;font-size:11px}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Tous les calculateurs</a>
+</nav>
+
+<div class="hero">
+  <div class="htag">🏠 Immobilier</div>
+  <h1>Louer vs<br><span>Acheter</span></h1>
+  <p>Le vrai calcul, pas le discours du vendeur. Coût d'opportunité de l'apport, frais de notaire, taxe foncière, charges, plus-value à la revente — tout est pris en compte. Données Meilleurtaux &amp; INSEE 2025.</p>
+</div>
+
+<!-- SCORE -->
+<div class="score-wrap">
+  <div class="score-box">
+    <div class="score-ring">
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r="34" fill="none" stroke="#1e1e1e" stroke-width="6"/>
+        <circle cx="40" cy="40" r="34" fill="none" stroke="#FFD93D" stroke-width="6"
+          stroke-linecap="round" stroke-dasharray="213.6" id="sarc" stroke-dashoffset="213.6"/>
+      </svg>
+      <div class="score-center">
+        <div class="score-n" id="snum">—</div>
+        <div class="score-l">ACHAT</div>
+      </div>
+    </div>
+    <div class="score-info">
+      <div class="score-title" id="stitle">Remplissez vos paramètres</div>
+      <div class="score-desc" id="sdesc">Votre recommandation personnalisée apparaîtra ici.</div>
+      <div class="pills" id="spills"></div>
+    </div>
+    <div class="score-kpis">
+      <div class="m"><div class="ml">Point d'équilibre</div><div class="mv" id="bbreak" style="color:var(--yellow)">—</div></div>
+      <div class="m"><div class="ml">Gain achat sur période</div><div class="mv" id="bgain" style="color:var(--green)">—</div></div>
+      <div class="m"><div class="ml">Patrimoine final</div><div class="mv" id="bpatrim" style="color:var(--blue)">—</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('achat',this)">🏠 Achat</button>
+    <button class="tab" onclick="showTab('loc',this)">🔑 Location</button>
+    <button class="tab" onclick="showTab('profil',this)">👤 Votre profil</button>
+    <button class="tab" onclick="showTab('bilan',this)">💰 Bilan financier</button>
+    <button class="tab" onclick="showTab('proj',this)">📈 Projections</button>
+  </div>
+</div>
+
+<!-- ===== PANEL ACHAT ===== -->
+<div class="panel on" id="p-achat"><div class="wrap">
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+    <span style="font-size:12px;color:#555;align-self:center;">Pré-remplir une ville :</span>
+    <button class="city-btn" onclick="setCity('paris')">Paris</button>
+    <button class="city-btn" onclick="setCity('lyon')">Lyon</button>
+    <button class="city-btn" onclick="setCity('marseille')">Marseille</button>
+    <button class="city-btn" onclick="setCity('bordeaux')">Bordeaux</button>
+    <button class="city-btn" onclick="setCity('nantes')">Nantes</button>
+    <button class="city-btn" onclick="setCity('toulouse')">Toulouse</button>
+    <button class="city-btn" onclick="setCity('lille')">Lille</button>
+    <button class="city-btn" onclick="setCity('stras')">Strasbourg</button>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Le bien à acheter</div>
+      <div class="f">
+        <label>Prix d'achat du bien <span class="fval" id="lprix">280 000 €</span></label>
+        <input type="range" id="aprix" min="50000" max="1500000" step="5000" value="280000">
+      </div>
+      <div class="f">
+        <label>Type de bien</label>
+        <select id="atype">
+          <option value="ancien" selected>Ancien (frais notaire ~8%)</option>
+          <option value="neuf">Neuf (frais notaire ~2.5%)</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Surface <span class="fval" id="lsurf">70 m²</span></label>
+        <input type="range" id="asurf" min="15" max="300" step="5" value="70">
+      </div>
+      <div class="divider"><span>Financement</span></div>
+      <div class="f">
+        <label>Apport personnel <span class="fval" id="lapport">28 000 €</span></label>
+        <input type="range" id="aapport" min="0" max="500000" step="1000" value="28000">
+        <div class="fhint">Les banques exigent généralement 10-20% (recommandation HCSF)</div>
+      </div>
+      <div class="f">
+        <label>Durée du crédit <span class="fval" id="lduree">20 ans</span></label>
+        <input type="range" id="aduree" min="5" max="30" step="1" value="20">
+        <div class="fhint">Durée moyenne France 2025 : 20 ans 5 mois (Observatoire Crédit Logement)</div>
+      </div>
+      <div class="f">
+        <label>Taux nominal annuel <span class="fval" id="ltaux">3.30 %</span></label>
+        <input type="range" id="ataux" min="1.0" max="7.0" step="0.05" value="3.30">
+        <div class="fhint">Taux moyen France décembre 2025 : ~3.2-3.4% sur 20 ans</div>
+      </div>
+      <div class="f">
+        <label>Assurance emprunteur <span class="fval" id="lass">0.20 %</span></label>
+        <input type="range" id="aass" min="0.05" max="0.80" step="0.05" value="0.20">
+        <div class="fhint">Moyenne 2025 : 0.20% du capital emprunté/an</div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card">
+        <div class="ctitle">Charges annuelles propriétaire</div>
+        <div class="f">
+          <label>Taxe foncière / an <span class="fval" id="ltf">1 200 €</span></label>
+          <input type="range" id="atf" min="200" max="8000" step="100" value="1200">
+          <div class="fhint">Moyenne nationale : ~1 mois de loyer équivalent. Variable selon la ville.</div>
+        </div>
+        <div class="f">
+          <label>Charges copropriété / an <span class="fval" id="lcharges">1 800 €</span></label>
+          <input type="range" id="acharges" min="0" max="10000" step="100" value="1800">
+          <div class="fhint">~25-30€/m²/an en moyenne (UNPI 2024)</div>
+        </div>
+        <div class="f">
+          <label>Entretien et travaux / an <span class="fval" id="lentretien">1 400 €</span></label>
+          <input type="range" id="aentretien" min="0" max="10000" step="100" value="1400">
+          <div class="fhint">Règle des experts : ~0.5-1% du prix d'achat/an</div>
+        </div>
+        <div class="f">
+          <label>Assurance habitation / an <span class="fval" id="lassurancePNO">300 €</span></label>
+          <input type="range" id="aassurancePNO" min="100" max="2000" step="50" value="300">
+        </div>
+      </div>
+
+      <div class="card" style="border-color:rgba(59,181,255,.2);background:rgba(59,181,255,.03);">
+        <div class="ctitle" style="color:var(--blue)">Récapitulatif achat</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="ditem"><span>Frais de notaire</span><span id="d-notaire" style="color:var(--red)">—</span></div>
+          <div class="ditem"><span>Montant emprunté</span><span id="d-emprunt" style="color:var(--text)">—</span></div>
+          <div class="ditem"><span>Mensualité crédit</span><span id="d-mens" style="color:var(--yellow)">—</span></div>
+          <div class="ditem"><span>Mensualité + assurance</span><span id="d-menstot" style="color:var(--amber)">—</span></div>
+          <div class="ditem"><span>Taux d'endettement</span><span id="d-endet" style="color:var(--text)">—</span></div>
+          <div class="ditem" style="background:rgba(255,92,92,.05);border-color:rgba(255,92,92,.2);">
+            <span style="font-weight:600">Coût total intérêts+frais</span>
+            <span id="d-coutcredit" style="color:var(--red);font-weight:700">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== PANEL LOCATION ===== -->
+<div class="panel" id="p-loc"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Votre location actuelle ou équivalente</div>
+      <div class="f">
+        <label>Loyer mensuel (charges incluses) <span class="fval" id="lloyer">1 100 €</span></label>
+        <input type="range" id="lloyer2" min="200" max="6000" step="50" value="1100">
+        <div class="fhint">Pour être comparable, prenez le loyer d'un bien similaire à celui que vous souhaiteriez acheter</div>
+      </div>
+      <div class="f">
+        <label>Assurance habitation / an <span class="fval" id="lassLoc">200 €</span></label>
+        <input type="range" id="assLoc" min="50" max="800" step="25" value="200">
+      </div>
+      <div class="divider"><span>Hypothèses d'évolution (sur la durée)</span></div>
+      <div class="f">
+        <label>Hausse annuelle des loyers <span class="fval" id="lhausseLoy">1.80 %</span></label>
+        <input type="range" id="hausseLoy" min="0" max="5" step="0.1" value="1.8">
+        <div class="fhint">Moyenne IRL 2020-2025 : ~3.5% · Hypothèse prudente 2025+ : 1.5-2%</div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="border-color:rgba(255,92,92,.2);background:rgba(255,92,92,.03);">
+        <div class="ctitle" style="color:var(--red)">Ce que vous dépensez en louant</div>
+        <div class="g2" style="gap:10px;margin-bottom:10px;">
+          <div class="m"><div class="ml">Loyer / an</div><div class="mv" id="loc-an" style="color:var(--red)">—</div></div>
+          <div class="m"><div class="ml">Loyer + assurance</div><div class="mv" id="loc-tot" style="color:var(--amber)">—</div></div>
+        </div>
+        <div style="font-size:12px;color:#555;line-height:1.6;padding:12px;background:#1a1a1a;border-radius:10px;">
+          💡 <strong style="color:#666">Ce que vous ne voyez pas :</strong> votre loyer est une <strong style="color:var(--red)">dépense pure</strong>. Mais votre apport, s'il était placé, rapporterait chaque année. C'est le <strong style="color:var(--yellow)">coût d'opportunité</strong> — calculé dans le bilan.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ctitle">Placement de l'apport (si locataire)</div>
+        <div class="f">
+          <label>Rendement annuel épargne <span class="fval" id="lrend">2.50 %</span></label>
+          <input type="range" id="rendEp" min="0.5" max="7" step="0.1" value="2.5">
+          <div class="fhint">Assurance-vie fonds euro ~2.5-3% · Livret A 3% · SCPI ~4-5% · Actions ~7% (variable)</div>
+        </div>
+        <div class="f" style="font-size:12px;color:#555;line-height:1.6;">
+          Si vous restez locataire, la somme de votre apport peut être investie. Le calcul intègre ce manque à gagner si vous l'immobilisez dans la pierre.
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== PANEL PROFIL ===== -->
+<div class="panel" id="p-profil"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Votre situation et horizon</div>
+      <div class="f">
+        <label>Durée de détention envisagée <span class="fval" id="lhoriz">10 ans</span></label>
+        <input type="range" id="horizDet" min="2" max="30" step="1" value="10">
+        <div class="fhint">Durée moyenne nationale pour rentabiliser : 12 ans 3 mois (Meilleurtaux 2025)</div>
+      </div>
+      <div class="f">
+        <label>Revenus nets mensuels du foyer <span class="fval" id="lrev">3 500 €</span></label>
+        <input type="range" id="revenus" min="1000" max="15000" step="100" value="3500">
+        <div class="fhint">Utilisé pour calculer le taux d'endettement (max recommandé : 35%)</div>
+      </div>
+      <div class="divider"><span>Hypothèses d'évolution des prix</span></div>
+      <div class="f">
+        <label>Hausse prix immo / an <span class="fval" id="lhausseImmo">1.50 %</span></label>
+        <input type="range" id="hausseImmo" min="-2" max="6" step="0.1" value="1.5">
+        <div class="fhint">Hypothèse Meilleurtaux 2025 : 0% an 1, +1% ans 2-3, +2% à partir an 4</div>
+      </div>
+      <div class="f">
+        <label>Hausse taxe foncière / an <span class="fval" id="lhausseTF">2.00 %</span></label>
+        <input type="range" id="hausseTF" min="0" max="6" step="0.1" value="2.0">
+        <div class="fhint">+7.1% en 2023, +3.9% en 2024 (UNPI). Hypothèse prudente : 2%/an</div>
+      </div>
+      <div class="f">
+        <label>Hausse charges copro / an <span class="fval" id="lhausseCharg">2.00 %</span></label>
+        <input type="range" id="hausseCharg" min="0" max="6" step="0.1" value="2.0">
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card">
+        <div class="ctitle">Analyse de votre profil</div>
+        <div style="display:flex;flex-direction:column;gap:8px;" id="profil-items"></div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Ce que cachent les vendeurs</div>
+        <div style="font-size:12px;color:#666;line-height:1.7;">
+          <div style="margin-bottom:8px;">📌 <strong style="color:var(--text)">Frais de notaire</strong> — 7-8% sur l'ancien, perdus dès le premier jour. Sur 280k€ = <strong style="color:var(--red)">~22 400€</strong> à rembourser avant même de commencer à gagner.</div>
+          <div style="margin-bottom:8px;">📌 <strong style="color:var(--text)">Coût d'opportunité</strong> — votre apport bloqué dans la pierre ne rapporte plus rien. Sur 28k€ à 2.5%/an = <strong style="color:var(--amber)">700€/an perdus</strong>.</div>
+          <div style="margin-bottom:8px;">📌 <strong style="color:var(--text)">Intérêts du crédit</strong> — sur 20 ans à 3.3%, vous payez en intérêts <strong style="color:var(--red)">l'équivalent de 30-40% du bien</strong> en plus.</div>
+          <div>📌 <strong style="color:var(--text)">Charges propriétaire</strong> — taxe foncière + charges copro + entretien = souvent <strong style="color:var(--amber)">4-6% du prix d'achat</strong> sur 10 ans.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== PANEL BILAN ===== -->
+<div class="panel" id="p-bilan"><div class="wrap">
+  <div class="g4">
+    <div class="m"><div class="ml">Coût total achat</div><div class="mv" id="b-coutAchat" style="color:var(--red)">—</div><div class="ms">sur <span id="b-hor1">10</span> ans</div></div>
+    <div class="m"><div class="ml">Coût total location</div><div class="mv" id="b-coutLoc" style="color:var(--amber)">—</div><div class="ms">sur <span id="b-hor2">10</span> ans</div></div>
+    <div class="m mh"><div class="ml">Point d'équilibre</div><div class="mv" id="b-break" style="color:var(--yellow)">—</div><div class="ms">années pour que l'achat gagne</div></div>
+    <div class="m mhb"><div class="ml">Patrimoine net final</div><div class="mv" id="b-patrim" style="color:var(--blue)">—</div><div class="ms">valeur bien − capital restant</div></div>
+  </div>
+
+  <div class="verdict vg" id="b-verdict">
+    <div class="vi" id="b-vi">🏠</div>
+    <div><div class="vt" id="b-vt">—</div><div class="vb" id="b-vb">—</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Détail coûts — Achat sur <span id="b-hor3">10</span> ans</div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="detail-achat"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Détail coûts — Location sur <span id="b-hor4">10</span> ans</div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="detail-loc"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Le truc que tout le monde oublie — Coût d'opportunité de l'apport</div>
+    <div style="font-size:13px;color:#666;line-height:1.7;margin-bottom:14px;">
+      Si vous achetez, votre apport est bloqué dans la pierre. Si vous louez, vous pouvez le placer. Cette différence s'appelle le <strong style="color:var(--yellow)">coût d'opportunité</strong> et elle change complètement le calcul.
+    </div>
+    <div class="g3" style="gap:10px;">
+      <div class="m"><div class="ml">Apport immobilisé</div><div class="mv" id="b-apport" style="color:var(--text)">—</div></div>
+      <div class="m"><div class="ml">Gain épargne perdu sur période</div><div class="mv" id="b-oppGain" style="color:var(--amber)">—</div></div>
+      <div class="m"><div class="ml">Capital restant dû à fin période</div><div class="mv" id="b-crd" style="color:var(--red)">—</div></div>
+    </div>
+  </div>
+
+  <div class="sources">
+    <strong>Sources :</strong> Meilleurtaux « Acheter ou Louer ? » 12ème édition 2025 (durée de rentabilisation nationale : 12 ans 3 mois) · Wüest Partner 2025 (taux crédit 3.3%, horizon 20 ans) · Observatoire Crédit Logement/CSA (taux moyens) · UNPI (taxe foncière +7.1% en 2023, +3.9% en 2024) · Secrétariat général du logement (achat rentable après 7-10 ans de détention) · Frais notaire ancien : 7-8% (source : économie.gouv.fr, hausse DMTO à 5% depuis avril 2025) · Charges copropriété : ~25-30€/m²/an (UNPI 2024).
+  </div>
+</div></div>
+
+<!-- ===== PANEL PROJECTIONS ===== -->
+<div class="panel" id="p-proj"><div class="wrap">
+  <div class="card">
+    <div class="ctitle">Coût cumulé total — Achat vs Location</div>
+    <div style="font-size:12px;color:#555;margin-bottom:4px;">Quand la courbe verte passe sous la rouge = l'achat devient gagnant.</div>
+    <div class="cwt"><canvas id="chart-main"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Gain net de l'achat vs location année par année</div>
+    <div style="font-size:12px;color:#555;margin-bottom:4px;">Zone verte = l'achat est avantageux. Zone rouge = la location est encore moins chère.</div>
+    <div class="cw"><canvas id="chart-gain"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Patrimoine net de l'acheteur dans le temps</div>
+    <div style="font-size:12px;color:#555;margin-bottom:4px;">Valeur du bien − capital restant dû = ce que vous possédez réellement.</div>
+    <div class="cw"><canvas id="chart-patrim"></canvas></div>
+  </div>
+</div></div>
+
+<script>
+var activeTab = 'achat';
+var chartMain = null, chartGain = null, chartPatrim = null;
+var R = {};
+
+Chart.defaults.color = '#666';
+Chart.defaults.font.family = 'DM Sans, sans-serif';
+
+// Données par ville (prix m², loyer m², taxe foncière approximative)
+var CITIES = {
+  paris:    {prix:10500, loyer:28, tf:600,  charges:42, surf:50},
+  lyon:     {prix:4800,  loyer:16, tf:1000, charges:30, surf:65},
+  marseille:{prix:3400,  loyer:14, tf:800,  charges:28, surf:70},
+  bordeaux: {prix:4600,  loyer:15, tf:1100, charges:29, surf:65},
+  nantes:   {prix:4200,  loyer:14, tf:1100, charges:28, surf:70},
+  toulouse: {prix:3800,  loyer:14, tf:1200, charges:27, surf:70},
+  lille:    {prix:3500,  loyer:15, tf:1300, charges:28, surf:70},
+  stras:    {prix:3900,  loyer:15, tf:1100, charges:29, surf:70},
+};
+
+function g(id){ return document.getElementById(id); }
+function fmtN(n,d){ d=d||0; return n.toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function fmtE(n){ return fmtN(Math.round(n))+' €'; }
+function fmtP(n){ return fmtN(n,2)+' %'; }
+
+function setCity(c){
+  var d = CITIES[c];
+  if(!d) return;
+  var prix = d.prix * d.surf;
+  g('aprix').value = Math.min(1500000, prix);
+  g('asurf').value = d.surf;
+  g('atf').value = d.tf;
+  g('acharges').value = Math.round(d.charges * d.surf);
+  g('aentretien').value = Math.round(prix * 0.005);
+  g('lloyer2').value = Math.round(d.loyer * d.surf);
+  g('aapport').value = Math.round(prix * 0.10);
+  recalc();
+}
+
+function showTab(name, btn){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  g('p-'+name).classList.add('on');
+  btn.classList.add('on');
+  activeTab = name;
+  setTimeout(function(){ renderCharts(name); }, 80);
+}
+
+function destroyChart(c){ if(c){ try{ c.destroy(); }catch(e){} } return null; }
+
+function renderCharts(name){
+  if(!R.years) return;
+  if(name === 'proj'){
+    chartMain  = destroyChart(chartMain);
+    chartGain  = destroyChart(chartGain);
+    chartPatrim= destroyChart(chartPatrim);
+
+    var labels = R.years.map(function(y){ return 'An '+y; });
+
+    var cm = g('chart-main'); if(!cm) return;
+    chartMain = new Chart(cm,{
+      type:'line',
+      data:{ labels:labels, datasets:[
+        {label:'Coût cumulé — Achat',data:R.cumulAchat,borderColor:'rgba(59,181,255,.9)',backgroundColor:'rgba(59,181,255,.06)',fill:true,tension:.3,pointRadius:2,borderWidth:2},
+        {label:'Coût cumulé — Location',data:R.cumulLoc,borderColor:'rgba(255,92,92,.9)',backgroundColor:'rgba(255,92,92,.06)',fill:true,tension:.3,pointRadius:2,borderWidth:2}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:'#888',font:{size:11}}},tooltip:{callbacks:{label:function(c){ return c.dataset.label+' : '+fmtE(c.raw); }}}},
+        scales:{x:{grid:{display:false},ticks:{color:'#666'},border:{color:'transparent'}},
+                y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return fmtE(v); },color:'#666'},border:{color:'transparent'}}}
+      }
+    });
+
+    var cg = g('chart-gain'); if(!cg) return;
+    chartGain = new Chart(cg,{
+      type:'bar',
+      data:{ labels:R.years.slice(1).map(function(y){ return 'An '+y; }),
+        datasets:[{label:'Gain net achat',data:R.gainAchat.slice(1),
+          backgroundColor:R.gainAchat.slice(1).map(function(v){ return v>=0?'rgba(59,255,158,.5)':'rgba(255,92,92,.4)'; }),
+          borderColor:R.gainAchat.slice(1).map(function(v){ return v>=0?'rgba(59,255,158,.9)':'rgba(255,92,92,.8)'; }),
+          borderWidth:1,borderRadius:4
+        }]
+      },
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){ return (c.raw>=0?'Avantage achat : +':'Avantage location : ')+fmtE(Math.abs(c.raw)); }}}},
+        scales:{x:{grid:{display:false},ticks:{color:'#666'},border:{color:'transparent'}},
+                y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return fmtE(v); },color:'#666'},border:{color:'transparent'}}}
+      }
+    });
+
+    var cp = g('chart-patrim'); if(!cp) return;
+    chartPatrim = new Chart(cp,{
+      type:'line',
+      data:{ labels:labels, datasets:[
+        {label:'Valeur du bien',data:R.valeurBien,borderColor:'rgba(59,181,255,.9)',backgroundColor:'rgba(59,181,255,.04)',fill:false,tension:.3,pointRadius:2,borderWidth:2},
+        {label:'Capital restant dû',data:R.capitalDu,borderColor:'rgba(255,92,92,.6)',backgroundColor:'rgba(255,92,92,.04)',fill:false,tension:.3,pointRadius:2,borderWidth:1,borderDash:[4,4]},
+        {label:'Patrimoine net (bien − dette)',data:R.patrimNet,borderColor:'rgba(59,255,158,.9)',backgroundColor:'rgba(59,255,158,.08)',fill:true,tension:.3,pointRadius:2,borderWidth:2}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:'#888',font:{size:11}}},tooltip:{callbacks:{label:function(c){ return c.dataset.label+' : '+fmtE(c.raw); }}}},
+        scales:{x:{grid:{display:false},ticks:{color:'#666'},border:{color:'transparent'}},
+                y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return fmtE(v); },color:'#666'},border:{color:'transparent'}}}
+      }
+    });
+  }
+}
+
+function recalc(){
+  try{
+    // Lire les valeurs
+    var prix      = +g('aprix').value;
+    var atype     = g('atype').value;
+    var surf      = +g('asurf').value;
+    var apport    = +g('aapport').value;
+    var dureeCredit = +g('aduree').value;
+    var taux      = +g('ataux').value;
+    var ass       = +g('aass').value;
+    var tf        = +g('atf').value;
+    var charges   = +g('acharges').value;
+    var entretien = +g('aentretien').value;
+    var assurPNO  = +g('aassurancePNO').value;
+
+    var loyer     = +g('lloyer2').value;
+    var assLoc    = +g('assLoc').value;
+    var hausseLoy = +g('hausseLoy').value / 100;
+
+    var horiz     = +g('horizDet').value;
+    var revenus   = +g('revenus').value;
+    var hausseImmo= +g('hausseImmo').value / 100;
+    var hausseTF  = +g('hausseTF').value / 100;
+    var hausseCharg = +g('hausseCharg').value / 100;
+    var rendEp    = +g('rendEp').value / 100;
+
+    // Labels
+    g('lprix').textContent     = fmtE(prix);
+    g('lsurf').textContent     = surf+' m²';
+    g('lapport').textContent   = fmtE(apport);
+    g('lduree').textContent    = dureeCredit+' ans';
+    g('ltaux').textContent     = fmtP(taux);
+    g('lass').textContent      = fmtP(ass);
+    g('ltf').textContent       = fmtE(tf);
+    g('lcharges').textContent  = fmtE(charges);
+    g('lentretien').textContent= fmtE(entretien);
+    g('lassurancePNO').textContent = fmtE(assurPNO);
+    g('lloyer').textContent    = fmtE(loyer);
+    g('lassLoc').textContent   = fmtE(assLoc);
+    g('lhausseLoy').textContent= fmtP(hausseLoy*100);
+    g('lhoriz').textContent    = horiz+' ans';
+    g('lrev').textContent      = fmtE(revenus);
+    g('lhausseImmo').textContent = fmtP(hausseImmo*100);
+    g('lhausseTF').textContent = fmtP(hausseTF*100);
+    g('lhausseCharg').textContent = fmtP(hausseCharg*100);
+    g('lrend').textContent     = fmtP(rendEp*100);
+
+    // Frais notaire
+    var tauxNotaire = atype === 'neuf' ? 0.025 : 0.08;
+    var fraisNotaire = prix * tauxNotaire;
+
+    // Montant emprunté
+    var emprunt = prix + fraisNotaire - apport;
+    emprunt = Math.max(0, emprunt);
+
+    // Mensualité crédit
+    var tm = taux / 100 / 12;
+    var n  = dureeCredit * 12;
+    var mens = 0;
+    if(tm > 0) mens = emprunt * tm * Math.pow(1+tm, n) / (Math.pow(1+tm, n) - 1);
+    else mens = emprunt / n;
+
+    var assurMens = emprunt * (ass/100) / 12;
+    var mensTot   = mens + assurMens;
+    var coutIntTot= mensTot * n - emprunt;
+    var tauxEndet = revenus > 0 ? (mensTot / revenus) * 100 : 0;
+
+    // Panel achat
+    g('d-notaire').textContent = fmtE(fraisNotaire);
+    g('d-emprunt').textContent = fmtE(emprunt);
+    g('d-mens').textContent    = fmtE(mens);
+    g('d-menstot').textContent = fmtE(mensTot);
+    g('d-endet').textContent   = fmtP(tauxEndet);
+    g('d-endet').style.color   = tauxEndet > 35 ? 'var(--red)' : tauxEndet > 28 ? 'var(--amber)' : 'var(--green)';
+    g('d-coutcredit').textContent = fmtE(coutIntTot);
+
+    // Panel location
+    g('loc-an').textContent  = fmtE(loyer * 12);
+    g('loc-tot').textContent = fmtE(loyer * 12 + assLoc);
+
+    // ── Simulation année par année ──
+    var maxYears = Math.max(horiz, 30);
+    var years    = [];
+    for(var i = 0; i <= maxYears; i++) years.push(i);
+
+    var cumulAchat = [], cumulLoc = [], gainAchat = [];
+    var valeurBien = [], capitalDu  = [], patrimNet  = [];
+
+    var sumAchat = 0, sumLoc = 0;
+    var capitalRestant = emprunt;
+    var loyerCourant   = loyer;
+    var tfCourant      = tf;
+    var chargesCourant = charges;
+    var valeurImmo     = prix;
+    var epargneOppotunity = apport; // apport placé si locataire
+
+    // Créer tableau d'amortissement pour capital restant par an
+    // Recalcul mensuel pour précision
+    var capitalParAn = [];
+    var capRest = emprunt;
+    for(var yr = 1; yr <= maxYears; yr++){
+      for(var mo = 0; mo < 12; mo++){
+        var interetsM = capRest * tm;
+        var capRembM  = mens - interetsM;
+        capRest = Math.max(0, capRest - capRembM);
+        if(yr > dureeCredit) capRest = 0;
+      }
+      capitalParAn.push(capRest);
+    }
+
+    cumulAchat.push(0); cumulLoc.push(0); gainAchat.push(0);
+    valeurBien.push(prix); capitalDu.push(emprunt); patrimNet.push(prix - emprunt);
+
+    for(var y = 1; y <= maxYears; y++){
+      // Achat : mensualités + charges annuelles
+      var coutAchatAn = mensTot * 12 + tfCourant + chargesCourant + entretien + assurPNO;
+      if(y > dureeCredit) coutAchatAn = tfCourant + chargesCourant + entretien + assurPNO; // crédit remboursé
+      sumAchat += coutAchatAn;
+
+      // Location : loyer + assurance
+      var coutLocAn = loyerCourant * 12 + assLoc;
+      // + coût opportunité apport placé (ce que rapporterait l'apport si placé)
+      // En réalité on compare les flux nets. L'acheteur immobilise l'apport, le locataire le place.
+      // On va intégrer ça dans le coût total de l'achat (coût opp = apport * rendEp chaque année)
+      var coutOpp = apport * rendEp * Math.pow(1+rendEp, y-1); // intérêts composés perdu
+      sumLoc += coutLocAn;
+
+      cumulAchat.push(sumAchat);
+      cumulLoc.push(sumLoc);
+      gainAchat.push(sumLoc - sumAchat); // positif = achat gagne
+
+      // Valeur bien
+      valeurImmo = valeurImmo * (1 + hausseImmo);
+      var capDu = y <= capitalParAn.length ? capitalParAn[y-1] : 0;
+      var patrim = valeurImmo - capDu;
+
+      valeurBien.push(Math.round(valeurImmo));
+      capitalDu.push(Math.round(capDu));
+      patrimNet.push(Math.round(patrim));
+
+      // Evolution charges
+      tfCourant      = tfCourant      * (1 + hausseTF);
+      chargesCourant = chargesCourant * (1 + hausseCharg);
+      loyerCourant   = loyerCourant   * (1 + hausseLoy);
+    }
+
+    // Point d'équilibre (première année où gain >= 0)
+    var breakEven = -1;
+    for(var iy = 1; iy < gainAchat.length; iy++){
+      if(gainAchat[iy] >= 0){ breakEven = iy; break; }
+    }
+
+    // Coût d'opportunité de l'apport sur l'horizon
+    var coutOppTotal = apport * (Math.pow(1+rendEp, horiz) - 1);
+    // Capital restant à fin horizon
+    var crdHoriz = horiz <= capitalParAn.length ? capitalParAn[horiz-1] : 0;
+    // Patrimoine net à fin horizon
+    var valFinale = prix * Math.pow(1+hausseImmo, horiz);
+    var patrimFinal = valFinale - crdHoriz;
+
+    // Gain brut de l'achat à horizon = (cumulLoc[horiz] + coutOppTotal) - (cumulAchat[horiz])
+    // puis ajouter la valeur patrimoniale acquise
+    var coutTotAchat = cumulAchat[horiz];
+    var coutTotLoc   = cumulLoc[horiz] + coutOppTotal;
+    var gainNet = coutTotLoc - coutTotAchat + patrimFinal - apport;
+
+    R = {
+      years: years,
+      cumulAchat: cumulAchat,
+      cumulLoc: cumulLoc,
+      gainAchat: gainAchat,
+      valeurBien: valeurBien,
+      capitalDu: capitalDu,
+      patrimNet: patrimNet
+    };
+
+    if(activeTab === 'proj') renderCharts('proj');
+
+    // ── Score ──
+    var score = 40;
+    var pills = [];
+    if(tauxEndet <= 28){ score += 15; pills.push({t:'✓ Endettement OK ('+fmtP(tauxEndet)+')',c:'pg'}); }
+    else if(tauxEndet <= 35){ score += 7; pills.push({t:'⚠ Endettement '+fmtP(tauxEndet),c:'pn'}); }
+    else { score -= 10; pills.push({t:'✗ Endettement trop élevé',c:'pb'}); }
+
+    if(breakEven > 0 && breakEven <= 7){ score += 20; pills.push({t:'✓ Équilibre en '+breakEven+' ans',c:'pg'}); }
+    else if(breakEven > 0 && breakEven <= 12){ score += 10; pills.push({t:'Équilibre en '+breakEven+' ans',c:'pn'}); }
+    else if(breakEven > 0 && breakEven <= 20){ score += 3; pills.push({t:'Équilibre en '+breakEven+' ans',c:'pn'}); }
+    else { score -= 5; pills.push({t:'Équilibre > 20 ans',c:'pb'}); }
+
+    if(horiz >= breakEven && breakEven > 0){ score += 10; pills.push({t:'✓ Durée suffisante',c:'pg'}); }
+    else if(breakEven > 0){ score -= 10; pills.push({t:'⚠ Durée trop courte',c:'pb'}); }
+
+    if(apport >= prix * 0.10){ score += 5; pills.push({t:'✓ Apport ≥ 10%',c:'pg'}); }
+    else { score -= 5; pills.push({t:'⚠ Apport insuffisant',c:'pb'}); }
+
+    if(gainNet > 0){ score += 10; }
+    else { score -= 5; }
+
+    score = Math.max(0, Math.min(100, Math.round(score)));
+
+    var arc = g('sarc');
+    arc.style.strokeDashoffset = 213.6 - (score/100)*213.6;
+    var sc = score >= 65 ? '#3BFF9E' : score >= 45 ? '#FFD93D' : '#FF5C5C';
+    arc.style.stroke = sc;
+    g('snum').textContent = score;
+    g('snum').style.color = sc;
+
+    var titles = ['Achat déconseillé','Achat risqué','Achat envisageable','Bon moment d\'acheter','Achat très avantageux'];
+    var descs = [
+      'Dans votre situation, l\'achat présente plus de risques financiers que la location. L\'endettement est trop élevé ou la durée de détention trop courte.',
+      'L\'achat est possible mais serré. Surveillez l\'endettement et planifiez une durée de détention suffisante.',
+      'L\'achat peut être rentable si vous restez dans le bien assez longtemps. Le point d\'équilibre est dans un délai raisonnable.',
+      'Votre profil est favorable à l\'achat. Endettement maîtrisé et rentabilisation dans un délai correct.',
+      'Excellent profil pour l\'achat. Vous allez construire un patrimoine solide tout en maîtrisant vos coûts.',
+    ];
+    var ti = score<30?0:score<50?1:score<65?2:score<80?3:4;
+    g('stitle').textContent = titles[ti];
+    g('sdesc').textContent  = descs[ti];
+    g('spills').innerHTML = pills.map(function(p){ return '<span class="pill '+p.c+'">'+p.t+'</span>'; }).join('');
+
+    g('bbreak').textContent = breakEven > 0 ? breakEven+' ans' : '> 30 ans';
+    g('bgain').textContent  = (gainNet>=0?'+':'')+fmtE(gainNet);
+    g('bgain').style.color  = gainNet >= 0 ? 'var(--green)' : 'var(--red)';
+    g('bpatrim').textContent = fmtE(patrimFinal);
+
+    // Panel profil
+    var profilItems = [
+      {l:'Mensualité crédit + assurance', v:fmtE(mensTot), ok:tauxEndet<=35},
+      {l:'Taux d\'endettement', v:fmtP(tauxEndet), ok:tauxEndet<=35},
+      {l:'Apport / prix', v:fmtP((apport/prix)*100), ok:apport>=prix*0.10},
+      {l:'Durée de détention prévue', v:horiz+' ans', ok:horiz>=breakEven && breakEven>0},
+      {l:'Point d\'équilibre estimé', v:breakEven>0?breakEven+' ans':'> 30 ans', ok:breakEven>0&&breakEven<=15},
+    ];
+    g('profil-items').innerHTML = profilItems.map(function(it){
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">'
+        +'<span style="font-size:12px;color:#666">'+it.l+'</span>'
+        +'<span style="font-family:DM Mono,monospace;font-size:12px;color:'+(it.ok?'var(--green)':'var(--amber)')+'">'+it.v+'</span>'
+        +'</div>';
+    }).join('');
+
+    // Panel bilan
+    ['b-hor1','b-hor2','b-hor3','b-hor4'].forEach(function(id){ var el=g(id); if(el) el.textContent=horiz; });
+    g('b-coutAchat').textContent = fmtE(cumulAchat[horiz]);
+    g('b-coutLoc').textContent   = fmtE(cumulLoc[horiz]);
+    g('b-break').textContent     = breakEven>0?breakEven+' ans':'> 30 ans';
+    g('b-patrim').textContent    = fmtE(patrimFinal);
+    g('b-apport').textContent    = fmtE(apport);
+    g('b-oppGain').textContent   = fmtE(coutOppTotal);
+    g('b-crd').textContent       = fmtE(crdHoriz);
+
+    var bv = g('b-verdict');
+    if(breakEven > 0 && horiz >= breakEven){
+      bv.className='verdict vg'; g('b-vi').textContent='✓';
+      g('b-vt').textContent = 'Achat avantageux sur '+horiz+' ans — point d\'équilibre atteint en '+breakEven+' ans';
+      g('b-vb').textContent = 'Sur '+horiz+' ans, l\'achat est moins coûteux que la location d\'environ '+fmtE(Math.max(0,gainNet))+'. Vous construisez un patrimoine de '+fmtE(patrimFinal)+' (valeur bien − dette restante).';
+    } else if(breakEven < 0 || breakEven > 20){
+      bv.className='verdict vr'; g('b-vi').textContent='⚠';
+      g('b-vt').textContent = 'Achat peu rentable dans ces conditions';
+      g('b-vb').textContent = 'Le point d\'équilibre est très lointain (> 20 ans). Dans votre ville / avec votre loyer actuel, louer reste moins cher sur la période. Cela peut changer avec un loyer plus élevé, un prix d\'achat plus bas ou une durée plus longue.';
+    } else {
+      bv.className='verdict vo'; g('b-vi').textContent='⚠';
+      g('b-vt').textContent = 'Achat rentable à long terme — point d\'équilibre en '+breakEven+' ans';
+      g('b-vb').textContent = 'L\'achat devient avantageux à partir de l\'année '+breakEven+'. Si vous envisagez de rester '+horiz+' ans, vous n\'atteignez pas encore le point d\'équilibre. Allongez l\'horizon ou renégociez.';
+    }
+
+    function di(l,v,c){ return '<div class="ditem"><span>'+l+'</span><span style="color:'+(c||'var(--text)')+'">'+v+'</span></div>'; }
+    g('detail-achat').innerHTML =
+      di('Frais de notaire (one-shot)',fmtE(fraisNotaire),'var(--red)')
+      +di('Mensualités crédit ×'+Math.min(horiz,dureeCredit)+' ans',fmtE(mensTot*12*Math.min(horiz,dureeCredit)),'var(--amber)')
+      +di('Taxe foncière cumulée',fmtE(tfCourant>0?tf*horiz*(1+hausseTF*horiz/2):tf*horiz),'')
+      +di('Charges copro cumulées',fmtE(charges*horiz),'')
+      +di('Entretien cumulé',fmtE(entretien*horiz),'')
+      +di('TOTAL flux sortants',fmtE(cumulAchat[horiz]),'var(--blue)')
+      +di('Valeur bien à la revente',fmtE(valFinale),'var(--green)')
+      +di('Capital restant dû',fmtE(crdHoriz),'var(--red)')
+      +di('Patrimoine net',fmtE(patrimFinal),'var(--green)');
+
+    g('detail-loc').innerHTML =
+      di('Loyers cumulés',fmtE(cumulLoc[horiz]),'var(--red)')
+      +di('Assurance cumulée',fmtE(assLoc*horiz),'')
+      +di('Coût opportunité apport',fmtE(coutOppTotal),'var(--amber)')
+      +di('TOTAL flux sortants + manque à gagner',fmtE(cumulLoc[horiz]+coutOppTotal),'var(--amber)')
+      +di('Épargne constituée (apport + intérêts)',fmtE(apport*Math.pow(1+rendEp,horiz)),'var(--green)');
+
+  }catch(err){ console.error('recalc error:',err); }
+}
+
+document.querySelectorAll('input[type=range], input[type=number], select').forEach(function(el){
+  el.addEventListener('input', recalc);
+  el.addEventListener('change', recalc);
+});
+
+recalc();
+</script>
+</body>
+</html>
