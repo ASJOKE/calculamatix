@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Le vrai coût d'un enfant de 0 à 18 ans | Calculamatix</title>
+  <meta name="description" content="Combien coûte vraiment un enfant ? Calcul complet par tranche d'âge : garde, alimentation, vêtements, activités, scolarité, aides CAF. Données INSEE, UNAF & CAF 2025."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#090909;--card:#141414;--border:#222;
+      --yellow:#FFD93D;--green:#3BFF9E;--blue:#3BB5FF;
+      --purple:#C084FC;--red:#FF5C5C;--amber:#FFAA3B;
+      --pink:#FF6B9D;--text:#F0EDE6;--muted:#555;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:80px}
+    body::before{content:'';position:fixed;inset:0;opacity:.4;pointer-events:none;z-index:0;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E")}
+
+    nav{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:18px;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--yellow)}
+    .back{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+    .back:hover{color:var(--text)}
+
+    .hero{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:40px 24px 28px}
+    .htag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--pink);background:rgba(255,107,157,.08);border:1px solid rgba(255,107,157,.2);padding:4px 14px;border-radius:100px;margin-bottom:14px}
+    h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(22px,4vw,48px);letter-spacing:-2px;line-height:1.05;margin-bottom:10px}
+    h1 span{color:var(--yellow)}
+    .hero p{font-size:14px;color:var(--muted);line-height:1.7;max-width:640px}
+
+    /* CHOC BANNER */
+    .choc-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .choc-box{background:linear-gradient(135deg,rgba(255,107,157,.08),rgba(255,217,61,.05));border:1px solid rgba(255,107,157,.25);border-radius:20px;padding:24px 28px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+    .choc-total{text-align:center;min-width:160px}
+    .choc-label{font-size:11px;color:var(--pink);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+    .choc-num{font-family:'Unbounded',sans-serif;font-size:clamp(28px,5vw,52px);font-weight:900;color:var(--yellow);line-height:1}
+    .choc-sub{font-size:11px;color:var(--muted);margin-top:4px}
+    .choc-divider{width:1px;height:60px;background:#2a2a2a;flex-shrink:0}
+    .choc-stats{display:flex;flex-wrap:wrap;gap:14px;flex:1}
+    .choc-stat{text-align:center;min-width:100px}
+    .choc-stat-v{font-family:'DM Mono',monospace;font-size:20px;font-weight:700}
+    .choc-stat-l{font-size:10px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+
+    .tabs-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .tabs{display:flex;gap:4px;background:#0d0d0d;border:1px solid var(--border);border-radius:14px;padding:5px;width:fit-content;flex-wrap:wrap}
+    .tab{background:transparent;border:none;color:var(--muted);padding:9px 15px;border-radius:10px;font-size:13px;font-family:inherit;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+    .tab.on{background:var(--yellow);color:#000;font-weight:700}
+    .panel{display:none}.panel.on{display:block}
+
+    .wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:14px}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px}
+    .ctitle{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px}
+    .fhint{font-size:10px;color:#333;margin-top:5px;line-height:1.5}
+
+    .f{margin-bottom:13px}.f:last-child{margin-bottom:0}
+    .f label{display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:6px}
+    .fval{font-family:'DM Mono',monospace;color:var(--yellow);font-size:12px}
+
+    input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:#252525;border-radius:2px;outline:none;cursor:pointer}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--yellow);border-radius:50%;box-shadow:0 0 8px rgba(255,217,61,.4)}
+
+    select{width:100%;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;color:var(--text);padding:10px 13px;font-size:14px;font-family:inherit;outline:none;transition:border-color .15s}
+    select:focus{border-color:var(--yellow)}
+
+    .divider{display:flex;align-items:center;gap:10px;margin:10px 0}
+    .divider span{font-size:10px;color:#333;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:#1e1e1e}
+
+    .phase-card{border-radius:16px;border:1px solid;padding:18px;position:relative;overflow:hidden}
+    .phase-card::before{content:'';position:absolute;inset:0;opacity:.04}
+    .p0{border-color:rgba(255,107,157,.3);background:rgba(255,107,157,.04)}
+    .p0 .ph{color:var(--pink)}
+    .p1{border-color:rgba(255,170,59,.3);background:rgba(255,170,59,.04)}
+    .p1 .ph{color:var(--amber)}
+    .p2{border-color:rgba(59,181,255,.3);background:rgba(59,181,255,.04)}
+    .p2 .ph{color:var(--blue)}
+    .p3{border-color:rgba(192,132,252,.3);background:rgba(192,132,252,.04)}
+    .p3 .ph{color:var(--purple)}
+    .p4{border-color:rgba(59,255,158,.3);background:rgba(59,255,158,.04)}
+    .p4 .ph{color:var(--green)}
+
+    .ph{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+    .ph-total{font-family:'DM Mono',monospace;font-size:16px;margin-left:auto}
+
+    .m{background:#1a1a1a;border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+    .ml{font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+    .mv{font-family:'DM Mono',monospace;font-size:18px;font-weight:500}
+    .ms{font-size:10px;color:var(--muted);margin-top:3px}
+    .mh{background:rgba(59,255,158,.05);border-color:rgba(59,255,158,.2)}
+    .my{background:rgba(255,217,61,.05);border-color:rgba(255,217,61,.2)}
+    .mr{background:rgba(255,92,92,.05);border-color:rgba(255,92,92,.2)}
+
+    .ditem{display:flex;justify-content:space-between;padding:8px 12px;background:#1a1a1a;border:1px solid #222;border-radius:8px}
+    .ditem span:first-child{font-size:12px;color:#666}
+    .ditem span:last-child{font-family:'DM Mono',monospace;font-size:12px}
+
+    .aide-row{display:flex;justify-content:space-between;align-items:center;padding:9px 13px;background:rgba(59,255,158,.04);border:1px solid rgba(59,255,158,.15);border-radius:8px}
+    .aide-row span:first-child{font-size:12px;color:#666}
+    .aide-row span:last-child{font-family:'DM Mono',monospace;font-size:12px;color:var(--green)}
+
+    .cw{position:relative;width:100%;height:240px;margin-top:12px}
+    .cwt{position:relative;width:100%;height:300px;margin-top:12px}
+
+    .sources{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px;padding:14px 16px;font-size:11px;color:#3a3a3a;line-height:1.8}
+
+    .reveal{background:linear-gradient(135deg,rgba(255,217,61,.08),rgba(255,107,157,.05));border:1px solid rgba(255,217,61,.3);border-radius:16px;padding:20px 24px;text-align:center}
+    .reveal-n{font-family:'Unbounded',sans-serif;font-size:clamp(32px,6vw,64px);font-weight:900;color:var(--yellow);margin:8px 0}
+    .reveal-sub{font-size:13px;color:#666;line-height:1.7}
+
+    @media(max-width:640px){
+      .g2,.g3,.g4,.g5{grid-template-columns:1fr 1fr}
+      .choc-box{flex-direction:column}
+      .tab{padding:8px 10px;font-size:11px}
+      .choc-divider{display:none}
+    }
+    @media(max-width:400px){
+      .g2,.g3,.g4,.g5{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Tous les calculateurs</a>
+</nav>
+
+<div class="hero">
+  <div class="htag">👶 Famille</div>
+  <h1>Le vrai coût<br><span>d'un enfant</span></h1>
+  <p>De la naissance à 18 ans, tout compris : garde, alimentation, vêtements, activités, scolarité, santé. Avec les aides CAF réelles 2025. Le chiffre final vous surprendra.</p>
+</div>
+
+<!-- CHOC BANNER -->
+<div class="choc-wrap">
+  <div class="choc-box">
+    <div class="choc-total">
+      <div class="choc-label">👶 Coût total brut</div>
+      <div class="choc-num" id="choc-brut">—</div>
+      <div class="choc-sub">de 0 à 18 ans</div>
+    </div>
+    <div class="choc-divider"></div>
+    <div class="choc-stats">
+      <div class="choc-stat"><div class="choc-stat-v" id="ch-net" style="color:var(--green)">—</div><div class="choc-stat-l">Après aides CAF</div></div>
+      <div class="choc-stat"><div class="choc-stat-v" id="ch-mois" style="color:var(--amber)">—</div><div class="choc-stat-l">Par mois en moyenne</div></div>
+      <div class="choc-stat"><div class="choc-stat-v" id="ch-jour" style="color:var(--blue)">—</div><div class="choc-stat-l">Par jour</div></div>
+      <div class="choc-stat"><div class="choc-stat-v" id="ch-pct" style="color:var(--purple)">—</div><div class="choc-stat-l">De votre salaire net</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('situation',this)">👤 Votre situation</button>
+    <button class="tab" onclick="showTab('phases',this)">📅 Par phase d'âge</button>
+    <button class="tab" onclick="showTab('bilan',this)">💰 Bilan & Aides</button>
+    <button class="tab" onclick="showTab('proj',this)">📊 Graphiques</button>
+    <button class="tab" onclick="showTab('cache',this)">😱 Coûts cachés</button>
+  </div>
+</div>
+
+<!-- ===== SITUATION ===== -->
+<div class="panel on" id="p-situation"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Votre situation familiale</div>
+      <div class="f">
+        <label>Revenu net mensuel du foyer <span class="fval" id="lrev">3 500 €</span></label>
+        <input type="range" id="revenu" min="1000" max="12000" step="100" value="3500">
+        <div class="fhint">Utilisé pour calculer les aides CAF et le % du budget consacré à l'enfant</div>
+      </div>
+      <div class="f">
+        <label>Niveau de vie / style de dépenses</label>
+        <select id="niveau">
+          <option value="modeste">🟢 Modeste — budget serré, occasion, clubs municipaux</option>
+          <option value="moyen" selected>🟡 Moyen — milieu de gamme, quelques activités privées</option>
+          <option value="aise">🔴 Aisé — écoles privées, activités multiples, équipements premium</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Lieu de résidence</label>
+        <select id="lieu">
+          <option value="province" selected>Province (ville moyenne)</option>
+          <option value="paris">Île-de-France / Grande métropole</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Rang de l'enfant dans la fratrie</label>
+        <select id="rang">
+          <option value="1" selected>1er enfant (coûts maximaux)</option>
+          <option value="2">2ème enfant (−15% sur équipement)</option>
+          <option value="3">3ème enfant et + (allocations familiales actives)</option>
+        </select>
+      </div>
+      <div class="divider"><span>Mode de garde 0-3 ans</span></div>
+      <div class="f">
+        <label>Mode de garde principal</label>
+        <select id="garde">
+          <option value="creche">Crèche municipale (PSU)</option>
+          <option value="assistante" selected>Assistante maternelle</option>
+          <option value="domicile">Garde à domicile</option>
+          <option value="parent">Congé parental / parent à la maison</option>
+        </select>
+        <div class="fhint">La garde représente 30-50% du budget des 3 premières années</div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="border-color:rgba(255,107,157,.2);background:rgba(255,107,157,.03);">
+        <div class="ctitle" style="color:var(--pink)">Coût mensuel estimé par phase</div>
+        <div style="display:flex;flex-direction:column;gap:6px;" id="phase-resume"></div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Contexte France 2025</div>
+        <div style="font-size:12px;color:#666;line-height:1.7;">
+          <div style="margin-bottom:8px;">📊 Selon l'INSEE &amp; l'UNAF, un enfant coûte en moyenne <strong style="color:var(--text)">680€/mois</strong> soit <strong style="color:var(--yellow)">147 000€ sur 18 ans</strong></div>
+          <div style="margin-bottom:8px;">🔴 Pour les familles aisées : jusqu'à <strong style="color:var(--text)">250 000€</strong></div>
+          <div style="margin-bottom:8px;">💚 Avec les aides CAF optimisées : ramené à <strong style="color:var(--green)">~100 000€</strong> pour les foyers modestes</div>
+          <div>⚠️ Ces chiffres n'incluent <strong style="color:var(--amber)">pas</strong> le logement agrandi, la voiture plus grande, ni la perte de revenus liée au congé parental</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== PHASES ===== -->
+<div class="panel" id="p-phases"><div class="wrap">
+  <!-- Phase 0-3 -->
+  <div class="phase-card p0">
+    <div class="ph">👶 0-3 ans — La grande dépense <span class="ph-total" id="pt0">—</span></div>
+    <div class="g2">
+      <div>
+        <div class="f">
+          <label>Garde mensuelle (reste à charge) <span class="fval" id="l03garde">—</span></label>
+          <input type="range" id="s03garde" min="0" max="1500" step="25" value="400">
+          <div class="fhint" id="h03garde">Assistante mat. : 400-800€ · Crèche PSU : 150-500€ · Domicile : 1000-1800€ · Parent : 0€ (mais perte salaire)</div>
+        </div>
+        <div class="f">
+          <label>Alimentation (lait, petits pots...) <span class="fval" id="l03ali">100 €</span></label>
+          <input type="range" id="s03ali" min="50" max="300" step="10" value="100">
+        </div>
+        <div class="f">
+          <label>Couches + hygiène / mois <span class="fval" id="l03couche">70 €</span></label>
+          <input type="range" id="s03couche" min="20" max="150" step="5" value="70">
+        </div>
+      </div>
+      <div>
+        <div class="f">
+          <label>Vêtements / mois <span class="fval" id="l03vete">80 €</span></label>
+          <input type="range" id="s03vete" min="20" max="200" step="10" value="80">
+        </div>
+        <div class="f">
+          <label>Santé (médecin, pharmacie...) <span class="fval" id="l03sante">40 €</span></label>
+          <input type="range" id="s03sante" min="20" max="150" step="5" value="40">
+        </div>
+        <div class="f">
+          <label>Équipement naissance (one-shot) <span class="fval" id="l03equip">2 000 €</span></label>
+          <input type="range" id="s03equip" min="500" max="5000" step="100" value="2000">
+          <div class="fhint">Poussette, lit, siège auto, baignoire, babycook...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 3-6 -->
+  <div class="phase-card p1">
+    <div class="ph">🧒 3-6 ans — Maternelle <span class="ph-total" id="pt1">—</span></div>
+    <div class="g2">
+      <div>
+        <div class="f">
+          <label>Périscolaire + cantine / mois <span class="fval" id="l36peri">150 €</span></label>
+          <input type="range" id="s36peri" min="50" max="400" step="10" value="150">
+        </div>
+        <div class="f">
+          <label>Alimentation / mois <span class="fval" id="l36ali">150 €</span></label>
+          <input type="range" id="s36ali" min="80" max="350" step="10" value="150">
+        </div>
+        <div class="f">
+          <label>Vêtements / mois <span class="fval" id="l36vete">70 €</span></label>
+          <input type="range" id="s36vete" min="30" max="200" step="10" value="70">
+        </div>
+      </div>
+      <div>
+        <div class="f">
+          <label>Activités extrascolaires / mois <span class="fval" id="l36activ">60 €</span></label>
+          <input type="range" id="s36activ" min="0" max="300" step="10" value="60">
+          <div class="fhint">Éveil musical, sport, piscine...</div>
+        </div>
+        <div class="f">
+          <label>Santé / mois <span class="fval" id="l36sante">30 €</span></label>
+          <input type="range" id="s36sante" min="10" max="100" step="5" value="30">
+        </div>
+        <div class="f">
+          <label>Jouets + livres / mois <span class="fval" id="l36jouet">40 €</span></label>
+          <input type="range" id="s36jouet" min="10" max="150" step="5" value="40">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 6-11 -->
+  <div class="phase-card p2">
+    <div class="ph">🏫 6-11 ans — École primaire <span class="ph-total" id="pt2">—</span></div>
+    <div class="g2">
+      <div>
+        <div class="f">
+          <label>Cantine + périscolaire / mois <span class="fval" id="l611cant">120 €</span></label>
+          <input type="range" id="s611cant" min="50" max="350" step="10" value="120">
+        </div>
+        <div class="f">
+          <label>Alimentation / mois <span class="fval" id="l611ali">180 €</span></label>
+          <input type="range" id="s611ali" min="100" max="400" step="10" value="180">
+        </div>
+        <div class="f">
+          <label>Vêtements + chaussures / mois <span class="fval" id="l611vete">70 €</span></label>
+          <input type="range" id="s611vete" min="30" max="200" step="10" value="70">
+        </div>
+      </div>
+      <div>
+        <div class="f">
+          <label>Activités sport/musique / mois <span class="fval" id="l611activ">80 €</span></label>
+          <input type="range" id="s611activ" min="0" max="400" step="10" value="80">
+        </div>
+        <div class="f">
+          <label>Fournitures scolaires / an <span class="fval" id="l611four">200 €</span></label>
+          <input type="range" id="s611four" min="100" max="500" step="25" value="200">
+        </div>
+        <div class="f">
+          <label>Loisirs + vacances / mois <span class="fval" id="l611lois">80 €</span></label>
+          <input type="range" id="s611lois" min="20" max="300" step="10" value="80">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 11-15 -->
+  <div class="phase-card p3">
+    <div class="ph">📱 11-15 ans — Collège <span class="ph-total" id="pt3">—</span></div>
+    <div class="g2">
+      <div>
+        <div class="f">
+          <label>Alimentation (ça mange !) / mois <span class="fval" id="l1115ali">220 €</span></label>
+          <input type="range" id="s1115ali" min="100" max="450" step="10" value="220">
+        </div>
+        <div class="f">
+          <label>Vêtements (marques...) / mois <span class="fval" id="l1115vete">90 €</span></label>
+          <input type="range" id="s1115vete" min="40" max="250" step="10" value="90">
+        </div>
+        <div class="f">
+          <label>Téléphone + forfait / mois <span class="fval" id="l1115tel">25 €</span></label>
+          <input type="range" id="s1115tel" min="0" max="80" step="5" value="25">
+        </div>
+      </div>
+      <div>
+        <div class="f">
+          <label>Activités + sorties / mois <span class="fval" id="l1115activ">100 €</span></label>
+          <input type="range" id="s1115activ" min="30" max="400" step="10" value="100">
+        </div>
+        <div class="f">
+          <label>Fournitures + manuels scolaires / an <span class="fval" id="l1115four">300 €</span></label>
+          <input type="range" id="s1115four" min="100" max="700" step="25" value="300">
+        </div>
+        <div class="f">
+          <label>Argent de poche / mois <span class="fval" id="l1115poche">30 €</span></label>
+          <input type="range" id="s1115poche" min="0" max="100" step="5" value="30">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 15-18 -->
+  <div class="phase-card p4">
+    <div class="ph">🎓 15-18 ans — Lycée <span class="ph-total" id="pt4">—</span></div>
+    <div class="g2">
+      <div>
+        <div class="f">
+          <label>Alimentation / mois <span class="fval" id="l1518ali">260 €</span></label>
+          <input type="range" id="s1518ali" min="120" max="500" step="10" value="260">
+        </div>
+        <div class="f">
+          <label>Vêtements / mois <span class="fval" id="l1518vete">100 €</span></label>
+          <input type="range" id="s1518vete" min="40" max="300" step="10" value="100">
+        </div>
+        <div class="f">
+          <label>Transports / mois <span class="fval" id="l1518trans">50 €</span></label>
+          <input type="range" id="s1518trans" min="0" max="200" step="10" value="50">
+        </div>
+      </div>
+      <div>
+        <div class="f">
+          <label>Activités + sorties / mois <span class="fval" id="l1518activ">120 €</span></label>
+          <input type="range" id="s1518activ" min="30" max="500" step="10" value="120">
+        </div>
+        <div class="f">
+          <label>Argent de poche / mois <span class="fval" id="l1518poche">60 €</span></label>
+          <input type="range" id="s1518poche" min="0" max="200" step="10" value="60">
+        </div>
+        <div class="f">
+          <label>Permis de conduire (total) <span class="fval" id="l1518permis">1 800 €</span></label>
+          <input type="range" id="s1518permis" min="0" max="4000" step="100" value="1800">
+          <div class="fhint">Conduite accompagnée : ~1 300€ · Classique : 1 800-2 500€</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== BILAN ===== -->
+<div class="panel" id="p-bilan"><div class="wrap">
+
+  <div class="reveal">
+    <div style="font-size:13px;color:#888;margin-bottom:6px;">Coût total brut de 0 à 18 ans</div>
+    <div class="reveal-n" id="b-total">—</div>
+    <div class="reveal-sub">Soit <span id="b-mois">—</span>/mois en moyenne · <span id="b-jour">—</span>/jour · <span id="b-heure">—</span>/heure</div>
+  </div>
+
+  <div class="g5">
+    <div class="m p0" style="border-color:rgba(255,107,157,.3)"><div class="ml">0-3 ans</div><div class="mv" id="bb0" style="color:var(--pink)">—</div><div class="ms">sur 3 ans</div></div>
+    <div class="m p1" style="border-color:rgba(255,170,59,.3)"><div class="ml">3-6 ans</div><div class="mv" id="bb1" style="color:var(--amber)">—</div><div class="ms">sur 3 ans</div></div>
+    <div class="m p2" style="border-color:rgba(59,181,255,.3)"><div class="ml">6-11 ans</div><div class="mv" id="bb2" style="color:var(--blue)">—</div><div class="ms">sur 5 ans</div></div>
+    <div class="m p3" style="border-color:rgba(192,132,252,.3)"><div class="ml">11-15 ans</div><div class="mv" id="bb3" style="color:var(--purple)">—</div><div class="ms">sur 4 ans</div></div>
+    <div class="m p4" style="border-color:rgba(59,255,158,.3)"><div class="ml">15-18 ans</div><div class="mv" id="bb4" style="color:var(--green)">—</div><div class="ms">sur 3 ans</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle" style="color:var(--green)">🏦 Aides CAF estimées sur 18 ans</div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="aides-list"></div>
+      <div class="ditem" style="margin-top:8px;background:rgba(59,255,158,.07);border-color:rgba(59,255,158,.25);">
+        <span style="font-weight:600;color:var(--text)">TOTAL AIDES</span>
+        <span id="aides-total" style="color:var(--green);font-weight:700">—</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Coût net après aides</div>
+      <div class="g2" style="gap:10px;margin-bottom:12px;">
+        <div class="m my"><div class="ml">Coût brut</div><div class="mv" id="b-brut2" style="color:var(--red)">—</div></div>
+        <div class="m mh"><div class="ml">Coût net</div><div class="mv" id="b-net" style="color:var(--green)">—</div></div>
+      </div>
+      <div style="font-size:12px;color:#555;line-height:1.6;padding:12px;background:#1a1a1a;border-radius:10px;">
+        💡 Les aides varient fortement selon les revenus, le nombre d'enfants et le mode de garde. Utilisez <strong style="color:#888">caf.fr/mes-droits</strong> pour une simulation précise et personnalisée.
+      </div>
+    </div>
+  </div>
+
+  <div class="sources">
+    <strong>Sources :</strong> INSEE &amp; UNAF : coût moyen 680€/mois soit ~147 000€ sur 18 ans · Étude Ipsos/E.Leclerc 2019 (0-3 ans : 490€/mois, réévalué 2025) · HCFEA rapport "coût de l'enfant" 2025 · CAF : prime naissance 1 084€ (BMAF 478,16€ depuis avril 2026) · CMG assistante maternelle : jusqu'à 538€/mois pour &lt;3 ans (réforme sept. 2025) · Allocations familiales : dès 2 enfants · Crédit impôt garde : 50% plafonné à 2 300€/an · Service-public.fr montants 2026 · UNAF budgets-types.
+  </div>
+</div></div>
+
+<!-- ===== PROJECTIONS ===== -->
+<div class="panel" id="p-proj"><div class="wrap">
+  <div class="card">
+    <div class="ctitle">Coût annuel par tranche d'âge</div>
+    <div class="cwt"><canvas id="chart-bar"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Coût cumulé de 0 à 18 ans — Brut vs Après aides</div>
+    <div class="cw"><canvas id="chart-cumul"></canvas></div>
+  </div>
+</div></div>
+
+<!-- ===== COÛTS CACHÉS ===== -->
+<div class="panel" id="p-cache"><div class="wrap">
+  <div class="card">
+    <div class="ctitle">😱 Ce que le calcul standard ne montre pas</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;" id="cache-items"></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Coût d'opportunité — L'argent qu'on aurait pu gagner</div>
+    <div style="font-size:13px;color:#666;line-height:1.7;margin-bottom:14px;">
+      Si les 147 000€ dépensés sur 18 ans avaient été investis progressivement dans un ETF World à 7%/an...
+    </div>
+    <div class="g3" style="gap:10px;" id="opport-boxes"></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Comparaison internationale</div>
+    <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:#666;">
+      <div class="ditem"><span>🇫🇷 France (estimation INSEE/UNAF)</span><span style="color:var(--text)">~147 000 - 220 000€</span></div>
+      <div class="ditem"><span>🇧🇪 Belgique (étude 2025)</span><span style="color:var(--text)">~264 000€ (0-25 ans)</span></div>
+      <div class="ditem"><span>🇺🇸 États-Unis (USDA 2023)</span><span style="color:var(--text)">~310 000$ (0-18 ans)</span></div>
+      <div class="ditem"><span>🇨🇳 Chine (YuWa 2024)</span><span style="color:var(--text)">~760 000€ (0-18 ans, villes)</span></div>
+      <div class="ditem"><span>🇩🇪 Allemagne</span><span style="color:var(--text)">~150 000 - 200 000€</span></div>
+    </div>
+    <div style="font-size:11px;color:#333;margin-top:10px;line-height:1.6;">
+      La France est parmi les pays les moins coûteux grâce à l'école publique gratuite, la protection sociale et les aides CAF importantes. La crèche publique française est parmi les moins chères d'Europe pour les familles.
+    </div>
+  </div>
+</div></div>
+
+<script>
+var activeTab = 'situation';
+var chartBar=null, chartCumul=null;
+var R = {};
+
+Chart.defaults.color = '#666';
+Chart.defaults.font.family = 'DM Sans, sans-serif';
+
+function g(id){ return document.getElementById(id); }
+function fmtN(n,d){ d=d||0; return n.toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function fmtE(n){ return fmtN(Math.round(n))+'€'; }
+function fmtEsp(n){ return fmtN(Math.round(n))+' €'; }
+
+function showTab(name,btn){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  g('p-'+name).classList.add('on');
+  btn.classList.add('on');
+  activeTab = name;
+  setTimeout(function(){ renderCharts(name); }, 80);
+}
+
+function destroyChart(c){ if(c){ try{ c.destroy(); }catch(e){} } return null; }
+
+function renderCharts(name){
+  if(name !== 'proj' || !R.phases) return;
+
+  chartBar = destroyChart(chartBar);
+  var cb = g('chart-bar'); if(!cb) return;
+  chartBar = new Chart(cb,{
+    type:'bar',
+    data:{
+      labels:['0-3 ans\n(3 ans)','3-6 ans\n(3 ans)','6-11 ans\n(5 ans)','11-15 ans\n(4 ans)','15-18 ans\n(3 ans)'],
+      datasets:[{
+        label:'Coût total par phase',
+        data:R.phases,
+        backgroundColor:['rgba(255,107,157,.6)','rgba(255,170,59,.6)','rgba(59,181,255,.6)','rgba(192,132,252,.6)','rgba(59,255,158,.6)'],
+        borderColor:['rgba(255,107,157,.9)','rgba(255,170,59,.9)','rgba(59,181,255,.9)','rgba(192,132,252,.9)','rgba(59,255,158,.9)'],
+        borderWidth:2,borderRadius:8
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){ return 'Total : '+fmtEsp(c.raw); }}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#666'},border:{color:'transparent'}},
+              y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return fmtE(v); },color:'#666'},border:{color:'transparent'}}}
+    }
+  });
+
+  chartCumul = destroyChart(chartCumul);
+  var cc = g('chart-cumul'); if(!cc) return;
+  chartCumul = new Chart(cc,{
+    type:'line',
+    data:{labels:R.cumLabels, datasets:[
+      {label:'Coût brut cumulé',data:R.cumBrut,borderColor:'rgba(255,92,92,.9)',backgroundColor:'rgba(255,92,92,.06)',fill:true,tension:.3,pointRadius:2,borderWidth:2},
+      {label:'Coût net (après aides)',data:R.cumNet,borderColor:'rgba(59,255,158,.9)',backgroundColor:'rgba(59,255,158,.06)',fill:true,tension:.3,pointRadius:2,borderWidth:2}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#888',font:{size:11}}},tooltip:{callbacks:{label:function(c){ return c.dataset.label+' : '+fmtEsp(c.raw); }}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#666'},border:{color:'transparent'}},
+              y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return fmtE(v); },color:'#666'},border:{color:'transparent'}}}
+    }
+  });
+}
+
+function recalc(){
+  try{
+    var revenu = +g('revenu').value;
+    var niveau = g('niveau').value;
+    var lieu   = g('lieu').value;
+    var rang   = +g('rang').value;
+    var garde  = g('garde').value;
+
+    // Lecture phases
+    function sv(id){ return +g(id).value; }
+
+    // Multiplicateurs selon niveau de vie
+    var mult = {modeste:0.75, moyen:1.0, aise:1.5}[niveau];
+    var lieuMult = lieu==='paris' ? 1.25 : 1.0;
+
+    // Labels sliders
+    var lmap = {
+      l03garde:sv('s03garde'), l03ali:sv('s03ali'), l03couche:sv('s03couche'),
+      l03vete:sv('s03vete'), l03sante:sv('s03sante'), l03equip:sv('s03equip'),
+      l36peri:sv('s36peri'), l36ali:sv('s36ali'), l36vete:sv('s36vete'),
+      l36activ:sv('s36activ'), l36sante:sv('s36sante'), l36jouet:sv('s36jouet'),
+      l611cant:sv('s611cant'), l611ali:sv('s611ali'), l611vete:sv('s611vete'),
+      l611activ:sv('s611activ'), l611four:sv('s611four'), l611lois:sv('s611lois'),
+      l1115ali:sv('s1115ali'), l1115vete:sv('s1115vete'), l1115tel:sv('s1115tel'),
+      l1115activ:sv('s1115activ'), l1115four:sv('s1115four'), l1115poche:sv('s1115poche'),
+      l1518ali:sv('s1518ali'), l1518vete:sv('s1518vete'), l1518trans:sv('s1518trans'),
+      l1518activ:sv('s1518activ'), l1518poche:sv('s1518poche'), l1518permis:sv('s1518permis'),
+    };
+    Object.keys(lmap).forEach(function(id){ var el=g(id); if(el) el.textContent=fmtEsp(lmap[id]); });
+
+    // ── Phase 0-3 ans (36 mois) ──
+    var p0_mensuel = sv('s03garde') + sv('s03ali') + sv('s03couche') + sv('s03vete') + sv('s03sante');
+    var p0_total = p0_mensuel * 36 + sv('s03equip');
+    if(g('pt0')) g('pt0').textContent = fmtEsp(p0_total)+' total';
+
+    // ── Phase 3-6 ans (36 mois) ──
+    var p1_mensuel = sv('s36peri') + sv('s36ali') + sv('s36vete') + sv('s36activ') + sv('s36sante') + sv('s36jouet');
+    var p1_total = p1_mensuel * 36;
+    if(g('pt1')) g('pt1').textContent = fmtEsp(p1_total)+' total';
+
+    // ── Phase 6-11 ans (60 mois) ──
+    var p2_mensuel = sv('s611cant') + sv('s611ali') + sv('s611vete') + sv('s611activ') + sv('s611four')/12 + sv('s611lois');
+    var p2_total = p2_mensuel * 60;
+    if(g('pt2')) g('pt2').textContent = fmtEsp(p2_total)+' total';
+
+    // ── Phase 11-15 ans (48 mois) ──
+    var p3_mensuel = sv('s1115ali') + sv('s1115vete') + sv('s1115tel') + sv('s1115activ') + sv('s1115four')/12 + sv('s1115poche');
+    var p3_total = p3_mensuel * 48;
+    if(g('pt3')) g('pt3').textContent = fmtEsp(p3_total)+' total';
+
+    // ── Phase 15-18 ans (36 mois) ──
+    var p4_mensuel = sv('s1518ali') + sv('s1518vete') + sv('s1518trans') + sv('s1518activ') + sv('s1518poche') + sv('s1518permis')/36;
+    var p4_total = p4_mensuel * 36;
+    if(g('pt4')) g('pt4').textContent = fmtEsp(p4_total)+' total';
+
+    var totalBrut = p0_total + p1_total + p2_total + p3_total + p4_total;
+    var totalMois = totalBrut / 216; // 18 ans × 12
+    var totalJour = totalBrut / (18*365);
+    var totalHeure= totalBrut / (18*365*24);
+    var pctSalaire= revenu>0?(totalMois/revenu)*100:0;
+
+    // ── Aides CAF ──
+    var aideNaissance = 1084;
+    // CMG <3 ans : simplifié selon revenus
+    var cmgAn = Math.min(538, Math.max(0, 538 - (revenu-1500)*0.015));
+    if(garde === 'parent') cmgAn = 0;
+    if(garde === 'domicile') cmgAn = Math.min(496, cmgAn);
+    var cmgTotal = cmgAn * 36 + Math.min(269, cmgAn*0.5) * 36; // 0-3 et 3-6
+    // Crédit impôt garde (50% de ~2300€/an pendant 3 ans)
+    var creditImpot = garde !== 'parent' ? 1150 * 3 : 0;
+    // Allocations familiales (dès 2 enfants)
+    var allocFam = rang >= 2 ? 135 * 180 : 0; // ~135€/mois × 180 mois (15 ans)
+    // Prime rentrée scolaire estimée
+    var primeRentree = 380 * 12; // ~380€/an × 12 ans scolaires (sous conditions)
+    var aidesTotal = aideNaissance + cmgTotal + creditImpot + (rang>=2?allocFam:0);
+    var totalNet = Math.max(0, totalBrut - aidesTotal);
+
+    // CHOC BANNER
+    g('choc-brut').textContent = fmtEsp(totalBrut);
+    g('ch-net').textContent    = fmtEsp(totalNet);
+    g('ch-mois').textContent   = fmtEsp(totalMois)+'/mois';
+    g('ch-jour').textContent   = Math.round(totalJour)+'€/j';
+    g('ch-pct').textContent    = fmtN(pctSalaire,1)+'%';
+
+    // Résumé phase (onglet situation)
+    var phaseData = [
+      {label:'👶 0-3 ans',total:p0_total,mois:p0_mensuel,dur:3,col:'var(--pink)'},
+      {label:'🧒 3-6 ans',total:p1_total,mois:p1_mensuel,dur:3,col:'var(--amber)'},
+      {label:'🏫 6-11 ans',total:p2_total,mois:p2_mensuel,dur:5,col:'var(--blue)'},
+      {label:'📱 11-15 ans',total:p3_total,mois:p3_mensuel,dur:4,col:'var(--purple)'},
+      {label:'🎓 15-18 ans',total:p4_total,mois:p4_mensuel,dur:3,col:'var(--green)'},
+    ];
+    if(g('phase-resume')){
+      g('phase-resume').innerHTML = phaseData.map(function(p){
+        return '<div class="ditem"><span>'+p.label+'</span><span style="color:'+p.col+'">'+fmtEsp(p.mois)+'/mois · '+fmtEsp(p.total)+' total</span></div>';
+      }).join('');
+    }
+
+    // Bilan
+    if(g('b-total')) g('b-total').textContent = fmtEsp(totalBrut);
+    if(g('b-mois'))  g('b-mois').textContent  = fmtEsp(totalMois)+'/mois';
+    if(g('b-jour'))  g('b-jour').textContent  = Math.round(totalJour)+'€/jour';
+    if(g('b-heure')) g('b-heure').textContent = Math.round(totalHeure*100)/100+'€/heure';
+    if(g('bb0')) g('bb0').textContent = fmtEsp(p0_total);
+    if(g('bb1')) g('bb1').textContent = fmtEsp(p1_total);
+    if(g('bb2')) g('bb2').textContent = fmtEsp(p2_total);
+    if(g('bb3')) g('bb3').textContent = fmtEsp(p3_total);
+    if(g('bb4')) g('bb4').textContent = fmtEsp(p4_total);
+    if(g('b-brut2')) g('b-brut2').textContent = fmtEsp(totalBrut);
+    if(g('b-net'))   g('b-net').textContent   = fmtEsp(totalNet);
+
+    // Aides
+    var aideItems = [
+      {l:'Prime naissance (CAF)',v:aideNaissance},
+      {l:'CMG garde d\'enfant <6 ans',v:cmgTotal},
+      {l:'Crédit impôt garde (50%)',v:creditImpot},
+    ];
+    if(rang>=2) aideItems.push({l:'Allocations familiales (2ème enfant+)',v:allocFam});
+    if(g('aides-list')) g('aides-list').innerHTML = aideItems.map(function(a){
+      return '<div class="aide-row"><span>'+a.l+'</span><span>+'+fmtEsp(a.v)+'</span></div>';
+    }).join('');
+    if(g('aides-total')) g('aides-total').textContent = '+'+fmtEsp(aidesTotal);
+
+    // Coûts cachés
+    var logComp = 150*12*18; // chambre supplémentaire ~150€/mois
+    var voiture  = 80*12*10; // siège auto, sorties...
+    var vacances = 500*18;   // supplément vacances
+    var tempsValor = garde==='parent' ? revenu*0.5*12*3 : 0; // congé parental
+    var cacheItems = [
+      {emoji:'🏠',label:'Logement + grand (chambre supp.)',note:'~150€/mois × 18 ans',val:logComp},
+      {emoji:'🚗',label:'Voiture + grande / adaptée',note:'~80€/mois × 10 ans',val:voiture},
+      {emoji:'🏖️',label:'Supplément vacances',note:'~500€/an × 18 ans',val:vacances},
+      {emoji:'💼',label:'Perte revenus congé parental',note:garde==='parent'?'Estimé sur 3 ans':'N/A selon choix',val:tempsValor},
+      {emoji:'💊',label:'Santé non remboursée (dentiste, ophtalmo...)',note:'~40€/mois × 18 ans',val:40*12*18},
+      {emoji:'📱',label:'Équipements tech (tablette, ordi, console)',note:'~800€ tous les 3-4 ans',val:800*4},
+    ];
+    if(g('cache-items')) g('cache-items').innerHTML = cacheItems.map(function(c){
+      return '<div style="padding:14px;background:#1a1a1a;border:1px solid #252525;border-radius:12px;">'
+        +'<div style="font-size:18px;margin-bottom:6px;">'+c.emoji+'</div>'
+        +'<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;">'+c.label+'</div>'
+        +'<div style="font-size:11px;color:#555;margin-bottom:8px;">'+c.note+'</div>'
+        +'<div style="font-family:DM Mono,monospace;font-size:15px;color:var(--amber)">+'+fmtEsp(c.val)+'</div>'
+        +'</div>';
+    }).join('');
+
+    // Coût d'opportunité
+    var inv = totalBrut / 216 * 12; // annuel investi
+    var taux = 0.07;
+    var cumul5  = inv * ((Math.pow(1+taux,5)-1)/taux);
+    var cumul10 = inv * ((Math.pow(1+taux,10)-1)/taux);
+    var cumul18 = inv * ((Math.pow(1+taux,18)-1)/taux);
+    if(g('opport-boxes')) g('opport-boxes').innerHTML = [
+      {l:'Après 5 ans',v:cumul5},
+      {l:'Après 10 ans',v:cumul10},
+      {l:'Après 18 ans',v:cumul18},
+    ].map(function(o){ return '<div class="m"><div class="ml">'+o.l+'</div><div class="mv" style="color:var(--amber)">'+fmtEsp(Math.round(o.v))+'</div><div class="ms">à 7%/an (ETF World)</div></div>'; }).join('');
+
+    // Graphiques data
+    var cumLabels = [], cumBrut = [], cumNet = [];
+    var annees = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18];
+    var aidesParAn = aidesTotal / 18;
+    var cBrut = 0, cNet = 0;
+    for(var y=0; y<=18; y++){
+      var depAn;
+      if(y<3) depAn = (p0_mensuel*12 + (y===0?sv('s03equip'):0));
+      else if(y<6) depAn = p1_mensuel*12;
+      else if(y<11) depAn = p2_mensuel*12;
+      else if(y<15) depAn = p3_mensuel*12;
+      else depAn = p4_mensuel*12;
+      cBrut += depAn;
+      cNet  += Math.max(0, depAn - aidesParAn);
+      cumLabels.push('An '+y);
+      cumBrut.push(Math.round(cBrut));
+      cumNet.push(Math.round(cNet));
+    }
+
+    R = {
+      phases:[p0_total, p1_total, p2_total, p3_total, p4_total],
+      cumLabels:cumLabels,
+      cumBrut:cumBrut,
+      cumNet:cumNet,
+    };
+
+    if(activeTab==='proj') renderCharts('proj');
+
+  }catch(err){ console.error('recalc:',err); }
+}
+
+document.querySelectorAll('input[type=range], select').forEach(function(el){
+  el.addEventListener('input', recalc);
+  el.addEventListener('change', recalc);
+});
+
+recalc();
+</script>
+</body>
+</html>
