@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ROI Grande École vs Université — Calculamatix</title>
+  <meta name="description" content="Votre école vaut-elle vraiment son prix ? Calculez le ROI réel : frais, coût d'opportunité des années d'études, écart salarial sur 20 ans. Données CGE, InserSup, APEC 2025."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#090909;--card:#141414;--border:#222;
+      --yellow:#FFD93D;--green:#3BFF9E;--blue:#3BB5FF;
+      --purple:#C084FC;--red:#FF5C5C;--amber:#FFAA3B;
+      --text:#F0EDE6;--muted:#555;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:80px}
+    body::before{content:'';position:fixed;inset:0;opacity:.4;pointer-events:none;z-index:0;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E")}
+
+    nav{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:18px;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--yellow)}
+    .back{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+    .back:hover{color:var(--text)}
+
+    .hero{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:40px 24px 28px}
+    .htag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--purple);background:rgba(192,132,252,.08);border:1px solid rgba(192,132,252,.2);padding:4px 14px;border-radius:100px;margin-bottom:14px}
+    h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(22px,4vw,48px);letter-spacing:-2px;line-height:1.05;margin-bottom:10px}
+    h1 span{color:var(--yellow)}
+    .hero p{font-size:14px;color:var(--muted);line-height:1.7;max-width:640px}
+
+    /* SCORE BANNER */
+    .score-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .score-box{background:#141414;border:1px solid #242424;border-radius:20px;padding:22px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+    .score-ring{position:relative;width:80px;height:80px;flex-shrink:0}
+    .score-ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+    .score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .score-n{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:900;line-height:1.1;text-align:center}
+    .score-l{font-size:9px;color:var(--muted);margin-top:2px}
+    .score-info{flex:1;min-width:200px}
+    .score-title{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:800;margin-bottom:5px}
+    .score-desc{font-size:12px;color:#777;line-height:1.6}
+    .pills{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+    .pill{font-size:11px;padding:3px 10px;border-radius:100px;font-weight:500}
+    .pg{background:rgba(59,255,158,.1);color:var(--green);border:1px solid rgba(59,255,158,.2)}
+    .pb{background:rgba(255,92,92,.1);color:var(--red);border:1px solid rgba(255,92,92,.2)}
+    .pn{background:rgba(255,170,59,.1);color:var(--amber);border:1px solid rgba(255,170,59,.2)}
+    .score-kpis{display:flex;flex-direction:column;gap:8px;min-width:150px}
+
+    /* TABS */
+    .tabs-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .tabs{display:flex;gap:4px;background:#0d0d0d;border:1px solid var(--border);border-radius:14px;padding:5px;width:fit-content;flex-wrap:wrap}
+    .tab{background:transparent;border:none;color:var(--muted);padding:9px 15px;border-radius:10px;font-size:13px;font-family:inherit;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+    .tab.on{background:var(--yellow);color:#000;font-weight:700}
+    .panel{display:none}
+    .panel.on{display:block}
+
+    .wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:14px}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px}
+    .ctitle{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px}
+    .fhint{font-size:10px;color:#333;margin-top:5px;line-height:1.5}
+
+    .f{margin-bottom:13px}
+    .f:last-child{margin-bottom:0}
+    .f label{display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:6px}
+    .fval{font-family:'DM Mono',monospace;color:var(--yellow);font-size:12px}
+
+    input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:#252525;border-radius:2px;outline:none;cursor:pointer}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--yellow);border-radius:50%;box-shadow:0 0 8px rgba(255,217,61,.4)}
+
+    select,input[type=number]{width:100%;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;color:var(--text);padding:10px 13px;font-size:14px;font-family:inherit;outline:none;transition:border-color .15s}
+    input[type=number]{font-family:'DM Mono',monospace}
+    select:focus,input[type=number]:focus{border-color:var(--yellow)}
+
+    .divider{display:flex;align-items:center;gap:10px;margin:10px 0}
+    .divider span{font-size:10px;color:#333;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:#1e1e1e}
+
+    .m{background:#1a1a1a;border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+    .ml{font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+    .mv{font-family:'DM Mono',monospace;font-size:18px;font-weight:500}
+    .ms{font-size:10px;color:var(--muted);margin-top:3px}
+    .mh{background:rgba(59,255,158,.05);border-color:rgba(59,255,158,.2)}
+    .my{background:rgba(255,217,61,.05);border-color:rgba(255,217,61,.2)}
+
+    .verdict{border-radius:14px;padding:16px 20px;border:1px solid;display:flex;gap:12px}
+    .vi{font-size:18px;flex-shrink:0}
+    .vt{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;margin-bottom:4px}
+    .vb{font-size:12px;color:#777;line-height:1.6}
+    .vg{background:rgba(59,255,158,.05);border-color:rgba(59,255,158,.2)}
+    .vg .vt{color:var(--green)}
+    .vo{background:rgba(255,170,59,.05);border-color:rgba(255,170,59,.2)}
+    .vo .vt{color:var(--amber)}
+    .vr{background:rgba(255,92,92,.05);border-color:rgba(255,92,92,.2)}
+    .vr .vt{color:var(--red)}
+
+    .cw{position:relative;width:100%;height:240px;margin-top:12px}
+    .cwt{position:relative;width:100%;height:280px;margin-top:12px}
+
+    .ditem{display:flex;justify-content:space-between;padding:8px 12px;background:#1a1a1a;border:1px solid #222;border-radius:8px}
+    .ditem span:first-child{font-size:12px;color:#666}
+    .ditem span:last-child{font-family:'DM Mono',monospace;font-size:12px}
+
+    .preset-btn{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;color:#888;padding:10px 14px;font-size:12px;font-family:inherit;cursor:pointer;transition:all .15s;text-align:left}
+    .preset-btn:hover{border-color:#444;color:var(--text)}
+    .preset-btn .pb-title{font-weight:600;font-size:13px;color:var(--text);display:block;margin-bottom:3px}
+    .preset-btn .pb-sub{font-size:11px;color:#555}
+
+    .sources{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px;padding:14px 16px;font-size:11px;color:#3a3a3a;line-height:1.8}
+
+    @media(max-width:640px){
+      .g2,.g3,.g4{grid-template-columns:1fr}
+      .score-box{flex-direction:column}
+      .tab{padding:8px 10px;font-size:11px}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Tous les calculateurs</a>
+</nav>
+
+<div class="hero">
+  <div class="htag">🎓 Éducation</div>
+  <h1>ROI grande école<br><span>vs université</span></h1>
+  <p>Votre école vaut-elle vraiment son prix ? Le calcul que les écoles ne font pas pour vous : frais totaux, coût d'opportunité des années d'études, écart salarial sur 20 ans. Données CGE &amp; InserSup 2025.</p>
+</div>
+
+<!-- SCORE -->
+<div class="score-wrap">
+  <div class="score-box">
+    <div class="score-ring">
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r="34" fill="none" stroke="#1e1e1e" stroke-width="6"/>
+        <circle cx="40" cy="40" r="34" fill="none" stroke="#FFD93D" stroke-width="6"
+          stroke-linecap="round" stroke-dasharray="213.6" id="sarc" stroke-dashoffset="213.6"/>
+      </svg>
+      <div class="score-center">
+        <div class="score-n" id="snum" style="color:var(--yellow)">—</div>
+        <div class="score-l">ROI</div>
+      </div>
+    </div>
+    <div class="score-info">
+      <div class="score-title" id="stitle">Remplissez vos paramètres</div>
+      <div class="score-desc" id="sdesc">Votre verdict personnalisé apparaîtra ici.</div>
+      <div class="pills" id="spills"></div>
+    </div>
+    <div class="score-kpis">
+      <div class="m"><div class="ml">Investissement total</div><div class="mv" id="broi" style="color:var(--yellow)">—</div></div>
+      <div class="m"><div class="ml">Gain cumulé 20 ans</div><div class="mv" id="bgain" style="color:var(--green)">—</div></div>
+      <div class="m"><div class="ml">Point d'équilibre</div><div class="mv" id="bbreak" style="color:var(--blue)">—</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('ecole',this)">🎓 Votre formation</button>
+    <button class="tab" onclick="showTab('alt',this)">📚 L'alternative</button>
+    <button class="tab" onclick="showTab('bilan',this)">💰 Bilan ROI</button>
+    <button class="tab" onclick="showTab('proj',this)">📈 Projections 20 ans</button>
+  </div>
+</div>
+
+<!-- ===== VOTRE FORMATION ===== -->
+<div class="panel on" id="p-ecole"><div class="wrap">
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+    <span style="font-size:12px;color:#555;align-self:center;flex-shrink:0;">Pré-remplir :</span>
+    <button class="preset-btn" onclick="setPreset('hec')"><span class="pb-title">🏆 HEC Paris</span><span class="pb-sub">71 750€ · 60 000€ sortie</span></button>
+    <button class="preset-btn" onclick="setPreset('top5')"><span class="pb-title">💼 TOP 5 Commerce</span><span class="pb-sub">60 000€ · 48 000€ sortie</span></button>
+    <button class="preset-btn" onclick="setPreset('rang2')"><span class="pb-title">📊 Rang 2 Commerce</span><span class="pb-sub">50 000€ · 40 000€ sortie</span></button>
+    <button class="preset-btn" onclick="setPreset('ingpub')"><span class="pb-title">⚙️ Ingénieur public</span><span class="pb-sub">3 000€ · 42 000€ sortie</span></button>
+    <button class="preset-btn" onclick="setPreset('sciencespo')"><span class="pb-title">🏛️ Sciences Po</span><span class="pb-sub">20 000€ · 40 000€ sortie</span></button>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Votre formation envisagée</div>
+
+      <div class="f">
+        <label>Frais de scolarité totaux (cursus complet) <span class="fval" id="lfrais">50 000 €</span></label>
+        <input type="range" id="frais" min="0" max="100000" step="500" value="50000">
+        <div class="fhint">HEC 71 750€ · TOP5 commerce 55-65k€ · Ingénieur public ~600-3 000€/an · Université ~250€/an</div>
+      </div>
+
+      <div class="f">
+        <label>Durée de la formation (après bac) <span class="fval" id="lduree">5 ans</span></label>
+        <input type="range" id="duree" min="2" max="8" step="1" value="5">
+        <div class="fhint">PGE commerce : 3 ans (après 2 ans prépa) · Ingénieur : 5 ans · Master fac : 5 ans</div>
+      </div>
+
+      <div class="f">
+        <label>dont années de prépa/classe préparatoire <span class="fval" id="lprepa">2 ans</span></label>
+        <input type="range" id="prepa" min="0" max="4" step="1" value="2">
+        <div class="fhint">Prépa HEC/ECG/MP : 2 ans. Coût : quasi gratuit (lycée public) mais sans revenu.</div>
+      </div>
+
+      <div class="f">
+        <label>Bourse / aide annuelle reçue <span class="fval" id="lbourse">0 €</span></label>
+        <input type="range" id="bourse" min="0" max="20000" step="500" value="0">
+        <div class="fhint">CROUS : 1 400–7 400€/an · Bourses école : variables · Alternance = ~12-15k€/an</div>
+      </div>
+
+      <div class="divider"><span>Revenus pendant les études</span></div>
+
+      <div class="f">
+        <label>Jobs étudiants / stage / alternance par an <span class="fval" id="ljobs">6 000 €</span></label>
+        <input type="range" id="jobs" min="0" max="25000" step="500" value="6000">
+        <div class="fhint">Stage de fin d'études : 1 200-2 000€/mois · Alternance : 12-15k€/an · Job étudiant : 3-8k€/an</div>
+      </div>
+
+      <div class="f">
+        <label>Coût de la vie annuel (logement + vie) <span class="fval" id="lvie">12 000 €</span></label>
+        <input type="range" id="vie" min="5000" max="25000" step="500" value="12000">
+        <div class="fhint">Chambre CROUS ~4 000€/an · Loyer privé Paris ~10 000€/an · Province ~6 000€/an</div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="border-color:rgba(255,217,61,.2);background:rgba(255,217,61,.03);">
+        <div class="ctitle" style="color:var(--yellow)">Coût total réel de la formation</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="ditem"><span>Frais de scolarité</span><span id="d-frais" style="color:var(--red)">—</span></div>
+          <div class="ditem"><span>Coût de vie × durée</span><span id="d-vie" style="color:var(--amber)">—</span></div>
+          <div class="ditem"><span>Bourses + jobs + stages</span><span id="d-aides" style="color:var(--green)">—</span></div>
+          <div class="ditem"><span>Coût d'opportunité (voir note)</span><span id="d-opport" style="color:var(--purple)">—</span></div>
+          <div class="ditem" style="background:rgba(255,217,61,.07);border-color:rgba(255,217,61,.3);">
+            <span style="font-weight:600;color:var(--text)">INVESTISSEMENT TOTAL</span>
+            <span id="d-total" style="color:var(--yellow);font-weight:700">—</span>
+          </div>
+        </div>
+        <div style="background:#1a1a1a;border-radius:10px;padding:12px;margin-top:12px;font-size:11px;color:#444;line-height:1.6;">
+          ⚡ <strong style="color:#666">Coût d'opportunité</strong> : ces années d'études auraient pu être travaillées. Si l'alternative c'est d'entrer directement dans la vie active (avec un bac+2 ou licence), vous ratez 3-5 ans de salaire. C'est le "vrai prix caché" des longues études.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ctitle">Salaire de sortie</div>
+        <div class="f">
+          <label>Salaire brut annuel estimé à la sortie <span class="fval" id="lsal">42 000 €</span></label>
+          <input type="range" id="salaire" min="20000" max="90000" step="1000" value="42000">
+          <div class="fhint">HEC : 55-60k€ · TOP5 commerce : 42-48k€ · Ingénieur : 38-44k€ · Sciences Po : 39-42k€</div>
+        </div>
+        <div class="f">
+          <label>Progression salariale annuelle <span class="fval" id="lprog">4.0 %</span></label>
+          <input type="range" id="prog" min="1" max="10" step="0.5" value="4.0">
+          <div class="fhint">Grande école : +2.1%/an base + carrière · Ingénieur : hausse rapide en tech · Fac : +1.5-2%/an</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== ALTERNATIVE ===== -->
+<div class="panel" id="p-alt"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">La formation alternative (référence de comparaison)</div>
+      <div style="font-size:13px;color:#666;line-height:1.6;margin-bottom:16px;">
+        C'est la formation que vous auriez suivie <strong style="color:var(--text)">si vous n'aviez pas choisi la grande école</strong>. Peut être un master université, un BTS, une licence pro, ou l'entrée directe dans la vie active.
+      </div>
+
+      <div class="f">
+        <label>Frais de scolarité alternatifs (total) <span class="fval" id="lafrais">1 500 €</span></label>
+        <input type="range" id="afrais" min="0" max="30000" step="500" value="1500">
+        <div class="fhint">Master université : ~250-500€/an · BTS : gratuit (lycée) · École privée accessible : variable</div>
+      </div>
+
+      <div class="f">
+        <label>Durée de cette formation <span class="fval" id="laduree">5 ans</span></label>
+        <input type="range" id="aduree" min="2" max="7" step="1" value="5">
+        <div class="fhint">Master : 5 ans (bac+5) · Licence pro : 3 ans · BTS : 2 ans</div>
+      </div>
+
+      <div class="f">
+        <label>Salaire brut de sortie alternatif <span class="fval" id="lasal">28 000 €</span></label>
+        <input type="range" id="asalaire" min="15000" max="60000" step="1000" value="28000">
+        <div class="fhint">Master université DEG : 26-30k€ · STS : 28-32k€ · LLA/SHS : 22-26k€ (InserSup 2025)</div>
+      </div>
+
+      <div class="f">
+        <label>Progression salariale alternative <span class="fval" id="laprog">2.5 %</span></label>
+        <input type="range" id="aprog" min="1" max="8" step="0.5" value="2.5">
+      </div>
+
+      <div class="f">
+        <label>Jobs / bourses alternatifs par an <span class="fval" id="lajobs">5 000 €</span></label>
+        <input type="range" id="ajobs" min="0" max="20000" step="500" value="5000">
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="border-color:rgba(59,181,255,.2);background:rgba(59,181,255,.03);">
+        <div class="ctitle" style="color:var(--blue)">Profil alternatif</div>
+        <div class="g2" style="gap:10px;margin-bottom:12px;">
+          <div class="m"><div class="ml">Frais totaux alternatifs</div><div class="mv" id="a-frais" style="color:var(--blue)">—</div></div>
+          <div class="m"><div class="ml">Salaire sortie alternatif</div><div class="mv" id="a-sal" style="color:var(--blue)">—</div></div>
+        </div>
+        <div style="font-size:12px;color:#666;line-height:1.7;padding:12px;background:#1a1a1a;border-radius:10px;">
+          📊 <strong style="color:#888">Écart de salaire à la sortie</strong> : <span id="a-ecart">—</span><br>
+          C'est cet écart annuel qui va rembourser votre surcoût d'études. Plus il est grand, plus le ROI est rapide.
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Exemples de comparaisons classiques</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:#666;line-height:1.6;">
+          <div style="padding:10px;background:#1a1a1a;border-radius:8px;border:1px solid #222;">
+            <strong style="color:var(--text)">HEC (71 750€) vs Master DEG univ.</strong><br>
+            Écart sortie : +30 000€/an → Amortissement : ~2-4 ans 🟢
+          </div>
+          <div style="padding:10px;background:#1a1a1a;border-radius:8px;border:1px solid #222;">
+            <strong style="color:var(--text)">Rang 2 commerce (50k€) vs Master DEG</strong><br>
+            Écart sortie : +12 000€/an → Amortissement : ~4-7 ans 🟡
+          </div>
+          <div style="padding:10px;background:#1a1a1a;border-radius:8px;border:1px solid #222;">
+            <strong style="color:var(--text)">Ingénieur public (3k€) vs Master STS</strong><br>
+            Écart sortie : +10 000€/an → Quasi-immédiat 🟢🟢
+          </div>
+          <div style="padding:10px;background:#1a1a1a;border-radius:8px;border:1px solid #222;">
+            <strong style="color:var(--text)">Rang 3-4 commerce (45k€) vs Master DEG</strong><br>
+            Écart sortie : +5 000€/an → Amortissement : 8-12 ans 🔴
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== BILAN ROI ===== -->
+<div class="panel" id="p-bilan"><div class="wrap">
+  <div class="g4">
+    <div class="m my"><div class="ml">Surcoût grande école</div><div class="mv" id="b-surcout" style="color:var(--yellow)">—</div><div class="ms">vs alternative</div></div>
+    <div class="m"><div class="ml">Écart salaire / an</div><div class="mv" id="b-ecart" style="color:var(--green)">—</div><div class="ms">grande école vs fac</div></div>
+    <div class="m mh"><div class="ml">Point d'équilibre</div><div class="mv" id="b-break" style="color:var(--green)">—</div><div class="ms">années pour amortir</div></div>
+    <div class="m"><div class="ml">Gain net 20 ans</div><div class="mv" id="b-gain" style="color:var(--green)">—</div><div class="ms">après amortissement</div></div>
+  </div>
+
+  <div class="verdict vg" id="b-verdict">
+    <div class="vi" id="b-vi">🎓</div>
+    <div><div class="vt" id="b-vt">—</div><div class="vb" id="b-vb">—</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Coût total — Grande école</div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="detail-ecole"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Coût total — Alternative</div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="detail-alt"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Le coût d'opportunité — ce que les écoles n'affichent jamais</div>
+    <div style="font-size:13px;color:#666;line-height:1.7;margin-bottom:14px;">
+      Pendant vos années d'études en grande école, vous auriez pu gagner de l'argent. Ce manque à gagner — surtout si l'alternative était une formation plus courte menant plus tôt à l'emploi — fait partie du vrai coût de votre formation.
+    </div>
+    <div class="g3" style="gap:10px;">
+      <div class="m"><div class="ml">Années supplémentaires d'études</div><div class="mv" id="b-ansSup" style="color:var(--text)">—</div><div class="ms">vs l'alternative</div></div>
+      <div class="m"><div class="ml">Salaires manqués estimés</div><div class="mv" id="b-manque" style="color:var(--purple)">—</div><div class="ms">années de plus × salaire alternatif</div></div>
+      <div class="m"><div class="ml">Surcoût scolarité seul</div><div class="mv" id="b-scolarite" style="color:var(--amber)">—</div><div class="ms">frais grandes école − frais fac</div></div>
+    </div>
+  </div>
+
+  <div class="sources">
+    <strong>Sources :</strong> CGE enquête insertion 2025 (39 604€ brut moyen grandes écoles, 41 103€ managers, 39 129€ ingénieurs) · InserSup MESR 2025 (salaire médian master université : 2 100€ net/mois ≈ 28 000€ brut/an) · Major Prépa 2025 (frais scolarité HEC 71 750€, hausse +6%/an depuis 10 ans) · APEC (rémunération médiane grandes écoles 32 000-46 000€, 2/3 des diplômés dans cette fourchette) · Diplomeo (salaire sortie manager grande école 41 103€ hors primes 2025) · Sciences Po insertion 2025 (39 705€ à 6 mois en France) · InserSup coût université master 250-500€/an droits.
+  </div>
+</div></div>
+
+<!-- ===== PROJECTIONS ===== -->
+<div class="panel" id="p-proj"><div class="wrap">
+  <div class="card">
+    <div class="ctitle">Salaire cumulé sur 20 ans après sortie — Grande école vs Alternative</div>
+    <div style="font-size:12px;color:#555;margin-bottom:4px;">Intègre la progression salariale annuelle de chaque formation. L'écart se creuse dans le temps.</div>
+    <div class="cwt"><canvas id="chart-sal"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Gain net cumulé de la grande école (après amortissement de l'investissement)</div>
+    <div style="font-size:12px;color:#555;margin-bottom:4px;">Quand la courbe passe en positif = votre investissement est rentabilisé.</div>
+    <div class="cw"><canvas id="chart-gain"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Salaire annuel comparé — Grande école vs Alternative (avec progression)</div>
+    <div class="cw"><canvas id="chart-annu"></canvas></div>
+  </div>
+</div></div>
+
+<script>
+var activeTab = 'ecole';
+var chartSal=null, chartGain=null, chartAnnu=null;
+var R = {};
+
+Chart.defaults.color = '#666';
+Chart.defaults.font.family = 'DM Sans, sans-serif';
+
+function g(id){ return document.getElementById(id); }
+function fmtN(n,d){ d=d||0; return n.toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function fmtE(n){ return fmtN(Math.round(n))+' €'; }
+function fmtP(n){ return fmtN(n,1)+' %'; }
+
+var PRESETS = {
+  hec:      {frais:71750,duree:5,prepa:2,bourse:0,jobs:8000,vie:14000,salaire:58000,prog:5.0, afrais:1500,aduree:5,asalaire:28000,aprog:2.5,ajobs:5000},
+  top5:     {frais:60000,duree:5,prepa:2,bourse:0,jobs:7000,vie:13000,salaire:45000,prog:4.5, afrais:1500,aduree:5,asalaire:28000,aprog:2.5,ajobs:5000},
+  rang2:    {frais:50000,duree:5,prepa:2,bourse:0,jobs:6000,vie:12000,salaire:39000,prog:3.5, afrais:1500,aduree:5,asalaire:28000,aprog:2.5,ajobs:5000},
+  ingpub:   {frais:3000, duree:5,prepa:2,bourse:0,jobs:7000,vie:11000,salaire:42000,prog:4.0, afrais:1500,aduree:5,asalaire:28000,aprog:2.5,ajobs:5000},
+  sciencespo:{frais:20000,duree:7,prepa:0,bourse:0,jobs:6000,vie:13000,salaire:40000,prog:4.0, afrais:1500,aduree:5,asalaire:28000,aprog:2.5,ajobs:5000},
+};
+
+function setPreset(key){
+  var p = PRESETS[key]; if(!p) return;
+  g('frais').value   = p.frais;
+  g('duree').value   = p.duree;
+  g('prepa').value   = p.prepa;
+  g('bourse').value  = p.bourse;
+  g('jobs').value    = p.jobs;
+  g('vie').value     = p.vie;
+  g('salaire').value = p.salaire;
+  g('prog').value    = p.prog;
+  g('afrais').value  = p.afrais;
+  g('aduree').value  = p.aduree;
+  g('asalaire').value= p.asalaire;
+  g('aprog').value   = p.aprog;
+  g('ajobs').value   = p.ajobs;
+  recalc();
+}
+
+function showTab(name,btn){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  g('p-'+name).classList.add('on');
+  btn.classList.add('on');
+  activeTab = name;
+  setTimeout(function(){ renderCharts(name); }, 80);
+}
+
+function destroyChart(c){ if(c){ try{ c.destroy(); }catch(e){} } return null; }
+
+function renderCharts(name){
+  if(!R.years || name !== 'proj') return;
+  var years = R.years;
+
+  chartSal = destroyChart(chartSal);
+  var cs = g('chart-sal'); if(!cs) return;
+  chartSal = new Chart(cs,{
+    type:'line',
+    data:{labels:years.map(function(y){ return 'An '+y; }), datasets:[
+      {label:'Grande école — Salaire cumulé',data:R.cumulEcole,borderColor:'rgba(255,217,61,.9)',backgroundColor:'rgba(255,217,61,.06)',fill:true,tension:.3,pointRadius:2,borderWidth:2},
+      {label:'Alternative — Salaire cumulé',data:R.cumulAlt,borderColor:'rgba(59,181,255,.9)',backgroundColor:'rgba(59,181,255,.06)',fill:true,tension:.3,pointRadius:2,borderWidth:2}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#888',font:{size:11}}},tooltip:{callbacks:{label:function(c){ return c.dataset.label+' : '+fmtE(c.raw); }}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#666'},border:{color:'transparent'}},
+              y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return fmtE(v); },color:'#666'},border:{color:'transparent'}}}
+    }
+  });
+
+  chartGain = destroyChart(chartGain);
+  var cg = g('chart-gain'); if(!cg) return;
+  chartGain = new Chart(cg,{
+    type:'line',
+    data:{labels:years.map(function(y){ return 'An '+y; }),
+      datasets:[{label:'Gain net cumulé grande école',data:R.gainNet,
+        borderColor:R.gainNet.map(function(){ return 'rgba(59,255,158,.9)'; }),
+        segment:{borderColor:function(ctx){ return ctx.p1.parsed.y>=0?'rgba(59,255,158,.9)':'rgba(255,92,92,.9)'; }},
+        backgroundColor:'rgba(59,255,158,.06)',fill:true,tension:.3,pointRadius:2,borderWidth:2
+      },{label:'Seuil zéro',data:years.map(function(){ return 0; }),borderColor:'rgba(255,255,255,.1)',borderDash:[4,4],pointRadius:0,borderWidth:1}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#888',font:{size:11}}},tooltip:{callbacks:{label:function(c){ return c.dataset.label+' : '+fmtE(c.raw); }}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#666'},border:{color:'transparent'}},
+              y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return fmtE(v); },color:'#666'},border:{color:'transparent'}}}
+    }
+  });
+
+  chartAnnu = destroyChart(chartAnnu);
+  var ca = g('chart-annu'); if(!ca) return;
+  chartAnnu = new Chart(ca,{
+    type:'bar',
+    data:{labels:years.slice(1).map(function(y){ return 'An '+y; }),
+      datasets:[
+        {label:'Grande école',data:R.salEcole.slice(1),backgroundColor:'rgba(255,217,61,.5)',borderColor:'rgba(255,217,61,.9)',borderWidth:1,borderRadius:3},
+        {label:'Alternative',data:R.salAlt.slice(1),backgroundColor:'rgba(59,181,255,.3)',borderColor:'rgba(59,181,255,.7)',borderWidth:1,borderRadius:3}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#888',font:{size:11}}},tooltip:{callbacks:{label:function(c){ return c.dataset.label+' : '+fmtE(c.raw); }}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#666',maxTicksLimit:12},border:{color:'transparent'}},
+              y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return fmtE(v); },color:'#666'},border:{color:'transparent'}}}
+    }
+  });
+}
+
+function recalc(){
+  try{
+    var frais  = +g('frais').value;
+    var duree  = +g('duree').value;
+    var prepa  = +g('prepa').value;
+    var bourse = +g('bourse').value;
+    var jobs   = +g('jobs').value;
+    var vie    = +g('vie').value;
+    var sal    = +g('salaire').value;
+    var prog   = +g('prog').value/100;
+
+    var afrais = +g('afrais').value;
+    var aduree = +g('aduree').value;
+    var asal   = +g('asalaire').value;
+    var aprog  = +g('aprog').value/100;
+    var ajobs  = +g('ajobs').value;
+
+    // Labels
+    g('lfrais').textContent = fmtE(frais);
+    g('lduree').textContent = duree+' ans';
+    g('lprepa').textContent = prepa+' ans';
+    g('lbourse').textContent= fmtE(bourse);
+    g('ljobs').textContent  = fmtE(jobs);
+    g('lvie').textContent   = fmtE(vie);
+    g('lsal').textContent   = fmtE(sal);
+    g('lprog').textContent  = fmtP(prog*100);
+    g('lafrais').textContent= fmtE(afrais);
+    g('laduree').textContent= aduree+' ans';
+    g('lasal').textContent  = fmtE(asal);
+    g('laprog').textContent = fmtP(aprog*100);
+    g('lajobs').textContent = fmtE(ajobs);
+
+    // Coût d'opportunité : si grande école dure plus longtemps que alternative,
+    // les années supplémentaires = salaire alternatif manqué
+    var anneesSup = Math.max(0, duree - aduree);
+    var coutOpport = anneesSup * asal * 0.75; // 75% car il y a quand même jobs étudiants
+
+    // Investissement grande école
+    var coutBrut = frais + vie * duree;
+    var aideTotal = (bourse + jobs) * duree;
+    var investEcole = Math.max(0, coutBrut - aideTotal) + coutOpport;
+
+    // Investissement alternative
+    var coutAlt = afrais + vie * aduree - ajobs * aduree;
+    coutAlt = Math.max(0, coutAlt);
+
+    // Surcoût grande école vs alternative
+    var surcout = investEcole - coutAlt;
+
+    // Écart salarial annuel à la sortie
+    var ecartSal = sal - asal;
+
+    // Point d'équilibre (années pour que l'écart salarial cumulé > surcoût)
+    var breakEven = -1;
+    var cumEcart = 0;
+    var salCourant = sal, salAltCourant = asal;
+    for(var y = 1; y <= 30; y++){
+      cumEcart += salCourant - salAltCourant;
+      if(cumEcart >= surcout && breakEven < 0) breakEven = y;
+      salCourant  = salCourant  * (1+prog);
+      salAltCourant = salAltCourant * (1+aprog);
+    }
+
+    // Gain à 20 ans
+    var DUREE = 20;
+    var years = [];
+    for(var i=0; i<=DUREE; i++) years.push(i);
+    var cumulEcole=[], cumulAlt=[], gainNet=[], salEcole=[], salAlt=[];
+    var se = sal, sa = asal;
+    var ce = 0, ca = 0, gn = -surcout;
+    cumulEcole.push(0); cumulAlt.push(0); gainNet.push(-surcout); salEcole.push(sal); salAlt.push(asal);
+    for(var y2=1; y2<=DUREE; y2++){
+      ce += se; ca += sa;
+      gn += (se - sa);
+      cumulEcole.push(Math.round(ce));
+      cumulAlt.push(Math.round(ca));
+      gainNet.push(Math.round(gn));
+      salEcole.push(Math.round(se));
+      salAlt.push(Math.round(sa));
+      se = se*(1+prog);
+      sa = sa*(1+aprog);
+    }
+
+    var gain20 = gainNet[DUREE];
+
+    R = {years:years,cumulEcole:cumulEcole,cumulAlt:cumulAlt,gainNet:gainNet,salEcole:salEcole,salAlt:salAlt};
+    if(activeTab==='proj') renderCharts('proj');
+
+    // Affichage panel formation
+    g('d-frais').textContent = fmtE(frais);
+    g('d-vie').textContent   = fmtE(vie*duree);
+    g('d-aides').textContent = '−'+fmtE(aideTotal);
+    g('d-opport').textContent= fmtE(coutOpport);
+    g('d-total').textContent = fmtE(investEcole);
+
+    // Affichage panel alternative
+    g('a-frais').textContent = fmtE(afrais);
+    g('a-sal').textContent   = fmtE(asal);
+    g('a-ecart').textContent = (ecartSal>=0?'+':'')+fmtE(ecartSal)+'/an à la sortie';
+    g('a-ecart').style.color = ecartSal>=0?'var(--green)':'var(--red)';
+
+    // Bilan
+    g('b-surcout').textContent = fmtE(surcout);
+    g('b-ecart').textContent   = (ecartSal>=0?'+':'')+fmtE(ecartSal)+'/an';
+    g('b-ecart').style.color   = ecartSal>=0?'var(--green)':'var(--red)';
+    g('b-break').textContent   = breakEven>0?breakEven+' ans':'> 30 ans';
+    g('b-break').style.color   = breakEven>0&&breakEven<=10?'var(--green)':breakEven<=20?'var(--amber)':'var(--red)';
+    g('b-gain').textContent    = (gain20>=0?'+':'')+fmtE(gain20);
+    g('b-gain').style.color    = gain20>=0?'var(--green)':'var(--red)';
+
+    g('b-ansSup').textContent   = anneesSup+' ans';
+    g('b-manque').textContent   = fmtE(coutOpport);
+    g('b-scolarite').textContent= fmtE(frais - afrais);
+
+    // Verdict
+    var bv = g('b-verdict');
+    if(ecartSal < 0){
+      bv.className='verdict vr'; g('b-vi').textContent='⚠';
+      g('b-vt').textContent = 'La grande école paie moins que l\'alternative à la sortie';
+      g('b-vb').textContent = 'L\'alternative choisie mène à un salaire de sortie supérieur ('+fmtE(asal)+' vs '+fmtE(sal)+'). Reconsidérez le choix ou vérifiez les données.';
+    } else if(breakEven>0 && breakEven<=7){
+      bv.className='verdict vg'; g('b-vi').textContent='🏆';
+      g('b-vt').textContent = 'Excellent ROI — rentabilisé en '+breakEven+' ans, gain net de '+fmtE(gain20)+' sur 20 ans';
+      g('b-vb').textContent = 'L\'écart salarial de '+fmtE(ecartSal)+'/an vous permet d\'amortir le surcoût de '+fmtE(surcout)+' en seulement '+breakEven+' ans. Sur 20 ans, la grande école vous rapporte '+fmtE(gain20)+' de plus.';
+    } else if(breakEven>0 && breakEven<=12){
+      bv.className='verdict vo'; g('b-vi').textContent='📈';
+      g('b-vt').textContent = 'Bon ROI — rentabilisé en '+breakEven+' ans';
+      g('b-vb').textContent = 'La grande école vaut son investissement sur le long terme. Le surcoût de '+fmtE(surcout)+' est amorti en '+breakEven+' ans grâce à un écart salarial de '+fmtE(ecartSal)+'/an.';
+    } else if(breakEven>0 && breakEven<=20){
+      bv.className='verdict vo'; g('b-vi').textContent='⚠';
+      g('b-vt').textContent = 'ROI lent — rentabilisé en '+breakEven+' ans seulement';
+      g('b-vb').textContent = 'L\'écart salarial ('+fmtE(ecartSal)+'/an) est insuffisant pour amortir rapidement l\'investissement ('+fmtE(surcout)+'). Cherchez à réduire les frais ou choisissez une école avec un meilleur ratio qualité/prix.';
+    } else {
+      bv.className='verdict vr'; g('b-vi').textContent='🔴';
+      g('b-vt').textContent = 'ROI très faible — investissement non rentabilisé avant 20 ans';
+      g('b-vb').textContent = 'Le surcoût de '+fmtE(surcout)+' dépasse largement l\'écart salarial accumulé sur 20 ans. Cette formation est probablement trop chère pour les débouchés salariaux qu\'elle offre.';
+    }
+
+    function di(l,v,c){ return '<div class="ditem"><span>'+l+'</span><span style="color:'+(c||'var(--text)')+'">'+v+'</span></div>'; }
+    g('detail-ecole').innerHTML =
+      di('Frais de scolarité',fmtE(frais),'var(--red)')
+      +di('Coût de vie ×'+duree+' ans',fmtE(vie*duree),'var(--amber)')
+      +di('Bourses + jobs − '+duree+' ans','−'+fmtE(aideTotal),'var(--green)')
+      +di('Coût opportunité ('+anneesSup+' ans)',fmtE(coutOpport),'var(--purple)')
+      +di('TOTAL',fmtE(investEcole),'var(--yellow)');
+
+    g('detail-alt').innerHTML =
+      di('Frais de scolarité',fmtE(afrais),'var(--blue)')
+      +di('Coût de vie ×'+aduree+' ans',fmtE(vie*aduree),'var(--amber)')
+      +di('Jobs/bourses − '+aduree+' ans','−'+fmtE(ajobs*aduree),'var(--green)')
+      +di('TOTAL',fmtE(coutAlt),'var(--blue)');
+
+    // Score (affiche ROI en années)
+    var arc = g('sarc');
+    var scoreVal = breakEven>0 ? Math.max(0, 100 - breakEven*4) : 0;
+    arc.style.strokeDashoffset = 213.6 - (scoreVal/100)*213.6;
+    var sc = scoreVal>=70?'#3BFF9E':scoreVal>=45?'#FFD93D':'#FF5C5C';
+    arc.style.stroke = sc;
+    g('snum').textContent = breakEven>0?breakEven+'\nans':'> 30';
+    g('snum').style.color = sc;
+
+    var titles=['Investissement non rentable','ROI très lent','ROI acceptable','Bon investissement','Excellent ROI !'];
+    var descs=['L\'écart salarial est trop faible pour amortir le coût de la formation.','La formation met plus de 15 ans à se rentabiliser. Cherchez un meilleur rapport.','L\'investissement se rentabilise en 10-15 ans. Acceptable sur le long terme.','Bon retour sur investissement. La formation génère un gain net significatif sur 20 ans.','ROI exceptionnel. Cette formation vaut largement son prix.'];
+    var ti = breakEven<=0?0:breakEven>20?1:breakEven>15?2:breakEven>7?3:4;
+    g('stitle').textContent = titles[ti];
+    g('sdesc').textContent  = descs[ti];
+
+    var pills = [];
+    if(ecartSal > 15000) pills.push({t:'💰 Écart +'+fmtN(Math.round(ecartSal/1000))+'k€/an',c:'pg'});
+    else if(ecartSal > 5000) pills.push({t:'📊 Écart +'+fmtN(Math.round(ecartSal/1000))+'k€/an',c:'pn'});
+    else pills.push({t:'⚠ Faible écart salarial',c:'pb'});
+    if(breakEven>0&&breakEven<=10) pills.push({t:'✓ Rentabilisé en '+breakEven+' ans',c:'pg'});
+    if(frais<10000) pills.push({t:'💚 Frais faibles',c:'pg'});
+    if(gain20>50000) pills.push({t:'🏆 +'+fmtN(Math.round(gain20/1000))+'k€ sur 20 ans',c:'pg'});
+    g('spills').innerHTML = pills.map(function(p){ return '<span class="pill '+p.c+'">'+p.t+'</span>'; }).join('');
+
+    g('broi').textContent = fmtE(investEcole);
+    g('bgain').textContent= (gain20>=0?'+':'')+fmtE(gain20);
+    g('bgain').style.color= gain20>=0?'var(--green)':'var(--red)';
+    g('bbreak').textContent= breakEven>0?breakEven+' ans':'> 30 ans';
+    g('bbreak').style.color= breakEven>0&&breakEven<=10?'var(--green)':breakEven<=20?'var(--amber)':'var(--red)';
+
+  }catch(err){ console.error('recalc:',err); }
+}
+
+document.querySelectorAll('input[type=range], input[type=number], select').forEach(function(el){
+  el.addEventListener('input', recalc);
+  el.addEventListener('change', recalc);
+});
+
+recalc();
+</script>
+</body>
+</html>
