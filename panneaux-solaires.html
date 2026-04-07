@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panneaux Solaires — Rentabilité réelle | Calculamatix</title>
+  <meta name="description" content="Calculez la vraie rentabilité de vos panneaux solaires : ROI, économies cumulées, CO₂ économisé, impact batterie. Tarifs EDF OA T2 2026, données ADEME et Météo-France."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#090909;--card:#141414;--border:#222;
+      --yellow:#FFD93D;--green:#3BFF9E;--blue:#3BB5FF;
+      --purple:#C084FC;--red:#FF5C5C;--amber:#FFAA3B;
+      --text:#F0EDE6;--muted:#555;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:80px}
+    body::before{content:'';position:fixed;inset:0;opacity:.4;pointer-events:none;z-index:0;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E")}
+
+    nav{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:18px;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--yellow)}
+    .back{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+    .back:hover{color:var(--text)}
+
+    .hero{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:40px 24px 28px}
+    .htag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--yellow);background:rgba(255,217,61,.08);border:1px solid rgba(255,217,61,.2);padding:4px 14px;border-radius:100px;margin-bottom:14px}
+    h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(22px,4vw,48px);letter-spacing:-2px;line-height:1.05;margin-bottom:10px}
+    h1 span{color:var(--yellow)}
+    .hero p{font-size:14px;color:var(--muted);line-height:1.7;max-width:640px}
+
+    .score-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .score-box{background:#141414;border:1px solid #242424;border-radius:20px;padding:22px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+    .score-ring{position:relative;width:80px;height:80px;flex-shrink:0}
+    .score-ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+    .score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .score-n{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:900}
+    .score-l{font-size:9px;color:var(--muted)}
+    .score-info{flex:1;min-width:200px}
+    .score-title{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:800;margin-bottom:5px}
+    .score-desc{font-size:12px;color:#777;line-height:1.6}
+    .pills{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+    .pill{font-size:11px;padding:3px 10px;border-radius:100px;font-weight:500}
+    .pg{background:rgba(59,255,158,.1);color:var(--green);border:1px solid rgba(59,255,158,.2)}
+    .pb{background:rgba(255,92,92,.1);color:var(--red);border:1px solid rgba(255,92,92,.2)}
+    .pn{background:rgba(255,170,59,.1);color:var(--amber);border:1px solid rgba(255,170,59,.2)}
+    .score-kpis{display:flex;flex-direction:column;gap:8px;min-width:150px}
+
+    .tabs-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .tabs{display:flex;gap:4px;background:#0d0d0d;border:1px solid var(--border);border-radius:14px;padding:5px;width:fit-content;flex-wrap:wrap}
+    .tab{background:transparent;border:none;color:var(--muted);padding:9px 15px;border-radius:10px;font-size:13px;font-family:inherit;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+    .tab.on{background:var(--yellow);color:#000;font-weight:700}
+    .panel{display:none}
+    .panel.on{display:block}
+
+    .wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:14px}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px}
+    .ctitle{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px}
+    .fhint{font-size:10px;color:#333;margin-top:5px;line-height:1.5}
+
+    .f{margin-bottom:13px}
+    .f:last-child{margin-bottom:0}
+    .f label{display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:6px}
+    .fval{font-family:'DM Mono',monospace;color:var(--yellow);font-size:12px}
+
+    input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:#252525;border-radius:2px;outline:none;cursor:pointer}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--yellow);border-radius:50%;box-shadow:0 0 8px rgba(255,217,61,.4)}
+
+    select,input[type=number]{width:100%;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;color:var(--text);padding:10px 13px;font-size:14px;font-family:inherit;outline:none;transition:border-color .15s}
+    input[type=number]{font-family:'DM Mono',monospace}
+    select:focus,input[type=number]:focus{border-color:var(--yellow)}
+
+    .divider{display:flex;align-items:center;gap:10px;margin:10px 0}
+    .divider span{font-size:10px;color:#333;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:#1e1e1e}
+
+    .trow{display:flex;gap:8px}
+    .tbtn{flex:1;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;color:#666;padding:10px 6px;font-size:12px;font-family:inherit;cursor:pointer;transition:all .15s;text-align:center}
+    .tbtn.on{background:rgba(255,217,61,.1);border-color:rgba(255,217,61,.4);color:var(--yellow);font-weight:600}
+
+    .m{background:#1a1a1a;border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+    .ml{font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+    .mv{font-family:'DM Mono',monospace;font-size:18px;font-weight:500}
+    .ms{font-size:10px;color:var(--muted);margin-top:3px}
+    .mh{background:rgba(59,255,158,.05);border-color:rgba(59,255,158,.2)}
+    .my{background:rgba(255,217,61,.05);border-color:rgba(255,217,61,.2)}
+
+    .verdict{border-radius:14px;padding:16px 20px;border:1px solid;display:flex;gap:12px}
+    .vi{font-size:18px;flex-shrink:0}
+    .vt{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;margin-bottom:4px}
+    .vb{font-size:12px;color:#777;line-height:1.6}
+    .vg{background:rgba(59,255,158,.05);border-color:rgba(59,255,158,.2)}
+    .vg .vt{color:var(--green)}
+    .vo{background:rgba(255,170,59,.05);border-color:rgba(255,170,59,.2)}
+    .vo .vt{color:var(--amber)}
+    .vr{background:rgba(255,92,92,.05);border-color:rgba(255,92,92,.2)}
+    .vr .vt{color:var(--red)}
+
+    .cw{position:relative;width:100%;height:240px;margin-top:12px}
+    .cwt{position:relative;width:100%;height:280px;margin-top:12px}
+
+    .ditem{display:flex;justify-content:space-between;padding:8px 12px;background:#1a1a1a;border:1px solid #222;border-radius:8px}
+    .ditem span:first-child{font-size:12px;color:#666}
+    .ditem span:last-child{font-family:'DM Mono',monospace;font-size:12px}
+
+    .sources{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px;padding:14px 16px;font-size:11px;color:#3a3a3a;line-height:1.8}
+
+    @media(max-width:640px){
+      .g2,.g3,.g4{grid-template-columns:1fr}
+      .score-box{flex-direction:column}
+      .tab{padding:8px 10px;font-size:11px}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Tous les calculateurs</a>
+</nav>
+
+<div class="hero">
+  <div class="htag">☀️ Énergie</div>
+  <h1>Panneaux solaires —<br><span>Rentabilité réelle</span></h1>
+  <p>Pas les promesses d'un installateur. La vraie simulation : ROI, économies cumulées sur 25 ans, impact d'une batterie, CO₂ économisé. Tarifs EDF OA T2 2026, données ADEME &amp; Météo-France.</p>
+</div>
+
+<!-- SCORE -->
+<div class="score-wrap">
+  <div class="score-box">
+    <div class="score-ring">
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r="34" fill="none" stroke="#1e1e1e" stroke-width="6"/>
+        <circle cx="40" cy="40" r="34" fill="none" stroke="#FFD93D" stroke-width="6"
+          stroke-linecap="round" stroke-dasharray="213.6" id="sarc" stroke-dashoffset="213.6"/>
+      </svg>
+      <div class="score-center">
+        <div class="score-n" id="snum">—</div>
+        <div class="score-l">/ 100</div>
+      </div>
+    </div>
+    <div class="score-info">
+      <div class="score-title" id="stitle">Remplissez vos paramètres</div>
+      <div class="score-desc" id="sdesc">Votre score de rentabilité personnalisé apparaîtra ici.</div>
+      <div class="pills" id="spills"></div>
+    </div>
+    <div class="score-kpis">
+      <div class="m"><div class="ml">ROI estimé</div><div class="mv" id="broi" style="color:var(--yellow)">—</div></div>
+      <div class="m"><div class="ml">Gain sur 25 ans</div><div class="mv" id="bgain" style="color:var(--green)">—</div></div>
+      <div class="m"><div class="ml">CO₂ économisé/an</div><div class="mv" id="bco2" style="color:var(--blue)">—</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('inst',this)">☀️ Installation</button>
+    <button class="tab" onclick="showTab('cons',this)">⚡ Consommation</button>
+    <button class="tab" onclick="showTab('bilan',this)">💰 Bilan financier</button>
+    <button class="tab" onclick="showTab('proj',this)">📈 Projections</button>
+    <button class="tab" onclick="showTab('co2',this)">🌿 Bilan CO₂</button>
+  </div>
+</div>
+
+<!-- ===== PANEL INSTALLATION ===== -->
+<div class="panel on" id="p-inst"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Votre installation photovoltaïque</div>
+      <div class="f">
+        <label>Puissance installée <span class="fval" id="lpuiss">6 kWc</span></label>
+        <input type="range" id="puiss" min="1" max="9" step="0.5" value="6">
+        <div class="fhint">3 kWc ≈ 6-8 panneaux · 6 kWc ≈ 12-15 panneaux · 9 kWc ≈ 18-22 panneaux</div>
+      </div>
+      <div class="f">
+        <label>Région / ensoleillement</label>
+        <select id="region">
+          <option value="900">Nord (Hauts-de-France, IDF) — ~900 kWh/kWc/an</option>
+          <option value="1050">Ouest (Bretagne, Normandie) — ~1 050 kWh/kWc/an</option>
+          <option value="1150" selected>Centre (Loire, Bourgogne) — ~1 150 kWh/kWc/an</option>
+          <option value="1250">Est (Grand Est, Auvergne) — ~1 250 kWh/kWc/an</option>
+          <option value="1350">Sud-Ouest (Occitanie, NA) — ~1 350 kWh/kWc/an</option>
+          <option value="1500">Sud-Est (PACA, Languedoc) — ~1 500 kWh/kWc/an</option>
+          <option value="1600">Corse / côte méditerranéenne — ~1 600 kWh/kWc/an</option>
+        </select>
+        <div class="fhint">Source : relevés décennaux 2013-2022 Météo-France, confirmés ADEME 2024</div>
+      </div>
+      <div class="f">
+        <label>Orientation des panneaux</label>
+        <select id="orient">
+          <option value="1.0" selected>Plein Sud, 30-35° (optimal)</option>
+          <option value="0.95">Sud-Est ou Sud-Ouest, 30°</option>
+          <option value="0.85">Est ou Ouest, 30°</option>
+          <option value="0.90">Sud, toit plat (15°)</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Ombrage partiel ?</label>
+        <select id="ombrage">
+          <option value="1.0" selected>Aucun ombrage</option>
+          <option value="0.95">Léger (cheminée, antenne)</option>
+          <option value="0.85">Modéré (arbre, bâtiment éloigné)</option>
+          <option value="0.70">Significatif</option>
+        </select>
+      </div>
+      <div class="divider"><span>Coûts</span></div>
+      <div class="f">
+        <label>Prix installation (€/kWc) <span class="fval" id="lprixkwc">1 600 €</span></label>
+        <input type="range" id="prixkwc" min="1000" max="2500" step="50" value="1600">
+        <div class="fhint">ADEME 2025-2026 : 1 300 à 1 900 €/kWc tout compris (matériel + pose RGE)</div>
+      </div>
+      <div class="f">
+        <label>Entretien annuel (€) <span class="fval" id="lentret">150 €</span></label>
+        <input type="range" id="entret" min="0" max="500" step="25" value="150">
+        <div class="fhint">Nettoyage + contrôle : 100-200€/an. Remplacement onduleur tous les 10 ans : ~1 200€</div>
+      </div>
+      <div class="f">
+        <label>Batterie de stockage ?</label>
+        <div class="trow">
+          <button class="tbtn" id="batY" onclick="setBatt(true)">✓ Oui</button>
+          <button class="tbtn on" id="batN" onclick="setBatt(false)">✗ Non (sans batterie)</button>
+        </div>
+      </div>
+      <div id="battSection" style="display:none;">
+        <div class="f" style="margin-top:10px;">
+          <label>Capacité batterie <span class="fval" id="lbatt">10 kWh</span></label>
+          <input type="range" id="battCap" min="3" max="20" step="1" value="10">
+          <div class="fhint">Coût : 800-1 000 €/kWh · TVA 20% sur les batteries en 2026</div>
+        </div>
+        <div class="f">
+          <label>Prix batterie (€/kWh) <span class="fval" id="lbattPrix">900 €</span></label>
+          <input type="range" id="battPrix" min="600" max="1400" step="50" value="900">
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="border-color:rgba(255,217,61,.2);background:rgba(255,217,61,.03);">
+        <div class="ctitle" style="color:var(--yellow)">Récapitulatif installation</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="ditem"><span>Coût panneaux + pose</span><span id="d-panneaux" style="color:var(--text)">—</span></div>
+          <div class="ditem"><span>TVA (5.5% depuis oct. 2025)</span><span id="d-tva" style="color:var(--muted)">—</span></div>
+          <div class="ditem"><span>Batterie (si applicable)</span><span id="d-batterie" style="color:var(--text)">—</span></div>
+          <div class="ditem"><span>Prime autoconsommation EDF OA</span><span id="d-prime" style="color:var(--green)">—</span></div>
+          <div class="ditem" style="background:rgba(255,217,61,.05);border-color:rgba(255,217,61,.2);">
+            <span style="font-weight:600">Investissement net total</span>
+            <span id="d-invest" style="color:var(--yellow);font-weight:700">—</span>
+          </div>
+        </div>
+        <div style="font-size:11px;color:#444;margin-top:12px;line-height:1.6;">
+          Prime autoconsommation 2026 : <strong style="color:#666">80 €/kWc</strong> pour ≤9 kWc (CRE T2 2026, stable depuis T2 2025). TVA 5.5% si logement &gt; 2 ans, installateur RGE, ≤9 kWc.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="ctitle">Production estimée</div>
+        <div class="g2" style="gap:10px;">
+          <div class="m"><div class="ml">Production / an</div><div class="mv" id="d-prodAn" style="color:var(--yellow)">—</div><div class="ms">kWh/an</div></div>
+          <div class="m"><div class="ml">Production / mois</div><div class="mv" id="d-prodMois" style="color:var(--amber)">—</div><div class="ms">kWh/mois moyen</div></div>
+        </div>
+        <div style="font-size:11px;color:#444;margin-top:12px;line-height:1.6;">
+          Production = Puissance (kWc) × Ensoleillement région × Orientation × Ombrage × (1 − dégradation 0.5%/an)
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== PANEL CONSOMMATION ===== -->
+<div class="panel" id="p-cons"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Votre consommation électrique</div>
+      <div class="f">
+        <label>Consommation annuelle <span class="fval" id="lconso">5 500 kWh</span></label>
+        <input type="range" id="conso" min="1000" max="20000" step="100" value="5500">
+        <div class="fhint">Moyenne française : 4 500 kWh/an · Avec VE : +2 000 kWh · Avec PAC : +3 000-5 000 kWh</div>
+      </div>
+      <div class="f">
+        <label>Prix kWh actuel (EDF tarif réglementé)</label>
+        <select id="prixKwh">
+          <option value="0.194" selected>0.194 €/kWh (tarif réglementé fev. 2026)</option>
+          <option value="0.22">0.22 €/kWh (offre de marché moyenne)</option>
+          <option value="0.25">0.25 €/kWh (offre premium / heures pleines)</option>
+          <option value="0.15">0.15 €/kWh (heures creuses)</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Hausse annuelle du prix électricité <span class="fval" id="lhausseElec">4.00 %</span></label>
+        <input type="range" id="hausseElec" min="0" max="10" step="0.5" value="4.0">
+        <div class="fhint">Hausse réelle 2010-2025 : +50% au total · Hypothèse prudente 2026+ : 3-5%/an</div>
+      </div>
+      <div class="divider"><span>Mode d'utilisation</span></div>
+      <div class="f">
+        <label>% de production autoconsommée <span class="fval" id="lautocons">40 %</span></label>
+        <input type="range" id="autocons" min="10" max="90" step="5" value="40">
+        <div class="fhint">Sans batterie : 30-50% · Avec batterie : 60-80% · Avec EV rechargé de jour : 50-70%</div>
+      </div>
+      <div class="f">
+        <label>Tarif rachat surplus EDF OA (€/kWh)</label>
+        <select id="tarifRachat">
+          <option value="0.04" selected>0.04 €/kWh — installations ≤9 kWc (T2 2026)</option>
+          <option value="0.00">0 — autoconsommation totale sans injection</option>
+        </select>
+        <div class="fhint">Le tarif de rachat est garanti 20 ans (figé à la signature du contrat EDF OA)</div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="border-color:rgba(59,255,158,.2);background:rgba(59,255,158,.03);">
+        <div class="ctitle" style="color:var(--green)">Gains annuels estimés (an 1)</div>
+        <div class="g2" style="gap:10px;margin-bottom:10px;">
+          <div class="m"><div class="ml">Économies autoconso.</div><div class="mv" id="c-ecoAuto" style="color:var(--green)">—</div><div class="ms">kWh × prix EDF</div></div>
+          <div class="m"><div class="ml">Revente surplus</div><div class="mv" id="c-ecoVente" style="color:var(--amber)">—</div><div class="ms">kWh × 0.04€</div></div>
+        </div>
+        <div class="m mh">
+          <div class="ml">GAIN TOTAL AN 1</div>
+          <div class="mv" id="c-gainAn1" style="color:var(--green);font-size:22px">—</div>
+          <div class="ms">économies + revente</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctitle">Taux de couverture</div>
+        <div class="g2" style="gap:10px;">
+          <div class="m"><div class="ml">Production vs conso</div><div class="mv" id="c-cover" style="color:var(--text)">—</div><div class="ms">% de votre conso couverte</div></div>
+          <div class="m"><div class="ml">% autoconsommé</div><div class="mv" id="c-autoPct" style="color:var(--yellow)">—</div><div class="ms">de la production</div></div>
+        </div>
+        <div style="font-size:12px;color:#555;margin-top:12px;line-height:1.6;padding:10px;background:#1a1a1a;border-radius:10px;">
+          💡 La <strong style="color:#888">vraie rentabilité</strong> vient de l'autoconsommation : chaque kWh autoconsommé vous économise <strong style="color:var(--yellow)">0.194€</strong>, alors que la revente ne rapporte que <strong style="color:var(--red)">0.04€</strong>. Maximisez l'autoconsommation !
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== PANEL BILAN ===== -->
+<div class="panel" id="p-bilan"><div class="wrap">
+  <div class="g4">
+    <div class="m my"><div class="ml">Investissement net</div><div class="mv" id="b-invest" style="color:var(--yellow)">—</div><div class="ms">après prime EDF OA</div></div>
+    <div class="m"><div class="ml">Gain an 1</div><div class="mv" id="b-an1" style="color:var(--green)">—</div><div class="ms">économies + revente</div></div>
+    <div class="m mh"><div class="ml">ROI estimé</div><div class="mv" id="b-roi" style="color:var(--green)">—</div><div class="ms">années pour rentabiliser</div></div>
+    <div class="m"><div class="ml">Gain net sur 25 ans</div><div class="mv" id="b-gain25" style="color:var(--green)">—</div><div class="ms">après investissement</div></div>
+  </div>
+
+  <div class="verdict vg" id="b-verdict">
+    <div class="vi" id="b-vi">☀️</div>
+    <div><div class="vt" id="b-vt">—</div><div class="vb" id="b-vb">—</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Détail des coûts</div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="detail-couts"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Détail des gains sur 25 ans</div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="detail-gains"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Impact de la hausse des prix de l'électricité</div>
+    <div style="font-size:13px;color:#666;line-height:1.6;margin-bottom:14px;">
+      Plus le prix de l'électricité augmente, plus vos panneaux rapportent. Chaque kWh autoconsommé vous économise davantage chaque année. C'est l'effet boule de neige du solaire.
+    </div>
+    <div class="g3" style="gap:10px;">
+      <div class="m"><div class="ml">Gain an 1 (prix actuel)</div><div class="mv" id="eff-an1" style="color:var(--text)">—</div></div>
+      <div class="m"><div class="ml">Gain an 10 (prix +46%)</div><div class="mv" id="eff-an10" style="color:var(--amber)">—</div></div>
+      <div class="m mh"><div class="ml">Gain an 25 (prix +165%)</div><div class="mv" id="eff-an25" style="color:var(--green)">—</div></div>
+    </div>
+  </div>
+
+  <div class="sources">
+    <strong>Sources :</strong> ADEME « Prix de l'électricité photovoltaïque » 2025 (1 300-1 900 €/kWc installation résidentielle) · CRE T2 2026 : prime autoconsommation 80 €/kWc pour ≤9 kWc, tarif rachat surplus 0.04 €/kWh (stable depuis T2 2025) · EDF tarif réglementé 0.194 €/kWh (fév. 2026) · TVA 5.5% depuis oct. 2025 pour installations ≤9 kWc RGE en logements &gt;2 ans · Dégradation panneaux : 0.5%/an (moyenne constructeurs) · Durée de vie garantie : 25 ans · Météo-France ensoleillement décennal 2013-2022 · Remplacement onduleur tous les 10 ans (~1 200€) intégré dans les coûts · Sonergia, Solaire.fr, Quelle Energie 2026.
+  </div>
+</div></div>
+
+<!-- ===== PANEL PROJECTIONS ===== -->
+<div class="panel" id="p-proj"><div class="wrap">
+  <div class="card">
+    <div class="ctitle">Économies cumulées sur 25 ans</div>
+    <div style="font-size:12px;color:#555;margin-bottom:4px;">Quand la courbe passe en positif = votre installation est rentabilisée.</div>
+    <div class="cwt"><canvas id="chart-eco"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Gain annuel (avec hausse prix électricité)</div>
+    <div style="font-size:12px;color:#555;margin-bottom:4px;">Le gain augmente chaque année avec la hausse du prix de l'électricité.</div>
+    <div class="cw"><canvas id="chart-an"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Comparaison : avec batterie vs sans batterie</div>
+    <div style="font-size:12px;color:#555;margin-bottom:4px;" id="battCompNote">Activez l'option batterie pour voir la comparaison.</div>
+    <div class="cw"><canvas id="chart-batt"></canvas></div>
+  </div>
+</div></div>
+
+<!-- ===== PANEL CO₂ ===== -->
+<div class="panel" id="p-co2"><div class="wrap">
+  <div class="g3">
+    <div class="m"><div class="ml">Production annuelle</div><div class="mv" id="co-prod" style="color:var(--yellow)">—</div><div class="ms">kWh/an</div></div>
+    <div class="m"><div class="ml">CO₂ évité / an</div><div class="mv" id="co-an" style="color:var(--green)">—</div><div class="ms">vs mix réseau français</div></div>
+    <div class="m mh"><div class="ml">CO₂ évité sur 25 ans</div><div class="mv" id="co-25" style="color:var(--green)">—</div><div class="ms">équivalent tonnes</div></div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Équivalences CO₂ économisé</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;" id="co-equiv"></div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Le bilan carbone du solaire en France</div>
+    <div style="font-size:13px;color:#666;line-height:1.7;">
+      <div style="margin-bottom:10px;">🌞 <strong style="color:var(--text)">Fabrication des panneaux</strong> — Une installation de 6 kWc émet environ <strong style="color:var(--amber)">1.5-2 t CO₂</strong> à la fabrication (silicium, aluminium, cuivre). C'est la "dette carbone" à rembourser.</div>
+      <div style="margin-bottom:10px;">⚡ <strong style="color:var(--text)">Mix électrique France</strong> — L'électricité française émet ~52 gCO₂/kWh (90% nucléaire + renouvelable). Chaque kWh produit en solaire évite cette émission.</div>
+      <div style="margin-bottom:10px;">📊 <strong style="color:var(--text)">Point d'équilibre carbone</strong> — Une installation solaire en France compense sa dette carbone en <strong style="color:var(--green)">1 à 3 ans</strong>. Sur 25 ans, le bilan est très largement positif.</div>
+      <div>♻️ <strong style="color:var(--text)">Fin de vie</strong> — Les panneaux solaires sont recyclables à 95%+ (filière PV Cycle en France). Obligation légale de reprise par les installateurs depuis 2014.</div>
+    </div>
+  </div>
+
+  <div class="sources">
+    <strong>Sources CO₂ :</strong> ADEME Base Carbone 2024 · Mix électrique RTE 2025 : ~52 gCO₂/kWh (95% décarboné) · Empreinte fabrication panneaux : ~250-300 gCO₂/kWh produit (ACV, Transport &amp; Environment 2024) · Données PV Cycle France sur le recyclage · Équivalences : 1 km voiture thermique = ~180 gCO₂ / 1 vol Paris-Nice = ~100 kgCO₂ par passager.
+  </div>
+</div></div>
+
+<script>
+var hasBatt = false;
+var activeTab = 'inst';
+var chartEco = null, chartAn = null, chartBatt = null;
+var R = {};
+
+Chart.defaults.color = '#666';
+Chart.defaults.font.family = 'DM Sans, sans-serif';
+
+function g(id){ return document.getElementById(id); }
+function fmtN(n,d){ d=d||0; return n.toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function fmtE(n){ return fmtN(Math.round(n))+' €'; }
+function fmtP(n,d){ return fmtN(n,d||1)+' %'; }
+
+function setBatt(v){
+  hasBatt = v;
+  g('batY').className = v ? 'tbtn on' : 'tbtn';
+  g('batN').className = v ? 'tbtn' : 'tbtn on';
+  g('battSection').style.display = v ? 'block' : 'none';
+  if(v){ g('autocons').value = 65; }
+  else  { g('autocons').value = 40; }
+  recalc();
+}
+
+function showTab(name, btn){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  g('p-'+name).classList.add('on');
+  btn.classList.add('on');
+  activeTab = name;
+  setTimeout(function(){ renderCharts(name); }, 80);
+}
+
+function destroyChart(c){ if(c){ try{ c.destroy(); }catch(e){} } return null; }
+
+function renderCharts(name){
+  if(!R.years) return;
+  var years = R.years;
+  var labels = years.map(function(y){ return 'An '+y; });
+
+  if(name === 'proj'){
+    chartEco = destroyChart(chartEco);
+    chartAn  = destroyChart(chartAn);
+    chartBatt= destroyChart(chartBatt);
+
+    var ce = g('chart-eco'); if(!ce) return;
+    chartEco = new Chart(ce,{
+      type:'line',
+      data:{labels:labels, datasets:[
+        {label:'Économies nettes cumulées',data:R.cumulEco,
+          borderColor:R.cumulEco.map(function(v){ return v>=0?'rgba(59,255,158,.9)':'rgba(255,92,92,.9)'; }),
+          segment:{borderColor:function(ctx){ return ctx.p1.parsed.y>=0?'rgba(59,255,158,.9)':'rgba(255,92,92,.9)'; }},
+          backgroundColor:'rgba(59,255,158,.06)',fill:true,tension:.3,pointRadius:2,borderWidth:2},
+        {label:'Seuil zéro',data:years.map(function(){ return 0; }),
+          borderColor:'rgba(255,255,255,.1)',borderDash:[4,4],pointRadius:0,borderWidth:1}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:'#888',font:{size:11}}},tooltip:{callbacks:{label:function(c){ return c.dataset.label+' : '+fmtE(c.raw); }}}},
+        scales:{x:{grid:{display:false},ticks:{color:'#666'},border:{color:'transparent'}},
+                y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return fmtE(v); },color:'#666'},border:{color:'transparent'}}}
+      }
+    });
+
+    var ca = g('chart-an'); if(!ca) return;
+    chartAn = new Chart(ca,{
+      type:'bar',
+      data:{labels:years.slice(1).map(function(y){ return 'An '+y; }), datasets:[{
+        label:'Gain annuel',data:R.gainsAn.slice(1),
+        backgroundColor:R.gainsAn.slice(1).map(function(){ return 'rgba(255,217,61,.5)'; }),
+        borderColor:R.gainsAn.slice(1).map(function(){ return 'rgba(255,217,61,.9)'; }),
+        borderWidth:1,borderRadius:4
+      }]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){ return 'Gain : '+fmtE(c.raw); }}}},
+        scales:{x:{grid:{display:false},ticks:{color:'#666'},border:{color:'transparent'}},
+                y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return fmtE(v); },color:'#666'},border:{color:'transparent'}}}
+      }
+    });
+
+    var cb = g('chart-batt'); if(!cb) return;
+    if(R.cumulEcoBatt){
+      g('battCompNote').textContent = 'Courbe bleue = avec batterie. Courbe jaune = sans batterie.';
+      chartBatt = new Chart(cb,{
+        type:'line',
+        data:{labels:labels, datasets:[
+          {label:'Avec batterie',data:R.cumulEcoBatt,borderColor:'rgba(59,181,255,.9)',backgroundColor:'rgba(59,181,255,.04)',fill:false,tension:.3,pointRadius:2,borderWidth:2},
+          {label:'Sans batterie',data:R.cumulEcoSansBatt,borderColor:'rgba(255,217,61,.9)',backgroundColor:'rgba(255,217,61,.04)',fill:false,tension:.3,pointRadius:2,borderWidth:2}
+        ]},
+        options:{responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{labels:{color:'#888',font:{size:11}}},tooltip:{callbacks:{label:function(c){ return c.dataset.label+' : '+fmtE(c.raw); }}}},
+          scales:{x:{grid:{display:false},ticks:{color:'#666'},border:{color:'transparent'}},
+                  y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return fmtE(v); },color:'#666'},border:{color:'transparent'}}}
+        }
+      });
+    } else {
+      g('battCompNote').textContent = 'Activez l\'option batterie dans l\'onglet Installation pour voir la comparaison.';
+    }
+  }
+}
+
+function calcScenario(autoPct, investTotal, prodAn, prixKwh, tarifRachat, entretAn, hausseElec, duree){
+  var years = [];
+  var gainsAn = [];
+  var cumulEco = [];
+  var cumul = -investTotal;
+  for(var i=0; i<=duree; i++) years.push(i);
+
+  gainsAn.push(0);
+  cumulEco.push(-investTotal);
+
+  var prixCourant = prixKwh;
+  for(var y=1; y<=duree; y++){
+    var degrad = Math.pow(0.995, y-1); // dégradation 0.5%/an
+    var prodY  = prodAn * degrad;
+    var autoY  = prodY * autoPct;
+    var venteY = prodY * (1 - autoPct);
+    // Remplacement onduleur an 10
+    var onduleur = (y === 10) ? 1200 : 0;
+    var gainY = autoY * prixCourant + venteY * tarifRachat - entretAn - onduleur;
+    gainsAn.push(gainY);
+    cumul += gainY;
+    cumulEco.push(Math.round(cumul));
+    prixCourant = prixCourant * (1 + hausseElec);
+  }
+  return { years:years, gainsAn:gainsAn, cumulEco:cumulEco };
+}
+
+function recalc(){
+  try{
+    var puiss    = +g('puiss').value;
+    var ensoleil = +g('region').value;
+    var orient   = +g('orient').value;
+    var ombrage  = +g('ombrage').value;
+    var prixkwc  = +g('prixkwc').value;
+    var entret   = +g('entret').value;
+    var battCap  = hasBatt ? +g('battCap').value : 0;
+    var battPrix = hasBatt ? +g('battPrix').value : 0;
+
+    var conso      = +g('conso').value;
+    var prixKwh    = +g('prixKwh').value;
+    var hausseElec = +g('hausseElec').value / 100;
+    var autoPct    = +g('autocons').value / 100;
+    var tarifRachat= +g('tarifRachat').value;
+
+    // Labels
+    g('lpuiss').textContent    = fmtN(puiss,1)+' kWc';
+    g('lprixkwc').textContent  = fmtE(prixkwc);
+    g('lentret').textContent   = fmtE(entret);
+    if(hasBatt){ g('lbatt').textContent = fmtN(battCap)+' kWh'; g('lbattPrix').textContent = fmtE(battPrix); }
+    g('lconso').textContent    = fmtN(conso)+' kWh';
+    g('lhausseElec').textContent = fmtP(hausseElec*100);
+    g('lautocons').textContent = fmtP(autoPct*100, 0);
+
+    // Coûts installation
+    var coutPanneaux = puiss * 1000 * prixkwc / 1000; // prixkwc est en €/kWc
+    coutPanneaux = puiss * prixkwc; // €/kWc × kWc
+    var tva        = coutPanneaux * 0.055;
+    var coutBatt   = battCap * battPrix;
+    var prime      = Math.min(puiss, 9) * 80; // 80€/kWc, max 9kWc
+    var investBrut = coutPanneaux + tva + coutBatt;
+    var investNet  = investBrut - prime;
+
+    g('d-panneaux').textContent = fmtE(coutPanneaux+tva);
+    g('d-tva').textContent = 'incluse (5.5%)';
+    g('d-batterie').textContent = hasBatt ? fmtE(coutBatt)+' (TVA 20%)' : '—';
+    g('d-prime').textContent = '−'+fmtE(prime);
+    g('d-invest').textContent = fmtE(investNet);
+
+    // Production
+    var prodAn = puiss * ensoleil * orient * ombrage; // kWh/an
+    g('d-prodAn').textContent  = fmtN(Math.round(prodAn));
+    g('d-prodMois').textContent= fmtN(Math.round(prodAn/12));
+
+    // Gains an 1
+    var autoKwh  = prodAn * autoPct;
+    var venteKwh = prodAn * (1 - autoPct);
+    var ecoAuto  = autoKwh * prixKwh;
+    var ecoVente = venteKwh * tarifRachat;
+    var gainAn1  = ecoAuto + ecoVente - entret;
+
+    g('c-ecoAuto').textContent  = fmtE(ecoAuto);
+    g('c-ecoVente').textContent = fmtE(ecoVente);
+    g('c-gainAn1').textContent  = fmtE(gainAn1);
+    var coverPct   = Math.min(100, (autoKwh/conso)*100);
+    g('c-cover').textContent  = fmtP(coverPct);
+    g('c-autoPct').textContent= fmtP(autoPct*100, 0);
+
+    // Simulation 25 ans
+    var DUREE = 25;
+    var sc = calcScenario(autoPct, investNet, prodAn, prixKwh, tarifRachat, entret, hausseElec, DUREE);
+
+    // Point d'équilibre
+    var roi = -1;
+    for(var i=1; i<sc.cumulEco.length; i++){
+      if(sc.cumulEco[i] >= 0){ roi = i; break; }
+    }
+
+    var gain25 = sc.cumulEco[sc.cumulEco.length-1];
+
+    // Simulation sans batterie vs avec batterie (pour comparaison)
+    var cumulEcoBatt = null, cumulEcoSansBatt = null;
+    if(hasBatt){
+      var scSansBatt = calcScenario(0.40, puiss*prixkwc*(1.055)-prime, prodAn, prixKwh, tarifRachat, entret, hausseElec, DUREE);
+      cumulEcoBatt    = sc.cumulEco;
+      cumulEcoSansBatt= scSansBatt.cumulEco;
+    }
+
+    R = {
+      years: sc.years,
+      gainsAn: sc.gainsAn,
+      cumulEco: sc.cumulEco,
+      cumulEcoBatt: cumulEcoBatt,
+      cumulEcoSansBatt: cumulEcoSansBatt
+    };
+
+    if(activeTab === 'proj') renderCharts('proj');
+
+    // Panel bilan
+    g('b-invest').textContent = fmtE(investNet);
+    g('b-an1').textContent    = fmtE(gainAn1);
+    g('b-roi').textContent    = roi > 0 ? roi+' ans' : '> 25 ans';
+    g('b-roi').style.color    = roi>0&&roi<=12?'var(--green)':roi<=18?'var(--amber)':'var(--red)';
+    g('b-gain25').textContent = (gain25>=0?'+':'')+fmtE(gain25);
+    g('b-gain25').style.color = gain25>=0?'var(--green)':'var(--red)';
+
+    var bv = g('b-verdict');
+    if(roi>0 && roi<=10){
+      bv.className='verdict vg'; g('b-vi').textContent='☀️';
+      g('b-vt').textContent = 'Excellent investissement — rentabilisé en '+roi+' ans !';
+      g('b-vb').textContent = 'Votre installation se rentabilise en '+roi+' ans et génère '+fmtE(gain25)+' de gain net sur 25 ans. Avec la hausse du prix de l\'électricité, la rentabilité s\'améliore chaque année.';
+    } else if(roi>0 && roi<=15){
+      bv.className='verdict vo'; g('b-vi').textContent='⚠';
+      g('b-vt').textContent = 'Bon investissement — rentabilisé en '+roi+' ans';
+      g('b-vb').textContent = 'L\'installation se rentabilise en '+roi+' ans. Sur 25 ans, le gain net est de '+fmtE(gain25)+'. Pensez à optimiser l\'autoconsommation pour améliorer la rentabilité.';
+    } else if(roi>0){
+      bv.className='verdict vo'; g('b-vi').textContent='⚠';
+      g('b-vt').textContent = 'Rentabilité lente — '+roi+' ans pour récupérer l\'investissement';
+      g('b-vb').textContent = 'La rentabilité est plus longue que la moyenne. Vérifiez l\'ensoleillement, le prix d\'installation et augmentez l\'autoconsommation.';
+    } else {
+      bv.className='verdict vr'; g('b-vi').textContent='⚠';
+      g('b-vt').textContent = 'Non rentabilisé sur 25 ans dans ces conditions';
+      g('b-vb').textContent = 'L\'installation ne se rentabilise pas sur 25 ans avec ces paramètres. Réduisez le coût d\'installation, augmentez l\'autoconsommation ou choisissez une région plus ensoleillée.';
+    }
+
+    function di(l,v,c){ return '<div class="ditem"><span>'+l+'</span><span style="color:'+(c||'var(--text)')+'">'+v+'</span></div>'; }
+    var totEntret = entret * 25 + 1200; // onduleur an 10
+    g('detail-couts').innerHTML =
+      di('Panneaux + pose + TVA',fmtE(coutPanneaux+tva),'var(--red)')
+      +(hasBatt?di('Batterie de stockage',fmtE(coutBatt),'var(--red)'):'')
+      +di('Prime autoconsommation EDF OA','−'+fmtE(prime),'var(--green)')
+      +di('Entretien ×25 ans',fmtE(entret*25),'var(--amber)')
+      +di('Remplacement onduleur (an 10)',fmtE(1200),'var(--amber)')
+      +di('INVESTISSEMENT NET TOTAL',fmtE(investNet+totEntret-entret*25),'var(--red)');
+
+    var ecoAutoTot  = autoKwh * prixKwh * DUREE * 1.5; // simplifié, moyenne avec hausse
+    var ecoVenteTot = venteKwh * tarifRachat * DUREE * 0.95;
+    g('detail-gains').innerHTML =
+      di('Économies autoconsommation ×25',fmtE(ecoAutoTot),'var(--green)')
+      +di('Revente surplus ×25',fmtE(ecoVenteTot),'var(--green)')
+      +di('Prime autoconsommation (reçue)',fmtE(prime),'var(--green)')
+      +di('GAIN NET SUR 25 ANS',(gain25>=0?'+':'')+fmtE(gain25),gain25>=0?'var(--green)':'var(--red)');
+
+    // Effet hausse électricité
+    var gainAn10 = sc.gainsAn.length > 10 ? sc.gainsAn[10] : gainAn1;
+    var gainAn25 = sc.gainsAn.length > 24 ? sc.gainsAn[24] : gainAn1;
+    g('eff-an1').textContent  = fmtE(gainAn1)+'/an';
+    g('eff-an10').textContent = fmtE(gainAn10)+'/an';
+    g('eff-an25').textContent = fmtE(gainAn25)+'/an';
+
+    // Score
+    var score = 40;
+    var pills  = [];
+    if(roi>0 && roi<=8){ score+=25; pills.push({t:'☀️ ROI '+roi+' ans',c:'pg'}); }
+    else if(roi>0 && roi<=12){ score+=15; pills.push({t:'⚠ ROI '+roi+' ans',c:'pn'}); }
+    else if(roi>0 && roi<=18){ score+=5; pills.push({t:'⏱ ROI '+roi+' ans',c:'pb'}); }
+    else { score-=10; pills.push({t:'✗ ROI > 25 ans',c:'pb'}); }
+
+    if(ensoleil>=1300){ score+=15; pills.push({t:'🌞 Bon ensoleillement',c:'pg'}); }
+    else if(ensoleil>=1100){ score+=8; }
+    else { score+=2; pills.push({t:'☁️ Ensoleillement limité',c:'pn'}); }
+
+    if(autoPct>=0.6){ score+=10; pills.push({t:'✓ Autoconso optimisée',c:'pg'}); }
+    else if(autoPct>=0.4){ score+=5; }
+    else { score-=5; pills.push({t:'⚠ Autoconso faible',c:'pb'}); }
+
+    if(prixkwc<=1400){ score+=5; pills.push({t:'✓ Prix install. avantageux',c:'pg'}); }
+    else if(prixkwc>1800){ score-=5; }
+
+    if(puiss>=6){ score+=5; }
+
+    score = Math.max(0, Math.min(100, Math.round(score)));
+
+    var arc = g('sarc');
+    arc.style.strokeDashoffset = 213.6 - (score/100)*213.6;
+    var sc2 = score>=70?'#3BFF9E':score>=45?'#FFD93D':'#FF5C5C';
+    arc.style.stroke = sc2;
+    g('snum').textContent = score;
+    g('snum').style.color = sc2;
+
+    var titles=['Peu rentable dans ces conditions','Rentabilité correcte','Bon investissement','Très bonne rentabilité','Excellent investissement !'];
+    var descs=['Le projet nécessite d\'être revu : ensoleillement insuffisant, prix trop élevé ou autoconsommation trop faible.','Le projet est viable sur la durée mais la rentabilité pourrait être améliorée.','Bonne rentabilité. Votre installation génère des économies substantielles sur 25 ans.','Votre profil est très favorable : bon ensoleillement, autoconsommation optimisée, ROI rapide.','Installation idéale ! Ensoleillement maximal, autoconsommation élevée et ROI excellent.'];
+    var ti=score<30?0:score<50?1:score<65?2:score<80?3:4;
+    g('stitle').textContent=titles[ti];
+    g('sdesc').textContent=descs[ti];
+    g('spills').innerHTML=pills.map(function(p){ return '<span class="pill '+p.c+'">'+p.t+'</span>'; }).join('');
+
+    g('broi').textContent  = roi>0?roi+' ans':'> 25 ans';
+    g('bgain').textContent = (gain25>=0?'+':'')+fmtE(gain25);
+    g('bgain').style.color = gain25>=0?'var(--green)':'var(--red)';
+
+    // CO₂
+    var CO2_RESEAU = 0.052; // kgCO₂/kWh mix FR (52g)
+    var co2An  = prodAn * CO2_RESEAU;
+    var co2_25 = co2An * 25;
+    g('co-prod').textContent = fmtN(Math.round(prodAn));
+    g('co-an').textContent   = fmtN(Math.round(co2An))+' kg';
+    g('co-25').textContent   = fmtN(Math.round(co2_25/1000),1)+' t';
+    g('bco2').textContent    = fmtN(Math.round(co2An))+' kg/an';
+
+    // Équivalences
+    var voitureKm = Math.round(co2_25 / 0.18);
+    var volsParis  = Math.round(co2_25 / 100);
+    var arbres     = Math.round(co2_25 / 25); // ~25kg/arbre/an
+    g('co-equiv').innerHTML = [
+      {emoji:'🚗',label:'Kilomètres de voiture thermique évités',val:fmtN(voitureKm)+' km'},
+      {emoji:'✈️',label:'Vols Paris-Nice (aller) équivalents',val:volsParis+' vols'},
+      {emoji:'🌳',label:'Équivalent arbres plantés sur 25 ans',val:arbres+' arbres'},
+      {emoji:'💡',label:'Foyers alimentés pendant 1 an',val:Math.round(co2_25/4500/25*1000)+' foyers'},
+    ].map(function(it){
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:11px 14px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">'
+        +'<span style="font-size:14px;margin-right:10px">'+it.emoji+'</span>'
+        +'<span style="font-size:12px;color:#666;flex:1">'+it.label+'</span>'
+        +'<span style="font-family:DM Mono,monospace;font-size:13px;color:var(--green)">'+it.val+'</span>'
+        +'</div>';
+    }).join('');
+
+  }catch(err){ console.error('recalc error:',err); }
+}
+
+document.querySelectorAll('input[type=range], input[type=number], select').forEach(function(el){
+  el.addEventListener('input', recalc);
+  el.addEventListener('change', recalc);
+});
+
+recalc();
+</script>
+</body>
+</html>
