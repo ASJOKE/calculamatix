@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!--
+    Sitemap Calculamatix.com
+    Généré en avril 2026
+    Soumis via Google Search Console → Sitemaps → https://calculamatix.com/sitemap.xml
+  -->
+
+  <!-- ═══════════════════════════════════════
+       PAGE D'ACCUEIL
+       Priorité maximale, mise à jour fréquente
+       ═══════════════════════════════════════ -->
+  <url>
+    <loc>https://calculamatix.com/</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- ═══════════════════════════════════════
+       CALCULATEURS — ARGENT & IMMOBILIER
+       ═══════════════════════════════════════ -->
+
+  <url>
+    <loc>https://calculamatix.com/louer-vs-acheter.html</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://calculamatix.com/credit-conso.html</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://calculamatix.com/panneaux-solaires.html</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://calculamatix.com/renover-ou-demenager.html</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ═══════════════════════════════════════
+       CALCULATEURS — FORMATION & CARRIÈRE
+       ═══════════════════════════════════════ -->
+
+  <url>
+    <loc>https://calculamatix.com/roi-formation.html</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://calculamatix.com/roi-grande-ecole.html</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <!-- ═══════════════════════════════════════
+       CALCULATEURS — FAMILLE & VIE
+       ═══════════════════════════════════════ -->
+
+  <url>
+    <loc>https://calculamatix.com/cout-enfant.html</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://calculamatix.com/cout-chien.html</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- ═══════════════════════════════════════
+       CALCULATEURS — SANTÉ & BIEN-ÊTRE
+       ═══════════════════════════════════════ -->
+
+  <url>
+    <loc>https://calculamatix.com/cout-sommeil.html</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- ═══════════════════════════════════════
+       CALCULATEURS — TECH & CONSOMMATION
+       ═══════════════════════════════════════ -->
+
+  <url>
+    <loc>https://calculamatix.com/changer-telephone.html</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://calculamatix.com/voiture-electrique-vs-thermique.html</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- ═══════════════════════════════════════
+       CALCULATEURS — SOCIÉTÉ & POLITIQUE
+       ═══════════════════════════════════════ -->
+
+  <url>
+    <loc>https://calculamatix.com/test-politique.html</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+</urlset>

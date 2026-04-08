@@ -1,0 +1,78 @@
+# robots.txt — Calculamatix.com
+# Dernière mise à jour : avril 2026
+
+# ── Robots des moteurs de recherche principaux ──
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# ── Robots des réseaux sociaux (pour Open Graph) ──
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+# ── Bloquer les robots d'IA qui scrapent sans contrepartie ──
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+# ── Bloquer les scrapers agressifs et spam ──
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# ── Règles globales par défaut ──
+User-agent: *
+Allow: /
+Disallow: /404
+Disallow: /admin
+Disallow: /*?*utm_source=
+Disallow: /*?*utm_medium=
+Disallow: /*?*utm_campaign=
+Crawl-delay: 5
+
+# ── Sitemap ──
+Sitemap: https://calculamatix.com/sitemap.xml
