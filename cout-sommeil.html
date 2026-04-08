@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Le vrai coût de votre manque de sommeil en 2025 | Calculamatix</title>
+  <meta name="description" content="Combien vous coûte vraiment de mal dormir ? Calculez votre perte de productivité, risques de santé chiffrés, années de vie perdues. Données INSERM, Terra Nova, RAND Corporation 2025."/>
+  <meta name="keywords" content="coût manque sommeil, impact insomnie productivité, calculateur sommeil France, perte sommeil salaire, risque santé manque sommeil"/>
+  <link rel="canonical" href="https://calculamatix.com/cout-sommeil.html"/>
+  <meta property="og:title" content="Le vrai coût de votre manque de sommeil"/>
+  <meta property="og:description" content="Productivité perdue, risques santé chiffrés, années de vie. Le calculateur que le gouvernement n'a toujours pas fait."/>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Calculateur coût du manque de sommeil","description":"Calcule l'impact financier et sanitaire du manque de sommeil : productivité, santé, qualité de vie.","applicationCategory":"HealthApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#090909;--card:#141414;--border:#222;
+      --yellow:#FFD93D;--green:#3BFF9E;--blue:#3BB5FF;
+      --purple:#C084FC;--red:#FF5C5C;--amber:#FFAA3B;
+      --teal:#2DD4BF;--indigo:#818CF8;
+      --text:#F0EDE6;--muted:#555;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:80px}
+    body::before{content:'';position:fixed;inset:0;opacity:.15;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(129,140,248,.15),transparent)}
+
+    nav{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:18px;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--yellow)}
+    .back{font-size:13px;color:var(--muted);text-decoration:none}
+
+    .hero{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:40px 24px 28px}
+    .htag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--indigo);background:rgba(129,140,248,.08);border:1px solid rgba(129,140,248,.25);padding:4px 14px;border-radius:100px;margin-bottom:14px}
+    h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(22px,4vw,48px);letter-spacing:-2px;line-height:1.05;margin-bottom:10px}
+    h1 span{color:var(--yellow)}
+    .hero p{font-size:14px;color:var(--muted);line-height:1.7;max-width:680px}
+
+    /* SCORE BANNER */
+    .score-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .score-box{border-radius:20px;padding:24px 28px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;transition:all .3s}
+    .score-box.mauvais{background:linear-gradient(135deg,rgba(255,92,92,.1),rgba(255,92,92,.04));border:1px solid rgba(255,92,92,.3)}
+    .score-box.moyen{background:linear-gradient(135deg,rgba(255,170,59,.08),rgba(255,217,61,.04));border:1px solid rgba(255,170,59,.3)}
+    .score-box.bon{background:linear-gradient(135deg,rgba(59,255,158,.07),rgba(59,181,255,.03));border:1px solid rgba(59,255,158,.3)}
+    .score-left{text-align:center;min-width:160px}
+    .score-emoji{font-size:36px;margin-bottom:6px}
+    .score-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+    .score-note{font-family:'Unbounded',sans-serif;font-size:clamp(36px,6vw,56px);font-weight:900;line-height:1}
+    .score-sub{font-size:11px;color:var(--muted);margin-top:4px}
+    .score-divider{width:1px;height:60px;background:#2a2a2a;flex-shrink:0}
+    .score-stats{display:flex;flex-wrap:wrap;gap:14px;flex:1}
+    .score-stat{text-align:center;min-width:110px}
+    .score-stat-v{font-family:'DM Mono',monospace;font-size:18px;font-weight:700}
+    .score-stat-l{font-size:10px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+
+    .tabs-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .tabs{display:flex;gap:4px;background:#0d0d0d;border:1px solid var(--border);border-radius:14px;padding:5px;width:fit-content;flex-wrap:wrap}
+    .tab{background:transparent;border:none;color:var(--muted);padding:9px 15px;border-radius:10px;font-size:13px;font-family:inherit;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+    .tab.on{background:var(--yellow);color:#000;font-weight:700}
+    .panel{display:none}.panel.on{display:block}
+
+    .wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:14px}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px}
+    .ctitle{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px}
+
+    .f{margin-bottom:13px}.f:last-child{margin-bottom:0}
+    .f label{display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:6px}
+    .fval{font-family:'DM Mono',monospace;color:var(--yellow);font-size:12px}
+    .fhint{font-size:10px;color:#333;margin-top:5px;line-height:1.5}
+
+    input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:#252525;border-radius:2px;outline:none;cursor:pointer}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--yellow);border-radius:50%;box-shadow:0 0 8px rgba(255,217,61,.4)}
+    select{width:100%;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;color:var(--text);padding:10px 13px;font-size:14px;font-family:inherit;outline:none}
+
+    .divider{display:flex;align-items:center;gap:10px;margin:12px 0}
+    .divider span{font-size:10px;color:#333;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:#1e1e1e}
+
+    .m{background:#1a1a1a;border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+    .ml{font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+    .mv{font-family:'DM Mono',monospace;font-size:17px;font-weight:500;line-height:1.2}
+    .ms{font-size:10px;color:var(--muted);margin-top:4px}
+
+    /* Jauge sommeil */
+    .sleep-gauge{position:relative;width:100%;height:14px;background:#1a1a1a;border-radius:7px;overflow:hidden;margin:8px 0}
+    .sleep-gauge-fill{height:100%;border-radius:7px;transition:width .4s ease,background .4s}
+    .sleep-ticks{display:flex;justify-content:space-between;font-size:10px;color:#333;font-family:'DM Mono',monospace;margin-top:4px}
+
+    /* Risques santé */
+    .risk-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:#1a1a1a;border:1px solid #222;border-radius:10px;margin-bottom:8px}
+    .risk-icon{font-size:20px;flex-shrink:0;width:28px;text-align:center}
+    .risk-label{flex:1}
+    .risk-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+    .risk-desc{font-size:11px;color:var(--muted);line-height:1.5}
+    .risk-badge{font-family:'DM Mono',monospace;font-size:11px;padding:3px 10px;border-radius:100px;font-weight:700;white-space:nowrap;flex-shrink:0}
+    .badge-red{background:rgba(255,92,92,.15);color:var(--red);border:1px solid rgba(255,92,92,.3)}
+    .badge-amber{background:rgba(255,170,59,.15);color:var(--amber);border:1px solid rgba(255,170,59,.3)}
+    .badge-green{background:rgba(59,255,158,.15);color:var(--green);border:1px solid rgba(59,255,158,.3)}
+    .badge-blue{background:rgba(59,181,255,.15);color:var(--blue);border:1px solid rgba(59,181,255,.3)}
+
+    /* Comparatif heures */
+    .heure-bar{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .heure-label{font-size:11px;color:var(--muted);width:80px;flex-shrink:0;font-family:'DM Mono',monospace}
+    .heure-track{flex:1;height:8px;background:#1a1a1a;border-radius:4px;overflow:hidden}
+    .heure-fill{height:100%;border-radius:4px;transition:width .4s ease}
+    .heure-val{font-family:'DM Mono',monospace;font-size:11px;width:70px;text-align:right;flex-shrink:0}
+
+    .solution-card{padding:14px 16px;border-radius:12px;border:1px solid;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px}
+    .sol-gratuit{border-color:rgba(59,255,158,.2);background:rgba(59,255,158,.03)}
+    .sol-payant{border-color:rgba(59,181,255,.2);background:rgba(59,181,255,.03)}
+    .sol-investissement{border-color:rgba(255,217,61,.2);background:rgba(255,217,61,.03)}
+    .sol-emoji{font-size:22px;flex-shrink:0}
+    .sol-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
+    .sol-desc{font-size:11px;color:var(--muted);line-height:1.6}
+    .sol-prix{font-family:'DM Mono',monospace;font-size:11px;color:var(--yellow);margin-top:4px}
+
+    .stat-choc{text-align:center;padding:20px;background:linear-gradient(135deg,rgba(129,140,248,.06),transparent);border:1px solid rgba(129,140,248,.15);border-radius:14px;margin-bottom:10px}
+    .stat-num{font-family:'Unbounded',sans-serif;font-size:clamp(28px,5vw,48px);font-weight:900;color:var(--yellow);margin:6px 0}
+    .stat-label{font-size:12px;color:var(--muted);line-height:1.5}
+    .stat-source{font-size:10px;color:#333;margin-top:6px;font-family:'DM Mono',monospace}
+
+    .cw{position:relative;width:100%;height:240px;margin-top:12px}
+    .cwt{position:relative;width:100%;height:280px;margin-top:12px}
+
+    .src{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px;padding:14px 16px;font-size:11px;color:#3a3a3a;line-height:1.8}
+    .src strong{color:#555}
+
+    .alerte{background:rgba(255,92,92,.06);border:1px solid rgba(255,92,92,.2);border-radius:12px;padding:16px 18px;font-size:12px;color:#888;line-height:1.7}
+    .alerte strong{color:var(--red)}
+
+    .di{display:flex;justify-content:space-between;padding:8px 12px;background:#1a1a1a;border:1px solid #222;border-radius:8px;margin-bottom:6px}
+    .di span:first-child{font-size:12px;color:#666}
+    .di span:last-child{font-family:'DM Mono',monospace;font-size:12px}
+
+    @media(max-width:640px){
+      .g2,.g3,.g4{grid-template-columns:1fr 1fr}
+      .score-box{flex-direction:column}
+      .score-divider{display:none}
+      .tab{padding:8px 10px;font-size:11px}
+      .risk-badge{display:none}
+    }
+    @media(max-width:400px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Tous les calculateurs</a>
+</nav>
+
+<div class="hero">
+  <div class="htag">😴 Santé · Productivité</div>
+  <h1>Le vrai coût<br>de vos <span>nuits perdues</span></h1>
+  <p>Productivité gaspillée, risques santé chiffrés, années de vie impactées. Le manque de sommeil coûte <strong style="color:var(--text)">56 milliards d'euros par an</strong> à l'économie française — dont une part sort directement de votre poche. Calculez la vôtre.</p>
+</div>
+
+<!-- SCORE BANNER -->
+<div class="score-wrap">
+  <div class="score-box mauvais" id="score-box">
+    <div class="score-left">
+      <div class="score-emoji" id="score-emoji">😴</div>
+      <div class="score-label" id="score-label" style="color:var(--red)">Sommeil insuffisant</div>
+      <div class="score-note" id="score-note" style="color:var(--red)">—h</div>
+      <div class="score-sub">par nuit (vous)</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-stats">
+      <div class="score-stat"><div class="score-stat-v" id="sc-prod" style="color:var(--red)">—</div><div class="score-stat-l">Perte productivité/an</div></div>
+      <div class="score-stat"><div class="score-stat-v" id="sc-sante" style="color:var(--amber)">—</div><div class="score-stat-l">Coût santé estimé</div></div>
+      <div class="score-stat"><div class="score-stat-v" id="sc-vie" style="color:var(--purple)">—</div><div class="score-stat-l">Impact espérance vie</div></div>
+      <div class="score-stat"><div class="score-stat-v" id="sc-total" style="color:var(--yellow)">—</div><div class="score-stat-l">Coût total sur 10 ans</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab on"  onclick="showTab('profil',this)">😴 Mon sommeil</button>
+    <button class="tab" onclick="showTab('productivite',this)">💼 Productivité</button>
+    <button class="tab" onclick="showTab('sante',this)">🏥 Santé</button>
+    <button class="tab" onclick="showTab('vie',this)">⏳ Qualité de vie</button>
+    <button class="tab" onclick="showTab('solutions',this)">✅ Solutions</button>
+    <button class="tab" onclick="showTab('chiffres',this)">📊 Données</button>
+  </div>
+</div>
+
+<!-- ===== MON SOMMEIL ===== -->
+<div class="panel on" id="p-profil"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Votre profil de sommeil</div>
+      <div class="f">
+        <label>Heures de sommeil par nuit <span class="fval" id="vHeures">6h30</span></label>
+        <input type="range" id="iHeures" min="3" max="10" step="0.5" value="6.5" oninput="recalc()">
+        <div class="sleep-gauge"><div class="sleep-gauge-fill" id="gauge-fill" style="width:50%;background:var(--amber)"></div></div>
+        <div class="sleep-ticks"><span>3h</span><span>5h</span><span>7h ✓</span><span>9h</span><span>10h</span></div>
+        <div class="fhint">Recommandation OMS/INSERM : 7-9h pour les adultes · 35,9% des Français dorment 6h ou moins (Santé Publique France 2017)</div>
+      </div>
+      <div class="f">
+        <label>Qualité de votre sommeil</label>
+        <select id="iQualite" onchange="recalc()">
+          <option value="0">😊 Bonne — je me réveille reposé(e)</option>
+          <option value="1" selected>😐 Moyenne — parfois fatigué(e) au réveil</option>
+          <option value="2">😟 Mauvaise — souvent réveillé(e) la nuit</option>
+          <option value="3">😰 Très mauvaise — insomnie chronique / apnée</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Fréquence de mauvaises nuits / semaine <span class="fval" id="vMauv">2 nuits</span></label>
+        <input type="range" id="iMauv" min="0" max="7" step="1" value="2" oninput="recalc()">
+        <div class="fhint">38% des Français signalent des troubles du sommeil (INSV 2026)</div>
+      </div>
+      <div class="f">
+        <label>Somnolence / fatigue dans la journée</label>
+        <select id="iSomno" onchange="recalc()">
+          <option value="0">Jamais — je suis en forme toute la journée</option>
+          <option value="1" selected>Parfois — coup de mou après déjeuner</option>
+          <option value="2">Souvent — difficultés à me concentrer l'après-midi</option>
+          <option value="3">Très souvent — somnolence au volant, au bureau</option>
+        </select>
+        <div class="fhint">20% des adultes français touchés par la somnolence diurne (INPES) · 25% ont eu un épisode de somnolence au volant (INSV)</div>
+      </div>
+      <div class="f">
+        <label>Utilisation d'écrans avant de dormir</label>
+        <select id="iEcrans" onchange="recalc()">
+          <option value="0">Pas d'écrans — j'éteins tout 1h avant</option>
+          <option value="1">Moins de 30 min de téléphone au lit</option>
+          <option value="2" selected>30 min à 1h d'écrans au lit</option>
+          <option value="3">Plus d'1h d'écrans au lit avant de m'endormir</option>
+        </select>
+        <div class="fhint">75% des 25-34 ans dorment avec leur portable allumé (INSV 2026) · La lumière bleue retarde la mélatonine de 1-3h</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Votre situation professionnelle</div>
+      <div class="f">
+        <label>Salaire net mensuel <span class="fval" id="vSalaire">2 500 €</span></label>
+        <input type="range" id="iSalaire" min="1200" max="12000" step="100" value="2500" oninput="recalc()">
+        <div class="fhint">Utilisé pour calculer la perte de productivité en euros réels</div>
+      </div>
+      <div class="f">
+        <label>Type de travail</label>
+        <select id="iTravail" onchange="recalc()">
+          <option value="cognitif" selected>🧠 Cognitif / créatif — très sensible au manque de sommeil</option>
+          <option value="mixte">🔧 Mixte — tâches variées</option>
+          <option value="physique">💪 Physique — effort corporel principalement</option>
+          <option value="direction">🎯 Direction / management — décisions critiques</option>
+        </select>
+        <div class="fhint">Le cortex préfrontal (décision, créativité) est le 1er touché par le manque de sommeil (INSERM)</div>
+      </div>
+      <div class="f">
+        <label>Depuis combien de temps ce rythme de sommeil ? <span class="fval" id="vAns">3 ans</span></label>
+        <input type="range" id="iAns" min="0" max="30" step="1" value="3" oninput="recalc()">
+        <div class="fhint">6h/nuit pendant 14 jours = déficit cognitif équivalent à 24h sans sommeil (INSERM/Lim & Dinges 2010)</div>
+      </div>
+      <div class="f">
+        <label>Vous conduisez régulièrement ?</label>
+        <select id="iConduite" onchange="recalc()">
+          <option value="0">Non — transports en commun / vélo</option>
+          <option value="1" selected>Oui — trajets quotidiens courts</option>
+          <option value="2">Oui — longs trajets fréquents</option>
+        </select>
+        <div class="fhint">La somnolence au volant est impliquée dans 1 accident mortel sur 3 sur autoroute (INSV)</div>
+      </div>
+      <div class="divider"><span>Votre dette de sommeil</span></div>
+      <div id="dette-box" style="background:#1a1a1a;border:1px solid #222;border-radius:12px;padding:14px;"></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== PRODUCTIVITÉ ===== -->
+<div class="panel" id="p-productivite"><div class="wrap">
+  <div class="g3">
+    <div class="m"><div class="ml">Perte productivité / an</div><div class="mv" id="p-an" style="color:var(--red)">—</div><div class="ms">équivalent salaire</div></div>
+    <div class="m"><div class="ml">Jours de travail perdus</div><div class="mv" id="p-jours" style="color:var(--amber)">—</div><div class="ms">jours/an en présentéisme</div></div>
+    <div class="m"><div class="ml">Perte sur 10 ans</div><div class="mv" id="p-10ans" style="color:var(--yellow)">—</div><div class="ms">soit un voyage ou une voiture</div></div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Comment se calcule votre perte de productivité</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px;">
+      Le présentéisme (être présent mais pas efficace) coûte plus cher que l'absentéisme. Voici comment vos nuits trop courtes impactent votre rendement réel au travail, heure par heure.
+    </div>
+    <div id="prod-detail"></div>
+    <div class="alerte" style="margin-top:12px;">
+      <strong>Données INSERM / Terra Nova 2016 :</strong> Les insomniaques perdent l'équivalent de <strong>8 jours de travail</strong> par an en présentéisme. L'employeur supporte 88% du coût indirect de l'insomnie, soit <strong>233€/an par salarié</strong> (Godet-Cayré 2006, réévalué). Le manque de sommeil coûte <strong>411 milliards $/an</strong> à l'économie américaine (RAND Corporation, 2.28% du PIB).
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Comparaison — 5h, 6h, 7h, 8h de sommeil</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Perte de productivité annuelle estimée selon les heures de sommeil, pour votre salaire actuel.</div>
+    <div id="comp-heures"></div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">📈 Ce que vous récupéreriez en dormant 1h de plus</div>
+    <div id="gain-1h" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;"></div>
+  </div>
+</div></div>
+
+<!-- ===== SANTÉ ===== -->
+<div class="panel" id="p-sante"><div class="wrap">
+
+  <div class="card">
+    <div class="ctitle">Risques de santé — Données scientifiques INSERM / FRM 2025</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">Les risques ci-dessous sont calculés pour votre profil de sommeil actuel. Sources : INSERM, Santé Publique France, Fondation pour la Recherche Médicale.</div>
+    <div id="risques-list"></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Coût médical estimé sur 10 ans</div>
+      <div id="cout-medical"></div>
+      <div style="font-size:11px;color:#333;margin-top:12px;line-height:1.6;">
+        Estimation basée sur les pathologies statistiquement associées au manque de sommeil chronique. Il ne s'agit pas d'un diagnostic médical — consultez un professionnel de santé.
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Les 3 vrais ennemis de votre sommeil</div>
+      <div id="ennemis"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">⚕️ Signes d'alerte — Quand consulter un médecin</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;color:var(--muted);line-height:1.6;">
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">🔴 Vous ronflez bruyamment et avez des pauses respiratoires (apnée possible)</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">🔴 Vous vous endormez involontairement dans la journée (narcolepsie)</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">🟠 Insomnies chroniques depuis plus de 3 mois, 3 nuits/semaine minimum</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">🟠 Jambes sans repos, sensations inconfortables la nuit</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">🟡 Fatigue persistante malgré 7h+ de sommeil apparent</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">🟡 Réveil à 3-4h du matin régulièrement sans pouvoir se rendormir</div>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:#555;padding:12px;background:#1a1a1a;border-radius:10px;">
+      🏥 <strong style="color:#888">Centre du sommeil et de la vigilance — Hôtel-Dieu, Paris (APHP)</strong> — Référence nationale. Les TCC (thérapies cognitivo-comportementales) sont le traitement de 1ère intention recommandé par l'INSERM, plus efficaces que les somnifères à long terme.
+    </div>
+  </div>
+
+  <div class="src">
+    <strong>Sources santé :</strong> INSERM Dossier Insomnie (2024) · Salle de presse INSERM "Améliorer son sommeil peut protéger sa santé cardiovasculaire" (oct. 2023) · INSERM "De courtes nuits dès 50 ans augmentent le risque de multimorbidité" (déc. 2022) · FRM "Durée du sommeil et santé" · Santé Publique France Baromètre 2017 · ORS Île-de-France Rapport Sommeil 2020 · Terra Nova "Retrouver le sommeil, une affaire publique" (2016).
+  </div>
+</div></div>
+
+<!-- ===== QUALITÉ DE VIE ===== -->
+<div class="panel" id="p-vie"><div class="wrap">
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">⏳ Ce que le manque de sommeil vous vole chaque année</div>
+      <div id="vol-temps"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">🎯 Ce que représente votre perte totale</div>
+      <div id="equivalences"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">📊 Votre coût cumulé sur 10 ans — Projection</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">Productivité + santé + qualité de vie, en euros</div>
+    <div class="cwt"><canvas id="chart-cumul"></canvas></div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">🌍 Vous n'êtes pas seul(e) — La France en chiffres</div>
+    <div class="g3" style="gap:10px;">
+      <div class="stat-choc">
+        <div style="font-size:12px;color:var(--muted);">Français dormant ≤ 6h/nuit</div>
+        <div class="stat-num">35,9%</div>
+        <div class="stat-label">soit plus d'1 adulte sur 3</div>
+        <div class="stat-source">Santé Publique France 2017</div>
+      </div>
+      <div class="stat-choc">
+        <div style="font-size:12px;color:var(--muted);">Perte de sommeil en 50 ans</div>
+        <div class="stat-num">−1h30</div>
+        <div class="stat-label">les Français ont perdu 1h30 de sommeil en 50 ans</div>
+        <div class="stat-source">INSV / DreaminzZz</div>
+      </div>
+      <div class="stat-choc">
+        <div style="font-size:12px;color:var(--muted);">Coût éco. manque sommeil</div>
+        <div class="stat-num">56 Mds€</div>
+        <div class="stat-label">coût annuel estimé pour la France</div>
+        <div class="stat-source">RAND Corp. / extrapolation PIB</div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== SOLUTIONS ===== -->
+<div class="panel" id="p-solutions"><div class="wrap">
+
+  <div class="card">
+    <div class="ctitle">✅ Solutions gratuites — ROI immédiat</div>
+    <div class="solution-card sol-gratuit">
+      <div class="sol-emoji">📵</div>
+      <div><div class="sol-title">Couvre-feu digital 1h avant le coucher</div><div class="sol-desc">La lumière bleue des écrans bloque la mélatonine et retarde l'endormissement de 1 à 3h. Activer le mode "nuit" ne suffit pas — c'est la stimulation cognitive qui pose problème. Remplacez par lecture, étirements, podcast.</div><div class="sol-prix">Gratuit · Effet visible en 1 semaine</div></div>
+    </div>
+    <div class="solution-card sol-gratuit">
+      <div class="sol-emoji">🌡️</div>
+      <div><div class="sol-title">Chambre à 18-19°C, obscurité totale</div><div class="sol-desc">La baisse de température corporelle déclenche le sommeil. Chaque degré de trop en chambre réduit le sommeil profond. Volets occultants + bouchons d'oreilles = gain de 45 min de sommeil profond selon les études de l'Hôtel-Dieu.</div><div class="sol-prix">Gratuit — volets, ou masque de nuit (~10€)</div></div>
+    </div>
+    <div class="solution-card sol-gratuit">
+      <div class="sol-emoji">⏰</div>
+      <div><div class="sol-title">Horaires réguliers 7j/7 (même le week-end)</div><div class="sol-desc">Le "jet lag social" (se lever 2-3h plus tard le week-end) désynchronise l'horloge biologique pendant 3-4 jours. Conséquence : vous dormez mal du dimanche au mercredi. Un écart max de 30 min suffit à stabiliser le rythme.</div><div class="sol-prix">Gratuit · Adaptation en 2-3 semaines</div></div>
+    </div>
+    <div class="solution-card sol-gratuit">
+      <div class="sol-emoji">☀️</div>
+      <div><div class="sol-title">Exposition à la lumière naturelle le matin</div><div class="sol-desc">10-15 minutes de lumière naturelle dans l'heure du réveil synchronise le rythme circadien et avance l'endormissement le soir. 71% des Français passent moins d'1h dehors par jour en semaine (INSV 2026).</div><div class="sol-prix">Gratuit · Surtout en automne/hiver</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">💊 Solutions à petit budget</div>
+    <div class="solution-card sol-payant">
+      <div class="sol-emoji">🫖</div>
+      <div><div class="sol-title">Réduire caféine après 14h</div><div class="sol-desc">La demi-vie de la caféine est de 5-7h. Un café à 16h a encore 50% de son effet à 22h. Switcher sur tisane, rooibos ou eau après 14h. Impact sur l'endormissement : -20 min en moyenne.</div><div class="sol-prix">~2€/mois en tisanes · Résultat en 3 jours</div></div>
+    </div>
+    <div class="solution-card sol-payant">
+      <div class="sol-emoji">🧘</div>
+      <div><div class="sol-title">Cohérence cardiaque / respiration 4-7-8</div><div class="sol-desc">5 minutes de respiration 4-7-8 (inspirer 4s, retenir 7s, expirer 8s) active le système parasympathique et réduit le cortisol. Utilisée dans les protocoles anti-insomnie du CHU de Paris. Application gratuite : RespiRelax, Respiración.</div><div class="sol-prix">Gratuit (app) à 4€/mois</div></div>
+    </div>
+    <div class="solution-card sol-payant">
+      <div class="sol-emoji">🏃</div>
+      <div><div class="sol-title">Activité physique — mais pas après 19h</div><div class="sol-desc">30 min de marche rapide ou vélo améliore la durée de sommeil profond de 15-20%. Mais l'exercice intense après 19h augmente la température corporelle et retarde l'endormissement de 1h. Le matin ou l'après-midi, c'est l'idéal.</div><div class="sol-prix">Gratuit si en extérieur</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">💰 Investissements — ROI calculé</div>
+    <div id="investissements"></div>
+    <div class="src" style="margin-top:12px;">
+      <strong>⚠️ Somnifères :</strong> Les benzodiazépines sont efficaces à court terme mais créent une dépendance et dégradent le sommeil profond. Associées à un risque accru d'Alzheimer (INSERM 2014). Les TCC-I (thérapies cognitivo-comportementales pour l'insomnie) sont recommandées en 1ère intention par la HAS. 75% des patients retrouvent un sommeil normal après 6-8 séances.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">📱 Outils de suivi recommandés</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;color:var(--muted);">
+      <div class="di" style="flex-direction:column;gap:4px;"><span style="font-weight:700;color:var(--text)">Oura Ring Gen 4</span><span>Meilleure précision sommeil profond/REM · ~350€</span></div>
+      <div class="di" style="flex-direction:column;gap:4px;"><span style="font-weight:700;color:var(--text)">Apple Watch + AutoSleep</span><span>Bon rapport précision/prix si déjà équipé · 3€/mois app</span></div>
+      <div class="di" style="flex-direction:column;gap:4px;"><span style="font-weight:700;color:var(--text)">SomniLight (lunettes anti-bleu)</span><span>À porter 2h avant le coucher · 25-60€</span></div>
+      <div class="di" style="flex-direction:column;gap:4px;"><span style="font-weight:700;color:var(--text)">Agenda du sommeil (papier)</span><span>Outil de base des TCC-I · Entièrement gratuit</span></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== DONNÉES ===== -->
+<div class="panel" id="p-chiffres"><div class="wrap">
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">📊 Graphique — Risque cardiovasculaire selon le score de sommeil</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Étude INSERM 2023 sur 7 000 participants européens (cohortes PPS3 et CoLaus). Le score de 0 à 5 mesure 5 composantes du sommeil.</div>
+      <div class="cw"><canvas id="chart-cardio"></canvas></div>
+      <div style="font-size:10px;color:#333;margin-top:8px;font-family:'DM Mono',monospace;">Source : Nambiema et al., INSERM/Université Paris Cité, Heart 2023</div>
+    </div>
+    <div class="card">
+      <div class="ctitle">📊 Impact sur la productivité selon les heures de sommeil</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Perte de performance cognitive relative à 8h de sommeil (baseline). Données compilées RAND/McKinsey/INSERM.</div>
+      <div class="cw"><canvas id="chart-perf"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">📋 Tableau de référence — Ce que dit la science</div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div class="di"><span>Heures recommandées (adultes 18-64 ans)</span><span style="color:var(--green)">7 - 9h / nuit</span></div>
+      <div class="di"><span>Français dormant ≤ 6h en semaine</span><span style="color:var(--red)">35,9%</span></div>
+      <div class="di"><span>Durée moyenne de sommeil en France (2017)</span><span style="color:var(--amber)">6h45</span></div>
+      <div class="di"><span>Perte de sommeil en 50 ans (Français)</span><span style="color:var(--red)">−1h30</span></div>
+      <div class="di"><span>Insomnie chronique (adultes français)</span><span style="color:var(--amber)">9%</span></div>
+      <div class="di"><span>Coût insomnie par salarié/an (employeur)</span><span style="color:var(--red)">233 €</span></div>
+      <div class="di"><span>Jours travail perdus/an (insomniaques)</span><span style="color:var(--red)">8 jours</span></div>
+      <div class="di"><span>Surrisque diabète type 2 (< 6h/nuit)</span><span style="color:var(--red)">+28%</span></div>
+      <div class="di"><span>Réduction risque cardio (bon score sommeil)</span><span style="color:var(--green)">−63%</span></div>
+      <div class="di"><span>Risque dépression × fois si insomniaque</span><span style="color:var(--red)">× 7 à 10</span></div>
+      <div class="di"><span>Somnolence au volant / an (Français)</span><span style="color:var(--amber)">25%</span></div>
+      <div class="di"><span>Coût manque sommeil / France (estimé)</span><span style="color:var(--red)">~56 Mds €</span></div>
+    </div>
+  </div>
+
+  <div class="src">
+    <strong>Sources complètes :</strong><br>
+    · INSERM Dossier Sommeil (inserm.fr/dossier/sommeil) · INSERM Dossier Insomnie (inserm.fr/dossier/insomnie)<br>
+    · Salle de presse INSERM : "Améliorer son sommeil peut protéger sa santé cardiovasculaire" — Nambiema et al., Heart 2023<br>
+    · INSERM : "De courtes nuits dès 50 ans augmentent le risque de multimorbidité" — Sabia et al., PLOS Medicine 2022<br>
+    · Santé Publique France Baromètre 2017 (Léger et al.) — temps de sommeil total, courts dormeurs<br>
+    · Fondation Terra Nova : "Retrouver le sommeil, une affaire publique" (2016) — coûts absentéisme<br>
+    · Godet-Cayré V. et al. (2006) — coût annuel insomnie 233€/salarié pour l'employeur<br>
+    · RAND Corporation / Hafner M. et al. (2016) — $411 milliards/an perte économique USA<br>
+    · Fondation pour la Recherche Médicale (frm.org) — durée sommeil et santé<br>
+    · INSV (Institut National du Sommeil et de la Vigilance) — enquête annuelle 2026<br>
+    · ORS Île-de-France : "Sommeil des jeunes Franciliens" (2020)<br>
+    · Lim J. & Dinges D.F. (2010) — déficits cognitifs cumulatifs à 6h/nuit<br>
+    · OMS : recommandations sommeil adultes 7-9h/nuit
+  </div>
+</div></div>
+
+<script>
+var activeTab = 'profil';
+var chartCumul=null, chartCardio=null, chartPerf=null;
+var R = {};
+
+Chart.defaults.color = '#666';
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+
+function g(id){ return document.getElementById(id); }
+function sv(id){ var el=g(id); return el?+el.value:0; }
+function gv(id){ var el=g(id); return el?el.value:''; }
+function se(id,t){ var el=g(id); if(el) el.textContent=t; }
+function si(id,h){ var el=g(id); if(el) el.innerHTML=h; }
+function fmt(n){ return Math.round(n).toLocaleString('fr-FR')+' €'; }
+function fmtN(n){ return Math.round(n).toLocaleString('fr-FR'); }
+
+function showTab(name,btn){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  g('p-'+name).classList.add('on');
+  btn.classList.add('on');
+  activeTab = name;
+  setTimeout(function(){ renderCharts(name); }, 80);
+}
+
+function destroyChart(c){ if(c){ try{ c.destroy(); }catch(e){} } return null; }
+
+function renderCharts(name){
+  if(name==='vie'){
+    chartCumul = destroyChart(chartCumul);
+    var cc = g('chart-cumul'); if(!cc||!R.cumulData) return;
+    chartCumul = new Chart(cc,{
+      type:'line',
+      data:{labels:R.cumulLabels, datasets:[
+        {label:'Coût productivité cumulé',data:R.cumulProd,borderColor:'rgba(255,92,92,.9)',backgroundColor:'rgba(255,92,92,.06)',fill:true,tension:.3,pointRadius:2,borderWidth:2},
+        {label:'Coût santé estimé cumulé',data:R.cumulSante,borderColor:'rgba(255,170,59,.9)',backgroundColor:'rgba(255,170,59,.06)',fill:true,tension:.3,pointRadius:2,borderWidth:2},
+        {label:'Coût total cumulé',data:R.cumulTotal,borderColor:'rgba(255,217,61,.9)',backgroundColor:'rgba(255,217,61,.04)',fill:false,tension:.3,pointRadius:2,borderWidth:3},
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:'#888',font:{size:10}}},tooltip:{callbacks:{label:function(c){ return c.dataset.label+' : '+fmt(c.raw); }}}},
+        scales:{x:{grid:{display:false},ticks:{color:'#666'},border:{color:'transparent'}},
+                y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return fmt(v); },color:'#666'},border:{color:'transparent'}}}
+      }
+    });
+  }
+  if(name==='chiffres'){
+    // Graphique risque cardio INSERM 2023
+    chartCardio = destroyChart(chartCardio);
+    var ca = g('chart-cardio'); if(!ca) return;
+    chartCardio = new Chart(ca,{
+      type:'bar',
+      data:{
+        labels:['Score 0-1\n(10% pop.)','Score 2\n(21% pop.)','Score 3\n(32% pop.)','Score 4\n(27% pop.)','Score 5\n(10% pop.)'],
+        datasets:[{
+          label:'Réduction du risque cardiovasculaire (%)',
+          data:[0, 10, 19, 38, 63],
+          backgroundColor:['rgba(255,92,92,.7)','rgba(255,170,59,.7)','rgba(255,217,61,.7)','rgba(59,181,255,.7)','rgba(59,255,158,.7)'],
+          borderRadius:8, borderWidth:0
+        }]
+      },
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){ return '−'+c.raw+'% de risque cardiovasculaire'; }}}},
+        scales:{x:{grid:{display:false},ticks:{color:'#666',font:{size:10}},border:{color:'transparent'}},
+                y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return '−'+v+'%'; },color:'#666'},border:{color:'transparent'}}}
+      }
+    });
+    // Graphique performance cognitive
+    chartPerf = destroyChart(chartPerf);
+    var cp = g('chart-perf'); if(!cp) return;
+    chartPerf = new Chart(cp,{
+      type:'line',
+      data:{
+        labels:['4h','5h','6h','7h','8h (optimal)','9h'],
+        datasets:[{
+          label:'Performance cognitive relative (%)',
+          data:[45, 60, 75, 90, 100, 97],
+          borderColor:'rgba(255,217,61,.9)',
+          backgroundColor:'rgba(255,217,61,.06)',
+          fill:true, tension:.4, pointRadius:5, pointBackgroundColor:'rgba(255,217,61,.9)', borderWidth:2
+        },{
+          label:'Seuil recommandé OMS',
+          data:[null,null,null,null,null,null],
+          borderColor:'transparent',pointRadius:0,borderWidth:0
+        }]
+      },
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){ return 'Perf. cognitive : '+c.raw+'%'; }}}},
+        scales:{x:{grid:{display:false},ticks:{color:'#666'},border:{color:'transparent'}},
+                y:{grid:{color:'rgba(255,255,255,.04)'},min:0,max:110,ticks:{callback:function(v){ return v+'%'; },color:'#666'},border:{color:'transparent'}}}
+      }
+    });
+  }
+}
+
+function recalc(){
+  var heures  = sv('iHeures');
+  var qualite = +gv('iQualite');
+  var mauv    = sv('iMauv');
+  var somno   = +gv('iSomno');
+  var ecrans  = +gv('iEcrans');
+  var salaire = sv('iSalaire');
+  var travail = gv('iTravail');
+  var ans     = sv('iAns');
+  var conduite= +gv('iConduite');
+
+  // Labels
+  se('vHeures',   heures+'h');
+  se('vSalaire',  fmt(salaire));
+  se('vMauv',     mauv+' nuit'+(mauv>1?'s':''));
+  se('vAns',      ans+' an'+(ans>1?'s':''));
+
+  // ── Score de sommeil ──
+  // 0 = catastrophique, 100 = parfait
+  var scoreH = heures >= 8 ? 40 : heures >= 7 ? 35 : heures >= 6 ? 20 : heures >= 5 ? 10 : 0;
+  var scoreQ = (3 - qualite) * 12;
+  var scoreM = Math.max(0, 15 - mauv * 4);
+  var scoreS = Math.max(0, 15 - somno * 5);
+  var scoreE = Math.max(0, 10 - ecrans * 3);
+  var scoreTotal = Math.min(100, Math.max(0, scoreH + scoreQ + scoreM + scoreS + scoreE));
+
+  // Classification
+  var statut, emoji, couleur, classe;
+  if(scoreTotal >= 75){ statut='Bon sommeil'; emoji='😊'; couleur='var(--green)'; classe='bon'; }
+  else if(scoreTotal >= 50){ statut='Sommeil moyen'; emoji='😐'; couleur='var(--amber)'; classe='moyen'; }
+  else if(scoreTotal >= 30){ statut='Sommeil insuffisant'; emoji='😫'; couleur='var(--amber)'; classe='moyen'; }
+  else{ statut='Sommeil très dégradé'; emoji='😰'; couleur='var(--red)'; classe='mauvais'; }
+
+  // Jauge
+  var gaugeColor = heures >= 7 ? 'var(--green)' : heures >= 6 ? 'var(--amber)' : 'var(--red)';
+  var gaugePct   = Math.min(100, Math.max(0, (heures-3)/7*100));
+  var gf = g('gauge-fill'); if(gf){ gf.style.width=gaugePct+'%'; gf.style.background=gaugeColor; }
+
+  var scoreBox = g('score-box');
+  if(scoreBox){ scoreBox.className='score-box '+classe; }
+  se('score-emoji', emoji);
+  se('score-label', statut);
+  g('score-label').style.color = couleur;
+  se('score-note',  heures+'h');
+  g('score-note').style.color = couleur;
+
+  // ── DETTE DE SOMMEIL ──
+  var dette = Math.max(0, 7 - heures); // heures manquantes par nuit
+  var detteAn = dette * 365; // heures manquantes par an
+  var detteDesc = dette <= 0 ? '✅ Vous dormez suffisamment. Continuez !'
+    : dette <= 0.5 ? '⚠️ Légère dette — '+Math.round(dette*60)+' min/nuit manquantes. Cumulées : '+(Math.round(dette*365/24*10)/10)+'h/an.'
+    : dette <= 1.5 ? '⚠️ Dette modérée — '+dette+'h/nuit manquantes. C\'est '+(Math.round(dette*365/24*10)/10)+' jours complets de sommeil perdus par an.'
+    : '🔴 Dette sévère — '+dette+'h/nuit. Soit '+(Math.round(dette*365/24*10)/10)+' jours entiers de sommeil perdus chaque année.';
+  si('dette-box', '<div style="font-size:13px;color:var(--muted);line-height:1.7">'+detteDesc+'</div>'
+    +'<div style="margin-top:8px;font-family:DM Mono,monospace;font-size:12px;color:var(--yellow)">Dette par semaine : '+Math.round(dette*7*10)/10+'h · par an : '+Math.round(detteAn)+'h</div>');
+
+  // ── PRODUCTIVITÉ ──
+  // Multiplicateurs de perte selon heures de sommeil
+  var pertePct;
+  if(heures >= 8) pertePct = 0.02;
+  else if(heures >= 7) pertePct = 0.05;
+  else if(heures >= 6) pertePct = 0.15;
+  else if(heures >= 5) pertePct = 0.28;
+  else pertePct = 0.40;
+
+  // Ajustements
+  var travailMult = {cognitif:1.3, mixte:1.0, physique:0.75, direction:1.5}[travail] || 1.0;
+  if(qualite >= 2) pertePct = Math.min(0.45, pertePct * 1.25);
+  if(somno >= 2)   pertePct = Math.min(0.45, pertePct * 1.15);
+
+  var perteSalaireAn = salaire * 12 * pertePct * travailMult;
+  var joursPerduAn = Math.round(pertePct * 220 * travailMult); // 220 jours travaillés/an
+  var perte10ans   = perteSalaireAn * 10;
+
+  se('sc-prod', fmt(perteSalaireAn)+'/an');
+  g('sc-prod').style.color = pertePct > 0.2 ? 'var(--red)' : pertePct > 0.08 ? 'var(--amber)' : 'var(--green)';
+  se('p-an',    fmt(perteSalaireAn));
+  se('p-jours', joursPerduAn+' jours');
+  se('p-10ans', fmt(perte10ans));
+
+  // Détail productivité
+  si('prod-detail',
+    '<div class="di"><span>Salaire mensuel net</span><span>'+fmt(salaire)+'</span></div>'
+    +'<div class="di"><span>Taux de perte estimé (votre profil)</span><span style="color:var(--red)">'+Math.round(pertePct*100)+'%</span></div>'
+    +'<div class="di"><span>Multiplicateur type de travail ('+travail+')</span><span>×'+travailMult+'</span></div>'
+    +'<div class="di"><span>Perte mensuelle nette</span><span style="color:var(--red)">'+fmt(perteSalaireAn/12)+'</span></div>'
+    +'<div class="di"><span>Jours de travail perdus/an (présentéisme)</span><span style="color:var(--amber)">'+joursPerduAn+' jours</span></div>'
+    +'<div class="di" style="background:rgba(255,217,61,.07);border-color:rgba(255,217,61,.2)"><span style="font-weight:700;color:var(--text)">Perte annuelle totale estimée</span><span style="color:var(--yellow);font-weight:700">'+fmt(perteSalaireAn)+'</span></div>'
+  );
+
+  // Comparatif heures
+  var hComp = [5, 6, 6.5, 7, 8];
+  var pComp = [0.30, 0.20, 0.12, 0.05, 0.01];
+  var colors = ['#FF5C5C','#FFAA3B','#FFD93D','#3BFF9E','#3BB5FF'];
+  si('comp-heures', hComp.map(function(h,i){
+    var perte = salaire*12*pComp[i]*travailMult;
+    var isUser = Math.abs(h-heures) < 0.4;
+    return '<div class="heure-bar">'
+      +'<span class="heure-label" style="'+(isUser?'color:var(--yellow);font-weight:700':'')+'">'+h+'h'+(isUser?' ◀':'')+' </span>'
+      +'<div class="heure-track"><div class="heure-fill" style="width:'+Math.round(pComp[i]/0.30*100)+'%;background:'+colors[i]+'"></div></div>'
+      +'<span class="heure-val" style="color:'+colors[i]+'">'+fmt(perte)+'/an</span>'
+      +'</div>';
+  }).join(''));
+
+  // Gain 1h de plus
+  var hSup = Math.min(8, heures+1);
+  var pSupPct = hSup>=8?0.01:hSup>=7?0.05:hSup>=6?0.15:0.28;
+  var gainProd = Math.max(0, (pertePct - pSupPct) * salaire * 12 * travailMult);
+  si('gain-1h',
+    '<div class="m"><div class="ml">Gain productivité/an</div><div class="mv" style="color:var(--green)">+'+fmt(gainProd)+'</div><div class="ms">en dormant 1h de plus</div></div>'
+    +'<div class="m"><div class="ml">Gain sur 10 ans</div><div class="mv" style="color:var(--yellow)">+'+fmt(gainProd*10)+'</div></div>'
+    +'<div class="m"><div class="ml">Jours récupérés/an</div><div class="mv" style="color:var(--blue)">'+Math.round(Math.abs(joursPerduAn-(pSupPct*220*travailMult)))+' j</div></div>'
+  );
+
+  // ── SANTÉ ──
+  // Calcul des risques selon heures + qualité
+  var risqMult = heures < 5 ? 2.5 : heures < 6 ? 1.8 : heures < 7 ? 1.2 : 0.7;
+  if(qualite >= 3) risqMult *= 1.3;
+
+  var risques = [
+    {icon:'❤️', title:'Maladies cardiovasculaires', desc:'Un bon score de sommeil réduit le risque d\'AVC et coronarien de 63% (INSERM 2023). Chaque composante compte.', badge: risqMult>1.5?'Risque élevé':risqMult>1.0?'Risque modéré':'Risque réduit', bcl: risqMult>1.5?'badge-red':risqMult>1.0?'badge-amber':'badge-green'},
+    {icon:'🧠', title:'Déclin cognitif / Alzheimer','desc':'Les troubles du sommeil sont associés à un risque accru de plaques séniles et de déclin cognitif (INSERM). Les nuits courtes à 50 ans augmentent la multimorbidité.', badge:risqMult>1.4?'Risque élevé':'Risque modéré', bcl:risqMult>1.4?'badge-red':'badge-amber'},
+    {icon:'⚖️', title:'Obésité & diabète type 2', desc:'<6h/nuit → +28% risque diabète T2 (FRM). Le manque de sommeil dérègle ghréline et leptine (hormones de la faim) et perturbe le métabolisme du glucose.', badge:heures<6?'Risque élevé (+28%)':heures<7?'Risque modéré':'Risque faible', bcl:heures<6?'badge-red':heures<7?'badge-amber':'badge-green'},
+    {icon:'😔', title:'Dépression & anxiété', desc:'Les insomniaques ont 7 à 10 fois plus de risque de souffrir de dépression (INSERM). La causalité est bidirectionnelle — l\'insomnie aggrave et est aggravée par la dépression.', badge:qualite>=3?'Risque élevé':qualite>=2?'Risque modéré':'Risque faible', bcl:qualite>=3?'badge-red':qualite>=2?'badge-amber':'badge-green'},
+    {icon:'🚗', title:'Accidents de la route / travail', desc:'25% des Français ont eu un épisode de somnolence au volant (INSV 2026). La somnolence est impliquée dans 1/3 des accidents mortels sur autoroute.', badge:conduite>=2&&somno>=2?'Risque élevé':conduite>=1&&somno>=1?'Risque modéré':'Risque faible', bcl:conduite>=2&&somno>=2?'badge-red':conduite>=1&&somno>=1?'badge-amber':'badge-green'},
+    {icon:'🛡️', title:'Immunité & infections', desc:'Le sommeil joue un rôle clé dans le système immunitaire. Des nuits trop courtes augmentent le risque d\'infections, de certains cancers et ralentissent la récupération.', badge:heures<6?'Système affaibli':heures<7?'Légèrement affaibli':'Bon niveau', bcl:heures<6?'badge-red':heures<7?'badge-amber':'badge-green'},
+  ];
+  si('risques-list', risques.map(function(r){
+    return '<div class="risk-row">'
+      +'<div class="risk-icon">'+r.icon+'</div>'
+      +'<div class="risk-label"><div class="risk-title">'+r.title+'</div><div class="risk-desc">'+r.desc+'</div></div>'
+      +'<div class="risk-badge '+r.bcl+'">'+r.badge+'</div>'
+      +'</div>';
+  }).join(''));
+
+  // Coût médical estimé
+  var coutMedAn = heures < 5 ? 1200 : heures < 6 ? 700 : heures < 7 ? 350 : 150;
+  if(qualite >= 3) coutMedAn *= 1.5;
+  var coutMed10 = coutMedAn * 10;
+  si('cout-medical',
+    '<div class="di"><span>Médicaments / somnifères / compléments</span><span>'+fmt(heures<6?200:80)+'/an</span></div>'
+    +'<div class="di"><span>Consultations médecin supplémentaires</span><span>'+fmt(heures<6?180:90)+'/an</span></div>'
+    +'<div class="di"><span>Arrêts maladie (absentéisme)</span><span>'+fmt(heures<6?400:150)+'/an</span></div>'
+    +'<div class="di"><span>Risque chirurgies / hospitalisations (part)</span><span>'+fmt(heures<6?420:140)+'/an</span></div>'
+    +'<div class="di" style="background:rgba(255,217,61,.07);border-color:rgba(255,217,61,.2)"><span style="font-weight:700;color:var(--text)">Estimation coût médical sur 10 ans</span><span style="color:var(--yellow);font-weight:700">'+fmt(coutMed10)+'</span></div>'
+  );
+
+  // Ennemis du sommeil personnalisés
+  var ennemis = [];
+  if(ecrans >= 2) ennemis.push({e:'📱', t:'Écrans au lit', d:'Votre principal perturbateur. La lumière bleue bloque la mélatonine. Retarde l\'endormissement de 1-3h.'});
+  if(somno >= 2)  ennemis.push({e:'☕', t:'Caféine tardive', d:'Si vous êtes somnolent en journée et compensez par des cafés, vous créez un cercle vicieux.'});
+  ennemis.push({e:'🔁', t:'Horaires irréguliers', d:'Les variations week-end/semaine désynchronisent l\'horloge biologique pendant 3-4 jours.'});
+  if(ennemis.length > 3) ennemis = ennemis.slice(0,3);
+  si('ennemis', ennemis.map(function(e){
+    return '<div class="risk-row">'
+      +'<div class="risk-icon">'+e.e+'</div>'
+      +'<div class="risk-label"><div class="risk-title">'+e.t+'</div><div class="risk-desc">'+e.d+'</div></div>'
+      +'</div>';
+  }).join(''));
+
+  // ── SANTÉ SCORE ──
+  var coutSanteAn = coutMedAn;
+  var coutTotal10 = (perteSalaireAn + coutSanteAn) * 10;
+
+  se('sc-sante', fmt(coutSanteAn)+'/an');
+  var moisImpact = heures < 5 ? '−18 mois' : heures < 6 ? '−12 mois' : heures < 7 ? '−6 mois' : '+2 mois';
+  se('sc-vie',   moisImpact);
+  g('sc-vie').style.color = heures < 6 ? 'var(--red)' : heures < 7 ? 'var(--amber)' : 'var(--green)';
+  se('sc-total', fmt(coutTotal10));
+
+  // ── QUALITÉ DE VIE ──
+  var heuresGaspillee = Math.max(0, (7-heures)) * 365; // h/an sous-performantes
+  si('vol-temps',
+    '<div class="di"><span>Heures de travail sous-optimales / an</span><span style="color:var(--red)">'+Math.round(220*8*pertePct)+' h/an</span></div>'
+    +'<div class="di"><span>Équivalent jours de vacances perdus</span><span style="color:var(--amber)">'+joursPerduAn+' jours</span></div>'
+    +'<div class="di"><span>Minutes de créativité perdues / jour</span><span style="color:var(--muted)">'+Math.round(480*pertePct)+' min/jour</span></div>'
+    +'<div class="di"><span>Énergie disponible estimée</span><span style="color:'+(heures>=7?'var(--green)':heures>=6?'var(--amber)':'var(--red)')+'">'+Math.round(scoreTotal)+'% de votre potentiel</span></div>'
+    +'<div class="di"><span>Impact espérance de vie estimé</span><span style="color:'+(heures>=7?'var(--green)':'var(--red)')+'">'+moisImpact+'</span></div>'
+  );
+
+  si('equivalences',[
+    {e:'✈️', l:'Voyages Paris-NY manqués (900€)', v:Math.round(coutTotal10/900)},
+    {e:'📱', l:'iPhones non achetés (1 479€)', v:Math.round(coutTotal10/1479)},
+    {e:'🏖️', l:'Semaines de vacances perdues (500€)', v:Math.round(coutTotal10/500)},
+    {e:'💰', l:'Mois de salaire gaspillés', v:Math.round(coutTotal10/(salaire))},
+  ].map(function(e){
+    return '<div class="risk-row" style="margin-bottom:8px"><div class="risk-icon">'+e.e+'</div>'
+      +'<div class="risk-label"><div class="risk-title">'+e.l+'</div></div>'
+      +'<div style="font-family:DM Mono,monospace;font-size:16px;color:var(--yellow);font-weight:700">×'+e.v+'</div>'
+      +'</div>';
+  }).join(''));
+
+  // Données graphique
+  var labels10=[],cumProd=[],cumSante=[],cumTot=[];
+  var cprod=0,cs=0;
+  for(var y=1;y<=10;y++){
+    labels10.push('An '+y);
+    cprod+=perteSalaireAn; cs+=coutSanteAn;
+    cumProd.push(Math.round(cprod)); cumSante.push(Math.round(cs));
+    cumTot.push(Math.round(cprod+cs));
+  }
+  R.cumulLabels=labels10; R.cumulProd=cumProd; R.cumulSante=cumSante; R.cumulTotal=cumTot;
+  R.cumulData=true;
+  if(activeTab==='vie') renderCharts('vie');
+
+  // ── SOLUTIONS — investissements ROI calculé ──
+  si('investissements',[
+    {e:'🛏️', t:'Matelas ergonomique', d:'Un mauvais matelas peut causer 20-30 min de sommeil en moins et réveils nocturnes. Un bon matelas dure 10 ans.', prix:'800-1 500€ · ROI : '+fmt(gainProd*10/1200*100)+'% sur 10 ans'},
+    {e:'🧘', t:'TCC-I (thérapie cognitivo-comportementale)', d:'Traitement recommandé par la HAS. 6-8 séances à 60-80€. 75% des patients retrouvent un sommeil normal. Efficacité > somnifères à long terme.', prix:'400-600€ total · Résultat durable'},
+    {e:'💤', t:'Orthèse anti-apnée / test du sommeil', d:'Si vous ronflez et êtes souvent fatigué malgré 7h+ au lit : test de dépistage apnée. L\'apnée non traitée multiplie ×3 le risque cardiovasculaire.', prix:'Test PDAS : 80-200€ · CPAP : 800-2 000€ (remboursé sécu si AHI > 30)'},
+    {e:'💡', t:'Lampe de luminothérapie 10 000 lux', d:'20 min le matin avance l\'horloge biologique et améliore l\'endormissement le soir. Particulièrement efficace en hiver et pour les "couche-tard".', prix:'50-150€ · ROI en 2-3 semaines'},
+  ].map(function(s){
+    return '<div class="solution-card sol-investissement">'
+      +'<div class="sol-emoji">'+s.e+'</div>'
+      +'<div><div class="sol-title">'+s.t+'</div><div class="sol-desc">'+s.d+'</div><div class="sol-prix">'+s.prix+'</div></div>'
+      +'</div>';
+  }).join(''));
+
+  if(activeTab==='chiffres') renderCharts('chiffres');
+}
+
+recalc();
+setTimeout(function(){ renderCharts('chiffres'); }, 200);
+</script>
+</body>
+</html>

@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Coût d'un chien en 2025 : calculez le vrai budget sur 15 ans | Calculamatix</title>
+  <meta name="description" content="Combien coûte vraiment un chien ? Calculez le coût total sur 15 ans : achat, nourriture, vétérinaire, assurance, toilettage, garde. 20 races préconfigurées. Données vétérinaires 2025."/>
+  <meta name="keywords" content="coût chien, budget chien, prix chien par an, frais vétérinaire chien, assurance chien, calculateur chien France 2025"/>
+  <link rel="canonical" href="https://calculamatix.com/cout-chien.html"/>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Coût d'un chien en 2025 : le vrai budget sur 15 ans"/>
+  <meta property="og:description" content="Nourriture, vétérinaire, assurance, garde, toilettage... Le seul calculateur qui compte vraiment tout."/>
+  <meta property="og:type" content="website"/>
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"Calculateur coût d'un chien","description":"Calcul du coût total d'un chien sur 15 ans : achat, alimentation, vétérinaire, assurance, toilettage, garde.","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#090909;--card:#141414;--border:#222;
+      --yellow:#FFD93D;--green:#3BFF9E;--blue:#3BB5FF;
+      --purple:#C084FC;--red:#FF5C5C;--amber:#FFAA3B;
+      --orange:#FF8C42;--text:#F0EDE6;--muted:#555;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:80px}
+    body::before{content:'';position:fixed;inset:0;opacity:.3;pointer-events:none;z-index:0;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E")}
+    nav{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:18px;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--yellow)}
+    .back{font-size:13px;color:var(--muted);text-decoration:none}
+    .hero{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:40px 24px 28px}
+    .htag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--orange);background:rgba(255,140,66,.08);border:1px solid rgba(255,140,66,.25);padding:4px 14px;border-radius:100px;margin-bottom:14px}
+    h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(22px,4vw,48px);letter-spacing:-2px;line-height:1.05;margin-bottom:10px}
+    h1 span{color:var(--yellow)}
+    .hero p{font-size:14px;color:var(--muted);line-height:1.7;max-width:680px}
+
+    /* CHOC BANNER */
+    .choc-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .choc-box{background:linear-gradient(135deg,rgba(255,140,66,.08),rgba(255,217,61,.05));border:1px solid rgba(255,140,66,.3);border-radius:20px;padding:24px 28px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+    .choc-total{text-align:center;min-width:180px}
+    .choc-emoji{font-size:28px;margin-bottom:4px}
+    .choc-label{font-size:11px;color:var(--orange);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+    .choc-num{font-family:'Unbounded',sans-serif;font-size:clamp(30px,5vw,52px);font-weight:900;color:var(--yellow);line-height:1}
+    .choc-sub{font-size:11px;color:var(--muted);margin-top:4px}
+    .choc-divider{width:1px;height:60px;background:#2a2a2a;flex-shrink:0}
+    .choc-stats{display:flex;flex-wrap:wrap;gap:12px;flex:1}
+    .choc-stat{text-align:center;min-width:110px}
+    .choc-stat-v{font-family:'DM Mono',monospace;font-size:18px;font-weight:700}
+    .choc-stat-l{font-size:10px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+
+    /* TABS */
+    .tabs-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .tabs{display:flex;gap:4px;background:#0d0d0d;border:1px solid var(--border);border-radius:14px;padding:5px;width:fit-content;flex-wrap:wrap}
+    .tab{background:transparent;border:none;color:var(--muted);padding:9px 15px;border-radius:10px;font-size:13px;font-family:inherit;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+    .tab.on{background:var(--yellow);color:#000;font-weight:700}
+    .panel{display:none}.panel.on{display:block}
+
+    .wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:14px}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px}
+    .ctitle{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px}
+    .fhint{font-size:10px;color:#333;margin-top:5px;line-height:1.5}
+
+    .f{margin-bottom:13px}.f:last-child{margin-bottom:0}
+    .f label{display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:6px}
+    .fval{font-family:'DM Mono',monospace;color:var(--yellow);font-size:12px}
+
+    input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:#252525;border-radius:2px;outline:none;cursor:pointer}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--yellow);border-radius:50%;box-shadow:0 0 8px rgba(255,217,61,.4)}
+    select{width:100%;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;color:var(--text);padding:10px 13px;font-size:14px;font-family:inherit;outline:none}
+    option{background:#1e1e1e}
+
+    .divider{display:flex;align-items:center;gap:10px;margin:10px 0}
+    .divider span{font-size:10px;color:#333;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:#1e1e1e}
+
+    .m{background:#1a1a1a;border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+    .ml{font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+    .mv{font-family:'DM Mono',monospace;font-size:18px;font-weight:500}
+    .ms{font-size:10px;color:var(--muted);margin-top:3px}
+    .mh{background:rgba(59,255,158,.05);border-color:rgba(59,255,158,.2)}
+    .my{background:rgba(255,217,61,.05);border-color:rgba(255,217,61,.2)}
+    .mo{background:rgba(255,140,66,.05);border-color:rgba(255,140,66,.2)}
+
+    .di{display:flex;justify-content:space-between;padding:8px 12px;background:#1a1a1a;border:1px solid #222;border-radius:8px;margin-bottom:6px}
+    .di span:first-child{font-size:12px;color:#666}
+    .di span:last-child{font-family:'DM Mono',monospace;font-size:12px}
+
+    .race-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:16px}
+    .race-btn{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center;font-family:inherit}
+    .race-btn:hover{border-color:#444}
+    .race-btn.on{background:rgba(255,217,61,.1);border-color:var(--yellow)}
+    .race-btn-emoji{font-size:22px;display:block;margin-bottom:4px}
+    .race-btn-name{font-size:11px;color:var(--text);font-weight:600;display:block}
+    .race-btn-price{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace}
+
+    .budget-bar{display:flex;height:12px;border-radius:6px;overflow:hidden;margin:10px 0}
+    .budget-seg{height:100%;transition:width .4s ease;position:relative}
+    .budget-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .bl{display:flex;align-items:center;gap:5px;font-size:11px;color:#666}
+    .bl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+    .equiv-item{display:flex;align-items:center;gap:14px;padding:12px 16px;background:#1a1a1a;border:1px solid #222;border-radius:12px;margin-bottom:8px}
+    .equiv-emoji{font-size:22px;flex-shrink:0}
+    .equiv-label{font-size:13px;color:#666;flex:1;line-height:1.4}
+    .equiv-val{font-family:'DM Mono',monospace;font-size:14px;color:var(--yellow);font-weight:700;text-align:right}
+
+    .sante-card{border-radius:12px;border:1px solid #222;padding:14px;margin-bottom:8px}
+    .sante-card h4{font-size:12px;font-weight:700;margin-bottom:8px}
+
+    .cw{position:relative;width:100%;height:240px;margin-top:12px}
+    .cwt{position:relative;width:100%;height:300px;margin-top:12px}
+
+    .src{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px;padding:14px 16px;font-size:11px;color:#3a3a3a;line-height:1.8}
+    .src strong{color:#555}
+
+    .alerte{background:rgba(255,92,92,.05);border:1px solid rgba(255,92,92,.2);border-radius:12px;padding:14px 18px;font-size:12px;color:#888;line-height:1.7;margin-top:12px}
+    .alerte strong{color:var(--red)}
+
+    @media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr 1fr}.choc-box{flex-direction:column}.tab{padding:8px 10px;font-size:11px}.choc-divider{display:none}.race-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:400px){.g2,.g3,.g4,.race-grid{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Tous les calculateurs</a>
+</nav>
+
+<div class="hero">
+  <div class="htag">🐶 Animaux</div>
+  <h1>Le vrai coût<br><span>d'un chien</span></h1>
+  <p>De l'achat à la fin de vie, tout compris : nourriture, vétérinaire, assurance, toilettage, garde, éducation. 20 races préconfigurées. Le calcul que les refuges et les éleveurs ne font jamais pour vous. Données vétérinaires France 2025.</p>
+</div>
+
+<!-- BANNIÈRE -->
+<div class="choc-wrap">
+  <div class="choc-box">
+    <div class="choc-total">
+      <div class="choc-emoji">🐶</div>
+      <div class="choc-label">Coût total sur 15 ans</div>
+      <div class="choc-num" id="choc-total">—</div>
+      <div class="choc-sub" id="choc-race">votre compagnon</div>
+    </div>
+    <div class="choc-divider"></div>
+    <div class="choc-stats">
+      <div class="choc-stat"><div class="choc-stat-v" id="ch-an" style="color:var(--amber)">—</div><div class="choc-stat-l">Par an en moyenne</div></div>
+      <div class="choc-stat"><div class="choc-stat-v" id="ch-mois" style="color:var(--blue)">—</div><div class="choc-stat-l">Par mois</div></div>
+      <div class="choc-stat"><div class="choc-stat-v" id="ch-jour" style="color:var(--green)">—</div><div class="choc-stat-l">Par jour</div></div>
+      <div class="choc-stat"><div class="choc-stat-v" id="ch-poste" style="color:var(--purple)">—</div><div class="choc-stat-l">Poste n°1</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('race',this)">🐾 Votre chien</button>
+    <button class="tab" onclick="showTab('quotidien',this)">🍖 Quotidien</button>
+    <button class="tab" onclick="showTab('sante',this)">🏥 Santé</button>
+    <button class="tab" onclick="showTab('bilan',this)">💰 Bilan total</button>
+    <button class="tab" onclick="showTab('proj',this)">📈 Projections</button>
+    <button class="tab" onclick="showTab('equiv',this)">😱 Équivalences</button>
+  </div>
+</div>
+
+<!-- ===== VOTRE CHIEN ===== -->
+<div class="panel on" id="p-race"><div class="wrap">
+
+  <div class="card">
+    <div class="ctitle">Choisissez votre race — ou configurez manuellement</div>
+    <div class="race-grid" id="race-grid"></div>
+    <div class="divider"><span>Ou configurez manuellement ci-dessous</span></div>
+    <div class="g2">
+      <div>
+        <div class="f">
+          <label>Mode d'acquisition</label>
+          <select id="iAcquis" onchange="recalc()">
+            <option value="refuge">🏠 Refuge / SPA (150-300€)</option>
+            <option value="eleveur" selected>🏆 Éleveur LOF certifié</option>
+            <option value="particulier">👤 Particulier (sans LOF)</option>
+          </select>
+        </div>
+        <div class="f">
+          <label>Prix d'achat / adoption <span class="fval" id="vAchat">1 200 €</span></label>
+          <input type="range" id="iAchat" min="150" max="4000" step="50" value="1200" oninput="recalc()">
+          <div class="fhint" id="hAchat">Refuge : 150-300€ · Éleveur LOF : 800-3 000€ selon race · Top5 SCC : 1 000-2 500€</div>
+        </div>
+        <div class="f">
+          <label>Taille du chien</label>
+          <select id="iTaille" onchange="recalc()">
+            <option value="xs">🐩 Très petit (< 5 kg) — Chihuahua, Yorkshire</option>
+            <option value="s">🐕 Petit (5-15 kg) — Beagle, Cocker, Bichon</option>
+            <option value="m" selected>🦮 Moyen (15-30 kg) — Labrador, Golden, Berger Aus.</option>
+            <option value="l">🐕‍🦺 Grand (30-45 kg) — Berger Allemand, Husky</option>
+            <option value="xl">🦁 Très grand (> 45 kg) — Dogue, Saint-Bernard</option>
+          </select>
+        </div>
+        <div class="f">
+          <label>Espérance de vie estimée <span class="fval" id="vVie">13 ans</span></label>
+          <input type="range" id="iVie" min="8" max="18" step="1" value="13" oninput="recalc()">
+          <div class="fhint">Petites races : 14-17 ans · Grandes races : 9-12 ans · Moyennes : 12-15 ans</div>
+        </div>
+      </div>
+      <div>
+        <div class="f">
+          <label>Maladies génétiques connues de la race</label>
+          <select id="iSante" onchange="recalc()">
+            <option value="faible">✅ Faibles — race robuste</option>
+            <option value="moyen" selected>⚠️ Moyennes — risques courants</option>
+            <option value="eleve">🔴 Élevées — dysplasie, cardio, respi...</option>
+          </select>
+          <div class="fhint">Bouledogue français, Carlin : respi. · Golden, Labrador : dysplasie · Berger Allemand : hanches</div>
+        </div>
+        <div class="f">
+          <label>Lieu de résidence</label>
+          <select id="iLieu" onchange="recalc()">
+            <option value="province" selected>🏡 Province / Ville moyenne</option>
+            <option value="paris">🏙️ Paris / Grande métropole (+15-25%)</option>
+          </select>
+        </div>
+        <div class="f">
+          <label>Type de poil / toilettage nécessaire</label>
+          <select id="iPoil" onchange="recalc()">
+            <option value="court">Court — Labrador, Boxer (toilettage minimal)</option>
+            <option value="moyen" selected>Moyen — Golden, Husky (entretien modéré)</option>
+            <option value="long">Long / frisé — Caniche, Bichon (toilettage fréquent)</option>
+          </select>
+        </div>
+        <div class="f">
+          <label>Vous avez un jardin ?</label>
+          <select id="iJardin" onchange="recalc()">
+            <option value="oui" selected>Oui — moins de besoins en pension/promenade</option>
+            <option value="non">Non — appartement (frais garde/promeneur)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:rgba(255,140,66,.2);background:rgba(255,140,66,.03);">
+    <div class="ctitle" style="color:var(--orange)">Coûts initiaux (année 1)</div>
+    <div class="g4" id="init-costs"></div>
+    <div style="margin-top:12px;font-size:12px;color:#555;line-height:1.6;padding:12px;background:#1a1a1a;border-radius:10px;">
+      ⚡ La <strong style="color:#888">première année est toujours la plus chère</strong> : identification (puce électronique 60€), vaccinations complètes (100-150€), stérilisation (130-300€ selon taille), corbeille, laisse, gamelles, jouets...
+    </div>
+  </div>
+
+</div></div>
+
+<!-- ===== QUOTIDIEN ===== -->
+<div class="panel" id="p-quotidien"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🍖 Alimentation</div>
+      <div class="f">
+        <label>Qualité de la nourriture</label>
+        <select id="iAlimQual" onchange="recalc()">
+          <option value="eco">💚 Économique — croquettes premier prix (Lidl, Aldi)</option>
+          <option value="moyen" selected>🟡 Milieu de gamme — Royal Canin, Hill's, Purina</option>
+          <option value="premium">🔴 Premium — BARF, grain-free, cru, ultra-qualité</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Budget nourriture / mois <span class="fval" id="vAlim">55 €</span></label>
+        <input type="range" id="iAlim" min="20" max="200" step="5" value="55" oninput="recalc()">
+        <div class="fhint" id="hAlim">Petit : 20-50€/mois · Moyen : 40-80€ · Grand : 60-130€ · Géant : 80-170€</div>
+      </div>
+      <div class="f">
+        <label>Friandises + compléments / mois <span class="fval" id="vFrian">15 €</span></label>
+        <input type="range" id="iFrian" min="5" max="60" step="5" value="15" oninput="recalc()">
+      </div>
+      <div class="divider"><span>Toilettage</span></div>
+      <div class="f">
+        <label>Toiletteur professionnel / séance <span class="fval" id="vToilet">60 €</span></label>
+        <input type="range" id="iToilet" min="0" max="120" step="5" value="60" oninput="recalc()">
+        <div class="fhint">Coiffeur canin : 50-90€ · Petite race frisée : 4-6×/an · Poil court : 2×/an</div>
+      </div>
+      <div class="f">
+        <label>Fréquence toilettage / an <span class="fval" id="vToiletFreq">4 fois</span></label>
+        <input type="range" id="iToiletFreq" min="0" max="12" step="1" value="4" oninput="recalc()">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ctitle">🏠 Logement & Garde</div>
+      <div class="f">
+        <label>Pension / garde vacances (jours/an) <span class="fval" id="vVacJours">15 j</span></label>
+        <input type="range" id="iVacJours" min="0" max="60" step="1" value="15" oninput="recalc()">
+        <div class="fhint">Pension canine : 20-40€/jour · Famille d'accueil (Rover, Wamiz) : 15-30€/jour</div>
+      </div>
+      <div class="f">
+        <label>Prix pension / jour <span class="fval" id="vPension">25 €</span></label>
+        <input type="range" id="iPension" min="10" max="55" step="1" value="25" oninput="recalc()">
+      </div>
+      <div class="f">
+        <label>Promeneur professionnel (si applicable) <span class="fval" id="vPromeneur">0 €/mois</span></label>
+        <input type="range" id="iPromeneur" min="0" max="300" step="10" value="0" oninput="recalc()">
+        <div class="fhint">Promeneur : ~15€/sortie · Utile si appartement sans jardin et travail long</div>
+      </div>
+      <div class="divider"><span>Accessoires & Éducation</span></div>
+      <div class="f">
+        <label>Jouets + accessoires / an <span class="fval" id="vJouets">150 €</span></label>
+        <input type="range" id="iJouets" min="30" max="400" step="10" value="150" oninput="recalc()">
+        <div class="fhint">Jouets, friandises éducatives, laisse, collier... Les jouets ont une durée de vie courte 😅</div>
+      </div>
+      <div class="f">
+        <label>Cours d'éducation canine <span class="fval" id="vEduc">200 €</span></label>
+        <input type="range" id="iEduc" min="0" max="600" step="50" value="200" oninput="recalc()">
+        <div class="fhint">Éducateur canin : 30-80€/séance · 5-10 séances recommandées la 1ère année</div>
+      </div>
+      <div class="f">
+        <label>Abonnements / apps (assurance civile...) <span class="fval" id="vAbos">5 €/mois</span></label>
+        <input type="range" id="iAbos" min="0" max="30" step="1" value="5" oninput="recalc()">
+        <div class="fhint">RC chien incluse dans assurance habitation dans certains cas · Vérifiez votre contrat</div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== SANTÉ ===== -->
+<div class="panel" id="p-sante"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">💉 Soins préventifs annuels</div>
+      <div class="f">
+        <label>Consultation annuelle vétérinaire <span class="fval" id="vConsult">50 €</span></label>
+        <input type="range" id="iConsult" min="30" max="100" step="5" value="50" oninput="recalc()">
+        <div class="fhint">Consultation classique : 35-60€ · Paris : 50-90€ · Consultation spécialiste : 70-150€</div>
+      </div>
+      <div class="f">
+        <label>Vaccinations rappels / an <span class="fval" id="vVaccin">70 €</span></label>
+        <input type="range" id="iVaccin" min="40" max="150" step="10" value="70" oninput="recalc()">
+        <div class="fhint">Primo-vaccination 1ère année : 100-150€ · Rappels annuels : 40-110€ (CHPPI + Rage)</div>
+      </div>
+      <div class="f">
+        <label>Antiparasitaires (puces/tiques/vers) / an <span class="fval" id="vParas">100 €</span></label>
+        <input type="range" id="iParas" min="50" max="200" step="10" value="100" oninput="recalc()">
+        <div class="fhint">Traitement mensuel recommandé : ~8-15€/mois · Frontline, Advantix, Seresto, NexGard</div>
+      </div>
+      <div class="f">
+        <label>Détartrage dentaire (tous les 2-3 ans) <span class="fval" id="vDenture">50 €</span></label>
+        <input type="range" id="iDenture" min="0" max="150" step="10" value="50" oninput="recalc()">
+        <div class="fhint">Détartrage sous anesthésie : 150-300€ tous les 2-3 ans selon race</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">🚨 Urgences & Imprévus</div>
+      <div class="f">
+        <label>Provision imprévus vétérinaires / an <span class="fval" id="vImprevu">400 €</span></label>
+        <input type="range" id="iImprevu" min="100" max="1500" step="50" value="400" oninput="recalc()">
+        <div class="fhint">Sinistre moyen déclaré : 162€ (Acheel 2025) · Chirurgie : 500-3 000€ · Scanner urgence : 500-1 500€</div>
+      </div>
+      <div class="f">
+        <label>Assurance santé chien / mois <span class="fval" id="vAssur">30 €</span></label>
+        <input type="range" id="iAssur" min="0" max="90" step="5" value="30" oninput="recalc()">
+        <div class="fhint">Formule accident seule : 8-15€/mois · Intermédiaire : 20-50€ · Premium : 50-90€/mois · 6% des chiens assurés en France vs 85% en Suède</div>
+      </div>
+      <div class="f">
+        <label>Stérilisation (one-shot, si applicable)</label>
+        <select id="iSteril" onchange="recalc()">
+          <option value="0">Pas de stérilisation prévue</option>
+          <option value="150">Castration mâle (~150-250€)</option>
+          <option value="220" selected>Stérilisation femelle (~200-350€)</option>
+        </select>
+        <div class="fhint">Recommandée pour la santé et le comportement · Réduit certains risques de cancer</div>
+      </div>
+      <div class="f">
+        <label>Frais de fin de vie estimés <span class="fval" id="vFinVie">350 €</span></label>
+        <input type="range" id="iFinVie" min="100" max="800" step="50" value="350" oninput="recalc()">
+        <div class="fhint">Euthanasie + incinération : 185-520€ (2025) · Soins palliatifs et confort : variable</div>
+      </div>
+      <div style="background:rgba(255,92,92,.05);border:1px solid rgba(255,92,92,.2);border-radius:10px;padding:12px;margin-top:12px;font-size:11px;color:#888;line-height:1.6;">
+        🏥 <strong style="color:var(--red)">Tarifs libres</strong> — Les vétérinaires fixent leurs prix librement. Les écarts peuvent aller de 1 à 3 selon les régions. Les <strong style="color:#888">cliniques vétérinaires d'écoles</strong> proposent des tarifs ~30% moins chers, supervisés.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">📋 Actes vétérinaires courants — Tarifs de référence 2025</div>
+    <div class="g4" style="gap:8px;">
+      <div class="di" style="flex-direction:column;gap:4px;"><span>Consultation</span><span style="color:var(--text)">35 – 60 €</span></div>
+      <div class="di" style="flex-direction:column;gap:4px;"><span>Urgence nuit</span><span style="color:var(--amber)">60 – 110 €</span></div>
+      <div class="di" style="flex-direction:column;gap:4px;"><span>Radiographie</span><span style="color:var(--text)">60 – 120 €</span></div>
+      <div class="di" style="flex-direction:column;gap:4px;"><span>Échographie</span><span style="color:var(--text)">70 – 150 €</span></div>
+      <div class="di" style="flex-direction:column;gap:4px;"><span>Prise de sang</span><span style="color:var(--text)">50 – 90 €</span></div>
+      <div class="di" style="flex-direction:column;gap:4px;"><span>Fracture</span><span style="color:var(--red)">250 – 500 €</span></div>
+      <div class="di" style="flex-direction:column;gap:4px;"><span>Chirurgie ortho.</span><span style="color:var(--red)">1 000 – 3 000 €</span></div>
+      <div class="di" style="flex-direction:column;gap:4px;"><span>Scanner urgence</span><span style="color:var(--red)">500 – 1 500 €</span></div>
+    </div>
+    <div class="src" style="margin-top:12px;">Sources : lecomparateurassurance.com 2025 · Baromètre assurance animaux Acheel sept. 2025 · adpassurances.fr</div>
+  </div>
+</div></div>
+
+<!-- ===== BILAN ===== -->
+<div class="panel" id="p-bilan"><div class="wrap">
+
+  <div style="background:linear-gradient(135deg,rgba(255,140,66,.08),rgba(255,217,61,.05));border:1px solid rgba(255,140,66,.25);border-radius:18px;padding:24px;text-align:center;">
+    <div style="font-size:13px;color:#888;margin-bottom:6px;">Coût total sur <span id="b-duree">15</span> ans</div>
+    <div style="font-family:'Unbounded',sans-serif;font-size:clamp(36px,6vw,64px);font-weight:900;color:var(--yellow);margin:6px 0;" id="b-total">—</div>
+    <div style="font-size:13px;color:#666;">Soit <span id="b-mois">—</span>/mois · <span id="b-jour">—</span>/jour</div>
+  </div>
+
+  <div class="g4">
+    <div class="m mo"><div class="ml">Acquisition</div><div class="mv" id="b-achat" style="color:var(--orange)">—</div><div class="ms">achat + équipement</div></div>
+    <div class="m"><div class="ml">Alimentation</div><div class="mv" id="b-alim" style="color:var(--amber)">—</div><div class="ms">sur toute la vie</div></div>
+    <div class="m"><div class="ml">Vétérinaire</div><div class="mv" id="b-veto" style="color:var(--red)">—</div><div class="ms">soins + urgences</div></div>
+    <div class="m mh"><div class="ml">Assurance</div><div class="mv" id="b-assur" style="color:var(--green)">—</div><div class="ms">protection santé</div></div>
+  </div>
+
+  <!-- Barre de répartition -->
+  <div class="card">
+    <div class="ctitle">Répartition du budget</div>
+    <div class="budget-bar" id="budget-bar"></div>
+    <div class="budget-legend" id="budget-legend"></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Détail complet des postes</div>
+      <div id="detail-postes"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Comparaison avec et sans assurance</div>
+      <div class="g2" style="gap:10px;margin-bottom:12px;">
+        <div class="m"><div class="ml">Sans assurance</div><div class="mv" id="b-sans" style="color:var(--red)">—</div><div class="ms">risque sur urgences</div></div>
+        <div class="m mh"><div class="ml">Avec assurance</div><div class="mv" id="b-avec" style="color:var(--green)">—</div><div class="ms">sérénité incluse</div></div>
+      </div>
+      <div style="font-size:12px;color:#555;line-height:1.6;padding:12px;background:#1a1a1a;border-radius:10px;">
+        💡 Seulement <strong style="color:#888">6% des chiens</strong> sont assurés en France (vs 85% en Suède). Une urgence chirurgicale peut coûter 1 000 à 3 000€. L'assurance revient à ~20-50€/mois.
+      </div>
+      <div class="alerte" id="alerte-race"></div>
+    </div>
+  </div>
+
+  <div class="src">
+    <strong>Sources :</strong> INSEE/UNAF · SPA France : 45 000+ abandons en 2024 · Lump Media : 1 150€/an en moyenne France 2025 · ADP Assurances : 900-1 300€/an selon taille · L'Essentiel de l'Éco : budget nourriture 180-890€/an · Baromètre assurance animaux Acheel sept. 2025 (primes 12-41€/mois) · Société Centrale Canine (SCC) : classement races 2024 · Fichier national I-CAD : identifications 2025 · Prix refuges : SPA, 30 millions d'amis (150-300€) · Prix éleveurs : Chiens-de-France, AuxBonheursDesChiens 2025 · Tarifs vétérinaires : lecomparateurassurance.com 2025 · Frais fin de vie 185-520€ : L'Essentiel de l'Éco 2024-2025.
+  </div>
+</div></div>
+
+<!-- ===== PROJECTIONS ===== -->
+<div class="panel" id="p-proj"><div class="wrap">
+  <div class="card">
+    <div class="ctitle">Coût cumulé année par année</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">La 1ère année est toujours la plus chère (équipement + vaccinations complètes + stérilisation).</div>
+    <div class="cwt"><canvas id="chart-cumul"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Répartition annuelle par poste</div>
+    <div class="cw"><canvas id="chart-postes"></canvas></div>
+  </div>
+</div></div>
+
+<!-- ===== ÉQUIVALENCES ===== -->
+<div class="panel" id="p-equiv"><div class="wrap">
+  <div class="card">
+    <div class="ctitle">😱 Ce que ce budget représente aussi…</div>
+    <div id="equiv-items"></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">🐶 vs 🐱 — Chien vs Chat sur 15 ans</div>
+    <div class="g2" style="gap:10px;margin-bottom:12px;">
+      <div class="m mo"><div class="ml">🐶 Votre chien</div><div class="mv" id="eq-chien" style="color:var(--orange)">—</div><div class="ms">sur <span id="eq-duree">15</span> ans</div></div>
+      <div class="m"><div class="ml">🐱 Chat (estimation)</div><div class="mv" id="eq-chat" style="color:var(--blue)">—</div><div class="ms">sur 15 ans</div></div>
+    </div>
+    <div style="font-size:12px;color:#555;line-height:1.6;padding:12px;background:#1a1a1a;border-radius:10px;">
+      Un chat coûte en moyenne <strong style="color:#888">429€/an</strong> en soins vs 584€ pour un chien (Acheel 2025). Mais il faut aussi compter la nourriture, les accessoires, la pension... Le chat reste globalement moins coûteux, surtout sans frais de garde quotidiens.
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">💡 10 astuces pour réduire la facture</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;color:#666;line-height:1.6;">
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">🏫 <strong style="color:var(--text)">Clinique vétérinaire école</strong> — tarifs ~30% moins chers, supervisés par des profs</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">🛒 <strong style="color:var(--text)">Croquettes en gros</strong> — sacs de 15kg plutôt que 2kg, économie de 20-30%</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">💊 <strong style="color:var(--text)">Médicaments en ligne</strong> — antiparasitaires 30-40% moins chers sur ordonnance vét.</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">🪮 <strong style="color:var(--text)">Toilettage maison</strong> — brosser vous-même entre les séances pro économise 200€/an</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">🏠 <strong style="color:var(--text)">Troc de garde</strong> — échangez avec des voisins propriétaires via Pawshake ou Rover</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">🦷 <strong style="color:var(--text)">Hygiène dentaire</strong> — brossage régulier évite les détartrages à 200-300€</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">📋 <strong style="color:var(--text)">Assurance jeune</strong> — souscrire avant 3 ans pour éviter exclusions et tarifs majorés</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">🎓 <strong style="color:var(--text)">Éducation précoce</strong> — 5 séances bien faites évitent comportements destructeurs coûteux</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">🏥 <strong style="color:var(--text)">Prévention</strong> — vaccins + antiparasitaires coûtent 10× moins cher que soigner la maladie</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">❤️ <strong style="color:var(--text)">Adopter en refuge</strong> — économie de 500-2 000€ à l'achat, souvent déjà vacciné/stérilisé</div>
+    </div>
+  </div>
+</div></div>
+
+<script>
+var activeTab = 'race';
+var chartCumul = null, chartPostes = null;
+var R = {};
+
+Chart.defaults.color = '#666';
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+
+// ── Données races ──
+var RACES = [
+  {id:'refuge',  emoji:'🏠', name:'Refuge',       prix:220,  taille:'m', vie:12, sante:'moyen', poil:'court'},
+  {id:'labrador',emoji:'🐕', name:'Labrador',      prix:1400, taille:'m', vie:13, sante:'moyen', poil:'court'},
+  {id:'golden',  emoji:'🦮', name:'Golden Ret.',   prix:1500, taille:'m', vie:12, sante:'eleve', poil:'moyen'},
+  {id:'berger_aus',emoji:'🐕‍🦺',name:'Berger Aus.', prix:1300, taille:'m', vie:14, sante:'moyen', poil:'moyen'},
+  {id:'chihuahua',emoji:'🐩',name:'Chihuahua',     prix:1200, taille:'xs',vie:16, sante:'moyen', poil:'court'},
+  {id:'yorkshire',emoji:'🐶',name:'Yorkshire',     prix:1000, taille:'xs',vie:15, sante:'moyen', poil:'long'},
+  {id:'caniche',  emoji:'🐩',name:'Caniche',       prix:1500, taille:'s', vie:15, sante:'faible',poil:'long'},
+  {id:'beagle',   emoji:'🐕',name:'Beagle',        prix:1100, taille:'s', vie:13, sante:'moyen', poil:'court'},
+  {id:'bulldog',  emoji:'🐾',name:'Bouledogue Fr.',prix:2800, taille:'m', vie:10, sante:'eleve', poil:'court'},
+  {id:'berger_al',emoji:'🦺',name:'Berger All.',   prix:1200, taille:'l', vie:11, sante:'eleve', poil:'moyen'},
+  {id:'husky',    emoji:'🐺',name:'Husky Sibérien',prix:1400, taille:'l', vie:13, sante:'faible',poil:'moyen'},
+  {id:'cavalier', emoji:'🐕',name:'Cavalier KC',   prix:2000, taille:'s', vie:12, sante:'eleve', poil:'moyen'},
+  {id:'cocker',   emoji:'🐶',name:'Cocker Ang.',   prix:1400, taille:'s', vie:13, sante:'moyen', poil:'long'},
+  {id:'doberman', emoji:'🐾',name:'Doberman',      prix:1500, taille:'l', vie:11, sante:'eleve', poil:'court'},
+  {id:'dogue',    emoji:'🦁',name:'Dogue de Bdx',  prix:1800, taille:'xl',vie:9,  sante:'eleve', poil:'court'},
+  {id:'bichon',   emoji:'🐩',name:'Bichon',        prix:1200, taille:'xs',vie:16, sante:'faible',poil:'long'},
+  {id:'teckel',   emoji:'🐕',name:'Teckel',        prix:1000, taille:'xs',vie:15, sante:'moyen', poil:'court'},
+  {id:'border',   emoji:'🐕',name:'Border Collie', prix:1200, taille:'m', vie:14, sante:'faible',poil:'moyen'},
+  {id:'malinois', emoji:'🐕‍🦺',name:'Malinois',    prix:1200, taille:'l', vie:13, sante:'faible',poil:'court'},
+  {id:'stbernard',emoji:'🦁',name:'Saint-Bernard', prix:1500, taille:'xl',vie:9,  sante:'eleve', poil:'moyen'},
+];
+
+var PRIX_RACE_DISPLAY = {
+  'refuge':'150-300€','labrador':'1 200-1 900€','golden':'1 300-1 800€','berger_aus':'1 000-1 500€',
+  'chihuahua':'800-1 800€','yorkshire':'800-1 500€','caniche':'1 000-2 000€','beagle':'800-1 400€',
+  'bulldog':'2 000-3 500€','berger_al':'900-1 500€','husky':'1 000-1 800€','cavalier':'1 500-2 500€',
+  'cocker':'1 000-1 800€','doberman':'1 000-2 000€','dogue':'1 500-2 500€','bichon':'900-1 500€',
+  'teckel':'700-1 200€','border':'800-1 500€','malinois':'800-1 400€','stbernard':'1 000-2 000€'
+};
+
+var selectedRace = null;
+
+// Multiplicateurs taille
+var TAILLE = {
+  xs:{alim:28,  sante:0.85, toiletFreq:3, label:'Très petit'},
+  s: {alim:40,  sante:0.90, toiletFreq:4, label:'Petit'},
+  m: {alim:55,  sante:1.00, toiletFreq:4, label:'Moyen'},
+  l: {alim:85,  sante:1.15, toiletFreq:3, label:'Grand'},
+  xl:{alim:130, sante:1.35, toiletFreq:3, label:'Très grand'},
+};
+
+// Infos santé par race
+var SANTE_INFO = {
+  labrador: '⚠️ Labrador : dysplasie de la hanche et du coude fréquente. Tests recommandés chez l\'éleveur.',
+  golden:   '⚠️ Golden Retriever : prédisposition aux cancers (~60% en mourront), dysplasie. Budget santé élevé à prévoir.',
+  bulldog:  '🔴 Bouledogue Français : brachiocéphalie (respi.), problèmes de peau, luxation rotule. Frais vétérinaires parmi les plus élevés.',
+  cavalier: '🔴 Cavalier KC : maladies cardiaques (mitrale) très courantes. Suivi cardiologique régulier nécessaire.',
+  dogue:    '🔴 Dogue de Bordeaux : espérance de vie courte, problèmes cardiaques, orthopédiques.',
+  stbernard:'⚠️ Saint-Bernard : torsion d\'estomac, dysplasie. Espérance de vie 8-10 ans.',
+  berger_al:'⚠️ Berger Allemand : dysplasie de la hanche très fréquente. Tests génétiques chez l\'éleveur.',
+  doberman: '⚠️ Doberman : cardiomyopathie. Bilan cardiaque annuel recommandé.',
+};
+
+function g(id){ return document.getElementById(id); }
+function sv(id){ var el=g(id); return el?+el.value:0; }
+function gv(id){ var el=g(id); return el?el.value:''; }
+function se(id,t){ var el=g(id); if(el) el.textContent=t; }
+function si(id,h){ var el=g(id); if(el) el.innerHTML=h; }
+function fmt(n){ return Math.round(n).toLocaleString('fr-FR')+' €'; }
+function fmt2(n){ return n.toLocaleString('fr-FR'); }
+
+function showTab(name,btn){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  g('p-'+name).classList.add('on');
+  btn.classList.add('on');
+  activeTab = name;
+  setTimeout(function(){ renderCharts(name); }, 80);
+}
+function destroyChart(c){ if(c){ try{ c.destroy(); }catch(e){} } return null; }
+
+// Construire la grille des races
+function buildRaceGrid(){
+  var grid = g('race-grid'); if(!grid) return;
+  grid.innerHTML = RACES.map(function(r){
+    return '<button class="race-btn" onclick="setRace(\''+r.id+'\')">'
+      +'<span class="race-btn-emoji">'+r.emoji+'</span>'
+      +'<span class="race-btn-name">'+r.name+'</span>'
+      +'<span class="race-btn-price">'+PRIX_RACE_DISPLAY[r.id]+'</span>'
+      +'</button>';
+  }).join('');
+}
+
+function setRace(id){
+  var r = RACES.find(function(x){ return x.id===id; });
+  if(!r) return;
+  selectedRace = id;
+  // Appliquer les valeurs
+  g('iAchat').value = r.prix;
+  g('iTaille').value = r.taille;
+  g('iVie').value = r.vie;
+  g('iSante').value = r.sante;
+  g('iPoil').value = r.poil;
+  g('iAcquis').value = id==='refuge'?'refuge':'eleveur';
+  // Ajuster alimentation selon taille
+  var t = TAILLE[r.taille];
+  g('iAlim').value = t.alim;
+  g('iToiletFreq').value = t.toiletFreq;
+  // Mettre en évidence le bouton
+  document.querySelectorAll('.race-btn').forEach(function(b){ b.classList.remove('on'); });
+  var btns = document.querySelectorAll('.race-btn');
+  var idx = RACES.findIndex(function(x){ return x.id===id; });
+  if(btns[idx]) btns[idx].classList.add('on');
+  // Info santé spécifique
+  var info = SANTE_INFO[id] || '';
+  si('alerte-race', info ? info : '');
+  recalc();
+}
+
+function renderCharts(name){
+  if(!R.depAn) return;
+  if(name==='proj'){
+    chartCumul = destroyChart(chartCumul);
+    var cc = g('chart-cumul'); if(!cc) return;
+    var labels = R.depAn.map(function(_,i){ return 'An '+(i+1); });
+    chartCumul = new Chart(cc,{
+      type:'bar',
+      data:{labels:labels, datasets:[
+        {label:'Acquisition (an 1)',data:R.depAn.map(function(d,i){ return i===0?d.achat:0; }),backgroundColor:'rgba(255,140,66,.8)',borderRadius:4,stack:'a'},
+        {label:'Alimentation',data:R.depAn.map(function(d){ return d.alim; }),backgroundColor:'rgba(255,170,59,.7)',borderRadius:0,stack:'a'},
+        {label:'Vétérinaire',data:R.depAn.map(function(d){ return d.veto; }),backgroundColor:'rgba(255,92,92,.7)',borderRadius:0,stack:'a'},
+        {label:'Assurance',data:R.depAn.map(function(d){ return d.assur; }),backgroundColor:'rgba(59,255,158,.6)',borderRadius:0,stack:'a'},
+        {label:'Toilettage & Garde',data:R.depAn.map(function(d){ return d.quotidien; }),backgroundColor:'rgba(59,181,255,.6)',borderRadius:4,stack:'a'},
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:'#888',font:{size:10}}},tooltip:{callbacks:{label:function(c){ return c.dataset.label+' : '+fmt(c.raw); }}}},
+        scales:{x:{stacked:true,grid:{display:false},ticks:{color:'#666'},border:{color:'transparent'}},
+                y:{stacked:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return fmt(v); },color:'#666'},border:{color:'transparent'}}}
+      }
+    });
+
+    chartPostes = destroyChart(chartPostes);
+    var cp = g('chart-postes'); if(!cp) return;
+    chartPostes = new Chart(cp,{
+      type:'doughnut',
+      data:{
+        labels:['Achat/équipement','Alimentation','Vétérinaire','Assurance','Toilettage & Garde'],
+        datasets:[{
+          data:[R.totalAchat, R.totalAlim, R.totalVeto, R.totalAssur, R.totalQuotidien],
+          backgroundColor:['rgba(255,140,66,.8)','rgba(255,170,59,.8)','rgba(255,92,92,.8)','rgba(59,255,158,.8)','rgba(59,181,255,.8)'],
+          borderWidth:2,borderColor:'#090909'
+        }]
+      },
+      options:{responsive:true,maintainAspectRatio:false,cutout:'65%',
+        plugins:{legend:{position:'right',labels:{color:'#888',font:{size:11},padding:12}},
+          tooltip:{callbacks:{label:function(c){ return c.label+' : '+fmt(c.raw)+' ('+Math.round(c.raw/R.total*100)+'%)'; }}}
+        }
+      }
+    });
+  }
+}
+
+function recalc(){
+  var achat   = sv('iAchat');
+  var vie     = sv('iVie');
+  var taille  = gv('iTaille') || 'm';
+  var sante   = gv('iSante') || 'moyen';
+  var lieu    = gv('iLieu') || 'province';
+  var poil    = gv('iPoil') || 'moyen';
+  var jardIn  = gv('iJardin') || 'oui';
+  var acquis  = gv('iAcquis') || 'eleveur';
+  var steril  = sv('iSteril');
+
+  var alim    = sv('iAlim');
+  var frian   = sv('iFrian');
+  var toilet  = sv('iToilet');
+  var toiletF = sv('iToiletFreq');
+  var vacJours= sv('iVacJours');
+  var pension = sv('iPension');
+  var promen  = sv('iPromeneur');
+  var jouets  = sv('iJouets');
+  var educ    = sv('iEduc');
+  var abos    = sv('iAbos');
+  var consult = sv('iConsult');
+  var vaccin  = sv('iVaccin');
+  var paras   = sv('iParas');
+  var denture = sv('iDenture');
+  var imprevu = sv('iImprevu');
+  var assurM  = sv('iAssur');
+  var finVie  = sv('iFinVie');
+
+  // Multiplicateur lieu
+  var mLieu = lieu === 'paris' ? 1.2 : 1.0;
+
+  // Labels sliders
+  se('vAchat', fmt(achat));
+  se('vVie',   vie+' ans');
+  se('vAlim',  fmt(alim));
+  se('vFrian', fmt(frian));
+  se('vToilet',fmt(toilet));
+  se('vToiletFreq', toiletF+' fois');
+  se('vVacJours', vacJours+' j');
+  se('vPension', fmt(pension));
+  se('vPromeneur', fmt(promen)+'/mois');
+  se('vJouets', fmt(jouets));
+  se('vEduc', fmt(educ));
+  se('vAbos', fmt(abos)+'/mois');
+  se('vConsult', fmt(consult));
+  se('vVaccin', fmt(vaccin));
+  se('vParas',  fmt(paras));
+  se('vDenture', fmt(denture));
+  se('vImprevu', fmt(imprevu));
+  se('vAssur',  fmt(assurM)+'/mois');
+  se('vFinVie', fmt(finVie));
+
+  // ── Calculs annuels ──
+  // Acquisition (an 1 seulement)
+  var equipInit = 350; // panier, gamelles, laisse, collier, cage transport
+  var vaccInit  = lieu==='paris' ? 160 : 130; // primo-vaccination 1ère année
+  var puce      = 70; // identification puce électronique
+  var achatTotal = achat + equipInit + vaccInit + puce + steril;
+  var hintAchat = acquis==='refuge' ? 'Le prix en refuge inclut souvent stérilisation + vaccins + puce — économie réelle sur an 1.'
+    : 'Éleveur LOF : puce + 1ères vaccinations souvent incluses dans le prix.';
+
+  // Annuel nourriture
+  var alimAn = (alim + frian) * 12;
+
+  // Annuel toilettage + garde + accessoires + éducation
+  var toiletAn = toilet * toiletF;
+  var gardeAn  = vacJours * pension + promen * 12;
+  var quotAn   = toiletAn + gardeAn + jouets + abos * 12;
+
+  // Annuel santé
+  var santeBase  = (consult + vaccin + paras + denture) * mLieu;
+  var santeMulti = sante==='eleve' ? 1.35 : sante==='moyen' ? 1.0 : 0.75;
+  var santeAn    = santeBase * santeMulti + imprevu;
+  var assurAn    = assurM * 12;
+
+  // ── Total sur toute la vie ──
+  var depAn = [];
+  for(var y=0; y<vie; y++){
+    var achatY    = y===0 ? achatTotal : 0;
+    var educY     = y===0 ? educ : 0; // éducation surtout an 1
+    var finVieY   = y===vie-1 ? finVie : 0;
+    var alimY     = alimAn * (1 + y*0.01); // légère inflation
+    var vetoY     = santeAn + (y>8 ? santeAn*0.3 : 0); // +30% à partir de 9 ans
+    var assurY    = assurAn;
+    var quotY     = quotAn + educY + finVieY;
+    depAn.push({achat:achatY, alim:Math.round(alimY), veto:Math.round(vetoY), assur:assurY, quotidien:Math.round(quotY)});
+  }
+
+  var totalAchat    = depAn.reduce(function(s,d){ return s+d.achat; },0);
+  var totalAlim     = depAn.reduce(function(s,d){ return s+d.alim; },0);
+  var totalVeto     = depAn.reduce(function(s,d){ return s+d.veto; },0);
+  var totalAssur    = depAn.reduce(function(s,d){ return s+d.assur; },0);
+  var totalQuotidien= depAn.reduce(function(s,d){ return s+d.quotidien; },0);
+  var total         = totalAchat+totalAlim+totalVeto+totalAssur+totalQuotidien;
+  var totalMois     = total/(vie*12);
+  var totalJour     = total/(vie*365);
+  var totalAn       = total/vie;
+
+  // Poste principal
+  var postes = [
+    {l:'Alimentation', v:totalAlim},
+    {l:'Vétérinaire+urgences', v:totalVeto},
+    {l:'Assurance', v:totalAssur},
+    {l:'Toilettage & Garde', v:totalQuotidien},
+    {l:'Acquisition', v:totalAchat},
+  ];
+  postes.sort(function(a,b){ return b.v-a.v; });
+  var poste1 = postes[0].l;
+
+  R = {depAn:depAn, total:total, totalAchat:totalAchat, totalAlim:totalAlim, totalVeto:totalVeto, totalAssur:totalAssur, totalQuotidien:totalQuotidien};
+
+  // ── Bannière ──
+  se('choc-total', fmt(total));
+  se('choc-race',  selectedRace ? RACES.find(function(r){ return r.id===selectedRace; }).name : 'votre compagnon');
+  se('ch-an',  fmt(totalAn)+'/an');
+  se('ch-mois',fmt(totalMois)+'/mois');
+  se('ch-jour',Math.round(totalJour)+'€/j');
+  se('ch-poste',poste1);
+
+  // ── Coûts initiaux ──
+  si('init-costs',
+    '<div class="m"><div class="ml">Achat / Adoption</div><div class="mv" style="color:var(--orange)">'+fmt(achat)+'</div></div>'
+    +'<div class="m"><div class="ml">Équipement de départ</div><div class="mv" style="color:var(--amber)">'+fmt(equipInit)+'</div><div class="ms">panier, gamelles, laisse...</div></div>'
+    +'<div class="m"><div class="ml">Vaccins + puce an 1</div><div class="mv" style="color:var(--red)">'+fmt(vaccInit+puce)+'</div></div>'
+    +'<div class="m"><div class="ml">Stérilisation</div><div class="mv" style="color:var(--purple)">'+fmt(steril)+'</div><div class="ms">one-shot</div></div>'
+  );
+
+  // ── Bilan ──
+  se('b-duree', vie);
+  se('b-total', fmt(total));
+  se('b-mois',  fmt(totalMois)+'/mois');
+  se('b-jour',  Math.round(totalJour)+'€/jour');
+  se('b-achat', fmt(totalAchat));
+  se('b-alim',  fmt(totalAlim));
+  se('b-veto',  fmt(totalVeto));
+  se('b-assur', fmt(totalAssur));
+
+  // Sans vs avec assurance
+  var totalSansAssur = total - totalAssur + imprevu*vie*0.5; // 50% du budget imprévus si pas assuré (risque accru)
+  se('b-sans', fmt(totalSansAssur + imprevu*vie*0.5));
+  se('b-avec', fmt(total));
+
+  // ── Barre répartition ──
+  var barColors = ['#FF8C42','#FFAA3B','#FF5C5C','#3BFF9E','#3BB5FF'];
+  var barLabels = ['Acquisition','Alimentation','Vétérinaire','Assurance','Toilettage & Garde'];
+  var barVals   = [totalAchat, totalAlim, totalVeto, totalAssur, totalQuotidien];
+  si('budget-bar', barVals.map(function(v,i){
+    return '<div class="budget-seg" style="width:'+Math.round(v/total*100)+'%;background:'+barColors[i]+'"></div>';
+  }).join(''));
+  si('budget-legend', barVals.map(function(v,i){
+    return '<div class="bl"><div class="bl-dot" style="background:'+barColors[i]+'"></div>'+barLabels[i]+' ('+Math.round(v/total*100)+'%)</div>';
+  }).join(''));
+
+  // ── Détail postes ──
+  si('detail-postes', [
+    {l:'Achat / Adoption', v:achat, c:'var(--orange)'},
+    {l:'Équipement initial', v:equipInit, c:'var(--amber)'},
+    {l:'Vaccinations + puce (an 1)', v:vaccInit+puce, c:'var(--red)'},
+    {l:'Stérilisation', v:steril, c:'var(--purple)'},
+    {l:'Alimentation totale ('+vie+' ans)', v:totalAlim, c:'var(--amber)'},
+    {l:'Soins vétérinaires', v:totalVeto, c:'var(--red)'},
+    {l:'Assurance santé', v:totalAssur, c:'var(--green)'},
+    {l:'Toilettage', v:toiletAn*vie, c:'var(--blue)'},
+    {l:'Garde / pension vacances', v:gardeAn*vie, c:'var(--blue)'},
+    {l:'Jouets + accessoires', v:jouets*vie, c:'var(--muted)'},
+    {l:'Éducation canine', v:educ, c:'var(--muted)'},
+    {l:'Frais de fin de vie', v:finVie, c:'var(--muted)'},
+    {l:'TOTAL', v:total, c:'var(--yellow)', bold:true},
+  ].map(function(p){
+    return '<div class="di" style="'+(p.bold?'background:rgba(255,217,61,.07);border-color:rgba(255,217,61,.2);':'')+'">'
+      +'<span style="'+(p.bold?'font-weight:700;color:var(--text)':'')+'">'+p.l+'</span>'
+      +'<span style="color:'+p.c+';'+(p.bold?'font-weight:700':'')+'">'+fmt(p.v)+'</span>'
+      +'</div>';
+  }).join(''));
+
+  // ── Équivalences ──
+  si('equiv-items', [
+    {e:'✈️', l:'Voyages Paris → New York aller-retour', n:'~900€/vol', v:Math.round(total/900)},
+    {e:'📱', l:'iPhone 16 Pro Max (256 Go)', n:'~1 479€', v:Math.round(total/1479)},
+    {e:'🚗', l:'Mois de crédit auto (voiture neuve à 25k€)', n:'~350€/mois', v:Math.round(total/350)},
+    {e:'☕', l:'Cafés au comptoir à 2€', n:'une habitude quotidienne', v:Math.round(total/2)},
+    {e:'🍕', l:'Pizzas livrées Uber Eats (~20€)', n:'livraison incluse', v:Math.round(total/20)},
+    {e:'🏖️', l:'Semaines de vacances en Espagne (vol+hôtel)', n:'~500€/semaine', v:Math.round(total/500)},
+    {e:'📺', l:'Années d\'abonnement Netflix Standard', n:'~17,99€/mois', v:Math.round(total/215.88)},
+    {e:'💰', l:'Mensualités de SMIC net', n:'~1 426€ net/mois', v:Math.round(total/1426)},
+  ].map(function(e){
+    return '<div class="equiv-item">'
+      +'<div class="equiv-emoji">'+e.e+'</div>'
+      +'<div class="equiv-label"><strong style="color:var(--text)">'+e.l+'</strong><br>'+e.n+'</div>'
+      +'<div class="equiv-val">×'+fmt2(e.v)+'</div>'
+      +'</div>';
+  }).join(''));
+  se('eq-chien', fmt(total));
+  se('eq-duree', vie);
+  se('eq-chat', fmt(Math.round((429+200+150+100)*vie + 500))); // nourriture+veto+toilettage+accessoires+acquisition
+
+  if(activeTab==='proj') renderCharts('proj');
+}
+
+buildRaceGrid();
+setRace('labrador'); // race par défaut
+</script>
+</body>
+</html>

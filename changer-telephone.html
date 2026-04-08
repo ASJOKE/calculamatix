@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Devrais-je changer de téléphone ? Le calculateur qui dit la vérité | Calculamatix</title>
+  <meta name="description" content="Votre téléphone est-il vraiment mort ou c'est juste votre FOMO ? Coût réel par jour, empreinte carbone, 4 scénarios comparés (garder, réparer, reconditionné, neuf). Verdict sans pitié."/>
+  <meta name="keywords" content="changer téléphone ou non, coût smartphone par an, calculateur téléphone neuf, empreinte carbone smartphone, reconditionné vs neuf"/>
+  <link rel="canonical" href="https://calculamatix.com/changer-telephone.html"/>
+  <meta property="og:title" content="Devrais-je changer de téléphone ? Le verdict sans pitié"/>
+  <meta property="og:description" content="Coût réel par jour, FOMO détecté, CO2 calculé. Votre téléphone est-il vraiment mort ?"/>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Calculateur remplacement smartphone","description":"Calcule si vous devez changer de téléphone ou non : coût, CO2, réparation, reconditionné.","applicationCategory":"FinanceApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#090909;--card:#141414;--border:#222;
+      --yellow:#FFD93D;--green:#3BFF9E;--blue:#3BB5FF;
+      --purple:#C084FC;--red:#FF5C5C;--amber:#FFAA3B;
+      --teal:#2DD4BF;--text:#F0EDE6;--muted:#555;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:80px}
+    body::before{content:'';position:fixed;inset:0;opacity:.25;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse 60% 40% at 80% 20%,rgba(255,217,61,.06),transparent),
+                 radial-gradient(ellipse 50% 30% at 20% 80%,rgba(59,255,158,.04),transparent)}
+
+    nav{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:18px;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--yellow)}
+    .back{font-size:13px;color:var(--muted);text-decoration:none}
+
+    .hero{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:40px 24px 28px}
+    .htag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--teal);background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.25);padding:4px 14px;border-radius:100px;margin-bottom:14px}
+    h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(22px,4vw,46px);letter-spacing:-2px;line-height:1.05;margin-bottom:10px}
+    h1 span{color:var(--yellow)}
+    .hero p{font-size:14px;color:var(--muted);line-height:1.7;max-width:680px}
+
+    /* VERDICT BANNER */
+    .verdict-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .verdict-box{border-radius:20px;padding:24px 28px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;transition:all .3s;border:2px solid}
+    .v-left{text-align:center;min-width:200px}
+    .v-emoji{font-size:52px;line-height:1;margin-bottom:6px;display:block}
+    .v-label{font-family:'Unbounded',sans-serif;font-size:clamp(14px,2.5vw,22px);font-weight:900;line-height:1.2}
+    .v-sub{font-size:12px;color:var(--muted);margin-top:6px}
+    .v-divider{width:1px;height:60px;background:#2a2a2a;flex-shrink:0}
+    .v-stats{display:flex;flex-wrap:wrap;gap:14px;flex:1}
+    .v-stat{text-align:center;min-width:110px}
+    .v-stat-v{font-family:'DM Mono',monospace;font-size:18px;font-weight:700}
+    .v-stat-l{font-size:10px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+
+    .tabs-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .tabs{display:flex;gap:4px;background:#0d0d0d;border:1px solid var(--border);border-radius:14px;padding:5px;width:fit-content;flex-wrap:wrap}
+    .tab{background:transparent;border:none;color:var(--muted);padding:9px 15px;border-radius:10px;font-size:13px;font-family:inherit;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+    .tab.on{background:var(--yellow);color:#000;font-weight:700}
+    .panel{display:none}.panel.on{display:block}
+
+    .wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:14px}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px}
+    .ctitle{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px}
+
+    .f{margin-bottom:13px}.f:last-child{margin-bottom:0}
+    .f label{display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:6px}
+    .fval{font-family:'DM Mono',monospace;color:var(--yellow);font-size:12px}
+    .fhint{font-size:10px;color:#333;margin-top:5px;line-height:1.5}
+
+    input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:#252525;border-radius:2px;outline:none;cursor:pointer}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--yellow);border-radius:50%;box-shadow:0 0 8px rgba(255,217,61,.4)}
+    select{width:100%;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;color:var(--text);padding:10px 13px;font-size:14px;font-family:inherit;outline:none}
+    option{background:#1e1e1e}
+
+    .divider{display:flex;align-items:center;gap:10px;margin:12px 0}
+    .divider span{font-size:10px;color:#333;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:#1e1e1e}
+
+    .m{background:#1a1a1a;border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+    .ml{font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+    .mv{font-family:'DM Mono',monospace;font-size:17px;font-weight:500}
+    .ms{font-size:10px;color:var(--muted);margin-top:4px}
+    .mh{background:rgba(59,255,158,.05);border-color:rgba(59,255,158,.2)}
+    .my{background:rgba(255,217,61,.05);border-color:rgba(255,217,61,.2)}
+    .mr{background:rgba(255,92,92,.05);border-color:rgba(255,92,92,.2)}
+
+    /* Scenario cards */
+    .sc-card{border-radius:14px;border:1px solid;padding:18px;position:relative;transition:all .2s}
+    .sc-card.winner{border-width:2px}
+    .sc-badge{position:absolute;top:12px;right:12px;font-family:'DM Mono',monospace;font-size:10px;padding:3px 10px;border-radius:100px;font-weight:700}
+    .sc-emoji{font-size:28px;margin-bottom:8px}
+    .sc-title{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;margin-bottom:4px}
+    .sc-prix{font-family:'DM Mono',monospace;font-size:22px;font-weight:700;margin:8px 0}
+    .sc-sub{font-size:11px;color:var(--muted);line-height:1.6}
+    .sc-co2{display:flex;align-items:center;gap:6px;margin-top:10px;padding:8px 12px;background:rgba(0,0,0,.3);border-radius:8px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace}
+
+    /* FOMO test */
+    .fomo-q{padding:14px 16px;background:#1a1a1a;border:1px solid #222;border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+    .fomo-q:hover{border-color:#444}
+    .fomo-q.oui{background:rgba(255,92,92,.07);border-color:rgba(255,92,92,.3)}
+    .fomo-q.non{background:rgba(59,255,158,.05);border-color:rgba(59,255,158,.2)}
+    .fomo-q-text{font-size:13px;margin-bottom:8px}
+    .fomo-q-btns{display:flex;gap:8px}
+    .fomo-btn{border:1px solid #333;background:transparent;color:var(--muted);padding:6px 16px;border-radius:8px;font-family:inherit;font-size:12px;cursor:pointer;transition:all .15s}
+    .fomo-btn.oui-active{background:rgba(255,92,92,.2);border-color:var(--red);color:var(--red);font-weight:700}
+    .fomo-btn.non-active{background:rgba(59,255,158,.15);border-color:var(--green);color:var(--green);font-weight:700}
+    .fomo-score-bar{width:100%;height:10px;background:#1a1a1a;border-radius:5px;overflow:hidden;margin:10px 0}
+    .fomo-score-fill{height:100%;border-radius:5px;transition:width .5s ease}
+
+    /* CO2 viz */
+    .co2-item{display:flex;align-items:center;gap:14px;padding:12px 16px;background:#1a1a1a;border:1px solid #222;border-radius:10px;margin-bottom:8px}
+    .co2-icon{font-size:22px;flex-shrink:0;width:28px;text-align:center}
+    .co2-label{flex:1;font-size:12px;color:var(--muted);line-height:1.5}
+    .co2-label strong{color:var(--text);display:block;margin-bottom:2px}
+    .co2-val{font-family:'DM Mono',monospace;font-size:13px;text-align:right;flex-shrink:0}
+
+    /* Réparations */
+    .rep-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#1a1a1a;border:1px solid #222;border-radius:10px;margin-bottom:6px}
+    .rep-label{font-size:13px}
+    .rep-prix{font-family:'DM Mono',monospace;font-size:13px;color:var(--yellow)}
+
+    .progress-bar{width:100%;height:8px;background:#1a1a1a;border-radius:4px;overflow:hidden;margin:6px 0}
+    .progress-fill{height:100%;border-radius:4px;transition:width .4s ease}
+
+    .di{display:flex;justify-content:space-between;padding:8px 12px;background:#1a1a1a;border:1px solid #222;border-radius:8px;margin-bottom:6px}
+    .di span:first-child{font-size:12px;color:#666}
+    .di span:last-child{font-family:'DM Mono',monospace;font-size:12px}
+
+    .cw{position:relative;width:100%;height:240px;margin-top:12px}
+
+    .src{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px;padding:14px 16px;font-size:11px;color:#3a3a3a;line-height:1.8}
+    .src strong{color:#555}
+
+    .big-fact{text-align:center;padding:20px;background:linear-gradient(135deg,rgba(255,217,61,.07),transparent);border:1px solid rgba(255,217,61,.2);border-radius:14px;margin-bottom:10px}
+    .big-num{font-family:'Unbounded',sans-serif;font-size:clamp(28px,5vw,48px);font-weight:900;color:var(--yellow);margin:6px 0}
+    .big-label{font-size:12px;color:var(--muted);line-height:1.5}
+    .big-src{font-size:10px;color:#333;margin-top:6px;font-family:'DM Mono',monospace}
+
+    @media(max-width:640px){
+      .g2,.g3,.g4{grid-template-columns:1fr 1fr}
+      .v-stats{gap:10px}
+      .v-divider{display:none}
+      .verdict-box{flex-direction:column}
+      .tab{padding:8px 10px;font-size:11px}
+    }
+    @media(max-width:400px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Tous les calculateurs</a>
+</nav>
+
+<div class="hero">
+  <div class="htag">📱 Smartphone · Coût · Planète</div>
+  <h1>Devrais-je vraiment<br>changer de <span>téléphone ?</span></h1>
+  <p>88% des Français changent de téléphone alors qu'il fonctionne encore (ADEME). Le vôtre est-il vraiment mort — ou c'est juste votre FOMO qui parle ? Coût réel par jour, empreinte carbone, verdict sans pitié. <strong style="color:var(--text)">Préparez-vous à la vérité.</strong></p>
+</div>
+
+<!-- VERDICT BANNER -->
+<div class="verdict-wrap">
+  <div class="verdict-box" id="verdict-box" style="background:rgba(255,217,61,.06);border-color:rgba(255,217,61,.3)">
+    <div class="v-left">
+      <span class="v-emoji" id="v-emoji">🤔</span>
+      <div class="v-label" id="v-label" style="color:var(--yellow)">Configurez votre profil</div>
+      <div class="v-sub" id="v-sub">pour obtenir votre verdict</div>
+    </div>
+    <div class="v-divider"></div>
+    <div class="v-stats">
+      <div class="v-stat"><div class="v-stat-v" id="v-coutjour" style="color:var(--amber)">—</div><div class="v-stat-l">Coût actuel/jour</div></div>
+      <div class="v-stat"><div class="v-stat-v" id="v-co2" style="color:var(--teal)">—</div><div class="v-stat-l">CO₂ si neuf</div></div>
+      <div class="v-stat"><div class="v-stat-v" id="v-meilleur" style="color:var(--green)">—</div><div class="v-stat-l">Meilleure option</div></div>
+      <div class="v-stat"><div class="v-stat-v" id="v-economie" style="color:var(--yellow)">—</div><div class="v-stat-l">Économie possible</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('actuel',this)">📱 Mon téléphone</button>
+    <button class="tab" onclick="showTab('scenarios',this)">⚖️ Les 4 options</button>
+    <button class="tab" onclick="showTab('fomo',this)">🧠 Test FOMO</button>
+    <button class="tab" onclick="showTab('co2',this)">🌍 Planète</button>
+    <button class="tab" onclick="showTab('reparation',this)">🔧 Réparation</button>
+    <button class="tab" onclick="showTab('verdict',this)">🏆 Verdict final</button>
+  </div>
+</div>
+
+<!-- ===== MON TÉLÉPHONE ===== -->
+<div class="panel on" id="p-actuel"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Votre téléphone actuel</div>
+      <div class="f">
+        <label>Marque</label>
+        <select id="iMarque" onchange="recalc()">
+          <option value="iphone">🍎 Apple iPhone</option>
+          <option value="samsung" selected>🌀 Samsung Galaxy</option>
+          <option value="google">🔍 Google Pixel</option>
+          <option value="xiaomi">💫 Xiaomi / Redmi</option>
+          <option value="autre">📱 Autre marque</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Gamme / modèle</label>
+        <select id="iGamme" onchange="recalc()">
+          <option value="entree">Entrée de gamme (< 300€ neuf)</option>
+          <option value="milieu" selected>Milieu de gamme (300-700€ neuf)</option>
+          <option value="haut">Haut de gamme (700-1 000€ neuf)</option>
+          <option value="ultra">Ultra / Pro Max (> 1 000€ neuf)</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Prix payé à l'achat <span class="fval" id="vPrix">650 €</span></label>
+        <input type="range" id="iPrix" min="80" max="1800" step="10" value="650" oninput="recalc()">
+        <div class="fhint">Prix moyen bon smartphone : 450€ (UFC-Que Choisir 2025) · iPhone 16 Pro : 1 229€ · Samsung S25 : 899€</div>
+      </div>
+      <div class="f">
+        <label>Âge du téléphone <span class="fval" id="vAge">2 ans</span></label>
+        <input type="range" id="iAge" min="0" max="8" step="0.5" value="2" oninput="recalc()">
+        <div class="fhint">En France, changement moyen tous les 2-3 ans — alors que l'appareil fonctionne encore dans 88% des cas (ADEME)</div>
+      </div>
+      <div class="f">
+        <label>Acheté neuf ou reconditionné ?</label>
+        <select id="iNeuf" onchange="recalc()">
+          <option value="neuf" selected>Neuf</option>
+          <option value="reconditionne">Reconditionné (−30 à −50% CO₂)</option>
+          <option value="occasion">Occasion / don</option>
+        </select>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">État actuel — Soyez honnête 😇</div>
+      <div class="f">
+        <label>🔋 Santé de la batterie</label>
+        <select id="iBatterie" onchange="recalc()">
+          <option value="100">😊 > 90% — parfaite, comme neuf</option>
+          <option value="85" selected>😐 80-90% — tient encore bien la journée</option>
+          <option value="70">😟 70-80% — tient pas la soirée</option>
+          <option value="50">😰 < 70% — sur le chargeur en permanence</option>
+        </select>
+        <div class="fhint">Remplacement batterie : 50-80€ · Résout 90% des problèmes d'"obsolescence" · Bonus réparation État : jusqu'à 45€</div>
+      </div>
+      <div class="f">
+        <label>📸 Qualité appareil photo</label>
+        <select id="iPhoto" onchange="recalc()">
+          <option value="0">😊 Excellente — aucun problème</option>
+          <option value="1" selected>😐 Correcte — mais le nouveau zoom me fait envie</option>
+          <option value="2">😟 Limite — flou, bruit en basse lumière</option>
+          <option value="3">😰 HS — capteur défectueux</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>💻 Fluidité & performances</label>
+        <select id="iPerf" onchange="recalc()">
+          <option value="0">😊 Rapide — aucun lag</option>
+          <option value="1" selected>😐 Quelques lenteurs ponctuelles</option>
+          <option value="2">😟 Lent — applications qui plantent</option>
+          <option value="3">😰 Inutilisable — quasi-brick</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>📲 Mises à jour logicielles</label>
+        <select id="iMAJ" onchange="recalc()">
+          <option value="ok" selected>✅ Toujours supporté — mises à jour reçues</option>
+          <option value="bientot">⚠️ Fin de support dans 1-2 ans</option>
+          <option value="fini">🔴 Plus de mises à jour — faille de sécurité</option>
+        </select>
+        <div class="fhint">iPhone : 6-7 ans support · Samsung flagship : 7 ans · Xiaomi Redmi entrée gamme : 3 ans (Rentech 2026)</div>
+      </div>
+      <div class="f">
+        <label>🔨 Dégâts physiques</label>
+        <select id="iDegat" onchange="recalc()">
+          <option value="0">😊 Aucun — comme neuf (avec coque)</option>
+          <option value="1" selected>😐 Rayures légères — fonctionnel</option>
+          <option value="2">😟 Écran fissuré mais lisible</option>
+          <option value="3">😰 Écran cassé / inutilisable</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Ce que votre téléphone actuel vous a coûté — Le vrai calcul</div>
+    <div class="g4" id="cout-actuel"></div>
+    <div style="margin-top:14px;font-size:12px;color:#555;line-height:1.7;padding:14px;background:#1a1a1a;border-radius:10px;" id="bilan-actuel"></div>
+  </div>
+</div></div>
+
+<!-- ===== LES 4 OPTIONS ===== -->
+<div class="panel" id="p-scenarios"><div class="wrap">
+  <div style="font-size:13px;color:var(--muted);line-height:1.7;padding:14px 18px;background:var(--card);border:1px solid var(--border);border-radius:12px;">
+    📊 Comparaison des 4 options pour votre situation. La <span style="color:var(--yellow);font-weight:700">meilleure option</span> est mise en évidence. Tous les coûts incluent les accessoires nécessaires.
+  </div>
+  <div class="g2" id="scenarios-grid"></div>
+  <div class="card">
+    <div class="ctitle">Comparaison détaillée sur 3 ans</div>
+    <div class="cw"><canvas id="chart-scenarios"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">💸 Et si vous investissiez la différence plutôt que de changer ?</div>
+    <div id="investissement-diff"></div>
+  </div>
+</div></div>
+
+<!-- ===== TEST FOMO ===== -->
+<div class="panel" id="p-fomo"><div class="wrap">
+  <div class="card">
+    <div class="ctitle">🧠 Détecteur de FOMO — Répondez honnêtement</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6;">
+      Le FOMO (<em>Fear Of Missing Out</em>) est responsable de 62% des renouvellements de smartphones alors que l'appareil fonctionne encore (ADEME). Ce test détecte si c'est vraiment la panne — ou juste votre cerveau dopaminergique qui veut un nouveau jouet.
+    </div>
+    <div id="fomo-questions"></div>
+    <div style="margin-top:18px;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px;">
+        <span>😇 Besoin réel</span><span id="fomo-score-label">—</span><span>😈 FOMO pur</span>
+      </div>
+      <div class="fomo-score-bar"><div class="fomo-score-fill" id="fomo-fill" style="width:0%;background:var(--green)"></div></div>
+      <div id="fomo-verdict" style="padding:14px;background:#1a1a1a;border:1px solid #222;border-radius:10px;font-size:13px;color:var(--muted);line-height:1.7;margin-top:10px;">
+        Répondez aux questions pour obtenir votre diagnostic 🔍
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">📊 Ce que les données disent sur le changement de téléphone en France</div>
+    <div class="g3" style="gap:10px;">
+      <div class="big-fact">
+        <div style="font-size:12px;color:var(--muted)">Changent while it works</div>
+        <div class="big-num">88%</div>
+        <div class="big-label">des Français changent leur téléphone alors qu'il fonctionne encore</div>
+        <div class="big-src">ADEME 2025</div>
+      </div>
+      <div class="big-fact">
+        <div style="font-size:12px;color:var(--muted)">Durée utilisée vs possible</div>
+        <div class="big-num">2,5 ans</div>
+        <div class="big-label">durée moyenne en France vs 5-7 ans de durée de vie possible</div>
+        <div class="big-src">Bouygues Telecom / ADEME</div>
+      </div>
+      <div class="big-fact">
+        <div style="font-size:12px;color:var(--muted)">Dans nos tiroirs</div>
+        <div class="big-num">113M</div>
+        <div class="big-label">de smartphones inutilisés dorment dans les tiroirs français</div>
+        <div class="big-src">ADEME 2025</div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== PLANÈTE ===== -->
+<div class="panel" id="p-co2"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🌍 Empreinte carbone — Votre décision en CO₂</div>
+      <div id="co2-scenarios"></div>
+      <div class="src" style="margin-top:12px;">
+        Source : ADEME / ARCEP 2025 (impactco2.fr) · Étude ADEME "Évaluation de l'impact environnemental du numérique en France" 2025 · Apple, Samsung, Huawei rapports environnementaux 2024-2025
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Pour fabriquer UN smartphone neuf…</div>
+      <div class="co2-item">
+        <div class="co2-icon">💨</div>
+        <div class="co2-label"><strong>85 kg de CO₂</strong>dont 75% rien que pour la fabrication. Soit 4× le tour du monde en logistique.</div>
+        <div class="co2-val" style="color:var(--red)">85 kg CO₂</div>
+      </div>
+      <div class="co2-item">
+        <div class="co2-icon">💧</div>
+        <div class="co2-label"><strong>83 800 litres d'eau</strong>pour l'extraction des métaux rares. Une piscine olympique = 2 500 m³.</div>
+        <div class="co2-val" style="color:var(--blue)">83 800 L</div>
+      </div>
+      <div class="co2-item">
+        <div class="co2-icon">⛏️</div>
+        <div class="co2-label"><strong>237 kg de minerais extraits</strong>pour 200g de téléphone. Ratio 1:1 200. Pour 30g de métaux dans votre pocket.</div>
+        <div class="co2-val" style="color:var(--amber)">237 kg</div>
+      </div>
+      <div class="co2-item">
+        <div class="co2-icon">🌐</div>
+        <div class="co2-label"><strong>50 métaux différents</strong>extraits dans 15 pays. Congo, Chili, Australie, Argentine, Chine... 200 étapes de fabrication.</div>
+        <div class="co2-val" style="color:var(--purple)">50 métaux</div>
+      </div>
+      <div class="co2-item">
+        <div class="co2-icon">🔄</div>
+        <div class="co2-label"><strong>Garder 1 an de plus</strong>réduit votre empreinte de 30%. Passer de 2,5 à 5 ans divise par 2 l'impact total.</div>
+        <div class="co2-val" style="color:var(--green)">−30%/an</div>
+      </div>
+      <div style="margin-top:12px;font-size:12px;color:#555;padding:12px;background:#1a1a1a;border-radius:10px;line-height:1.6;">
+        📱 Les <strong style="color:#888">75% de l'impact sont concentrés sur la fabrication</strong> — pas sur l'usage. Charger votre téléphone pendant 1 an n'émet que 500g de CO₂. Le fabriquer en émet 85 kg. <strong style="color:#888">L'acte le plus écologique = garder.</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Équivalences — Ce que représente 85 kg CO₂ (1 téléphone neuf)</div>
+    <div class="g3" style="gap:10px;">
+      <div class="m"><div class="ml">Km en voiture</div><div class="mv" style="color:var(--red)">~590 km</div><div class="ms">Paris → Marseille en voiture thermique</div></div>
+      <div class="m"><div class="ml">Vol aller simple</div><div class="mv" style="color:var(--amber)">Paris → Rome</div><div class="ms">par personne en classe éco</div></div>
+      <div class="m"><div class="ml">Repas avec bœuf</div><div class="mv" style="color:var(--purple)">11 repas</div><div class="ms">steaks de bœuf (7,7 kg CO₂/kg)</div></div>
+      <div class="m"><div class="ml">Streaming Netflix</div><div class="mv" style="color:var(--blue)">8 500h</div><div class="ms">de vidéo HD en WiFi</div></div>
+      <div class="m"><div class="ml">Chauffage</div><div class="mv" style="color:var(--amber)">1,5 mois</div><div class="ms">de chauffage d'un appartement moyen</div></div>
+      <div class="m"><div class="ml">T-shirts coton</div><div class="mv" style="color:var(--muted)">12 t-shirts</div><div class="ms">de production (impact CO₂)</div></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== RÉPARATION ===== -->
+<div class="panel" id="p-reparation"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🔧 Ce qui peut être réparé — Et pour combien</div>
+      <div id="reparation-items"></div>
+      <div style="margin-top:12px;padding:12px;background:rgba(59,255,158,.05);border:1px solid rgba(59,255,158,.2);border-radius:10px;font-size:12px;color:#888;line-height:1.7;">
+        🇫🇷 <strong style="color:var(--green)">Bonus réparation État (depuis 2024) :</strong> jusqu'à <strong style="color:var(--green)">45€ de réduction</strong> sur une réparation chez un réparateur labellisé QualiRépar. Réparer coûte en moyenne <strong>2 à 4 fois moins</strong> qu'acheter neuf (iTelier 2025).
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Votre téléphone actuel peut-il être réparé ?</div>
+      <div id="reparation-verdict"></div>
+      <div class="divider"><span>Trouver un réparateur</span></div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;">
+        🔍 <strong style="color:var(--text)">Annuaire ADEME des réparateurs labellisés</strong> : agirpourlatransition.ademe.fr<br>
+        📱 <strong style="color:var(--text)">Save, iSmash, Fnac Réparation</strong> : réseaux nationaux<br>
+        🏪 <strong style="color:var(--text)">Écoles de réparation, Repair Café</strong> : gratuit + convivial<br>
+        💊 <strong style="color:var(--text)">Indice de réparabilité</strong> : obligatoire en France depuis 2021 — vérifiez le vôtre<br><br>
+        En 2025 : garantie pièces détachées minimum 5 ans pour les smartphones vendus. Interdiction des pratiques anti-réparation (Ministère Transition Écologique).
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">🏆 Classement durabilité des marques 2025</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:var(--text)">🍎 Apple iPhone</span><span style="color:var(--green);font-family:'DM Mono',monospace">6-7 ans MAJ · Très bonne valeur revente</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:95%;background:var(--green)"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:var(--text)">🌀 Samsung Galaxy S/A</span><span style="color:var(--green);font-family:'DM Mono',monospace">7 ans MAJ (S-series) · Bonne réparabilité</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:88%;background:var(--green)"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:var(--text)">🔍 Google Pixel</span><span style="color:var(--green);font-family:'DM Mono',monospace">7 ans MAJ · Excellent rapport qual/prix</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:85%;background:var(--green)"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:var(--text)">🌱 Fairphone 6</span><span style="color:var(--teal);font-family:'DM Mono',monospace">Modulaire · 10+ ans · Garanti 5 ans · Éthique</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--teal)"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:var(--text)">💫 Xiaomi flagship</span><span style="color:var(--amber);font-family:'DM Mono',monospace">4 ans MAJ · Prix/perf excellent</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:65%;background:var(--amber)"></div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:var(--text)">💫 Xiaomi Redmi entrée gamme</span><span style="color:var(--red);font-family:'DM Mono',monospace">3 ans MAJ · Court mais économique</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:38%;background:var(--red)"></div></div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ===== VERDICT FINAL ===== -->
+<div class="panel" id="p-verdict"><div class="wrap">
+  <div id="verdict-final-box" style="padding:28px;border-radius:20px;border:2px solid;text-align:center;"></div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Récapitulatif de votre analyse</div>
+      <div id="recap-final"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">🎯 Les 5 vraies questions avant d'acheter</div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--muted);">
+        <div style="padding:10px 14px;background:#1a1a1a;border:1px solid #222;border-radius:10px;line-height:1.6;">❓ <strong style="color:var(--text)">Mon téléphone est-il réparable ?</strong><br>Batterie, écran, charge : 3 réparations qui prolongent de 2-3 ans.</div>
+        <div style="padding:10px 14px;background:#1a1a1a;border:1px solid #222;border-radius:10px;line-height:1.6;">❓ <strong style="color:var(--text)">Reçoit-il encore des mises à jour de sécurité ?</strong><br>Sans MAJ = faille bancaire. C'est LA vraie limite.</div>
+        <div style="padding:10px 14px;background:#1a1a1a;border:1px solid #222;border-radius:10px;line-height:1.6;">❓ <strong style="color:var(--text)">Le reconditionné répond-il à mon besoin ?</strong><br>−50% de prix, même expérience. iPhone 14 reconditionné A > iPhone 14 neuf.</div>
+        <div style="padding:10px 14px;background:#1a1a1a;border:1px solid #222;border-radius:10px;line-height:1.6;">❓ <strong style="color:var(--text)">Que vais-je faire de mon ancien téléphone ?</strong><br>113M dans des tiroirs. Revendez, donnez, recyclez.</div>
+        <div style="padding:10px 14px;background:#1a1a1a;border:1px solid #222;border-radius:10px;line-height:1.6;">❓ <strong style="color:var(--text)">Ce que je veux sur le nouveau — existe-t-il en appli ?</strong><br>Le zoom, l'IA photo, la fluidité... souvent une appli ou un réglage suffit.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">📋 Si vous achetez quand même — Les règles d'or</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;color:var(--muted);">
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">♻️ <strong style="color:var(--text)">Revendez l'ancien d'abord</strong> — BackMarket, Swappie, eBay, opérateur reprise. Jusqu'à 300€ récupérés.</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">🏷️ <strong style="color:var(--text)">Vérifiez l'indice de réparabilité</strong> — obligatoire en France. Visez > 7/10 pour durer longtemps.</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">📅 <strong style="color:var(--text)">Comptez les années de MAJ</strong> — c'est plus important que le processeur. 7 ans > 3 ans.</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">🎁 <strong style="color:var(--text)">Achetez en automne/hiver</strong> — les prix baissent après la sortie des nouveaux modèles (−15 à −25%).</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">💳 <strong style="color:var(--text)">Fuyez l'abonnement opérateur</strong> — sur 24 mois vous payez 150-300€ de plus qu'au comptant.</div>
+      <div style="padding:12px;background:#1a1a1a;border:1px solid #222;border-radius:10px;">🌱 <strong style="color:var(--text)">Considérez le Fairphone 6</strong> — modulaire, 5 ans de garantie, éthique, 10+ ans de vie visés.</div>
+    </div>
+  </div>
+
+  <div class="src">
+    <strong>Sources :</strong> UFC-Que Choisir "Guide smartphones" 2025 (prix moyen 450€) · ADEME/ARCEP "Évaluation impact environnemental numérique" 2025 (impactco2.fr : 80,2 kg CO₂/unit) · ADEME Combak.co : 85-90 kg CO₂, 83 800L eau, 237 kg minerais, 4× tour du monde · ADEME : 88% renouvellements alors que fonctionnel, 113M smartphones inutilisés, taux recyclage 14% · iTelier "Réparer ou acheter" sept. 2025 : réparation 2-4× moins cher que neuf · QuelBonPlan : bonus réparation 45€ État (QualiRépar), reconditioning −70 à −91% CO₂ · CIRP : iPhone utilisé 4 ans en moyenne, Android 2,5-3 ans · Rentech 2026 : Samsung/Google 7 ans MAJ, Motorola 5 ans, Xiaomi Redmi 3 ans · Bouygues Telecom : garder 1 an de plus = −30% empreinte · QuelBonPlan : reconditionné grade A jusqu'à −50% prix, batterie 80%+ garantie · Ministère Transition Écologique : indice réparabilité obligatoire depuis 2021, garantie pièces 5 ans depuis jan. 2025.
+  </div>
+</div></div>
+
+<script>
+var activeTab = 'actuel';
+var chartScen = null;
+var fomoRep = {};
+var R = {};
+
+Chart.defaults.color = '#666';
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+
+function g(id){ return document.getElementById(id); }
+function sv(id){ var el=g(id); return el?+el.value:0; }
+function gv(id){ var el=g(id); return el?el.value:''; }
+function se(id,t){ var el=g(id); if(el) el.textContent=t; }
+function si(id,h){ var el=g(id); if(el) el.innerHTML=h; }
+function fmt(n){ return Math.round(n).toLocaleString('fr-FR')+' €'; }
+
+function showTab(name,btn){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  g('p-'+name).classList.add('on');
+  btn.classList.add('on');
+  activeTab = name;
+  setTimeout(function(){ renderCharts(name); }, 80);
+}
+function destroyChart(c){ if(c){ try{ c.destroy(); }catch(e){} } return null; }
+
+// ── FOMO Questions ──
+var FOMO_Q = [
+  {id:'q1', q:'Mon téléphone fonctionne encore correctement pour mes usages principaux (appels, messages, réseaux sociaux)', oui:'non', non:'oui'},
+  {id:'q2', q:'J\'ai vu une pub ou un influenceur vanter un nouveau modèle cette semaine', oui:'oui', non:'non'},
+  {id:'q3', q:'La vraie raison de changer, c\'est que mon téléphone rame ou ne se charge plus correctement', oui:'non', non:'oui'},
+  {id:'q4', q:'Mes amis/collègues ont un modèle plus récent et ça me dérange', oui:'oui', non:'non'},
+  {id:'q5', q:'Je n\'ai pas cherché à réparer ma batterie ou mon écran avant d\'envisager d\'acheter', oui:'oui', non:'non'},
+  {id:'q6', q:'Mon téléphone ne reçoit plus de mises à jour de sécurité (vraiment plus)', oui:'non', non:'oui'},
+  {id:'q7', q:'Le principal argument pour changer : l\'appareil photo du nouveau est mieux', oui:'oui', non:'non'},
+  {id:'q8', q:'J\'ai déjà décidé quel modèle je vais acheter avant même de faire ce test', oui:'oui', non:'non'},
+  {id:'q9', q:'Je pourrais régler mon problème principal (lenteur, batterie) avec un nettoyage ou une réparation', oui:'oui', non:'non'},
+  {id:'q10', q:'Je pense que garder mon téléphone 1-2 ans de plus serait raisonnable financièrement et écologiquement', oui:'non', non:'oui'},
+];
+
+function buildFomoQuestions(){
+  var qEl = g('fomo-questions'); if(!qEl) return;
+  qEl.innerHTML = FOMO_Q.map(function(q,i){
+    return '<div class="fomo-q" id="fq'+q.id+'">'
+      +'<div class="fomo-q-text"><strong style="color:var(--muted)">'+(i+1)+'/'+FOMO_Q.length+'</strong> '+ q.q+'</div>'
+      +'<div class="fomo-q-btns">'
+      +'<button class="fomo-btn" onclick="setFomo(\''+q.id+'\',\'oui\')">✓ Oui, c\'est vrai</button>'
+      +'<button class="fomo-btn" onclick="setFomo(\''+q.id+'\',\'non\')">✗ Non, pas vraiment</button>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function setFomo(id, val){
+  fomoRep[id] = val;
+  var q = FOMO_Q.find(function(x){ return x.id===id; });
+  var el = g('fq'+id); if(!el) return;
+  el.className = 'fomo-q';
+  // Find the buttons and update them
+  var btns = el.querySelectorAll('.fomo-btn');
+  btns[0].className = 'fomo-btn' + (val==='oui'?' oui-active':'');
+  btns[1].className = 'fomo-btn' + (val==='non'?' non-active':'');
+  updateFomoScore();
+}
+
+function updateFomoScore(){
+  var fomoCount = 0, total = 0;
+  FOMO_Q.forEach(function(q){
+    if(fomoRep[q.id]){
+      total++;
+      if(fomoRep[q.id] === q.oui) fomoCount++;
+    }
+  });
+  if(total === 0) return;
+  var pct = Math.round(fomoCount / FOMO_Q.length * 100);
+  var fill = g('fomo-fill');
+  if(fill){
+    fill.style.width = pct+'%';
+    fill.style.background = pct > 60 ? 'var(--red)' : pct > 35 ? 'var(--amber)' : 'var(--green)';
+  }
+  var lbl = g('fomo-score-label');
+  if(lbl) lbl.textContent = pct+'% FOMO ('+(total)+'/'+FOMO_Q.length+' répondu)';
+  var verdicts = [
+    {max:20, v:'😇 <strong style="color:var(--green)">Besoin légitime.</strong> Vous avez une vraie raison de changer. Mais vérifiez quand même si la réparation résout votre problème avant d\'acheter.'},
+    {max:40, v:'🤔 <strong style="color:var(--teal)">Mixte.</strong> Vous avez quelques vrais problèmes, mais aussi un peu de FOMO. Essayez la réparation d\'abord — vous serez peut-être surpris.'},
+    {max:65, v:'😅 <strong style="color:var(--amber)">FOMO détecté.</strong> Vos vraies raisons sont mélangées à des envies marketing. On vous suggère fortement d\'attendre encore 6 mois.'},
+    {max:100, v:'😈 <strong style="color:var(--red)">FOMO pur.</strong> Votre téléphone fonctionne. Vous voulez juste un nouveau jouet. C\'est humain — mais votre banque (et la planète) vous remercieront de résister.'},
+  ];
+  var v = verdicts.find(function(x){ return pct <= x.max; }) || verdicts[verdicts.length-1];
+  var vEl = g('fomo-verdict'); if(vEl) vEl.innerHTML = v.v;
+}
+
+function renderCharts(name){
+  if(name === 'scenarios' && R.scenariosData){
+    chartScen = destroyChart(chartScen);
+    var cs = g('chart-scenarios'); if(!cs) return;
+    chartScen = new Chart(cs,{
+      type:'bar',
+      data:{
+        labels:['Garder','Réparer','Reconditionné neuf','Neuf'],
+        datasets:[
+          {label:'Coût total 3 ans',data:R.scenariosData,backgroundColor:['rgba(59,255,158,.7)','rgba(45,212,191,.7)','rgba(59,181,255,.7)','rgba(255,92,92,.7)'],borderRadius:8,borderWidth:0}
+        ]
+      },
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){ return 'Sur 3 ans : '+fmt(c.raw); }}}},
+        scales:{x:{grid:{display:false},ticks:{color:'#666'},border:{color:'transparent'}},
+                y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return fmt(v); },color:'#666'},border:{color:'transparent'}}}
+      }
+    });
+  }
+}
+
+function recalc(){
+  var marque   = gv('iMarque');
+  var gamme    = gv('iGamme');
+  var prix     = sv('iPrix');
+  var age      = sv('iAge');
+  var neuf     = gv('iNeuf');
+  var batterie = +gv('iBatterie');
+  var photo    = +gv('iPhoto');
+  var perf     = +gv('iPerf');
+  var maj      = gv('iMAJ');
+  var degat    = +gv('iDegat');
+
+  se('vPrix', fmt(prix));
+  se('vAge',  age+' an'+(age>1?'s':''));
+
+  // ── Coût par jour actuel ──
+  var coutJour = age > 0 ? prix / (age * 365) : prix / 365;
+
+  // ── Durée de vie restante estimée ──
+  var dureeMax = {iphone:6.5, samsung:7, google:7, xiaomi:5, autre:4}[marque] || 5;
+  if(gamme === 'entree') dureeMax = Math.min(dureeMax, 3.5);
+  if(gamme === 'ultra')  dureeMax = Math.max(dureeMax, 5);
+  var dureeRestante = Math.max(0, dureeMax - age);
+  var majOk = maj === 'ok' ? 1 : maj === 'bientot' ? 0.5 : 0;
+
+  // ── Score d'état ──
+  var scoreEtat = 100;
+  scoreEtat -= (3-batterie/100*3)*0 ; // batterie via valeur directe
+  var batScore = batterie >= 90 ? 0 : batterie >= 80 ? 10 : batterie >= 70 ? 25 : 40;
+  scoreEtat -= batScore + photo*12 + perf*15 + degat*10;
+  if(maj === 'fini') scoreEtat -= 30;
+  if(maj === 'bientot') scoreEtat -= 10;
+  scoreEtat = Math.max(0, Math.min(100, scoreEtat));
+
+  // ── Coût actuel ──
+  var coutTotal = prix; // prix payé
+  var coutJourActuel = age > 0 ? Math.round(prix/age/365*100)/100 : prix/365;
+
+  si('cout-actuel',
+    '<div class="m"><div class="ml">Prix d\'achat</div><div class="mv" style="color:var(--amber)">'+fmt(prix)+'</div></div>'
+    +'<div class="m"><div class="ml">Coût par jour</div><div class="mv" style="color:var(--yellow)">'+coutJourActuel.toFixed(2)+'€/j</div><div class="ms">amorti sur '+age+' an'+(age>1?'s':'')+'</div></div>'
+    +'<div class="m"><div class="ml">Durée restante estimée</div><div class="mv" style="color:'+(dureeRestante>2?'var(--green)':'var(--amber)')+'">'+Math.max(0,Math.round(dureeRestante*10)/10)+' an'+(dureeRestante>1?'s':'')+'</div></div>'
+    +'<div class="m"><div class="ml">État global</div><div class="mv" style="color:'+(scoreEtat>70?'var(--green)':scoreEtat>40?'var(--amber)':'var(--red)')+'">'+scoreEtat+'/100</div></div>'
+  );
+
+  var bilanColor = scoreEtat > 70 ? 'var(--green)' : scoreEtat > 40 ? 'var(--amber)' : 'var(--red)';
+  var bilanMsg = scoreEtat > 80 ? '😊 Votre téléphone est en excellent état. Honnêtement, changer maintenant serait jeter de l\'argent (et 85 kg de CO₂) par les fenêtres.'
+    : scoreEtat > 60 ? '😐 Votre téléphone vieillit mais reste fonctionnel. Un peu de réparation ou d\'entretien pourrait lui redonner 2-3 ans de vie.'
+    : scoreEtat > 30 ? '😟 Votre téléphone montre des signes de fatigue réels. Regardez ce qui peut être réparé avant de tout racheter.'
+    : '😰 Votre téléphone est sérieusement dégradé. Là, le changement est probablement justifié — mais considérez le reconditionné.';
+  si('bilan-actuel', '<span style="color:'+bilanColor+'">'+bilanMsg+'</span>');
+
+  // ── SCÉNARIOS ──
+  var prixRecondi = Math.round(prix * 0.52); // reconditionné équivalent ~52% du neuf
+  var prixNeuf = Math.round(prix * 1.05); // léger premium (nouveau modèle)
+  var coutRep = (batterie < 80 ? 65 : 0) + (degat >= 2 ? 120 : 0) + (perf >= 2 ? 40 : 0);
+  var coutGarder3 = Math.max(0, coutJourActuel * 365 * Math.min(3, dureeRestante)) ;
+
+  // Coûts sur 3 ans
+  var c_garder = coutRep > 0 ? coutRep : 0; // déjà payé le téléphone
+  var c_reparer = coutRep + 20; // réparation + frais
+  var c_recondi = prixRecondi + 30; // reconditionné + accessoires
+  var c_neuf    = prixNeuf + 60;    // neuf + accessoires + assurance
+
+  // CO2 par scenario
+  var co2Neuf    = 85;
+  var co2Recondi = 85 * 0.15; // −85% environ (fabrication déjà faite)
+  var co2Garder  = 0;
+  var co2Reparer = 3; // réparation : transport + pièce
+
+  // Trouver le gagnant
+  var costs = [c_garder, c_reparer, c_recondi, c_neuf];
+  var minCost = Math.min.apply(null,costs);
+  var winIdx = costs.indexOf(minCost);
+  // Ajuster si majFini
+  if(maj === 'fini') winIdx = 3; // si plus de MAJ → changer obligatoire
+  if(maj === 'fini' && c_recondi < c_neuf) winIdx = 2;
+  if(scoreEtat < 30) winIdx = scoreEtat < 15 ? (c_recondi < c_neuf ? 2 : 3) : 1;
+
+  var scenarios = [
+    {id:0, e:'🔒', t:'Garder', sub:'Ne rien changer', prix:c_garder, co2:co2Garder, color:'var(--green)', bcolor:'rgba(59,255,158,.2)', detail:'Économie maximale. Aucun CO₂ supplémentaire. Valable si votre téléphone est encore fonctionnel.'},
+    {id:1, e:'🔧', t:'Réparer', sub:'Batterie + écran si besoin', prix:c_reparer, co2:co2Reparer, color:'var(--teal)', bcolor:'rgba(45,212,191,.2)', detail:'Bonus réparation État jusqu\'à 45€. Prolonge de 2-3 ans. 2 à 4× moins cher que le neuf.'},
+    {id:2, e:'♻️', t:'Reconditionné', sub:'Modèle équivalent certifié', prix:c_recondi, co2:co2Recondi, color:'var(--blue)', bcolor:'rgba(59,181,255,.2)', detail:'−30 à −50% du prix neuf. Batterie 80%+ garantie. Même expérience, CO₂ divisé par 7.'},
+    {id:3, e:'✨', t:'Neuf', sub:'Dernier modèle du marché', prix:c_neuf, co2:co2Neuf, color:'var(--amber)', bcolor:'rgba(255,170,59,.2)', detail:'Option la plus chère et la plus polluante. Justifiée si MAJ terminées ou panne grave.'},
+  ];
+
+  si('scenarios-grid', scenarios.map(function(s,i){
+    var isWin = i===winIdx;
+    return '<div class="sc-card" style="border-color:'+(isWin?s.color:'rgba(255,255,255,.08)')+';background:'+(isWin?'rgba(255,255,255,.03)':'transparent')+'">'
+      +(isWin?'<div class="sc-badge" style="background:'+s.bcolor+';color:'+s.color+'">Recommandé ✓</div>':'')
+      +'<div class="sc-emoji">'+s.e+'</div>'
+      +'<div class="sc-title" style="color:'+s.color+'">'+s.t+'</div>'
+      +'<div style="font-size:11px;color:var(--muted);margin-bottom:8px;">'+s.sub+'</div>'
+      +'<div class="sc-prix" style="color:'+s.color+'">'+(s.prix===0?'0 €':fmt(s.prix))+'</div>'
+      +'<div class="sc-sub">'+s.detail+'</div>'
+      +'<div class="sc-co2">🌍 '+s.co2+' kg CO₂ '+(s.co2===0?'supplémentaire':'émis')+'</div>'
+      +'</div>';
+  }).join(''));
+
+  R.scenariosData = [c_garder || 1, c_reparer, c_recondi, c_neuf];
+  if(activeTab==='scenarios') renderCharts('scenarios');
+
+  // Investissement de la différence
+  var diff = c_neuf - (winIdx === 0 ? 0 : winIdx === 1 ? c_reparer : c_recondi);
+  var inv5  = diff * Math.pow(1.07, 5);
+  var inv10 = diff * Math.pow(1.07, 10);
+  si('investissement-diff',
+    '<div class="di"><span>Économie vs achat neuf</span><span style="color:var(--green)">'+fmt(diff)+'</span></div>'
+    +'<div class="di"><span>Si investi en ETF World à 7%/an — après 5 ans</span><span style="color:var(--yellow)">'+fmt(Math.round(inv5))+'</span></div>'
+    +'<div class="di"><span>Après 10 ans</span><span style="color:var(--yellow)">'+fmt(Math.round(inv10))+'</span></div>'
+    +'<div style="font-size:11px;color:#333;margin-top:8px;font-family:DM Mono,monospace">Au lieu d\'un iPhone à 1 229€ tous les 2,5 ans = 11 iPhones sur 27 ans = 13 000€. Investi = '+(fmt(Math.round(13000*Math.pow(1.07,27))))+'.</div>'
+  );
+
+  // ── RÉPARATION ──
+  var reps = [
+    {p:'🔋 Remplacement batterie',        min:50,  max:80,  applicable: batterie<80,  note:'Résout 80% des problèmes "d\'obsolescence" · Bonus État : −45€'},
+    {p:'📱 Réparation écran (fissuré)',    min:80,  max:200, applicable: degat>=2,     note:'Écran LCD : 80-120€ · OLED : 150-200€ · Verre seul parfois possible : 30-60€'},
+    {p:'⚡ Connecteur de charge défaillant',min:40, max:90,  applicable: perf>=2,      note:'Souvent résoluble avec nettoyage (gratuit). Sinon : 40-90€'},
+    {p:'📷 Caméra défectueuse',           min:60,  max:150, applicable: photo>=3,     note:'Caméra arrière : 60-150€ · Frontale : 40-80€'},
+    {p:'🔊 Haut-parleur / micro',         min:40,  max:80,  applicable: false,        note:'Souvent réparable : 40-80€'},
+    {p:'🌊 Dégâts des eaux (légers)',     min:50,  max:200, applicable: false,        note:'Nettoyage ultrasons : 50€ · Selon gravité · Pas garanti'},
+  ];
+  si('reparation-items', reps.map(function(r){
+    return '<div class="rep-item" style="opacity:'+(r.applicable?'1':'0.4')+'">'
+      +'<div class="rep-label" style="color:'+(r.applicable?'var(--text)':'var(--muted)')+'">'+r.p+(r.applicable?'<div style="font-size:10px;color:var(--muted);margin-top:2px">'+r.note+'</div>':'')+'</div>'
+      +'<div class="rep-prix">'+r.min+'–'+r.max+'€</div>'
+      +'</div>';
+  }).join(''));
+
+  // Verdict réparation
+  var repOk = coutRep > 0 && coutRep < prix * 0.5;
+  var repMsg = coutRep === 0 ? '✅ <strong style="color:var(--green)">Rien à réparer</strong> — votre téléphone semble en bon état physiquement. Gardez-le !'
+    : coutRep < 100 ? '🔧 <strong style="color:var(--teal)">Réparation recommandée</strong> — '+fmt(coutRep)+' de réparation pourraient lui redonner 2-3 ans. Avec le bonus État (jusqu\'à 45€) c\'est une évidence.'
+    : coutRep < prix * 0.4 ? '⚠️ <strong style="color:var(--amber)">Réparation possible</strong> — '+fmt(coutRep)+' est significatif mais reste rationnel vs acheter neuf à '+fmt(prixNeuf)+'.'
+    : '❌ <strong style="color:var(--red)">Réparation peu rentable</strong> — '+fmt(coutRep)+' représente plus de 40% du prix neuf. À ce niveau, le reconditionné devient plus intéressant.';
+  si('reparation-verdict', '<div style="padding:14px;background:#1a1a1a;border:1px solid #222;border-radius:12px;font-size:13px;color:var(--muted);line-height:1.7;">'+repMsg+'</div>');
+
+  // ── CO2 ──
+  si('co2-scenarios', [
+    {e:'🔒', t:'Garder 1 an de plus',      co2:0,          pct:0,   c:'var(--green)',  note:'0 kg CO₂ supplémentaire · Le geste le plus écologique'},
+    {e:'🔧', t:'Réparer',                  co2:3,          pct:4,   c:'var(--teal)',   note:'Pièce + transport : ~3 kg CO₂'},
+    {e:'♻️', t:'Reconditionné',            co2:Math.round(85*0.13), pct:13, c:'var(--blue)', note:'−87% vs neuf · Production déjà faite'},
+    {e:'✨', t:'Smartphone neuf',           co2:85,         pct:100, c:'var(--red)',    note:'85 kg CO₂ · 75% rien que pour la fabrication'},
+  ].map(function(r){
+    return '<div class="co2-item">'
+      +'<div class="co2-icon">'+r.e+'</div>'
+      +'<div class="co2-label"><strong>'+r.t+'</strong>'+r.note+'<div class="progress-bar" style="margin-top:4px;"><div class="progress-fill" style="width:'+r.pct+'%;background:'+r.c+'"></div></div></div>'
+      +'<div class="co2-val" style="color:'+r.c+'">'+r.co2+' kg</div>'
+      +'</div>';
+  }).join(''));
+
+  // ── VERDICT BANNER ──
+  var winScen = scenarios[winIdx];
+  se('v-coutjour', coutJourActuel.toFixed(2)+'€/j');
+  se('v-co2',      '85 kg si neuf');
+  se('v-meilleur', winScen.t);
+  g('v-meilleur').style.color = winScen.color;
+  se('v-economie', fmt(c_neuf - winScen.prix));
+
+  var vLabel, vEmoji, vStyle;
+  if(scoreEtat > 75 && maj !== 'fini'){
+    vLabel='Ne changez pas encore !'; vEmoji='😇'; vStyle='background:rgba(59,255,158,.06);border-color:rgba(59,255,158,.4)';
+    g('v-label').style.color='var(--green)';
+  } else if(scoreEtat > 45){
+    vLabel='Réparez d\'abord'; vEmoji='🔧'; vStyle='background:rgba(45,212,191,.06);border-color:rgba(45,212,191,.4)';
+    g('v-label').style.color='var(--teal)';
+  } else if(maj === 'fini' || scoreEtat < 30){
+    vLabel='Changement justifié'; vEmoji='✅'; vStyle='background:rgba(255,170,59,.06);border-color:rgba(255,170,59,.4)';
+    g('v-label').style.color='var(--amber)';
+  } else {
+    vLabel='Peut encore attendre'; vEmoji='⏳'; vStyle='background:rgba(255,217,61,.06);border-color:rgba(255,217,61,.3)';
+    g('v-label').style.color='var(--yellow)';
+  }
+  var vbox = g('verdict-box');
+  if(vbox){ vbox.style.cssText = vStyle.split(';').map(function(s){ return s.trim(); }).join(';')+';border-radius:20px;padding:24px 28px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;transition:all .3s;border-width:2px;border-style:solid'; }
+  se('v-emoji', vEmoji);
+  se('v-label', vLabel);
+  se('v-sub',   'Option recommandée : '+winScen.t+' · Économie : '+fmt(c_neuf - winScen.prix));
+
+  // ── VERDICT FINAL ──
+  var vfLabel = vLabel;
+  var vfColor = scoreEtat>75&&maj!=='fini'?'59,255,158':scoreEtat>45?'45,212,191':scoreEtat<30?'255,170,59':'255,217,61';
+  si('verdict-final-box',
+    '<div style="font-size:52px;margin-bottom:12px;">'+vEmoji+'</div>'
+    +'<div style="font-family:Unbounded,sans-serif;font-size:clamp(18px,3vw,28px);font-weight:900;color:rgb('+vfColor+');margin-bottom:10px;">'+vfLabel+'</div>'
+    +'<div style="font-size:14px;color:var(--muted);line-height:1.7;max-width:600px;margin:0 auto;">'+winScen.detail+'</div>'
+    +'<div style="margin-top:16px;font-family:DM Mono,monospace;font-size:13px;color:var(--muted)">Option recommandée : <strong style="color:rgb('+vfColor+')">'+winScen.e+' '+winScen.t+'</strong> · Économie vs neuf : '+fmt(c_neuf - winScen.prix)+'</div>'
+  );
+
+  si('recap-final',
+    '<div class="di"><span>Prix d\'achat</span><span>'+fmt(prix)+'</span></div>'
+    +'<div class="di"><span>Coût actuel par jour</span><span style="color:var(--yellow)">'+coutJourActuel.toFixed(2)+'€</span></div>'
+    +'<div class="di"><span>État global</span><span style="color:'+(scoreEtat>70?'var(--green)':scoreEtat>40?'var(--amber)':'var(--red)')+'">'+scoreEtat+'/100</span></div>'
+    +'<div class="di"><span>Durée de vie restante estimée</span><span>'+Math.max(0,Math.round(dureeRestante*10)/10)+' ans</span></div>'
+    +'<div class="di"><span>Mises à jour logicielles</span><span style="color:'+(maj==='ok'?'var(--green)':maj==='bientot'?'var(--amber)':'var(--red)')+'">'+{ok:'✅ Encore reçues',bientot:'⚠️ Fin proche',fini:'🔴 Terminées'}[maj]+'</span></div>'
+    +'<div class="di"><span>CO₂ si achat neuf</span><span style="color:var(--red)">85 kg CO₂</span></div>'
+    +'<div class="di" style="background:rgba(255,217,61,.07);border-color:rgba(255,217,61,.2)"><span style="font-weight:700;color:var(--text)">Verdict</span><span style="color:var(--yellow);font-weight:700">'+vEmoji+' '+vfLabel+'</span></div>'
+  );
+}
+
+buildFomoQuestions();
+recalc();
+</script>
+</body>
+</html>
