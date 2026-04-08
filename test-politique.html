@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Suis-je de gauche ou de droite ? Test politique en 3 dimensions | Calculamatix</title>
+  <meta name="description" content="Un test politique rigoureux en 3 axes (économique, culturel, souverainiste) basé sur la méthodologie du CEVIPOF/Sciences Po. 30 questions, résultats détaillés, disclaimers complets."/>
+  <meta name="keywords" content="test politique gauche droite France, boussole politique, test idéologique, CEVIPOF, axes politiques France"/>
+  <link rel="canonical" href="https://calculamatix.com/test-politique.html"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#07080f;--card:#111420;--border:#1e2035;
+      --yellow:#FFD93D;--green:#3BFF9E;--blue:#60A5FA;
+      --purple:#A78BFA;--red:#F87171;--amber:#FBBF24;
+      --teal:#2DD4BF;--pink:#F472B6;--indigo:#818CF8;
+      --text:#EEF0F8;--muted:#4B5280;--dim:#1e2035;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:80px}
+    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+      background:radial-gradient(ellipse 70% 40% at 30% 10%,rgba(129,140,248,.08),transparent),
+                 radial-gradient(ellipse 50% 30% at 70% 90%,rgba(167,139,250,.05),transparent)}
+
+    nav{position:relative;z-index:10;max-width:900px;margin:0 auto;padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:18px;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--yellow)}
+    .back{font-size:13px;color:var(--muted);text-decoration:none}
+
+    .hero{position:relative;z-index:10;max-width:900px;margin:0 auto;padding:36px 24px 24px}
+    .htag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--indigo);background:rgba(129,140,248,.08);border:1px solid rgba(129,140,248,.2);padding:4px 14px;border-radius:100px;margin-bottom:14px}
+    h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(20px,3.5vw,40px);letter-spacing:-1.5px;line-height:1.1;margin-bottom:10px}
+    h1 span{color:var(--indigo)}
+    .hero p{font-size:13px;color:var(--muted);line-height:1.7;max-width:680px}
+
+    /* DISCLAIMERS */
+    .disclaimer-box{background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.25);border-radius:14px;padding:18px 20px;margin:0 24px 20px;max-width:852px;margin-left:auto;margin-right:auto;position:relative;z-index:10}
+    .disclaimer-toggle{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+    .disclaimer-title{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:1.5px}
+    .disclaimer-arrow{font-size:16px;color:var(--amber);transition:transform .2s}
+    .disclaimer-content{display:none;margin-top:14px;font-size:12px;color:var(--muted);line-height:1.8;border-top:1px solid rgba(251,191,36,.15);padding-top:14px}
+    .disclaimer-content.open{display:block}
+    .disc-section{margin-bottom:12px}
+    .disc-section strong{color:var(--amber);display:block;margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+
+    /* PROGRESS */
+    .progress-wrap{position:relative;z-index:10;max-width:900px;margin:0 auto 20px;padding:0 24px}
+    .progress-inner{background:var(--dim);border-radius:100px;height:6px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,var(--indigo),var(--purple));border-radius:100px;transition:width .4s ease}
+    .progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px;font-family:'DM Mono',monospace}
+
+    /* QUIZ */
+    .quiz-wrap{position:relative;z-index:10;max-width:900px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:10px}
+
+    .section-title{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;color:var(--indigo);text-transform:uppercase;letter-spacing:2px;padding:14px 18px 8px;display:flex;align-items:center;gap:10px}
+    .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+    .q-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;transition:border-color .2s}
+    .q-card.answered{border-color:rgba(129,140,248,.3)}
+    .q-text{font-size:14px;color:var(--text);line-height:1.6;margin-bottom:14px}
+    .q-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:6px}
+    .q-tag{display:inline-flex;align-items:center;font-size:10px;color:var(--muted);background:var(--dim);padding:2px 8px;border-radius:100px;margin-bottom:10px;font-family:'DM Mono',monospace}
+
+    .likert{display:flex;gap:6px;flex-wrap:wrap}
+    .lik-btn{flex:1;min-width:80px;padding:8px 4px;border:1px solid var(--border);border-radius:10px;background:transparent;color:var(--muted);font-size:11px;font-family:inherit;cursor:pointer;transition:all .15s;text-align:center;line-height:1.3}
+    .lik-btn:hover{border-color:rgba(129,140,248,.4);color:var(--text)}
+    .lik-btn.sel-2{background:rgba(59,255,158,.15);border-color:var(--green);color:var(--green);font-weight:700}
+    .lik-btn.sel-1{background:rgba(59,255,158,.07);border-color:rgba(59,255,158,.4);color:rgba(59,255,158,.8)}
+    .lik-btn.sel0{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.2);color:var(--text)}
+    .lik-btn.sel1{background:rgba(248,113,113,.07);border-color:rgba(248,113,113,.4);color:rgba(248,113,113,.8)}
+    .lik-btn.sel2{background:rgba(248,113,113,.15);border-color:var(--red);color:var(--red);font-weight:700}
+
+    .btn-primary{background:linear-gradient(135deg,var(--indigo),var(--purple));border:none;color:#fff;padding:14px 32px;border-radius:12px;font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:opacity .2s;display:block;margin:20px auto;letter-spacing:.5px}
+    .btn-primary:hover{opacity:.85}
+    .btn-primary:disabled{opacity:.35;cursor:not-allowed}
+
+    /* RESULTS */
+    .results-wrap{position:relative;z-index:10;max-width:900px;margin:0 auto;padding:0 24px;display:none;flex-direction:column;gap:14px}
+    .results-wrap.show{display:flex}
+
+    .result-header{text-align:center;padding:28px;background:linear-gradient(135deg,rgba(129,140,248,.08),rgba(167,139,250,.04));border:1px solid rgba(129,140,248,.25);border-radius:20px}
+    .result-profile-emoji{font-size:52px;margin-bottom:10px}
+    .result-profile-name{font-family:'Unbounded',sans-serif;font-size:clamp(16px,3vw,26px);font-weight:900;color:var(--indigo);margin-bottom:8px}
+    .result-profile-sub{font-size:13px;color:var(--muted);line-height:1.7;max-width:500px;margin:0 auto}
+
+    .axis-row{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+    .axis-label{font-size:11px;color:var(--muted);width:160px;flex-shrink:0;font-family:'DM Mono',monospace}
+    .axis-bar-wrap{flex:1;position:relative;height:24px;background:var(--dim);border-radius:12px;overflow:visible}
+    .axis-bar-center{position:absolute;left:50%;top:0;width:2px;height:100%;background:rgba(255,255,255,.15);z-index:1}
+    .axis-fill{position:absolute;height:100%;border-radius:12px;transition:all .6s ease}
+    .axis-val{font-family:'DM Mono',monospace;font-size:11px;width:50px;text-align:right;flex-shrink:0}
+    .axis-ends{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px;font-family:'DM Mono',monospace}
+
+    /* Compass */
+    .compass-wrap{position:relative;width:100%;max-width:380px;margin:0 auto}
+    .compass-canvas{width:100%;aspect-ratio:1;border-radius:12px}
+
+    /* Party positions */
+    .party-legend{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
+    .party-dot{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+    .party-dot-color{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+    .score-box{padding:14px 18px;border-radius:12px;border:1px solid;text-align:center}
+    .score-val{font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900;margin:4px 0}
+    .score-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+
+    .detail-item{padding:12px 16px;background:var(--dim);border-radius:10px;margin-bottom:8px;font-size:12px;color:var(--muted);line-height:1.6}
+    .detail-item strong{color:var(--text);display:block;margin-bottom:3px}
+
+    .src-block{background:#0a0b14;border:1px solid var(--dim);border-radius:12px;padding:14px 18px;font-size:11px;color:#3a3d5c;line-height:1.9;font-family:'DM Mono',monospace}
+
+    .btn-retry{background:transparent;border:1px solid var(--indigo);color:var(--indigo);padding:10px 24px;border-radius:10px;font-family:inherit;font-size:13px;cursor:pointer;margin:8px auto;display:block;transition:all .2s}
+    .btn-retry:hover{background:rgba(129,140,248,.1)}
+
+    .warn{background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:10px;padding:12px 16px;font-size:12px;color:#888;line-height:1.7;margin-top:10px}
+
+    @media(max-width:600px){
+      .likert{gap:4px}
+      .lik-btn{font-size:10px;padding:7px 3px;min-width:60px}
+      .axis-label{width:120px;font-size:10px}
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Retour</a>
+</nav>
+
+<div class="hero">
+  <div class="htag">🗳️ Politique · Valeurs · Idéologie</div>
+  <h1>Suis-je de <span>gauche</span> ou de droite ?</h1>
+  <p>Un test en <strong style="color:var(--text)">3 dimensions</strong> basé sur la recherche académique en science politique française. 30 questions couvrant l'économie, les valeurs sociétales et la souveraineté. Résultats sur une boussole politique à 2 axes.</p>
+</div>
+
+<!-- DISCLAIMER PRINCIPAL -->
+<div class="disclaimer-box" style="border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.04)">
+  <div class="disclaimer-toggle" onclick="toggleDisclaimer('d1')">
+    <div class="disclaimer-title" style="color:var(--red)">⚠️ Avertissements importants — À lire avant de commencer</div>
+    <div class="disclaimer-arrow" id="d1-arrow">▼</div>
+  </div>
+  <div class="disclaimer-content open" id="d1-content">
+    <div class="disc-section">
+      <strong>1. Ce n'est pas un test scientifique validé</strong>
+      Ce questionnaire s'inspire de la méthodologie des boussoles politiques académiques (CEVIPOF/Sciences Po, Political Compass, Chapel Hill Expert Survey) mais n'en est pas une réplication certifiée. Ses résultats ont une valeur indicative et ne constituent en aucun cas un profil politique définitif.
+    </div>
+    <div class="disc-section">
+      <strong>2. Le clivage gauche-droite est une simplification</strong>
+      Selon le <em>Baromètre de la confiance politique du CEVIPOF (2018)</em>, 70% des Français estiment que ce clivage "ne veut plus dire grand-chose". Pourtant, 93% se positionnent sur cet axe quand on le leur demande (ENEF CEVIPOF 2017). Pascal Perrineau (Sciences Po) montre que les anciens clivages se reformulent en questions culturelles et économiques distinctes. Ce test utilise 3 axes, pas un seul, pour cette raison.
+    </div>
+    <div class="disc-section">
+      <strong>3. Les questions impliquent des compromis complexes</strong>
+      Chaque question traite d'un sujet sur lequel des personnes raisonnables peuvent légitimement diverger. Les libellés ont été rédigés pour être aussi neutres que possible, mais toute formulation de question politique comporte une part inévitable de cadrage. Votre désaccord avec un libellé particulier ne remet pas en cause votre positionnement global.
+    </div>
+    <div class="disc-section">
+      <strong>4. Les partis politiques de référence sont approximatifs</strong>
+      Les positions des partis affichées dans les résultats sont des estimations basées sur les travaux du CEVIPOF (Perrineau, "Le Vote clivé", PUG 2022) et de la Fondation Jean-Jaurès. Elles représentent des positions médianes de l'électorat de chaque parti selon les données disponibles en 2024, pas des positions officielles de partis.
+    </div>
+    <div class="disc-section">
+      <strong>5. Neutralité de Calculamatix</strong>
+      Ce test ne vise à promouvoir aucune orientation politique. Il est proposé à des fins éducatives et d'exploration personnelle. Les résultats sont calculés localement dans votre navigateur : aucune donnée n'est transmise à des serveurs.
+    </div>
+    <div class="disc-section">
+      <strong>6. Sources académiques utilisées</strong>
+      Perrineau P. & Reynié D. (dir.), <em>Dictionnaire du vote</em>, PUF 2001 · Perrineau P., <em>Le Vote clivé</em>, PUG 2022 · Mayer N., <em>Que reste-t-il du vote de classes ?</em>, EHESS 2004 · CEVIPOF, <em>Enquête électorale française</em>, Sciences Po 2017-2024 · Fondation Jean-Jaurès / CEVIPOF / Fondation pour l'innovation politique, <em>Boussole européenne</em>, 2014 · Rouban L., <em>Une France de gauche vote-t-elle à droite ?</em>, CEVIPOF 2024 · Vie-publique.fr, <em>Les transformations de la sociologie du vote</em>, 2020.
+    </div>
+  </div>
+</div>
+
+<!-- DISCLAIMER MÉTHODO (fermé par défaut) -->
+<div class="disclaimer-box" style="border-color:rgba(129,140,248,.2);background:rgba(129,140,248,.03);margin-top:-10px">
+  <div class="disclaimer-toggle" onclick="toggleDisclaimer('d2')">
+    <div class="disclaimer-title" style="color:var(--indigo)">📐 Méthodologie — Comment fonctionne ce test ?</div>
+    <div class="disclaimer-arrow" id="d2-arrow">▶</div>
+  </div>
+  <div class="disclaimer-content" id="d2-content">
+    <div class="disc-section">
+      <strong>Les 3 axes de mesure</strong>
+      <strong>Axe 1 — Économique :</strong> oppose la gauche économique (intervention de l'État, redistribution, protection sociale forte) à la droite économique (marché libre, réduction des impôts, flexibilité). Cet axe correspond à la dimension horizontale classique du débat politique.<br><br>
+      <strong>Axe 2 — Culturel/Sociétal :</strong> oppose le pôle progressiste/libertaire (ouverture, diversité, droits des minorités, laïcité souple) au pôle conservateur/autoritaire (tradition, ordre, identité nationale, laïcité stricte). Cet axe correspond à la "nouvelle dimension" identifiée par le CEVIPOF et les travaux de Pippa Norris et Ronald Inglehart.<br><br>
+      <strong>Axe 3 — Souveraineté :</strong> oppose le mondialisme/européisme (transfert de compétences à l'UE, libre-échange, gouvernance internationale) au souverainisme/nationalisme (contrôle national, protectionnisme, identité nationale souveraine). Cet axe est particulièrement saillant en France depuis les années 1990.
+    </div>
+    <div class="disc-section">
+      <strong>Scoring</strong>
+      Chaque question est notée sur une échelle de Likert à 5 points (−2 à +2). Chaque réponse contribue à un ou plusieurs axes avec un poids défini. Le score final est normalisé sur une échelle de −100 (pôle gauche/progressiste/mondialiste) à +100 (pôle droite/conservateur/souverainiste).
+    </div>
+    <div class="disc-section">
+      <strong>Le modèle à 4 quadrants (Perrineau, 2017-2022)</strong>
+      L'espace politique français contemporain est mieux décrit par 4 pôles qu'un simple axe : <em>Individualiste</em> (libéral éco + progressiste culturel), <em>Altermondialiste</em> (interventionniste éco + progressiste culturel), <em>Conservateur</em> (libéral éco + conservateur culturel) et <em>Nationaliste</em> (interventionniste éco + conservateur culturel). Ces 4 pôles correspondent approximativement aux électorats de Macron, Mélenchon, Fillon et Le Pen en 2017.
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap" id="progress-wrap">
+  <div class="progress-inner"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  <div class="progress-label"><span id="progress-done">0 / 30 questions</span><span id="progress-pct">0%</span></div>
+</div>
+
+<!-- QUIZ -->
+<div class="quiz-wrap" id="quiz-wrap"></div>
+<button class="btn-primary" id="btn-submit" onclick="showResults()" disabled>Calculer mes résultats →</button>
+
+<!-- RESULTS -->
+<div class="results-wrap" id="results-wrap">
+
+  <div class="result-header">
+    <div class="result-profile-emoji" id="res-emoji">🗺️</div>
+    <div class="result-profile-name" id="res-name">Votre profil</div>
+    <div class="result-profile-sub" id="res-sub"></div>
+  </div>
+
+  <!-- 3 axes scores -->
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px">
+    <div style="font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:18px">Vos 3 scores détaillés</div>
+
+    <div style="margin-bottom:18px">
+      <div class="axis-ends"><span>◀ Gauche économique · État fort</span><span>Droite économique · Marché libre ▶</span></div>
+      <div class="axis-row" style="margin-top:6px">
+        <div class="axis-label">Axe économique</div>
+        <div class="axis-bar-wrap">
+          <div class="axis-bar-center"></div>
+          <div class="axis-fill" id="bar-eco" style="background:linear-gradient(90deg,#3BFF9E,#60A5FA)"></div>
+        </div>
+        <div class="axis-val" id="val-eco">—</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:18px">
+      <div class="axis-ends"><span>◀ Progressiste · Libertaire</span><span>Conservateur · Autoritaire ▶</span></div>
+      <div class="axis-row" style="margin-top:6px">
+        <div class="axis-label">Axe culturel</div>
+        <div class="axis-bar-wrap">
+          <div class="axis-bar-center"></div>
+          <div class="axis-fill" id="bar-cul" style="background:linear-gradient(90deg,#A78BFA,#F472B6)"></div>
+        </div>
+        <div class="axis-val" id="val-cul">—</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="axis-ends"><span>◀ Mondialiste · Européiste</span><span>Souverainiste · Nationaliste ▶</span></div>
+      <div class="axis-row" style="margin-top:6px">
+        <div class="axis-label">Axe souveraineté</div>
+        <div class="axis-bar-wrap">
+          <div class="axis-bar-center"></div>
+          <div class="axis-fill" id="bar-sov" style="background:linear-gradient(90deg,#2DD4BF,#FBBF24)"></div>
+        </div>
+        <div class="axis-val" id="val-sov">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Boussole politique -->
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px">
+    <div style="font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px">Boussole politique — Axes économique × culturel</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.6">Votre position (⭐) est comparée aux estimations des électorats des principaux partis français (source : CEVIPOF, Perrineau "Le Vote clivé" 2022). <strong style="color:#555">Ces positionnements sont des estimations académiques, non des positions officielles de partis.</strong></div>
+    <div class="compass-wrap">
+      <canvas id="chart-compass" class="compass-canvas"></canvas>
+    </div>
+    <div class="party-legend" id="party-legend"></div>
+  </div>
+
+  <!-- Thèmes par thème -->
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px">
+    <div style="font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:18px">Détail par thème</div>
+    <div id="theme-detail"></div>
+  </div>
+
+  <!-- Contextualisation académique -->
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px">
+    <div style="font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px">📚 Pour aller plus loin</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;color:var(--muted);">
+      <div class="detail-item"><strong>Le Vote clivé — Pascal Perrineau</strong>Analyse des élections 2022 et de la fragmentation de l'espace politique français. Presses Universitaires de Grenoble, 2022.</div>
+      <div class="detail-item"><strong>Baromètre CEVIPOF — Sciences Po</strong>Enquête annuelle sur les attitudes politiques, la confiance institutionnelle et les positionnements idéologiques des Français. sciencespo.fr/cevipof</div>
+      <div class="detail-item"><strong>L'électeur a ses raisons — Boy & Mayer</strong>Analyse du comportement électoral français. Les déterminants sociologiques du vote. Presses de Sciences Po, 1997.</div>
+      <div class="detail-item"><strong>Cultural Backlash — Norris & Inglehart</strong>L'émergence du clivage progressiste/conservateur dans les démocraties occidentales. Cambridge University Press, 2019.</div>
+    </div>
+  </div>
+
+  <div class="warn">
+    ⚠️ <strong style="color:var(--red)">Rappel :</strong> Ces résultats sont indicatifs et exploratoires. L'identité politique d'un individu est infiniment plus riche et nuancée qu'une position sur 3 axes. Ce test ne vise pas à vous "étiqueter" mais à vous offrir un outil de réflexion sur vos propres valeurs et préférences politiques. Des personnes aux résultats identiques peuvent voter très différemment selon des facteurs contextuels, locaux, ou liés à l'offre électorale disponible.
+  </div>
+
+  <div class="src-block">
+    <strong style="color:#555">Sources académiques :</strong><br>
+    · CEVIPOF/Sciences Po — Enquête électorale française (ENEF) 2017-2024 · Luc Rouban, "Une France de gauche vote-t-elle à droite ?", CEVIPOF note 22, nov. 2024<br>
+    · Pascal Perrineau, Jean Chiche, Brigitte Le Roux, "L'espace politique des électeurs français à la fin des années 1990", RFSP 2000, 50(3), pp.463-488<br>
+    · Pascal Perrineau (dir.), "Le Vote clivé. Les élections présidentielle et législatives d'avril-juin 2022", PUG 2022<br>
+    · Fondation Jean-Jaurès / CEVIPOF / Fondapol, "Boussole européenne", 2014 — axes économique et sociétal appliqués aux partis français<br>
+    · Nonna Mayer, "Que reste-t-il du vote de classes ? Le cas français", EHESS 2004<br>
+    · Vie-publique.fr, "Les transformations de la sociologie du vote", 2020 (synthèse CEVIPOF)<br>
+    · Bruno Cautrès (CNRS/Sciences Po), "Le clivage gauche-droite n'est pas dépassé", in Baromètre CEVIPOF 2018<br>
+    · Pippa Norris & Ronald Inglehart, "Cultural Backlash", Cambridge University Press, 2019<br>
+    · Chapel Hill Expert Survey (CHES) 2019 & 2022 — positionnement des partis européens
+  </div>
+
+  <button class="btn-retry" onclick="resetQuiz()">↩ Recommencer le test</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// DONNÉES DU QUESTIONNAIRE
+// Chaque question : {id, text, theme, tag, weights:{eco, cul, sov}}
+// eco: gauche=négatif, droite=positif (accord → score dans ce sens)
+// cul: progressiste=négatif, conservateur=positif
+// sov: mondialiste=négatif, souverainiste=positif
+// ═══════════════════════════════════════════
+var QUESTIONS = [
+  // ── ÉCONOMIE & ÉTAT ──
+  {id:1,  text:"L'État doit jouer un rôle central dans l'économie pour corriger les inégalités produites par le marché.",
+    theme:"Économie & État", tag:"🏛️ Économie", w:{eco:-2, cul:0, sov:0}},
+  {id:2,  text:"La fiscalité sur les hauts revenus et les grandes fortunes devrait être significativement augmentée.",
+    theme:"Économie & État", tag:"🏛️ Économie", w:{eco:-2, cul:0, sov:0}},
+  {id:3,  text:"La privatisation des grandes entreprises publiques est globalement bénéfique pour l'efficacité économique.",
+    theme:"Économie & État", tag:"🏛️ Économie", w:{eco:2, cul:0, sov:0}},
+  {id:4,  text:"Les règles du marché du travail devraient être assouplies pour permettre plus de flexibilité aux entreprises.",
+    theme:"Économie & État", tag:"🏛️ Économie", w:{eco:2, cul:0, sov:0}},
+  {id:5,  text:"Le niveau actuel des dépenses sociales (RSA, chômage, aides au logement) pèse trop lourd sur l'économie française.",
+    theme:"Économie & État", tag:"🏛️ Économie", w:{eco:2, cul:0, sov:0}},
+  {id:6,  text:"La réduction de la fiscalité stimule davantage la croissance que le financement public des services collectifs.",
+    theme:"Économie & État", tag:"🏛️ Économie", w:{eco:2, cul:0, sov:0}},
+
+  // ── TRAVAIL & SOCIAL ──
+  {id:7,  text:"La réduction du temps de travail légal (vers 32h hebdomadaires) serait bénéfique pour les salariés et l'emploi.",
+    theme:"Travail & Social", tag:"⚒️ Social", w:{eco:-2, cul:0, sov:0}},
+  {id:8,  text:"Le droit à la retraite devrait être abaissé plutôt qu'augmenté.",
+    theme:"Travail & Social", tag:"⚒️ Social", w:{eco:-2, cul:0, sov:0}},
+  {id:9,  text:"La rémunération des dirigeants d'entreprise devrait être plafonnée par la loi.",
+    theme:"Travail & Social", tag:"⚒️ Social", w:{eco:-2, cul:0, sov:0}},
+  {id:10, text:"Les inégalités de revenus entre individus sont principalement le reflet de différences de mérite et d'effort personnels.",
+    theme:"Travail & Social", tag:"⚒️ Social", w:{eco:2, cul:0, sov:0}},
+
+  // ── SOCIÉTÉ & VALEURS ──
+  {id:11, text:"Le mariage et l'adoption pour les couples de même sexe ont constitué des avancées positives pour la société.",
+    theme:"Société & Valeurs", tag:"🌈 Société", w:{eco:0, cul:-2, sov:0}},
+  {id:12, text:"L'autorité — qu'elle soit parentale, institutionnelle ou étatique — doit être renforcée dans la société française.",
+    theme:"Société & Valeurs", tag:"🌈 Société", w:{eco:0, cul:2, sov:0}},
+  {id:13, text:"Les traditions et le patrimoine culturel français doivent être davantage protégés face aux évolutions contemporaines.",
+    theme:"Société & Valeurs", tag:"🌈 Société", w:{eco:0, cul:2, sov:1}},
+  {id:14, text:"La peine de mort devrait être rétablie pour les crimes les plus graves.",
+    theme:"Société & Valeurs", tag:"🌈 Société", w:{eco:0, cul:2, sov:0}},
+  {id:15, text:"Les personnes LGBTQ+ font l'objet de discriminations importantes qui nécessitent des mesures de protection spécifiques.",
+    theme:"Société & Valeurs", tag:"🌈 Société", w:{eco:0, cul:-2, sov:0}},
+
+  // ── LAÏCITÉ & RELIGION ──
+  {id:16, text:"Toute expression religieuse visible (voile, kippa, croix…) devrait être interdite dans l'ensemble des espaces publics.",
+    theme:"Laïcité & Religion", tag:"🕌 Laïcité", w:{eco:0, cul:1, sov:1}},
+  {id:17, text:"La laïcité ne devrait pas empêcher les individus d'exprimer leurs convictions religieuses dans l'espace public.",
+    theme:"Laïcité & Religion", tag:"🕌 Laïcité", w:{eco:0, cul:-2, sov:-1}},
+
+  // ── IMMIGRATION ──
+  {id:18, text:"L'immigration en France doit être significativement réduite.",
+    theme:"Immigration", tag:"🌍 Immigration", w:{eco:0, cul:2, sov:2}},
+  {id:19, text:"La France est fondamentalement un pays d'accueil dont l'identité s'est toujours enrichie de l'apport des personnes venues d'ailleurs.",
+    theme:"Immigration", tag:"🌍 Immigration", w:{eco:0, cul:-2, sov:-2}},
+  {id:20, text:"Les personnes en situation irrégulière qui travaillent et ne troublent pas l'ordre public devraient être régularisées.",
+    theme:"Immigration", tag:"🌍 Immigration", w:{eco:0, cul:-2, sov:-1}},
+
+  // ── SÉCURITÉ & LIBERTÉS ──
+  {id:21, text:"Renforcer la sécurité publique justifie de restreindre certaines libertés individuelles (surveillance, accès aux données…).",
+    theme:"Sécurité & Libertés", tag:"🔒 Sécurité", w:{eco:0, cul:2, sov:0}},
+  {id:22, text:"Les forces de l'ordre font l'objet de trop peu de contrôle démocratique en France.",
+    theme:"Sécurité & Libertés", tag:"🔒 Sécurité", w:{eco:0, cul:-2, sov:0}},
+
+  // ── ENVIRONNEMENT ──
+  {id:23, text:"La lutte contre le changement climatique doit être la priorité politique absolue, même si cela implique des contraintes économiques importantes.",
+    theme:"Environnement", tag:"🌿 Climat", w:{eco:-1, cul:-1, sov:0}},
+  {id:24, text:"Les restrictions de circulation des voitures en ville sont une atteinte injustifiée à la liberté des individus.",
+    theme:"Environnement", tag:"🌿 Climat", w:{eco:1, cul:1, sov:0}},
+  {id:25, text:"La sortie du nucléaire doit être une priorité pour la France dans les prochaines années.",
+    theme:"Environnement", tag:"🌿 Climat", w:{eco:-1, cul:-1, sov:0}},
+
+  // ── EUROPE & SOUVERAINETÉ ──
+  {id:26, text:"La France devrait transférer davantage de compétences à l'Union européenne pour mieux relever les défis collectifs.",
+    theme:"Europe & Souveraineté", tag:"🇪🇺 Europe", w:{eco:0, cul:0, sov:-2}},
+  {id:27, text:"La mondialisation est globalement bénéfique pour la France et ses habitants.",
+    theme:"Europe & Souveraineté", tag:"🇪🇺 Europe", w:{eco:1, cul:0, sov:-2}},
+  {id:28, text:"La France devrait pouvoir contrôler ses frontières de manière souveraine, indépendamment des règles européennes.",
+    theme:"Europe & Souveraineté", tag:"🇪🇺 Europe", w:{eco:0, cul:0, sov:2}},
+  {id:29, text:"La France devrait mettre en place des protections douanières pour défendre ses industries stratégiques face à la concurrence mondiale.",
+    theme:"Europe & Souveraineté", tag:"🇪🇺 Europe", w:{eco:-1, cul:0, sov:2}},
+
+  // ── INSTITUTIONS & DÉMOCRATIE ──
+  {id:30, text:"Le référendum d'initiative citoyenne (permettant aux citoyens de proposer des lois) améliorerait notre démocratie.",
+    theme:"Institutions & Démocratie", tag:"🗳️ Institutions", w:{eco:0, cul:0, sov:1}},
+];
+
+// Positions des partis (normalisées sur −100/+100) — CEVIPOF/Perrineau 2022
+// [eco, cul] — eco: gauche=négatif, droite=positif / cul: progressiste=négatif, conservateur=positif
+var PARTIES = [
+  {n:'LFI/NFP-G', color:'#EF4444',  x:-65, y:10,  note:'Gauche radicale économique, progressiste modéré sur les valeurs sociétales'},
+  {n:'PS/NFP-C',  color:'#F97316',  x:-40, y:-45, note:'Social-démocratie, progressiste culturel'},
+  {n:'EELV',      color:'#22C55E',  x:-30, y:-70, note:'Écologie politique, très progressiste'},
+  {n:'Renaissance',color:'#60A5FA', x:20,  y:-35, note:'Libéralisme social, progressiste culturel'},
+  {n:'LR',        color:'#6366F1',  x:55,  y:-15, note:'Droite libérale, conservateur modéré'},
+  {n:'RN',        color:'#8B5CF6',  x:5,   y:70,  note:'Droite identitaire, conservateur culturel fort'},
+  {n:'Reconquête',color:'#EC4899',  x:35,  y:90,  note:'Droite radicale culturelle'},
+];
+
+// Réponses stockées
+var answers = {};
+var totalQ = QUESTIONS.length;
+
+// ── Utilitaires ──
+function g(id){ return document.getElementById(id); }
+function toggleDisclaimer(id){
+  var c=g(id+'-content'), a=g(id+'-arrow');
+  if(!c) return;
+  c.classList.toggle('open');
+  a.textContent = c.classList.contains('open') ? '▼' : '▶';
+}
+
+// ── Construction du quiz ──
+function buildQuiz(){
+  var wrap = g('quiz-wrap'); if(!wrap) return;
+  var themes = [...new Set(QUESTIONS.map(function(q){ return q.theme; }))];
+  var html = '';
+  themes.forEach(function(theme){
+    var qs = QUESTIONS.filter(function(q){ return q.theme === theme; });
+    html += '<div class="section-title">'+qs[0].tag+' '+theme+'</div>';
+    qs.forEach(function(q){
+      html += '<div class="q-card" id="qcard-'+q.id+'">'
+        +'<div class="q-num">Question '+q.id+' / '+totalQ+'</div>'
+        +'<div class="q-text">'+q.text+'</div>'
+        +'<div class="likert">'
+        +['Tout à fait<br>d\'accord','Plutôt<br>d\'accord','Ni l\'un<br>ni l\'autre','Plutôt en<br>désaccord','Tout à fait<br>en désaccord'].map(function(lbl,i){
+          var val = [2,1,0,-1,-2][i];
+          return '<button class="lik-btn" id="q'+q.id+'v'+val+'" onclick="setAnswer('+q.id+','+val+')">'+lbl+'</button>';
+        }).join('')
+        +'</div>'
+        +'</div>';
+    });
+  });
+  wrap.innerHTML = html;
+}
+
+function setAnswer(qid, val){
+  answers[qid] = val;
+  // Visual feedback
+  [2,1,0,-1,-2].forEach(function(v){
+    var btn = g('q'+qid+'v'+v);
+    if(!btn) return;
+    btn.className = 'lik-btn';
+    if(v === val){
+      if(v === 2)  btn.className += ' sel-2';
+      else if(v===1) btn.className += ' sel-1';
+      else if(v===0) btn.className += ' sel0';
+      else if(v===-1) btn.className += ' sel1';
+      else  btn.className += ' sel2';
+    }
+  });
+  var card = g('qcard-'+qid);
+  if(card) card.classList.add('answered');
+  updateProgress();
+}
+
+function updateProgress(){
+  var done = Object.keys(answers).length;
+  var pct  = Math.round(done/totalQ*100);
+  var fill = g('progress-fill');
+  if(fill) fill.style.width = pct+'%';
+  var lbl = g('progress-done');
+  if(lbl) lbl.textContent = done+' / '+totalQ+' questions';
+  var plbl = g('progress-pct');
+  if(plbl) plbl.textContent = pct+'%';
+  var btn = g('btn-submit');
+  if(btn) btn.disabled = done < totalQ;
+  if(done === totalQ && btn) btn.textContent = '🎉 Calculer mes résultats →';
+}
+
+// ── Calcul des scores ──
+function calcScores(){
+  // Max possibles par axe
+  var maxEco=0, maxCul=0, maxSov=0;
+  QUESTIONS.forEach(function(q){
+    maxEco += Math.abs(q.w.eco)*2;
+    maxCul += Math.abs(q.w.cul)*2;
+    maxSov += Math.abs(q.w.sov)*2;
+  });
+
+  var rawEco=0, rawCul=0, rawSov=0;
+  QUESTIONS.forEach(function(q){
+    var ans = answers[q.id] || 0;
+    rawEco += ans * q.w.eco;
+    rawCul += ans * q.w.cul;
+    rawSov += ans * q.w.sov;
+  });
+
+  // Normaliser sur −100 à +100
+  // eco: gauche=négatif, droite=positif
+  // cul: progressiste=négatif, conservateur=positif
+  var eco = maxEco > 0 ? Math.round(rawEco / maxEco * 100) : 0;
+  var cul = maxCul > 0 ? Math.round(rawCul / maxCul * 100) : 0;
+  var sov = maxSov > 0 ? Math.round(rawSov / maxSov * 100) : 0;
+
+  return {eco:eco, cul:cul, sov:sov};
+}
+
+// ── Profils politiques ──
+function getProfile(eco, cul, sov){
+  // 4 quadrants principaux + nuances
+  var profiles = [
+    {cond: eco<=-50&&cul<=-30, emoji:'🌹', name:'Gauche sociale-progressiste',
+     sub:'Vous combinez une forte orientation vers l\'intervention de l\'État dans l\'économie avec des positions culturelles progressistes. Ce profil est proche de l\'électorat socialiste ou des partis verts européens.'},
+    {cond: eco<=-50&&cul>=30, emoji:'⚒️', name:'Gauche économique conservatrice',
+     sub:'Vous défendez une forte intervention étatique sur le plan économique tout en ayant des positions culturellement conservatrices. Profil rare mais présent, notamment dans certains électorats ouvriers ou populistes de gauche.'},
+    {cond: eco<=-20&&cul>=-30&&cul<=30, emoji:'🌿', name:'Gauche pragmatique',
+     sub:'Vous vous situez à gauche sur les questions économiques avec des positions culturelles nuancées. Ce profil correspond à une large frange de l\'électorat de centre-gauche.'},
+    {cond: eco>=50&&cul<=-30, emoji:'🔵', name:'Libéral progressiste',
+     sub:'Vous combinez des positions libérales sur l\'économie (marché, moins d\'État) avec des valeurs culturellement ouvertes. Ce profil correspond à l\'électorat centriste-libéral type Renaissance/LREM.'},
+    {cond: eco>=50&&cul>=50, emoji:'🏛️', name:'Droite conservatrice libérale',
+     sub:'Vous défendez à la fois la liberté économique et des valeurs culturellement conservatrices. Ce profil correspond à la droite classique de gouvernement, proche de l\'électorat LR.'},
+    {cond: eco>=-20&&eco<=20&&cul>=60, emoji:'🎌', name:'Conservateur identitaire',
+     sub:'Vos positions sont surtout définies par des valeurs culturellement conservatrices ou identitaires, avec des positions économiques plus ambivalentes. Ce profil correspond aux électorats de droite radicale culturelle.'},
+    {cond: eco>=-20&&eco<=20&&cul<=-60, emoji:'🌈', name:'Progressiste culturel',
+     sub:'Vos positions sont principalement définies par des valeurs culturellement ouvertes et progressistes, avec des positions économiques moins tranchées.'},
+    {cond: true, emoji:'🗺️', name:'Profil centriste nuancé',
+     sub:'Vos positions ne s\'inscrivent pas clairement dans un quadrant dominant. Vous possédez probablement des opinions mitigées ou complexes qui traversent les clivages traditionnels.'},
+  ];
+  for(var i=0; i<profiles.length; i++){
+    if(profiles[i].cond) return profiles[i];
+  }
+  return profiles[profiles.length-1];
+}
+
+// ── Affichage résultats ──
+function showResults(){
+  var sc = calcScores();
+
+  // Profil
+  var prof = getProfile(sc.eco, sc.cul, sc.sov);
+  g('res-emoji').textContent = prof.emoji;
+  g('res-name').textContent  = prof.name;
+  g('res-sub').textContent   = prof.sub;
+
+  // Barres
+  function setBar(barId, valId, score, colorNeg, colorPos){
+    var bar = g(barId), val = g(valId);
+    if(!bar || !val) return;
+    var pct = Math.abs(score)/100*50; // 50% max de la moitié de la barre
+    var left = score < 0;
+    if(left){
+      bar.style.left   = (50-pct)+'%';
+      bar.style.width  = pct+'%';
+      bar.style.background = colorNeg;
+    } else {
+      bar.style.left   = '50%';
+      bar.style.width  = pct+'%';
+      bar.style.background = colorPos;
+    }
+    val.textContent = (score>0?'+':'')+score;
+    val.style.color = score<0?colorNeg:score>0?colorPos:'var(--muted)';
+  }
+  setBar('bar-eco','val-eco', sc.eco, '#3BFF9E', '#F87171');
+  setBar('bar-cul','val-cul', sc.cul, '#A78BFA', '#FBBF24');
+  setBar('bar-sov','val-sov', sc.sov, '#2DD4BF', '#F97316');
+
+  // Boussole
+  drawCompass(sc.eco, sc.cul);
+
+  // Thèmes détaillés
+  var themes = [...new Set(QUESTIONS.map(function(q){ return q.theme; }))];
+  var themeHTML = '';
+  themes.forEach(function(theme){
+    var qs = QUESTIONS.filter(function(q){ return q.theme===theme; });
+    var tScore = 0, tMax = 0;
+    qs.forEach(function(q){
+      var ans = answers[q.id]||0;
+      var combined = Math.abs(q.w.eco)+Math.abs(q.w.cul)+Math.abs(q.w.sov);
+      tScore += ans*(q.w.eco+q.w.cul+q.w.sov);
+      tMax   += combined*2;
+    });
+    var pct = tMax>0 ? Math.round(tScore/tMax*100) : 0;
+    var direction = pct<=-20 ? '⬅️ Plutôt à gauche / progressiste' : pct>=20 ? '➡️ Plutôt à droite / conservateur' : '⬆️ Position mixte ou centrale';
+    var col = pct<=-20?'var(--green)':pct>=20?'var(--red)':'var(--muted)';
+    themeHTML += '<div class="detail-item" style="margin-bottom:8px">'
+      +'<strong style="color:'+col+'">'+qs[0].tag+' '+theme+' — score '+pct+'</strong>'
+      +direction
+      +'</div>';
+  });
+  g('theme-detail').innerHTML = themeHTML;
+
+  // Show
+  g('quiz-wrap').style.display  = 'none';
+  g('btn-submit').style.display = 'none';
+  g('progress-wrap').style.display = 'none';
+  document.querySelectorAll('.disclaimer-box').forEach(function(b){ b.style.display='none'; });
+  g('results-wrap').classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function drawCompass(ecoScore, culScore){
+  var canvas = g('chart-compass'); if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  // Convert −100/+100 to compass coordinates
+  // X = economic (−100=gauche, +100=droite) → canvas X
+  // Y = cultural (−100=progressiste, +100=conservateur) → canvas Y (inversé)
+
+  var chart = new Chart(ctx, {
+    type:'scatter',
+    data:{
+      datasets:[
+        // Quadrant labels (invisible points for legend)
+        {label:'Axe économique : gauche ↔ droite (horizontal) · Axe culturel : progressiste ↔ conservateur (vertical)',
+          data:[], showLine:false, pointRadius:0},
+        // Partis
+        ...PARTIES.map(function(p){
+          return {
+            label: p.n,
+            data:[{x:p.x, y:-p.y}], // Invert Y so progressive is top
+            backgroundColor: p.color+'CC',
+            borderColor: p.color,
+            pointRadius: 10,
+            pointHoverRadius: 12,
+            borderWidth: 2,
+          };
+        }),
+        // Vous
+        {
+          label:'⭐ Vous',
+          data:[{x:ecoScore, y:-culScore}],
+          backgroundColor:'#FFD93D',
+          borderColor:'#FFD93D',
+          pointRadius:14,
+          pointHoverRadius:16,
+          borderWidth:3,
+          pointStyle:'star',
+        }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            label:function(c){
+              if(c.dataset.label==='⭐ Vous') return '⭐ Vous (éco:'+ecoScore+', cult:'+culScore+')';
+              var p = PARTIES.find(function(x){ return x.n===c.dataset.label; });
+              return p ? p.n+' — '+p.note : c.dataset.label;
+            }
+          }
+        }
+      },
+      scales:{
+        x:{min:-105,max:105,grid:{color:'rgba(255,255,255,.06)'},border:{color:'rgba(255,255,255,.15)'},
+          ticks:{color:'#555',font:{size:9},callback:function(v){ return v===0?'':v<0?'◀ Gauche éco.':'Droite éco. ▶'; }},
+          title:{display:true,text:'← Gauche économique · Droite économique →',color:'#4B5280',font:{size:10}}},
+        y:{min:-105,max:105,grid:{color:'rgba(255,255,255,.06)'},border:{color:'rgba(255,255,255,.15)'},
+          ticks:{color:'#555',font:{size:9},callback:function(v){ return v===0?'':v>0?'▲ Progressiste':'Conservateur ▼'; }},
+          title:{display:true,text:'↑ Progressiste · Conservateur ↓',color:'#4B5280',font:{size:10}}}
+      },
+      backgroundColor:'#111420'
+    },
+    plugins:[{
+      id:'quadrants',
+      beforeDraw:function(chart){
+        var ctx=chart.ctx, ca=chart.chartArea;
+        var mx=(ca.left+ca.right)/2, my=(ca.top+ca.bottom)/2;
+        // Draw quadrant labels
+        ctx.save();
+        ctx.font='9px DM Mono,monospace';
+        ctx.fillStyle='rgba(255,255,255,.12)';
+        ctx.textAlign='center';
+        ctx.fillText('Altermondialiste',mx-(ca.right-ca.left)/4, my-(ca.bottom-ca.top)/4);
+        ctx.fillText('Individualiste',  mx+(ca.right-ca.left)/4, my-(ca.bottom-ca.top)/4);
+        ctx.fillText('Nationaliste',    mx-(ca.right-ca.left)/4, my+(ca.bottom-ca.top)/4);
+        ctx.fillText('Conservateur',    mx+(ca.right-ca.left)/4, my+(ca.bottom-ca.top)/4);
+        // Draw center lines
+        ctx.strokeStyle='rgba(255,255,255,.12)';
+        ctx.setLineDash([4,4]);
+        ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(mx,ca.top); ctx.lineTo(mx,ca.bottom); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(ca.left,my); ctx.lineTo(ca.right,my); ctx.stroke();
+        ctx.restore();
+      }
+    }]
+  });
+
+  // Légende partis
+  var leg = g('party-legend'); if(!leg) return;
+  leg.innerHTML = PARTIES.map(function(p){
+    return '<div class="party-dot"><div class="party-dot-color" style="background:'+p.color+'"></div>'+p.n+'</div>';
+  }).join('')+'<div class="party-dot"><div class="party-dot-color" style="background:#FFD93D;clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"></div>⭐ Vous</div>';
+}
+
+function resetQuiz(){
+  answers = {};
+  g('results-wrap').classList.remove('show');
+  g('quiz-wrap').style.display = '';
+  g('btn-submit').style.display = '';
+  g('progress-wrap').style.display = '';
+  document.querySelectorAll('.disclaimer-box').forEach(function(b){ b.style.display=''; });
+  g('btn-submit').disabled = true;
+  g('btn-submit').textContent = 'Calculer mes résultats →';
+  buildQuiz();
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Init
+buildQuiz();
+updateProgress();
+</script>
+</body>
+</html>
