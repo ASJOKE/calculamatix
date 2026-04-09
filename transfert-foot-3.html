@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vaut-il son transfert ? Le calculateur football | Calculamatix</title>
+  <meta name="description" content="Ce joueur vaut-il vraiment son prix de transfert ? Score en 5 dimensions : performance, xG, régularité, âge, impact. Données live SportAPI."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#06070d;--card:#0e1020;--border:#1a1d35;
+      --yellow:#FFD93D;--green:#00F5A0;--blue:#4D9FFF;
+      --red:#FF4D6A;--purple:#B06EFF;--amber:#FFB347;
+      --teal:#00E5CC;--text:#E8ECF8;--muted:#4A5080;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+
+    /* Fond animé */
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:radial-gradient(ellipse 80% 60% at 20% -10%,rgba(77,159,255,.06),transparent),
+                 radial-gradient(ellipse 60% 40% at 80% 110%,rgba(0,245,160,.04),transparent)}
+    body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.3;
+      background-image:linear-gradient(rgba(77,159,255,.03) 1px,transparent 1px),
+                       linear-gradient(90deg,rgba(77,159,255,.03) 1px,transparent 1px);
+      background-size:40px 40px}
+
+    nav{position:relative;z-index:10;max-width:960px;margin:0 auto;padding:22px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:17px;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--yellow)}
+    .back{font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:.5px;text-transform:uppercase}
+
+    .hero{position:relative;z-index:10;max-width:960px;margin:0 auto;padding:44px 24px 32px;text-align:center}
+    .htag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--green);background:rgba(0,245,160,.07);border:1px solid rgba(0,245,160,.2);padding:4px 14px;border-radius:100px;margin-bottom:16px;font-family:'DM Mono',monospace;letter-spacing:.5px}
+    h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(22px,4.5vw,48px);letter-spacing:-2px;line-height:1.05;margin-bottom:12px}
+    h1 em{color:var(--green);font-style:normal}
+    .hero-sub{font-size:14px;color:var(--muted);line-height:1.7;max-width:560px;margin:0 auto}
+
+    /* SEARCH */
+    .search-wrap{position:relative;z-index:10;max-width:700px;margin:32px auto 0;padding:0 24px}
+    .search-box{display:flex;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:8px 8px 8px 20px;align-items:center;transition:border-color .2s}
+    .search-box:focus-within{border-color:rgba(0,245,160,.4)}
+    .search-input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:16px;font-family:'DM Sans',sans-serif;padding:6px 0}
+    .search-input::placeholder{color:var(--muted)}
+    .search-btn{background:linear-gradient(135deg,var(--green),var(--teal));border:none;color:#050f0c;padding:12px 24px;border-radius:10px;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .2s;white-space:nowrap;letter-spacing:.3px}
+    .search-btn:hover{opacity:.85}
+    .search-btn:disabled{opacity:.4;cursor:not-allowed}
+
+    /* Suggestions rapides */
+    .quick{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px;padding:0 24px}
+    .qtag{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;padding:5px 14px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s;font-family:'DM Mono',monospace}
+    .qtag:hover{border-color:rgba(0,245,160,.3);color:var(--green)}
+
+    /* ÉTAT */
+    .state-wrap{position:relative;z-index:10;max-width:960px;margin:30px auto 0;padding:0 24px}
+
+    /* Loading */
+    .loader{text-align:center;padding:60px 20px;display:none}
+    .loader.show{display:block}
+    .loader-ball{width:60px;height:60px;margin:0 auto 20px;font-size:48px;animation:spin 1.5s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loader-text{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+
+    /* Error */
+    .error-box{background:rgba(255,77,106,.07);border:1px solid rgba(255,77,106,.25);border-radius:14px;padding:20px 24px;text-align:center;display:none;font-size:13px;color:#ff8fa0;line-height:1.7}
+    .error-box.show{display:block}
+
+    /* RÉSULTATS */
+    .result-wrap{display:none;flex-direction:column;gap:16px}
+    .result-wrap.show{display:flex}
+
+    /* Header joueur */
+    .player-header{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+    .player-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0;border:2px solid rgba(0,245,160,.3)}
+    .player-info{flex:1}
+    .player-name{font-family:'Unbounded',sans-serif;font-size:clamp(18px,3vw,28px);font-weight:900;letter-spacing:-1px;margin-bottom:4px}
+    .player-meta{font-size:13px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;font-family:'DM Mono',monospace}
+    .player-meta span{display:flex;align-items:center;gap:5px}
+    .verdict-badge{padding:10px 20px;border-radius:100px;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;letter-spacing:.5px;text-align:center;white-space:nowrap}
+
+    /* Score global */
+    .score-ring-wrap{text-align:center;min-width:120px}
+    .score-num{font-family:'Unbounded',sans-serif;font-size:48px;font-weight:900;line-height:1}
+    .score-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px;font-family:'DM Mono',monospace}
+
+    /* Grid 2 colonnes */
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px}
+    .ctitle{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:16px}
+
+    /* Barres de score */
+    .dim-row{margin-bottom:14px}
+    .dim-row:last-child{margin-bottom:0}
+    .dim-top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px}
+    .dim-name{color:var(--text)}
+    .dim-val{font-family:'DM Mono',monospace;font-weight:700}
+    .dim-bar{height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
+    .dim-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+
+    /* Stats grid */
+    .stat-box{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+    .stat-val{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:900;line-height:1;margin-bottom:4px}
+    .stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-family:'DM Mono',monospace}
+
+    /* Partage */
+    .share-card{background:linear-gradient(135deg,rgba(0,245,160,.08),rgba(77,159,255,.05));border:1px solid rgba(0,245,160,.2);border-radius:16px;padding:20px 24px}
+    .share-preview{background:rgba(0,0,0,.4);border-radius:12px;padding:16px 20px;margin-bottom:16px;font-family:'DM Mono',monospace;font-size:12px;color:var(--text);line-height:1.8;white-space:pre-wrap}
+    .share-btns{display:flex;gap:10px;flex-wrap:wrap}
+    .share-btn{flex:1;min-width:120px;padding:10px 16px;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .2s;text-align:center}
+    .share-btn:hover{opacity:.8}
+    .btn-x{background:#000;color:#fff;border:1px solid #333}
+    .btn-wa{background:#25D366;color:#fff}
+    .btn-copy{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--border)}
+
+    /* Disclaimer */
+    .disc{background:rgba(255,179,71,.04);border:1px solid rgba(255,179,71,.15);border-radius:10px;padding:12px 16px;font-size:11px;color:var(--muted);line-height:1.7;font-family:'DM Mono',monospace}
+
+    /* xG explainer */
+    .xg-explain{background:rgba(77,159,255,.05);border:1px solid rgba(77,159,255,.15);border-radius:10px;padding:14px 16px;font-size:12px;color:var(--muted);line-height:1.7;margin-top:10px}
+    .xg-explain strong{color:var(--blue)}
+
+    .di{display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;margin-bottom:6px}
+    .di span:first-child{font-size:12px;color:var(--muted)}
+    .di span:last-child{font-family:'DM Mono',monospace;font-size:12px}
+
+
+    .ac-item{padding:12px 18px;font-size:14px;cursor:pointer;border-bottom:1px solid #1a1d35;display:flex;align-items:center;gap:10px;transition:background .1s}
+    .ac-item:hover{background:rgba(0,245,160,.07)}
+    .ac-item:last-child{border-bottom:none}
+    .ac-name{color:#E8ECF8;font-weight:600}
+    .ac-meta{font-size:11px;color:#4A5080;font-family:'DM Mono',monospace}
+    @media(max-width:640px){
+      .g2{grid-template-columns:1fr}
+      .player-header{flex-direction:column;text-align:center}
+      .player-meta{justify-content:center}
+      .share-btns{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Retour</a>
+</nav>
+
+<div class="hero">
+  <div class="htag">⚽ Football · Transferts · Data</div>
+  <h1>Vaut-il vraiment<br>son <em>transfert ?</em></h1>
+  <p class="hero-sub">Score en 5 dimensions basé sur les stats réelles. Performance, xG efficiency, régularité, âge économique, impact collectif. Le calcul que les clubs font — maintenant accessible à tous.</p>
+</div>
+
+<div class="search-wrap">
+  <div class="search-box">
+    <span style="font-size:18px">⚽</span>
+    <input class="search-input" id="searchInput" type="text" placeholder="Tapez un nom de joueur... Mbappé, Salah, Bellingham" autocomplete="off"/>
+    <button class="search-btn" id="searchBtn" onclick="searchPlayer()">Analyser →</button>
+  </div>
+  <div id="autocomplete" style="background:#0e1020;border:1px solid #1a1d35;border-radius:12px;margin-top:6px;overflow:hidden;display:none;max-height:260px;overflow-y:auto;position:relative;z-index:100"></div>
+  <div class="quick">
+    <button class="qtag" onclick="quickSearch('Mbappé')">Mbappé</button>
+    <button class="qtag" onclick="quickSearch('Salah')">Salah</button>
+    <button class="qtag" onclick="quickSearch('Bellingham')">Bellingham</button>
+    <button class="qtag" onclick="quickSearch('Vinicius')">Vinicius Jr</button>
+    <button class="qtag" onclick="quickSearch('Haaland')">Haaland</button>
+    <button class="qtag" onclick="quickSearch('Pedri')">Pedri</button>
+  </div>
+</div>
+
+<div class="state-wrap">
+  <!-- Loading -->
+  <div class="loader" id="loader">
+    <div class="loader-ball">⚽</div>
+    <div class="loader-text">Analyse en cours...</div>
+  </div>
+
+  <!-- Error -->
+  <div class="error-box" id="errorBox"></div>
+
+  <!-- Résultats -->
+  <div class="result-wrap" id="resultWrap"></div>
+</div>
+
+<script>
+var API_KEY = '22600316cdmsh9ac90312790a77ap1c4878jsn17c286bd6071';
+var BASE = 'https://sportapi7.p.rapidapi.com';
+var HEADERS = {'x-rapidapi-host':'sportapi7.p.rapidapi.com','x-rapidapi-key':API_KEY};
+
+var ENRICHED = {
+  'mbappe':     {transfert:180,salaire:25,age:26,poste:'Attaquant',club:'Real Madrid',ligue:'Liga',buts:28,passes:9,minutes:2800,matchs:35,xg:22.4,note:8.1,emoji:'⚡'},
+  'salah':      {transfert:65,salaire:18,age:33,poste:'Ailier',club:'Liverpool',ligue:'Premier League',buts:27,passes:14,minutes:3100,matchs:38,xg:21.2,note:8.3,emoji:'🔥'},
+  'bellingham': {transfert:115,salaire:12,age:21,poste:'Milieu',club:'Real Madrid',ligue:'Liga',buts:19,passes:11,minutes:2750,matchs:32,xg:14.1,note:8.0,emoji:'💎'},
+  'vinicius':   {transfert:200,salaire:20,age:24,poste:'Ailier',club:'Real Madrid',ligue:'Liga',buts:23,passes:16,minutes:2900,matchs:34,xg:17.8,note:8.2,emoji:'🌟'},
+  'haaland':    {transfert:180,salaire:22,age:25,poste:'Attaquant',club:'Man City',ligue:'Premier League',buts:33,passes:5,minutes:2600,matchs:31,xg:29.4,note:8.4,emoji:'🚀'},
+  'pedri':      {transfert:90,salaire:9,age:22,poste:'Milieu',club:'Barcelone',ligue:'Liga',buts:8,passes:13,minutes:2400,matchs:30,xg:6.2,note:7.9,emoji:'🎯'},
+  'rodri':      {transfert:120,salaire:14,age:28,poste:'Milieu défensif',club:'Man City',ligue:'Premier League',buts:6,passes:9,minutes:2900,matchs:35,xg:4.1,note:8.5,emoji:'🧠'},
+  'kane':       {transfert:95,salaire:20,age:32,poste:'Attaquant',club:'Bayern Munich',ligue:'Bundesliga',buts:35,passes:12,minutes:3200,matchs:38,xg:28.6,note:8.3,emoji:'👑'},
+  'osimhen':    {transfert:130,salaire:11,age:26,poste:'Attaquant',club:'Galatasaray',ligue:'Süper Lig',buts:26,passes:7,minutes:2700,matchs:33,xg:21.4,note:7.8,emoji:'💥'},
+  'dembele':    {transfert:60,salaire:12,age:28,poste:'Ailier',club:'PSG',ligue:'Ligue 1',buts:14,passes:16,minutes:2500,matchs:32,xg:11.2,note:7.7,emoji:'🎪'},
+  'griezmann':  {transfert:25,salaire:18,age:33,poste:'Attaquant',club:'Atlético',ligue:'Liga',buts:17,passes:12,minutes:2800,matchs:34,xg:13.4,note:7.8,emoji:'🦊'},
+  'saka':       {transfert:150,salaire:13,age:23,poste:'Ailier',club:'Arsenal',ligue:'Premier League',buts:18,passes:14,minutes:3000,matchs:36,xg:14.8,note:8.1,emoji:'🔑'},
+  'rashford':   {transfert:40,salaire:15,age:27,poste:'Ailier',club:'Aston Villa',ligue:'Premier League',buts:10,passes:7,minutes:2100,matchs:28,xg:11.8,note:6.9,emoji:'🏃'},
+  'neymar':     {transfert:25,salaire:30,age:33,poste:'Ailier',club:'Al-Hilal',ligue:'Saudi Pro League',buts:8,passes:9,minutes:900,matchs:14,xg:7.2,note:7.1,emoji:'🎭'},
+  'ronaldo':    {transfert:15,salaire:200,age:40,poste:'Attaquant',club:'Al-Nassr',ligue:'Saudi Pro League',buts:35,passes:8,minutes:3100,matchs:38,xg:26.4,note:7.8,emoji:'🐐'},
+  'messi':      {transfert:20,salaire:50,age:37,poste:'Meneur',club:'Inter Miami',ligue:'MLS',buts:20,passes:18,minutes:2400,matchs:30,xg:14.2,note:8.0,emoji:'🐐'},
+  'lewandowski':{transfert:20,salaire:16,age:36,poste:'Attaquant',club:'Barcelone',ligue:'Liga',buts:22,passes:8,minutes:2800,matchs:33,xg:18.6,note:7.7,emoji:'🎯'},
+  'modric':     {transfert:8,salaire:10,age:39,poste:'Milieu',club:'Real Madrid',ligue:'Liga',buts:4,passes:10,minutes:1800,matchs:26,xg:3.1,note:7.5,emoji:'🎩'},
+  'de bruyne':  {transfert:50,salaire:20,age:34,poste:'Milieu',club:'Man City',ligue:'Premier League',buts:8,passes:17,minutes:2200,matchs:28,xg:6.4,note:8.0,emoji:'🎯'},
+  'foden':      {transfert:150,salaire:14,age:24,poste:'Milieu',club:'Man City',ligue:'Premier League',buts:15,passes:12,minutes:2900,matchs:35,xg:12.4,note:7.9,emoji:'💫'},
+  'yamal':      {transfert:250,salaire:5,age:17,poste:'Ailier',club:'Barcelone',ligue:'Liga',buts:14,passes:17,minutes:2600,matchs:33,xg:10.8,note:8.2,emoji:'⭐'},
+  'wirtz':      {transfert:150,salaire:8,age:21,poste:'Milieu',club:'Leverkusen',ligue:'Bundesliga',buts:12,passes:14,minutes:2700,matchs:32,xg:9.8,note:8.1,emoji:'🌠'},
+  'lukaku':     {transfert:25,salaire:14,age:31,poste:'Attaquant',club:'Napoli',ligue:'Serie A',buts:21,passes:7,minutes:2800,matchs:34,xg:19.4,note:7.6,emoji:'💪'},
+  'lautaro':    {transfert:90,salaire:12,age:27,poste:'Attaquant',club:'Inter',ligue:'Serie A',buts:24,passes:9,minutes:2900,matchs:35,xg:20.2,note:8.0,emoji:'🦁'},
+  'barcola':    {transfert:45,salaire:6,age:22,poste:'Ailier',club:'PSG',ligue:'Ligue 1',buts:16,passes:11,minutes:2600,matchs:33,xg:12.4,note:7.8,emoji:'⚡'},
+  'kvaratskhelia':{transfert:80,salaire:8,age:23,poste:'Ailier',club:'PSG',ligue:'Ligue 1',buts:11,passes:9,minutes:2400,matchs:30,xg:9.8,note:7.9,emoji:'🌊'},
+  'vlahovic':   {transfert:65,salaire:12,age:25,poste:'Attaquant',club:'Juventus',ligue:'Serie A',buts:19,passes:4,minutes:2600,matchs:32,xg:17.2,note:7.5,emoji:'🦅'},
+  'olise':      {transfert:65,salaire:8,age:23,poste:'Ailier',club:'Bayern Munich',ligue:'Bundesliga',buts:14,passes:12,minutes:2500,matchs:31,xg:11.2,note:7.8,emoji:'✨'},
+  'gusto':      {transfert:35,salaire:4,age:21,poste:'Défenseur',club:'Chelsea',ligue:'Premier League',buts:4,passes:8,minutes:2700,matchs:34,xg:2.8,note:7.3,emoji:'🛡️'},
+};
+
+function g(id){ return document.getElementById(id); }
+function normalize(s){
+  return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,'').trim();
+}
+
+// ── AUTOCOMPLÉTION ──
+var acTimeout = null;
+var selectedPlayer = null;
+
+g('searchInput').addEventListener('input', function(){
+  clearTimeout(acTimeout);
+  var q = this.value.trim();
+  if(q.length < 2){ hideAC(); return; }
+  acTimeout = setTimeout(function(){ doSuggest(q); }, 250);
+});
+
+g('searchInput').addEventListener('keydown', function(e){
+  if(e.key === 'Enter'){ hideAC(); searchPlayer(); }
+  if(e.key === 'Escape'){ hideAC(); }
+});
+
+document.addEventListener('click', function(e){
+  if(!e.target.closest('#autocomplete') && e.target !== g('searchInput')) hideAC();
+});
+
+function hideAC(){
+  var ac = g('autocomplete');
+  if(ac){ ac.style.display='none'; ac.innerHTML=''; }
+}
+
+async function doSuggest(q){
+  var norm = normalize(q);
+  var localMatches = [];
+
+  // 1. Recherche locale d'abord (instantanée)
+  Object.keys(ENRICHED).forEach(function(k){
+    if(normalize(k).includes(norm) || norm.includes(normalize(k).substring(0,3))){
+      var d = ENRICHED[k];
+      localMatches.push({name: k.charAt(0).toUpperCase()+k.slice(1), club:d.club, ligue:d.ligue, poste:d.poste, emoji:d.emoji, local:true});
+    }
+  });
+
+  if(localMatches.length > 0){
+    showAC(localMatches);
+  }
+
+  // 2. Appel API suggest en parallèle
+  try {
+    var url = BASE + '/api/v1/search/suggest?q=' + encodeURIComponent(q);
+    var res = await fetch(url, {method:'GET', headers:HEADERS});
+    if(res.ok){
+      var data = await res.json();
+      // api_v1_search_suggest retourne un tableau de strings ou objets
+      var suggestions = data.results || data.suggestions || data || [];
+      if(Array.isArray(suggestions) && suggestions.length > 0){
+        // Si on a des résultats API, on cherche les joueurs correspondants
+        var url2 = BASE + '/api/v1/search/players?q=' + encodeURIComponent(q) + '&sport=football';
+        var res2 = await fetch(url2, {method:'GET', headers:HEADERS});
+        if(res2.ok){
+          var data2 = await res2.json();
+          var players = data2.results || data2.players || data2 || [];
+          if(Array.isArray(players) && players.length > 0){
+            var apiMatches = players.slice(0,6).map(function(p){
+              return {
+                name: p.name || p.shortName || q,
+                club: (p.team && p.team.name) || '',
+                ligue: (p.team && p.team.tournament && p.team.tournament.name) || '',
+                poste: p.position || '',
+                emoji: '⚽',
+                local: false,
+                apiData: p
+              };
+            });
+            // Fusionner local + API sans doublon
+            apiMatches.forEach(function(am){
+              var exists = localMatches.find(function(lm){ return normalize(lm.name) === normalize(am.name); });
+              if(!exists) localMatches.push(am);
+            });
+            showAC(localMatches);
+          }
+        }
+      }
+    }
+  } catch(e){ /* API indispo, on garde les résultats locaux */ }
+}
+
+function showAC(players){
+  var ac = g('autocomplete');
+  if(!ac || players.length === 0){ hideAC(); return; }
+  ac.innerHTML = players.slice(0,8).map(function(p){
+    return '<div class="ac-item" onclick="selectPlayer(this)" data-name="'+p.name+'">'
+      +'<span style="font-size:20px">'+p.emoji+'</span>'
+      +'<div>'
+      +'<div class="ac-name">'+p.name+'</div>'
+      +'<div class="ac-meta">'+(p.club||'')+(p.ligue?' · '+p.ligue:'')+(p.poste?' · '+p.poste:'')+'</div>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+  ac.style.display = 'block';
+}
+
+function selectPlayer(el){
+  var name = el.getAttribute('data-name');
+  g('searchInput').value = name;
+  hideAC();
+  searchPlayer();
+}
+
+function quickSearch(name){ g('searchInput').value = name; hideAC(); searchPlayer(); }
+
+// ── RECHERCHE PRINCIPALE ──
+async function searchPlayer(){
+  var query = g('searchInput').value.trim();
+  if(!query) return;
+
+  var btn = g('searchBtn');
+  btn.disabled = true; btn.textContent = '⏳';
+  g('loader').classList.add('show');
+  g('errorBox').classList.remove('show');
+  g('resultWrap').classList.remove('show');
+  g('resultWrap').innerHTML = '';
+
+  try {
+    var norm = normalize(query);
+
+    // 1. Chercher dans enriched
+    var eKey = Object.keys(ENRICHED).find(function(k){
+      var nk = normalize(k);
+      return nk === norm || nk.includes(norm) || norm.includes(nk) ||
+             (norm.length >= 4 && nk.includes(norm.substring(0,4)));
+    });
+
+    var playerData;
+
+    if(eKey){
+      playerData = buildFromEnriched(query, ENRICHED[eKey]);
+    } else {
+      // 2. Appel API search_players
+      playerData = await fetchFromAPI(query);
+    }
+
+    if(!playerData) throw new Error('Joueur non trouvé. Essayez un nom de la liste ou un des raccourcis ci-dessous.');
+    renderResult(playerData);
+
+  } catch(err){
+    g('errorBox').textContent = '⚠️ ' + err.message;
+    g('errorBox').classList.add('show');
+  } finally {
+    g('loader').classList.remove('show');
+    btn.disabled = false; btn.textContent = 'Analyser →';
+  }
+}
+
+function buildFromEnriched(query, d){
+  var name = query.charAt(0).toUpperCase() + query.slice(1);
+  // Capitaliser proprement
+  var eKey = Object.keys(ENRICHED).find(function(k){ return normalize(k) === normalize(query) || normalize(k).includes(normalize(query).substring(0,4)); });
+  if(eKey) name = eKey.split(' ').map(function(w){ return w.charAt(0).toUpperCase()+w.slice(1); }).join(' ');
+  return {nom:name, poste:d.poste, club:d.club, ligue:d.ligue, age:d.age, emoji:d.emoji,
+    buts:d.buts, passes:d.passes, minutes:d.minutes, matchs:d.matchs,
+    xg:d.xg, note:d.note, transfert:d.transfert, salaire:d.salaire, source:'enrichi'};
+}
+
+async function fetchFromAPI(query){
+  // api_v1_search_players
+  var url = BASE + '/api/v1/search/players?q=' + encodeURIComponent(query) + '&sport=football';
+  var res = await fetch(url, {method:'GET', headers:HEADERS});
+
+  if(!res.ok) throw new Error('Joueur "'+query+'" non trouvé. Essayez : Mbappé, Salah, Haaland, Rashford, Barcola, Yamal...');
+
+  var data = await res.json();
+  var players = data.results || data.players || data || [];
+  if(!Array.isArray(players) || players.length === 0)
+    throw new Error('Joueur "'+query+'" introuvable. Vérifiez l'orthographe.');
+
+  var p = players[0];
+
+  // Récupérer les stats via api_v1_player_seasonstatistics si on a l'id
+  var stats = null;
+  if(p.id){
+    try {
+      var sUrl = BASE + '/api/v1/player/'+p.id+'/season/statistics?season=2024';
+      var sRes = await fetch(sUrl, {method:'GET', headers:HEADERS});
+      if(sRes.ok){ var sData = await sRes.json(); stats = sData.statistics || sData; }
+    } catch(e){}
+  }
+
+  var age = null;
+  if(p.dateOfBirthTimestamp) age = Math.floor((Date.now()/1000 - p.dateOfBirthTimestamp)/31536000);
+
+  return {
+    nom: p.name || p.shortName || query,
+    poste: p.position || 'Joueur de champ',
+    club: (p.team && p.team.name) || 'Club inconnu',
+    ligue: (p.team && p.team.tournament && p.team.tournament.name) || '',
+    age: age, emoji: '⚽',
+    buts: (stats && stats.goals) || null,
+    passes: (stats && stats.assists) || null,
+    minutes: (stats && stats.minutesPlayed) || null,
+    matchs: (stats && stats.appearances) || null,
+    xg: null, note: (stats && stats.rating) || null,
+    transfert: null, salaire: null, source: 'api'
+  };
+}
+
+// ── CALCUL SCORE ──
+function calcScore(d){
+  var s = {};
+  if(d.buts !== null && d.matchs && d.matchs > 0){
+    var bpm = d.buts/d.matchs, ppm = (d.passes||0)/d.matchs;
+    s.perf = Math.min(100, Math.max(0, Math.round(bpm/0.8*60 + ppm/0.5*40)));
+  } else s.perf = null;
+
+  if(d.xg !== null && d.buts !== null && d.xg > 0){
+    s.xg = Math.min(100, Math.max(0, Math.round(d.buts/d.xg*60)));
+  } else s.xg = null;
+
+  if(d.minutes !== null){
+    s.reg = Math.min(100, Math.round(d.minutes/3420*100));
+  } else s.reg = null;
+
+  if(d.age !== null){
+    s.age = d.age<=21?100:d.age<=24?90:d.age<=27?75:d.age<=29?55:d.age<=31?35:15;
+  } else s.age = null;
+
+  if(d.note !== null){
+    s.impact = Math.min(100, Math.max(0, Math.round((d.note-5)/5*100)));
+  } else s.impact = null;
+
+  var poids = {perf:30,xg:25,reg:20,age:15,impact:10};
+  var total = 0, tp = 0;
+  Object.keys(poids).forEach(function(k){
+    if(s[k] !== null){ total += s[k]*poids[k]; tp += poids[k]; }
+  });
+  return {dims:s, global: tp>0 ? Math.round(total/tp) : 50};
+}
+
+function getVerdict(score){
+  if(score>=82) return {txt:'🔥 Sous-évalué',    color:'var(--green)', bg:'rgba(0,245,160,.15)', border:'rgba(0,245,160,.4)'};
+  if(score>=68) return {txt:'✅ Prix juste',      color:'var(--blue)',  bg:'rgba(77,159,255,.12)',border:'rgba(77,159,255,.3)'};
+  if(score>=50) return {txt:'⚠️ Légère survaleur',color:'var(--amber)', bg:'rgba(255,179,71,.1)', border:'rgba(255,179,71,.3)'};
+  return               {txt:'❌ Surpayé',         color:'var(--red)',   bg:'rgba(255,77,106,.1)', border:'rgba(255,77,106,.3)'};
+}
+
+function getDimColor(v){ return v>=75?'var(--green)':v>=55?'var(--blue)':v>=35?'var(--amber)':'var(--red)'; }
+
+function renderResult(d){
+  var sc  = calcScore(d);
+  var vrd = getVerdict(sc.global);
+  var dims = [
+    {key:'perf',   name:'Performance offensive', note:'Buts + passes pondérés par match'},
+    {key:'xg',     name:'xG Efficiency',          note:'Finition réelle vs buts attendus'},
+    {key:'reg',    name:'Régularité',              note:'Temps de jeu sur la saison'},
+    {key:'age',    name:'Âge économique',          note:'Valeur d'investissement vs durée'},
+    {key:'impact', name:'Impact global',            note:'Note moyenne toutes compétitions'},
+  ];
+
+  var shareText = d.emoji+' '+d.nom+' — Analyse Calculamatix\n'
+    +'━━━━━━━━━━━━━━━━━━━━\n'
+    +'📊 Score : '+sc.global+'/100\n'
+    +'🏷️ Verdict : '+vrd.txt+'\n'
+    +(d.buts!==null?'⚽ Buts : '+d.buts+'\n':'')
+    +(d.xg!==null?'📐 xG efficiency : ×'+Math.round(d.buts/d.xg*10)/10+'\n':'')
+    +(d.transfert?'💰 Valorisation : '+d.transfert+'M€\n':'')
+    +'━━━━━━━━━━━━━━━━━━━━\n'
+    +'calculamatix.com/transfert-foot';
+
+  var html = '<div class="player-header">'
+    +'<div class="player-avatar">'+d.emoji+'</div>'
+    +'<div class="player-info">'
+    +'<div class="player-name">'+d.nom+'</div>'
+    +'<div class="player-meta">'
+    +(d.club?'<span>🏟️ '+d.club+'</span>':'')
+    +(d.ligue?'<span>🌍 '+d.ligue+'</span>':'')
+    +(d.poste?'<span>📌 '+d.poste+'</span>':'')
+    +(d.age?'<span>🎂 '+d.age+' ans</span>':'')
+    +'</div></div>'
+    +'<div class="score-ring-wrap"><div class="score-num" style="color:'+getDimColor(sc.global)+'">'+sc.global+'</div><div class="score-label">/ 100</div></div>'
+    +'<div class="verdict-badge" style="color:'+vrd.color+';background:'+vrd.bg+';border:1px solid '+vrd.border+'">'+vrd.txt+'</div>'
+    +'</div>';
+
+  html += '<div class="g2">';
+  // Dimensions
+  html += '<div class="card"><div class="ctitle">Score par dimension</div>';
+  dims.forEach(function(dim){
+    var val = sc.dims[dim.key];
+    if(val===null){
+      html += '<div class="dim-row"><div class="dim-top"><span class="dim-name">'+dim.name+'</span><span class="dim-val" style="color:var(--muted)">N/A</span></div><div class="dim-bar"><div class="dim-fill" style="width:20%;background:var(--muted);opacity:.3"></div></div></div>';
+    } else {
+      var c = getDimColor(val);
+      html += '<div class="dim-row"><div class="dim-top"><span class="dim-name">'+dim.name+'</span><span class="dim-val" style="color:'+c+'">'+val+'/100</span></div>'
+        +'<div class="dim-bar"><div class="dim-fill" style="width:'+val+'%;background:'+c+'"></div></div>'
+        +'<div style="font-size:10px;color:var(--muted);margin-top:3px;font-family:DM Mono,monospace">'+dim.note+'</div></div>';
+    }
+  });
+  html += '</div>';
+
+  // Stats
+  html += '<div class="card"><div class="ctitle">Statistiques saison</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">';
+  [{val:d.buts,lbl:'Buts',c:'var(--green)'},{val:d.passes,lbl:'Passes déc.',c:'var(--blue)'},
+   {val:d.matchs,lbl:'Matchs',c:'var(--text)'},{val:d.minutes?Math.round(d.minutes/(d.matchs||1))+''':null,lbl:'Min./match',c:'var(--muted)'},
+   {val:d.xg,lbl:'xG saison',c:'var(--purple)'},{val:d.note,lbl:'Note moy.',c:'var(--amber)'}
+  ].forEach(function(s){
+    html += '<div class="stat-box"><div class="stat-val" style="color:'+s.c+'">'+(s.val!==null&&s.val!==undefined?s.val:'—')+'</div><div class="stat-lbl">'+s.lbl+'</div></div>';
+  });
+  html += '</div>';
+  if(d.transfert){
+    html += '<div class="di"><span>Valorisation</span><span style="color:var(--yellow)">'+d.transfert+'M€</span></div>';
+    if(d.salaire) html += '<div class="di"><span>Salaire annuel</span><span>'+d.salaire+'M€</span></div>';
+    if(d.buts) html += '<div class="di"><span>Coût par but</span><span>'+Math.round(d.transfert/d.buts*10)/10+'M€</span></div>';
+  }
+  if(d.xg!==null&&d.buts!==null&&d.xg>0){
+    var ratio = Math.round(d.buts/d.xg*100)/100;
+    var comment = ratio>1.2?'Finisseur exceptionnel — marque plus que prévu par les stats.':ratio>0.9?'Dans la moyenne — finition conforme aux attentes.':'Sous-performe devant le but — les occasions ne se transforment pas.';
+    html += '<div class="xg-explain">📐 <strong>xG Efficiency ×'+ratio+'</strong><br>'+comment+' Buts réels ('+d.buts+') vs xG ('+d.xg+') = '+(Math.round((d.buts-d.xg)*10)/10)+' but(s) d'écart.</div>';
+  }
+  html += '</div></div>';
+
+  html += '<div class="share-card"><div class="ctitle" style="color:var(--green)">📤 Partager ce verdict</div>'
+    +'<div class="share-preview" id="sharePreview">'+shareText.replace(/\n/g,'\n')+'</div>'
+    +'<div class="share-btns">'
+    +'<button class="share-btn btn-x" onclick="shareX()">𝕏 Twitter / X</button>'
+    +'<button class="share-btn btn-wa" onclick="shareWA()">📱 WhatsApp</button>'
+    +'<button class="share-btn btn-copy" onclick="copyText()">📋 Copier</button>'
+    +'</div></div>';
+
+  html += '<div class="disc">⚠️ <strong style="color:var(--amber)">Disclaimer :</strong> Outil de divertissement et d'analyse pour les fans. Scores calculés à partir de statistiques publiques. Pas un avis de scouting professionnel. Valorisations basées sur estimations publiques (Transfermarkt, presse). Sources : SportAPI (RapidAPI), données enrichies Calculamatix 2025-2026.</div>';
+
+  g('resultWrap').innerHTML = html;
+  g('resultWrap').classList.add('show');
+  window.scrollTo({top: g('resultWrap').offsetTop - 80, behavior:'smooth'});
+  window._shareText = shareText;
+}
+
+function shareX(){ window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent((window._shareText||'').replace(/\n/g,'\n')),'_blank'); }
+function shareWA(){ window.open('https://wa.me/?text='+encodeURIComponent((window._shareText||'').replace(/\n/g,'\n')),'_blank'); }
+function copyText(){
+  navigator.clipboard.writeText((window._shareText||'').replace(/\n/g,'\n')).then(function(){
+    var btn = document.querySelector('.btn-copy');
+    btn.textContent = '✅ Copié !';
+    setTimeout(function(){ btn.textContent = '📋 Copier'; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
