@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ma trajectoire sociale — Où suis-je vraiment dans la société française ? | Calculamatix</title>
+  <meta name="description" content="Percentile de revenus, de patrimoine, capitaux de Bourdieu, mobilité sociale intergénérationnelle. Données INSEE 2024, CEREQ, INED. Le calculateur que la sociologie n'a jamais osé faire."/>
+  <link rel="canonical" href="https://calculamatix.com/trajectoire-sociale.html"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#07060f;--card:#0f0e1c;--border:#1c1a2e;
+      --purple:#9D6FFF;--indigo:#6A7FFF;--pink:#FF6BBA;
+      --gold:#FFB800;--green:#3BFF9E;--red:#FF4D6A;
+      --blue:#4D9FFF;--amber:#FFAA3B;
+      --text:#EEE8FF;--muted:#4A4560;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:80px;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:radial-gradient(ellipse 70% 50% at 30% 0%,rgba(157,111,255,.06),transparent),
+                 radial-gradient(ellipse 50% 40% at 80% 100%,rgba(106,127,255,.04),transparent)}
+
+    nav{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:22px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:17px;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--gold)}
+    .back{font-size:12px;color:var(--muted);text-decoration:none}
+
+    .hero{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:40px 24px 28px}
+    .htag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--purple);background:rgba(157,111,255,.08);border:1px solid rgba(157,111,255,.2);padding:4px 14px;border-radius:100px;margin-bottom:14px;font-family:'DM Mono',monospace}
+    h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(20px,4vw,46px);letter-spacing:-2px;line-height:1.05;margin-bottom:10px}
+    h1 em{color:var(--purple);font-style:normal}
+    .hero-sub{font-size:14px;color:var(--muted);line-height:1.7;max-width:700px}
+
+    /* POSITION BANNER */
+    .pos-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .pos-box{background:linear-gradient(135deg,rgba(157,111,255,.08),rgba(106,127,255,.04));border:2px solid rgba(157,111,255,.3);border-radius:20px;padding:28px;display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+    .pos-main{text-align:center;min-width:160px}
+    .pos-classe{font-family:'Unbounded',sans-serif;font-size:clamp(14px,2vw,18px);font-weight:900;color:var(--purple);margin-bottom:6px;line-height:1.2}
+    .pos-desc{font-size:11px;color:var(--muted);line-height:1.5;max-width:200px;margin:0 auto}
+    .pos-divider{width:1px;height:60px;background:rgba(255,255,255,.06);flex-shrink:0}
+    .pos-stats{display:flex;flex-wrap:wrap;gap:12px;flex:1}
+    .pos-stat{text-align:center;min-width:110px}
+    .pos-stat-v{font-family:'DM Mono',monospace;font-size:18px;font-weight:700}
+    .pos-stat-l{font-size:10px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+
+    .tabs-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .tabs{display:flex;gap:4px;background:#0a0916;border:1px solid var(--border);border-radius:14px;padding:5px;width:fit-content;flex-wrap:wrap}
+    .tab{background:transparent;border:none;color:var(--muted);padding:9px 14px;border-radius:10px;font-size:13px;font-family:inherit;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+    .tab.on{background:var(--purple);color:#fff;font-weight:700}
+    .panel{display:none}.panel.on{display:block}
+
+    .wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:14px}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px}
+    .ctitle{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px}
+
+    .f{margin-bottom:14px}.f:last-child{margin-bottom:0}
+    .f label{display:flex;justify-content:space-between;font-size:12px;color:#3a3650;margin-bottom:6px}
+    .fval{font-family:'DM Mono',monospace;color:var(--purple);font-size:12px}
+    .fhint{font-size:10px;color:#2a2640;margin-top:5px;line-height:1.5}
+
+    input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:#1c1a2e;border-radius:2px;outline:none;cursor:pointer}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--purple);border-radius:50%;box-shadow:0 0 8px rgba(157,111,255,.4)}
+    select{width:100%;background:#0f0e1c;border:1px solid var(--border);border-radius:10px;color:var(--text);padding:10px 13px;font-size:14px;font-family:inherit;outline:none}
+
+    /* Capital bar Bourdieu */
+    .capital-bar{margin-bottom:16px}
+    .cap-top{display:flex;justify-content:space-between;margin-bottom:6px}
+    .cap-name{font-size:13px;color:var(--text)}
+    .cap-score{font-family:'DM Mono',monospace;font-size:13px;font-weight:700}
+    .cap-track{height:12px;background:rgba(255,255,255,.05);border-radius:6px;overflow:hidden;position:relative}
+    .cap-fill{height:100%;border-radius:6px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+    .cap-hint{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5}
+
+    /* Percentile gauge */
+    .percentile-bar{position:relative;width:100%;height:24px;background:linear-gradient(90deg,#1c0a24,#3a1a5c,#6a4ab8,#9D6FFF,#c4a0ff);border-radius:12px;overflow:hidden;margin:10px 0}
+    .percentile-marker{position:absolute;top:0;height:100%;width:4px;background:#fff;border-radius:2px;transition:left .5s ease;box-shadow:0 0 8px rgba(255,255,255,.8)}
+    .percentile-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:4px}
+
+    /* Mobilité sociale */
+    .mob-arrow{font-size:32px;margin:0 8px}
+    .mob-box{padding:14px 18px;border-radius:12px;border:1px solid;text-align:center;flex:1;min-width:120px}
+    .mob-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+
+    .m{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+    .ml{font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;font-family:'DM Mono',monospace}
+    .mv{font-family:'DM Mono',monospace;font-size:18px;font-weight:500}
+    .ms{font-size:10px;color:var(--muted);margin-top:4px}
+
+    .quote{background:rgba(157,111,255,.05);border-left:3px solid var(--purple);padding:14px 18px;border-radius:0 10px 10px 0;font-size:13px;color:var(--muted);line-height:1.7;font-style:italic;margin-bottom:10px}
+    .quote strong{color:var(--text);font-style:normal;display:block;margin-bottom:6px;font-size:11px;text-transform:uppercase;letter-spacing:1px}
+
+    .di{display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;margin-bottom:6px}
+    .di span:first-child{font-size:12px;color:var(--muted)}
+    .di span:last-child{font-family:'DM Mono',monospace;font-size:12px}
+
+    .choc{text-align:center;padding:18px;background:linear-gradient(135deg,rgba(157,111,255,.07),transparent);border:1px solid rgba(157,111,255,.2);border-radius:14px;margin-bottom:10px}
+    .choc-num{font-family:'Unbounded',sans-serif;font-size:clamp(24px,4vw,40px);font-weight:900;color:var(--purple);margin:6px 0}
+    .choc-label{font-size:12px;color:var(--muted);line-height:1.5}
+    .choc-src{font-size:10px;color:#2a2640;margin-top:6px;font-family:'DM Mono',monospace}
+
+    .cw{position:relative;width:100%;height:260px;margin-top:12px}
+    .src{background:#090816;border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:11px;color:#2a2640;line-height:1.8;font-family:'DM Mono',monospace}
+    .src strong{color:#4A4560}
+    .disc{background:rgba(255,184,0,.04);border:1px solid rgba(255,184,0,.15);border-radius:10px;padding:12px 16px;font-size:11px;color:var(--muted);line-height:1.7}
+
+    @media(max-width:640px){.g2,.g3{grid-template-columns:1fr 1fr}.tab{padding:8px 10px;font-size:11px}.pos-box{flex-direction:column}.pos-divider{display:none}}
+    @media(max-width:400px){.g2,.g3{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Retour</a>
+</nav>
+
+<div class="hero">
+  <div class="htag">🏛️ Sociologie · Bourdieu · INSEE 2024</div>
+  <h1>Ma <em>trajectoire</em><br>sociale</h1>
+  <p class="hero-sub">Où suis-je vraiment dans la société française ? Percentile de revenus et patrimoine, capitaux de Bourdieu (économique, culturel, social), mobilité intergénérationnelle. Basé sur les données INSEE 2024, CEREQ, INED et les travaux de Pierre Bourdieu. <strong style="color:var(--text)">Disclaimer : ce calculateur est un outil de réflexion, pas un diagnostic sociologique certifié.</strong></p>
+</div>
+
+<!-- POSITION BANNER -->
+<div class="pos-wrap">
+  <div class="pos-box" id="pos-box">
+    <div class="pos-main">
+      <div class="pos-classe" id="pos-classe">Configurez votre profil</div>
+      <div class="pos-desc" id="pos-desc">pour découvrir votre position dans l'espace social français</div>
+    </div>
+    <div class="pos-divider"></div>
+    <div class="pos-stats">
+      <div class="pos-stat"><div class="pos-stat-v" id="ps-rev" style="color:var(--purple)">—</div><div class="pos-stat-l">Percentile revenus</div></div>
+      <div class="pos-stat"><div class="pos-stat-v" id="ps-pat" style="color:var(--gold)">—</div><div class="pos-stat-l">Percentile patrimoine</div></div>
+      <div class="pos-stat"><div class="pos-stat-v" id="ps-cap" style="color:var(--indigo)">—</div><div class="pos-stat-l">Score capital total</div></div>
+      <div class="pos-stat"><div class="pos-stat-v" id="ps-mob" style="color:var(--green)">—</div><div class="pos-stat-l">Mobilité sociale</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('profil',this)">👤 Mon profil</button>
+    <button class="tab" onclick="showTab('parents',this)">👨‍👩‍👦 Mes parents</button>
+    <button class="tab" onclick="showTab('capitaux',this)">💎 Capitaux Bourdieu</button>
+    <button class="tab" onclick="showTab('mobilite',this)">📈 Mobilité sociale</button>
+    <button class="tab" onclick="showTab('position',this)">🗺️ Ma position</button>
+    <button class="tab" onclick="showTab('philo',this)">📚 La théorie</button>
+  </div>
+</div>
+
+<!-- PROFIL -->
+<div class="panel on" id="p-profil"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Votre situation actuelle</div>
+      <div class="f">
+        <label>Revenu net mensuel (vous seul) <span class="fval" id="vRevenu">2 000 €</span></label>
+        <input type="range" id="iRevenu" min="0" max="20000" step="100" value="2000" oninput="recalc()">
+        <div class="fhint">Revenu médian France 2021 : 1 930€/mois · D9 (10% les plus riches) : 3 490€/mois (INSEE 2021)</div>
+      </div>
+      <div class="f">
+        <label>Revenu du foyer (total) <span class="fval" id="vFoyer">2 000 €</span></label>
+        <input type="range" id="iFoyer" min="0" max="40000" step="100" value="2000" oninput="recalc()">
+        <div class="fhint">Si vous êtes seul, même montant. Le niveau de vie se calcule sur le foyer divisé par les unités de consommation</div>
+      </div>
+      <div class="f">
+        <label>Composition du foyer</label>
+        <select id="iFoyerComp" onchange="recalc()">
+          <option value="1" selected>Seul(e) — 1 adulte</option>
+          <option value="1.5">En couple sans enfant — 1,5 UC</option>
+          <option value="1.8">En couple + 1 enfant — 1,8 UC</option>
+          <option value="2.1">En couple + 2 enfants — 2,1 UC</option>
+          <option value="2.4">En couple + 3 enfants — 2,4 UC</option>
+          <option value="1.3">Parent seul + 1 enfant — 1,3 UC</option>
+        </select>
+        <div class="fhint">UC = Unités de consommation (système OCDE modifié) · 1 adulte = 1 UC · +0,5 par adulte supplémentaire · +0,3 par enfant</div>
+      </div>
+      <div class="f">
+        <label>Patrimoine net total <span class="fval" id="vPatrimoine">80 000 €</span></label>
+        <input type="range" id="iPatrimoine" min="0" max="2000000" step="5000" value="80000" oninput="recalc()">
+        <div class="fhint">D9 patrimoine 2024 : 750 400€ · Patrimoine médian : ~117 000€ · Top 1% : > 2M€ (INSEE Enquête Patrimoine 2024)</div>
+      </div>
+      <div class="f">
+        <label>Propriétaire de votre résidence principale ?</label>
+        <select id="iProprio" onchange="recalc()">
+          <option value="1" selected>Oui — propriétaire</option>
+          <option value="0">Non — locataire ou hébergé</option>
+        </select>
+        <div class="fhint">58% des ménages français sont propriétaires de leur résidence principale (INSEE 2023)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Votre position dans les déciles INSEE</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Votre niveau de vie = revenu foyer ÷ unités de consommation. Données INSEE 2021 (dernières disponibles).</div>
+      <div id="decile-detail"></div>
+      <div style="margin-top:14px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-family:'DM Mono',monospace">Votre position dans la distribution</div>
+        <div class="percentile-bar"><div class="percentile-marker" id="perc-marker" style="left:50%"></div></div>
+        <div class="percentile-labels"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">🎓 Formation & trajectoire professionnelle</div>
+    <div class="g2">
+      <div>
+        <div class="f">
+          <label>Niveau de diplôme</label>
+          <select id="iDiplome" onchange="recalc()">
+            <option value="1">Aucun diplôme / CEP</option>
+            <option value="2">BEP / CAP</option>
+            <option value="3">Bac</option>
+            <option value="4" selected>Bac +2/3</option>
+            <option value="5">Bac +5 (Master / Grande École)</option>
+            <option value="6">Doctorat / PhD</option>
+          </select>
+          <div class="fhint">44% des enfants d'enseignants accèdent à des emplois qualifiés vs 15% des enfants d'ouvriers (INSEE TEF 2023)</div>
+        </div>
+        <div class="f">
+          <label>Catégorie socioprofessionnelle</label>
+          <select id="iCSP" onchange="recalc()">
+            <option value="1">Ouvrier non qualifié</option>
+            <option value="2">Ouvrier qualifié / employé</option>
+            <option value="3" selected>Profession intermédiaire / technicien</option>
+            <option value="4">Cadre / profession intellectuelle supérieure</option>
+            <option value="5">Profession libérale / chef d'entreprise</option>
+            <option value="6">Indépendant / créateur</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <div class="f">
+          <label>Secteur d'activité</label>
+          <select id="iSecteur" onchange="recalc()">
+            <option value="public">🏛️ Public / fonctionnaire</option>
+            <option value="prive" selected>🏢 Privé — salarié</option>
+            <option value="independant">💼 Indépendant / libéral</option>
+            <option value="startup">🚀 Startup / tech</option>
+            <option value="associatif">🤝 Associatif / ESS</option>
+          </select>
+        </div>
+        <div class="f">
+          <label>Lieu de résidence</label>
+          <select id="iLieu" onchange="recalc()">
+            <option value="paris">🗼 Paris intra-muros</option>
+            <option value="idf">🏙️ Île-de-France (hors Paris)</option>
+            <option value="metro_grande">🌆 Grande métropole régionale (Lyon, Marseille...)</option>
+            <option value="metro_moy" selected>🏘️ Ville moyenne</option>
+            <option value="rural">🌾 Rural / petite commune</option>
+          </select>
+          <div class="fhint">Le même salaire à Paris = niveau de vie 20-30% inférieur vs province (coût logement)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- PARENTS -->
+<div class="panel" id="p-parents"><div class="wrap">
+  <div class="card" style="background:rgba(255,184,0,.04);border-color:rgba(255,184,0,.2)">
+    <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:4px">
+      ℹ️ Ces informations permettent de calculer votre <strong style="color:var(--text)">mobilité sociale intergénérationnelle</strong> — la distance parcourue entre la position de vos parents et la vôtre. C'est l'un des indicateurs les plus importants en sociologie française, étudié par l'INSEE, l'INED et le CEREQ.
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Votre père / parent principal</div>
+      <div class="f">
+        <label>Catégorie socioprofessionnelle du père</label>
+        <select id="iPCSPere" onchange="recalc()">
+          <option value="1">Ouvrier non qualifié / agriculteur</option>
+          <option value="2" selected>Ouvrier qualifié / employé</option>
+          <option value="3">Profession intermédiaire</option>
+          <option value="4">Cadre / ingénieur</option>
+          <option value="5">Chef d'entreprise / indépendant</option>
+          <option value="6">Profession libérale / cadre dirigeant</option>
+        </select>
+        <div class="fhint">En 2023, seuls 13% des fils d'ouvrier non qualifié deviennent cadres (Ministère Éducation nationale, RERS 2024)</div>
+      </div>
+      <div class="f">
+        <label>Niveau de diplôme du père</label>
+        <select id="iDiplPere" onchange="recalc()">
+          <option value="1" selected>Aucun diplôme / certificat d'études</option>
+          <option value="2">CAP / BEP</option>
+          <option value="3">Bac</option>
+          <option value="4">Bac +2/3</option>
+          <option value="5">Bac +5 et plus</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Patrimoine transmis / héritage attendu <span class="fval" id="vHeritage">0 €</span></label>
+        <input type="range" id="iHeritage" min="0" max="2000000" step="10000" value="0" oninput="recalc()">
+        <div class="fhint">Patrimoine brut moyen des ménages en 2024 : 317 100€ (INSEE). L'héritage est la principale source de reproduction des inégalités patrimoniales.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Votre mère</div>
+      <div class="f">
+        <label>Catégorie socioprofessionnelle de la mère</label>
+        <select id="iPCSMere" onchange="recalc()">
+          <option value="0">Sans emploi / femme au foyer</option>
+          <option value="1">Ouvrière / agricultrice</option>
+          <option value="2" selected>Employée</option>
+          <option value="3">Profession intermédiaire</option>
+          <option value="4">Cadre / enseignante</option>
+          <option value="5">Profession libérale / dirigeante</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Niveau de diplôme de la mère</label>
+        <select id="iDiplMere" onchange="recalc()">
+          <option value="1">Aucun diplôme</option>
+          <option value="2" selected>CAP / BEP / Bac</option>
+          <option value="3">Bac +2/3</option>
+          <option value="4">Bac +5 et plus</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Accès à la culture dans votre enfance</label>
+        <select id="iCulture" onchange="recalc()">
+          <option value="1">Très limité — peu de livres, pas de musées, peu de voyages</option>
+          <option value="2" selected>Moyen — quelques livres, sorties occasionnelles</option>
+          <option value="3">Riche — bibliothèque, musées, voyages, activités culturelles</option>
+          <option value="4">Très riche — milieu culturellement favorisé (artistes, intellectuels, enseignants)</option>
+        </select>
+        <div class="fhint">Le "capital culturel incorporé" de Bourdieu — il se transmet en grande partie avant 10 ans et conditionne les trajectoires scolaires.</div>
+      </div>
+      <div class="f">
+        <label>Type d'école fréquentée (primaire/collège/lycée)</label>
+        <select id="iEcole" onchange="recalc()">
+          <option value="1">École publique ordinaire en zone difficile (REP+)</option>
+          <option value="2" selected>École publique standard</option>
+          <option value="3">École publique favorisée / lycée réputé</option>
+          <option value="4">École privée sous contrat</option>
+          <option value="5">École privée hors contrat / internationale / grands lycées</option>
+        </select>
+        <div class="fhint">6/10 étudiants des grandes écoles viennent des classes supérieures (Pinçon-Charlot). Les lycées privés parisiens bénéficient de plus d'heures par élève (données lycées parisiens 2021-2022).</div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- CAPITAUX BOURDIEU -->
+<div class="panel" id="p-capitaux"><div class="wrap">
+  <div class="card" style="background:rgba(157,111,255,.03);border-color:rgba(157,111,255,.15)">
+    <div class="ctitle" style="color:var(--purple)">La théorie des capitaux — Pierre Bourdieu (1979, "La Distinction")</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.8">
+      Pour Bourdieu, la position sociale d'un individu ne dépend pas uniquement de ses revenus. Elle est déterminée par le <strong style="color:var(--text)">volume total de capitaux</strong> qu'il possède et par leur <strong style="color:var(--text)">composition</strong> (quelle part est économique, culturelle, sociale). Un artiste peut avoir un fort capital culturel et un faible capital économique. Un entrepreneur peut avoir l'inverse. Ces combinaisons définissent des positions distinctes dans l'espace social.
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">💰 Capital économique</div>
+      <div class="capital-bar">
+        <div class="cap-top"><span class="cap-name">Revenus</span><span class="cap-score" id="cap-eco-rev" style="color:var(--gold)">—</span></div>
+        <div class="cap-track"><div class="cap-fill" id="bar-eco-rev" style="background:var(--gold)"></div></div>
+        <div class="cap-hint">Vos revenus nets par rapport aux percentiles INSEE 2021</div>
+      </div>
+      <div class="capital-bar">
+        <div class="cap-top"><span class="cap-name">Patrimoine</span><span class="cap-score" id="cap-eco-pat" style="color:var(--gold)">—</span></div>
+        <div class="cap-track"><div class="cap-fill" id="bar-eco-pat" style="background:var(--gold)"></div></div>
+        <div class="cap-hint">Votre patrimoine net par rapport aux déciles INSEE Enquête Patrimoine 2024</div>
+      </div>
+      <div class="capital-bar">
+        <div class="cap-top"><span class="cap-name">Héritage</span><span class="cap-score" id="cap-eco-her" style="color:var(--amber)">—</span></div>
+        <div class="cap-track"><div class="cap-fill" id="bar-eco-her" style="background:var(--amber)"></div></div>
+        <div class="cap-hint">L'héritage est la principale source de reproduction des inégalités patrimoniales (INSEE 2024)</div>
+      </div>
+      <div style="margin-top:14px;padding:12px;background:rgba(0,0,0,.3);border-radius:8px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Score capital économique global</div>
+        <div style="font-family:'DM Mono',monospace;font-size:22px;font-weight:700;color:var(--gold)" id="score-eco">—</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">/ 100</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ctitle">📚 Capital culturel</div>
+      <div class="capital-bar">
+        <div class="cap-top"><span class="cap-name">Capital incorporé (habitus)</span><span class="cap-score" id="cap-cul-inc" style="color:var(--purple)">—</span></div>
+        <div class="cap-track"><div class="cap-fill" id="bar-cul-inc" style="background:var(--purple)"></div></div>
+        <div class="cap-hint">Transmis par la famille — vocabulaire, aisance sociale, pratiques culturelles (Bourdieu, "Les Héritiers" 1964)</div>
+      </div>
+      <div class="capital-bar">
+        <div class="cap-top"><span class="cap-name">Capital institutionnalisé (diplômes)</span><span class="cap-score" id="cap-cul-dip" style="color:var(--purple)">—</span></div>
+        <div class="cap-track"><div class="cap-fill" id="bar-cul-dip" style="background:var(--indigo)"></div></div>
+        <div class="cap-hint">Titres scolaires : Bac +5 = "passeport" vers les classes supérieures. Les enfants de cadres sont 3,1× plus souvent cadres (INSEE 2023)</div>
+      </div>
+      <div class="capital-bar">
+        <div class="cap-top"><span class="cap-name">Capital objectivé (biens culturels)</span><span class="cap-score" id="cap-cul-obj" style="color:var(--purple)">—</span></div>
+        <div class="cap-track"><div class="cap-fill" id="bar-cul-obj" style="background:var(--blue)"></div></div>
+        <div class="cap-hint">Livres, œuvres, instruments — accès aux biens culturels dans l'enfance</div>
+      </div>
+      <div style="margin-top:14px;padding:12px;background:rgba(0,0,0,.3);border-radius:8px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Score capital culturel global</div>
+        <div style="font-family:'DM Mono',monospace;font-size:22px;font-weight:700;color:var(--purple)" id="score-cul">—</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">/ 100</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🤝 Capital social</div>
+      <div class="f">
+        <label>Étendue de votre réseau professionnel</label>
+        <select id="iReseau" onchange="recalc()">
+          <option value="1">Limité — réseau local, peu de contacts influents</option>
+          <option value="2" selected>Moyen — réseau professionnel standard</option>
+          <option value="3">Étendu — réseau dans votre secteur, LinkedIn actif</option>
+          <option value="4">Très étendu — réseau influent, connexions clés</option>
+          <option value="5">Élite — réseau dans les sphères décisionnelles</option>
+        </select>
+        <div class="fhint">Plus de 60% des emplois se trouvent via le réseau (DARES 2023). Le "pantouflage" (Bourdieu) illustre la concentration des grandes écoles dans les postes-clés.</div>
+      </div>
+      <div class="f">
+        <label>Grandes écoles / université d'élite fréquentée ?</label>
+        <select id="iGrandeEcole" onchange="recalc()">
+          <option value="0" selected>Non</option>
+          <option value="1">Université de rang national (Paris I, II, etc.)</option>
+          <option value="2">École d'ingénieur / commerce de rang national</option>
+          <option value="3">Grande école de premier rang (Polytechnique, ENS, HEC...)</option>
+        </select>
+        <div class="fhint">Les alumni des grandes écoles forment des réseaux très endogames. Les 200 plus grandes entreprises françaises sont dirigées à 80% par des diplômés de 5 grandes écoles.</div>
+      </div>
+      <div class="capital-bar" style="margin-top:14px">
+        <div class="cap-top"><span class="cap-name">Score capital social</span><span class="cap-score" id="cap-soc" style="color:var(--pink)">—</span></div>
+        <div class="cap-track"><div class="cap-fill" id="bar-soc" style="background:var(--pink)"></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ctitle">🏆 Votre espace social (Bourdieu)</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6">Votre position dans l'espace social à 2 dimensions : volume total de capital (vertical) et composition du capital (horizontal — économique vs culturel).</div>
+      <div class="cw"><canvas id="chart-bourdieu"></canvas></div>
+      <div id="bourdieu-verdict" style="margin-top:10px;font-size:12px;color:var(--muted);line-height:1.7;padding:10px;background:rgba(0,0,0,.3);border-radius:8px"></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- MOBILITÉ -->
+<div class="panel" id="p-mobilite"><div class="wrap">
+  <div class="card">
+    <div class="ctitle">📈 Votre trajectoire intergénérationnelle</div>
+    <div id="mobilite-viz"></div>
+    <div id="mobilite-texte" style="margin-top:14px;font-size:13px;color:var(--muted);line-height:1.8;padding:14px;background:rgba(0,0,0,.3);border-radius:10px"></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">📊 Vos chances statistiques — Ce que les données disent</div>
+      <div id="chances-stat"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">🔄 La reproduction sociale en chiffres</div>
+      <div class="choc">
+        <div style="font-size:11px;color:var(--muted)">Enfants de cadres → cadres</div>
+        <div class="choc-num">78%</div>
+        <div class="choc-label">si les deux parents sont cadres (bac+5)</div>
+        <div class="choc-src">CEREQ, mai 2024</div>
+      </div>
+      <div class="choc">
+        <div style="font-size:11px;color:var(--muted)">Fils d'ouvrier → cadre</div>
+        <div class="choc-num">13%</div>
+        <div class="choc-label">des fils d'ouvrier non qualifié deviennent cadres</div>
+        <div class="choc-src">Ministère Éducation, RERS 2024</div>
+      </div>
+      <div class="choc">
+        <div style="font-size:11px;color:var(--muted)">Enfants cadres × plus cadres</div>
+        <div class="choc-num">3,1×</div>
+        <div class="choc-label">un enfant de cadre est 3,1× plus souvent cadre qu'un enfant d'ouvrier qualifié</div>
+        <div class="choc-src">INSEE TEF 2023</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">🎓 L'ascenseur social est-il vraiment en panne ?</div>
+    <div class="quote"><strong>Pierre Bourdieu — "La Reproduction" (1970)</strong>"L'école véhicule la culture dominante et nie les différences culturelles, ce qui a pour effet de favoriser les milieux privilégiés."</div>
+    <div class="quote"><strong>Raymond Boudon — "L'Inégalité des chances" (1973)</strong>"La reproduction sociale procède des décisions résultant d'un calcul coût/avantage marqué par des effets de système — un père ouvrier verra le coût des études comme disproportionné."</div>
+    <div class="quote"><strong>INSEE / Abbas & Sicsic (2022) — Première étude revenus parents-enfants</strong>"Si les revenus des parents influencent en moyenne les revenus des enfants, ils ne les déterminent pas. La France se place dans une position intermédiaire de mobilité, meilleure qu'aux États-Unis."</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-top:10px">
+      La part des enfants gagnant davantage que leurs parents a baissé de >90% à ~60% depuis le milieu du XXe siècle — presque entièrement due au ralentissement de la croissance économique, pas à une réduction de la mobilité relative (Chetty et al., adapté à la France).
+    </div>
+  </div>
+</div></div>
+
+<!-- MA POSITION -->
+<div class="panel" id="p-position"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">📊 Où êtes-vous dans les déciles de revenus ?</div>
+      <div id="decile-viz"></div>
+      <div class="src" style="margin-top:10px">INSEE — Enquête Revenus fiscaux et sociaux 2021. Niveau de vie = revenu disponible / UC. Valeurs en euros par mois par unité de consommation.</div>
+    </div>
+    <div class="card">
+      <div class="ctitle">💰 Où êtes-vous dans les déciles de patrimoine ?</div>
+      <div id="patrim-viz"></div>
+      <div class="src" style="margin-top:10px">INSEE — Enquête Histoire de vie et Patrimoine 2023-2024. Patrimoine net brut = immobilier + financier + professionnel − dettes.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">🗺️ L'espace social français — Où vous situez-vous ?</div>
+    <div class="cw"><canvas id="chart-position"></canvas></div>
+    <div class="src" style="margin-top:10px">Inspiré du modèle de l'espace social de Pierre Bourdieu ("La Distinction", 1979) adapté aux données INSEE/CEREQ 2023-2024. Les positions des groupes sociaux sont des estimations basées sur les données disponibles, non des mesures certifiées.</div>
+  </div>
+
+  <div class="disc">
+    ⚠️ <strong style="color:var(--gold)">Disclaimer important :</strong> Ce calculateur est un outil pédagogique et de réflexion basé sur des données statistiques agrégées. Il ne constitue pas un diagnostic sociologique individuel certifié. La position sociale est un concept multidimensionnel qui ne peut être réduit à quelques indicateurs. Les travaux de Bourdieu sont présentés ici à titre éducatif — ils font l'objet de débats académiques et de critiques (notamment sur le déterminisme et les "transclasses"). Ce calculateur ne prétend pas prédire votre trajectoire future, qui dépend d'une multiplicité de facteurs individuels et contextuels.
+  </div>
+</div></div>
+
+<!-- PHILOSOPHIE -->
+<div class="panel" id="p-philo"><div class="wrap">
+  <div class="card">
+    <div class="ctitle">📚 Pierre Bourdieu — Les concepts fondamentaux</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px;color:var(--muted);">
+      <div style="padding:14px;background:rgba(157,111,255,.05);border:1px solid rgba(157,111,255,.15);border-radius:10px;">
+        <div style="font-weight:700;color:var(--purple);margin-bottom:6px;font-size:13px">L'Habitus</div>
+        Ensemble d'habitudes de comportement et de pensée qui oriente les actions de l'individu. Incorporé dans l'enfance, il est le produit de la position sociale des parents. "On ne choisit pas sa classe sociale de naissance, mais elle choisit nos choix."
+      </div>
+      <div style="padding:14px;background:rgba(106,127,255,.05);border:1px solid rgba(106,127,255,.15);border-radius:10px;">
+        <div style="font-weight:700;color:var(--indigo);margin-bottom:6px;font-size:13px">Le Capital</div>
+        Ressources accumulées qui confèrent des avantages. Économique (revenus, patrimoine), Culturel (diplômes, pratiques), Social (réseau, relations), Symbolique (prestige, reconnaissance). Ils peuvent se convertir les uns dans les autres.
+      </div>
+      <div style="padding:14px;background:rgba(255,107,186,.05);border:1px solid rgba(255,107,186,.15);border-radius:10px;">
+        <div style="font-weight:700;color:var(--pink);margin-bottom:6px;font-size:13px">Le Champ</div>
+        Espace social structuré où se jouent des luttes pour différentes formes de capital. Le champ économique, culturel, politique, académique ont chacun leurs propres règles du jeu et leurs propres formes de capital valorisées.
+      </div>
+      <div style="padding:14px;background:rgba(255,184,0,.05);border:1px solid rgba(255,184,0,.15);border-radius:10px;">
+        <div style="font-weight:700;color:var(--gold);margin-bottom:6px;font-size:13px">La Violence symbolique</div>
+        Les dominés participent souvent à leur propre domination en acceptant comme légitime et naturel ce qui est en réalité une construction sociale. "L'école légitime l'ordre social en le faisant passer pour l'ordre naturel" (La Reproduction, 1970).
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">⚖️ Les critiques de Bourdieu</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.7;">
+      <div style="margin-bottom:10px"><strong style="color:var(--text)">Raymond Boudon (1973)</strong> — Critique le déterminisme de Bourdieu. Pour Boudon, les inégalités résultent de stratégies rationnelles individuelles, pas uniquement d'un habitus incorporé. L'ambition scolaire dépend d'un calcul coût/bénéfice.</div>
+      <div style="margin-bottom:10px"><strong style="color:var(--text)">Les "transclasses" (Chantal Jacquet, 2014)</strong> — Des individus issus de milieux défavorisés réussissent à changer de classe malgré l'habitus. Ces trajectoires exceptionnelles montrent que le déterminisme n'est pas absolu.</div>
+      <div style="margin-bottom:10px"><strong style="color:var(--text)">INSEE / Abbas & Sicsic (2022)</strong> — La mobilité intergénérationnelle des revenus en France est réelle mais partielle. La France se situe dans une position intermédiaire mondiale — ni l'ascenseur bloqué, ni la méritocratie pure.</div>
+      <div><strong style="color:var(--text)">CEREQ (mai 2024)</strong> — Un diplômé Bac+5 issu d'une famille ouvrière a encore 2× moins de chances d'être cadre qu'un diplômé équivalent issu d'une famille de cadres. L'origine compte encore, mais le diplôme compte aussi.</div>
+    </div>
+  </div>
+
+  <div class="src">
+    <strong>Sources complètes :</strong><br>
+    · INSEE Focus 371 — "Les montants de patrimoine détenus par les ménages en 2024" (déc. 2025)<br>
+    · INSEE — Enquête Histoire de vie et Patrimoine 2023-2024 (11 940 ménages)<br>
+    · INSEE — Niveau de vie et pauvreté 2021 (Revenus fiscaux et sociaux)<br>
+    · CEREQ — Étude mai 2024 : enfants diplômés bac+5, reproduction sociale selon origine<br>
+    · Ministère Éducation Nationale — RERS 2024 : mobilité sociale père-fils<br>
+    · INSEE / Abbas & Sicsic (2022) — "Une nouvelle mesure de la mobilité intergénérationnelle des revenus en France", INSEE Analyses 73<br>
+    · Bourdieu P. & Passeron J.-C. — "Les Héritiers" (1964), "La Reproduction" (1970)<br>
+    · Bourdieu P. — "La Distinction" (1979), "Le Capital culturel" (1979)<br>
+    · Pinçon-Charlot M. & Pinçon M. — "Les Ghettos du Ghota" (2007)<br>
+    · Boudon R. — "L'Inégalité des chances" (1973)<br>
+    · Jacquet C. — "Les transclasses ou la non-reproduction" (2014)<br>
+    · INED — TeO2 (Trajectoires et Origines) 2019-2020 : mobilité sociale enfants d'immigrés<br>
+    · Sherpas.com — "Capital culturel, social et économique selon Bourdieu" (2026) — synthèse données
+  </div>
+</div></div>
+
+<script>
+var activeTab = 'profil';
+var chartBourdieu=null, chartPosition=null;
+Chart.defaults.color='#4A4560';
+Chart.defaults.font.family="'DM Sans', sans-serif";
+
+function g(id){ return document.getElementById(id); }
+function sv(id){ var el=g(id); return el?+el.value:0; }
+function gv(id){ var el=g(id); return el?el.value:''; }
+function se(id,t){ var el=g(id); if(el) el.textContent=t; }
+function si(id,h){ var el=g(id); if(el) el.innerHTML=h; }
+function fmt(n){ return Math.round(n).toLocaleString('fr-FR'); }
+function destroyChart(c){ if(c){ try{c.destroy();}catch(e){} } return null; }
+
+// Déciles de niveau de vie INSEE 2021 (€/mois/UC)
+var DECILES_NV = [0, 1020, 1300, 1497, 1659, 1930, 2175, 2408, 2900, 3490, 99999];
+// Labels
+var DECILE_LABELS = ['Sous D1','D1-D2','D2-D3','D3-D4','D4-D5','D5-D6','D6-D7','D7-D8','D8-D9','Top 10%'];
+// Déciles patrimoine net INSEE 2024 (€)
+var DECILES_PAT = [0, 1000, 18000, 60000, 117000, 190000, 290000, 430000, 650000, 750400, 99999999];
+
+function showTab(name,btn){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  g('p-'+name).classList.add('on');
+  btn.classList.add('on');
+  activeTab=name;
+  setTimeout(function(){ renderCharts(name); },80);
+}
+function destroyChartSafe(c){ if(c){ try{c.destroy();}catch(e){} } return null; }
+
+function recalc(){
+  var revenu   = sv('iRevenu');
+  var foyer    = sv('iFoyer');
+  var uc       = +gv('iFoyerComp');
+  var patrimoine= sv('iPatrimoine');
+  var proprio  = +gv('iProprio');
+  var diplome  = +gv('iDiplome');
+  var csp      = +gv('iCSP');
+  var lieu     = gv('iLieu');
+
+  var pcsPere  = +gv('iPCSPere');
+  var diplPere = +gv('iDiplPere');
+  var heritage = sv('iHeritage');
+  var pcsMere  = +gv('iPCSMere');
+  var diplMere = +gv('iDiplMere');
+  var culture  = +gv('iCulture');
+  var ecole    = +gv('iEcole');
+  var reseau   = +gv('iReseau');
+  var grandeEcole = +gv('iGrandeEcole');
+
+  se('vRevenu',    fmt(revenu)+'€');
+  se('vFoyer',     fmt(foyer)+'€');
+  se('vPatrimoine',fmt(patrimoine)+'€');
+  se('vHeritage',  fmt(heritage)+'€');
+
+  // ── Niveau de vie / UC ──
+  var niveauVie = uc > 0 ? foyer / uc : foyer;
+
+  // ── Percentile revenus ──
+  var pctRev = 0;
+  for(var i=0; i<DECILES_NV.length-1; i++){
+    if(niveauVie >= DECILES_NV[i] && niveauVie < DECILES_NV[i+1]){
+      var ratio = (niveauVie - DECILES_NV[i]) / (DECILES_NV[i+1] - DECILES_NV[i]);
+      pctRev = Math.round((i + ratio) * 10);
+      break;
+    }
+  }
+  if(niveauVie >= DECILES_NV[DECILES_NV.length-1]) pctRev = 99;
+
+  // ── Percentile patrimoine ──
+  var pctPat = 0;
+  for(var j=0; j<DECILES_PAT.length-1; j++){
+    if(patrimoine >= DECILES_PAT[j] && patrimoine < DECILES_PAT[j+1]){
+      var ratioP = (patrimoine - DECILES_PAT[j]) / (DECILES_PAT[j+1] - DECILES_PAT[j]);
+      pctPat = Math.round((j + ratioP) * 10);
+      break;
+    }
+  }
+  if(patrimoine >= DECILES_PAT[DECILES_PAT.length-1]) pctPat = 99;
+
+  // ── CAPITAUX BOURDIEU ──
+  // Capital économique (0-100)
+  var capEcoRev = Math.min(100, Math.round(pctRev));
+  var capEcoPat = Math.min(100, Math.round(pctPat));
+  var capEcoHer = Math.min(100, Math.round(Math.min(heritage/20000, 100)));
+  var capEco = Math.round((capEcoRev*0.45 + capEcoPat*0.35 + capEcoHer*0.2));
+
+  // Capital culturel incorporé (famille + école)
+  var capCulInc = Math.min(100, Math.round(culture*20 + pcsPere*5 + diplPere*8 + diplMere*7 + ecole*8));
+  // Capital culturel institutionnalisé (diplômes)
+  var capCulDip = Math.min(100, Math.round(diplome*14 + (grandeEcole*20)));
+  // Capital culturel objectivé
+  var capCulObj = Math.min(100, Math.round(culture*20 + ecole*8 + diplome*4));
+  var capCul = Math.min(100, Math.round((capCulInc*0.4 + capCulDip*0.4 + capCulObj*0.2)));
+
+  // Capital social (réseau + grandes écoles)
+  var capSoc = Math.min(100, Math.round(reseau*15 + grandeEcole*20 + csp*8 + diplome*5));
+
+  // Score total
+  var capTotal = Math.round(capEco*0.4 + capCul*0.35 + capSoc*0.25);
+
+  // ── MOBILITÉ ──
+  // Score position parentale (0-100)
+  var posPar = Math.round((pcsPere*12 + diplPere*10 + pcsMere*8 + diplMere*8 + culture*8 + ecole*8));
+  posPar = Math.min(100, posPar);
+  // Score position actuelle
+  var posAct = Math.round((csp*14 + diplome*14 + capEcoRev*0.4 + capEcoPat*0.2));
+  posAct = Math.min(100, posAct);
+
+  var deltaMob = posAct - posPar;
+  var mobLabel = deltaMob > 20 ? '📈 Ascendante forte'
+    : deltaMob > 8 ? '↗️ Ascendante'
+    : deltaMob > -8 ? '↔️ Stable'
+    : deltaMob > -20 ? '↘️ Descendante'
+    : '📉 Descendante forte';
+
+  // ── Classe sociale estimée ──
+  var classe;
+  if(capTotal >= 80) classe = 'Classes dominantes';
+  else if(capTotal >= 65) classe = 'Fractions supérieures';
+  else if(capTotal >= 50) classe = 'Classes moyennes supérieures';
+  else if(capTotal >= 35) classe = 'Classes moyennes';
+  else if(capTotal >= 20) classe = 'Classes populaires qualifiées';
+  else classe = 'Classes populaires';
+
+  // Ajustement selon composition (éco vs culturel)
+  var dominante = '';
+  if(capEco > capCul + 20) dominante = ' à dominante économique';
+  else if(capCul > capEco + 20) dominante = ' à dominante culturelle';
+
+  // ── AFFICHAGE BANNER ──
+  se('pos-classe', classe + dominante);
+  se('pos-desc', 'Score capital total : '+capTotal+'/100 · Percentile revenus : '+pctRev+'e');
+  se('ps-rev', pctRev+'e percentile');
+  se('ps-pat', pctPat+'e percentile');
+  se('ps-cap', capTotal+'/100');
+  se('ps-mob', mobLabel);
+
+  // ── DÉCILE DETAIL ──
+  var decileIdx = Math.floor(pctRev/10);
+  si('decile-detail', DECILE_LABELS.map(function(lbl,i){
+    var isMe = i===decileIdx;
+    var style = isMe ? 'background:rgba(157,111,255,.15);border-color:rgba(157,111,255,.4)' : '';
+    return '<div class="di" style="'+style+'"><span>'+(isMe?'⭐ ':'')+lbl+' ('+DECILES_NV[i]+'€ → '+DECILES_NV[i+1]+'€/mois/UC)</span><span style="color:'+(isMe?'var(--purple)':'')+'">'+Math.round((i+1)*10)+'e percentile</span></div>';
+  }).join(''));
+
+  // Marqueur percentile
+  var marker = g('perc-marker');
+  if(marker) marker.style.left = Math.min(95, pctRev)+'%';
+
+  // ── CAPITAUX AFFICHAGE ──
+  function setBar(barId, valId, val, color){
+    var b=g(barId), v=g(valId);
+    if(b) b.style.width=val+'%';
+    if(v){ v.textContent=val+'/100'; v.style.color=color; }
+  }
+  setBar('bar-eco-rev','cap-eco-rev',capEcoRev,'var(--gold)');
+  setBar('bar-eco-pat','cap-eco-pat',capEcoPat,'var(--gold)');
+  setBar('bar-eco-her','cap-eco-her',capEcoHer,'var(--amber)');
+  setBar('bar-cul-inc','cap-cul-inc',capCulInc,'var(--purple)');
+  setBar('bar-cul-dip','cap-cul-dip',capCulDip,'var(--indigo)');
+  setBar('bar-cul-obj','cap-cul-obj',capCulObj,'var(--blue)');
+  setBar('bar-soc','cap-soc',capSoc,'var(--pink)');
+  se('score-eco', capEco);
+  se('score-cul', capCul);
+
+  // ── MOBILITÉ ──
+  si('mobilite-viz',
+    '<div class="mob-row">'
+    +'<div class="mob-box" style="border-color:rgba(157,111,255,.3);background:rgba(157,111,255,.07)">'
+    +'<div style="font-size:10px;color:var(--muted);margin-bottom:4px;font-family:DM Mono,monospace">VOS PARENTS</div>'
+    +'<div style="font-family:Unbounded,sans-serif;font-size:16px;font-weight:900;color:var(--purple)">'+posPar+'/100</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:4px">'+(posPar<30?'Classes populaires':posPar<55?'Classes moyennes':'Classes supérieures')+'</div>'
+    +'</div>'
+    +'<div class="mob-arrow" style="color:'+(deltaMob>5?'var(--green)':deltaMob<-5?'var(--red)':'var(--amber)')+'">'+
+    (deltaMob>5?'↗':'↗' === '↗' && deltaMob<-5?'↘':'→')+'</div>'
+    +'<div class="mob-box" style="border-color:rgba(0,212,170,.3);background:rgba(0,212,170,.07)">'
+    +'<div style="font-size:10px;color:var(--muted);margin-bottom:4px;font-family:DM Mono,monospace">VOUS</div>'
+    +'<div style="font-family:Unbounded,sans-serif;font-size:16px;font-weight:900;color:var(--green)">'+posAct+'/100</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:4px">'+classe+'</div>'
+    +'</div>'
+    +'</div>'
+    +'<div class="di"><span>Écart de position</span><span style="color:'+(deltaMob>0?'var(--green)':deltaMob<0?'var(--red)':'var(--muted)')+'">'+
+    (deltaMob>0?'+':'')+deltaMob+' points</span></div>'
+    +'<div class="di"><span>Type de mobilité</span><span style="color:'+(deltaMob>5?'var(--green)':deltaMob<-5?'var(--red)':'var(--amber)')+'">'+mobLabel+'</span></div>'
+  );
+
+  var mobTexte;
+  if(deltaMob > 25) mobTexte = '<strong style="color:var(--green)">Mobilité ascendante très forte.</strong> Votre trajectoire est statistiquement rare — vous avez parcouru une distance sociale significative par rapport à votre milieu d\'origine. Bourdieu appellerait ça une exception notable à la reproduction sociale — ce que Chantal Jacquet nomme les "transclasses" (2014). Vos efforts scolaires et/ou vos opportunités ont significativement dépassé ce que le déterminisme statistique prévoyait.';
+  else if(deltaMob > 10) mobTexte = '<strong style="color:var(--green)">Mobilité ascendante.</strong> Vous avez progressé au-dessus de votre position d\'origine. Dans le contexte français, la mobilité ascendante concerne environ 43% des trajectoires (INED TeO2 2020). Le diplôme a probablement joué un rôle central dans cette trajectoire.';
+  else if(deltaMob > -10) mobTexte = '<strong style="color:var(--amber)">Trajectoire stable.</strong> Vous vous situez dans un espace social proche de celui de vos parents. C\'est la trajectoire statistiquement majoritaire en France. La reproduction sociale n\'est pas un échec — c\'est la norme statistique. L\'enjeu est d\'avoir eu les mêmes opportunités, pas nécessairement le même destin.';
+  else if(deltaMob > -25) mobTexte = '<strong style="color:var(--amber)">Mobilité descendante.</strong> Votre position sociale est inférieure à celle de vos parents. Ce phénomène touche environ 18% des jeunes diplômés français — souvent lié au déclassement professionnel (Céreq, Générations 2017). Ce n\'est pas permanent — la trajectoire peut se réorienter.';
+  else mobTexte = '<strong style="color:var(--red)">Mobilité descendante forte.</strong> Vous avez connu une trajectoire vers le bas par rapport à vos parents. Cela peut refléter des choix de vie délibérés (secteur associatif, reconversion, art) ou des difficultés conjoncturelles. L\'espace social de Bourdieu n\'est pas une hiérarchie de valeur — seulement une carte des positions.';
+  si('mobilite-texte', mobTexte);
+
+  // Chances stat
+  var cspLabel = ['','Ouvrier','Employé','Prof. intermédiaire','Cadre','Libéral/Chef d\'entr.','Indépendant'][csp]||'';
+  var perePCS   = ['','Ouvrier','Employé','Prof. intermédiaire','Cadre','Libéral'][Math.min(pcsPere,5)]||'';
+  si('chances-stat', [
+    {l:'Prob. d\'être cadre avec père cadre', v:'78%', c:'var(--green)'},
+    {l:'Prob. d\'être cadre avec père ouvrier', v:'13%', c:'var(--red)'},
+    {l:'Votre situation actuelle', v:cspLabel, c:'var(--purple)'},
+    {l:'PCS de votre père', v:perePCS, c:'var(--indigo)'},
+    {l:'Mobilité calculée', v:mobLabel, c:deltaMob>5?'var(--green)':deltaMob<-5?'var(--red)':'var(--amber)'},
+  ].map(function(s){
+    return '<div class="di"><span>'+s.l+'</span><span style="color:'+s.c+'">'+s.v+'</span></div>';
+  }).join(''));
+
+  // Décile viz
+  var decViz = '<div style="display:flex;flex-direction:column;gap:5px">';
+  DECILE_LABELS.forEach(function(lbl,i){
+    var isMe = i===decileIdx;
+    decViz += '<div style="display:flex;align-items:center;gap:8px">'
+      +'<div style="font-size:11px;color:var(--muted);width:120px;font-family:DM Mono,monospace">'+lbl+'</div>'
+      +'<div style="flex:1;height:8px;background:rgba(255,255,255,.04);border-radius:4px;overflow:hidden">'
+      +'<div style="height:100%;width:100%;background:'+(isMe?'var(--purple)':'rgba(255,255,255,.06)')+'"></div>'
+      +'</div>'
+      +'<div style="font-size:11px;color:'+(isMe?'var(--purple)':'var(--muted)')+';width:100px;font-family:DM Mono,monospace">'+(isMe?'← VOUS · ':'')+fmt(DECILES_NV[i])+'€</div>'
+      +'</div>';
+  });
+  si('decile-viz', decViz+'</div>');
+
+  // Patrimoine viz
+  var PATLAB = ['Sous médiane','10-20%','20-30%','30-40%','40-50%','50-60%','60-70%','70-80%','80-90%','Top 10%'];
+  var patIdx = Math.floor(pctPat/10);
+  var patViz = '<div style="display:flex;flex-direction:column;gap:5px">';
+  PATLAB.forEach(function(lbl,i){
+    var isMe = i===patIdx;
+    patViz += '<div style="display:flex;align-items:center;gap:8px">'
+      +'<div style="font-size:11px;color:var(--muted);width:120px;font-family:DM Mono,monospace">'+lbl+'</div>'
+      +'<div style="flex:1;height:8px;background:rgba(255,255,255,.04);border-radius:4px;overflow:hidden">'
+      +'<div style="height:100%;width:100%;background:'+(isMe?'var(--gold)':'rgba(255,255,255,.06)')+'"></div>'
+      +'</div>'
+      +'<div style="font-size:11px;color:'+(isMe?'var(--gold)':'var(--muted)')+';width:100px;font-family:DM Mono,monospace">'+(isMe?'← VOUS · ':'')+fmt(DECILES_PAT[i])+'€</div>'
+      +'</div>';
+  });
+  si('patrim-viz', patViz+'</div>');
+
+  // Verdict Bourdieu
+  var bourdieuV = '';
+  if(capEco > capCul + 25) bourdieuV = 'Vous vous situez dans le pôle à <strong style="color:var(--gold)">dominante économique</strong> — vos revenus et patrimoine sont vos ressources principales. Bourdieu associe ce profil aux professions commerciales, aux chefs d\'entreprise, aux milieux d\'affaires.';
+  else if(capCul > capEco + 25) bourdieuV = 'Vous êtes dans le pôle à <strong style="color:var(--purple)">dominante culturelle</strong> — capital culturel élevé, capital économique plus modéré. Ce profil correspond aux enseignants, chercheurs, artistes, journalistes — ceux que Bourdieu appelle la "petite bourgeoisie culturelle".';
+  else if(capTotal > 60) bourdieuV = 'Vous êtes dans les <strong style="color:var(--purple)">fractions supérieures</strong> avec un capital équilibré entre économique et culturel. Position intermédiaire entre les dominants économiques et culturels.';
+  else if(capTotal > 35) bourdieuV = 'Position dans les <strong style="color:var(--indigo)">classes moyennes</strong> — l\'espace de l\'entre-deux. Bourdieu décrit ces positions comme marquées par une "tension" entre aspiration vers le haut et distance avec les classes populaires.';
+  else bourdieuV = 'Position dans les <strong style="color:var(--muted)">classes populaires</strong> au sens large. Bourdieu souligne que cette position n\'implique pas une identité figée — des trajectoires ascendantes sont possibles, particulièrement via le capital culturel et scolaire.';
+  si('bourdieu-verdict', bourdieuV);
+
+  // Stocker pour les graphiques
+  window._BS = {capEco:capEco, capCul:capCul, capSoc:capSoc, capTotal:capTotal, pctRev:pctRev, pctPat:pctPat, deltaMob:deltaMob};
+
+  if(activeTab==='capitaux') renderCharts('capitaux');
+  if(activeTab==='position') renderCharts('position');
+}
+
+function renderCharts(name){
+  if(name==='capitaux' && window._BS){
+    chartBourdieu = destroyChartSafe(chartBourdieu);
+    var cb = g('chart-bourdieu'); if(!cb) return;
+    var BS = window._BS;
+    // Axe X = composition (économique - culturel, de -100 à +100)
+    // Axe Y = volume total (0-100)
+    var meX = BS.capEco - BS.capCul;
+    var meY = BS.capTotal;
+    chartBourdieu = new Chart(cb,{
+      type:'scatter',
+      data:{datasets:[
+        // Groupes sociaux de référence (estimations Bourdieu)
+        {label:'Grands patrons / élite éco.',data:[{x:70,y:85}],backgroundColor:'rgba(255,184,0,.8)',pointRadius:10},
+        {label:'Professions libérales',data:[{x:30,y:75}],backgroundColor:'rgba(255,149,0,.8)',pointRadius:10},
+        {label:'Cadres dirigeants',data:[{x:40,y:70}],backgroundColor:'rgba(255,107,186,.8)',pointRadius:10},
+        {label:'Enseignants/chercheurs',data:[{x:-40,y:65}],backgroundColor:'rgba(106,127,255,.8)',pointRadius:10},
+        {label:'Artistes/intellectuels',data:[{x:-60,y:50}],backgroundColor:'rgba(157,111,255,.8)',pointRadius:10},
+        {label:'Prof. intermédiaires',data:[{x:10,y:45}],backgroundColor:'rgba(59,255,158,.8)',pointRadius:10},
+        {label:'Petits commerçants',data:[{x:50,y:30}],backgroundColor:'rgba(255,200,100,.8)',pointRadius:10},
+        {label:'Employés',data:[{x:-10,y:25}],backgroundColor:'rgba(100,150,255,.6)',pointRadius:10},
+        {label:'Ouvriers',data:[{x:0,y:15}],backgroundColor:'rgba(150,150,150,.6)',pointRadius:10},
+        // Vous
+        {label:'⭐ Vous',data:[{x:meX, y:meY}],backgroundColor:'rgba(255,255,255,.95)',borderColor:'var(--purple)',pointRadius:16,pointStyle:'star',borderWidth:3},
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},
+          tooltip:{callbacks:{label:function(c){ return c.dataset.label; }}}},
+        scales:{
+          x:{min:-100,max:100,grid:{color:'rgba(255,255,255,.05)'},border:{color:'rgba(255,255,255,.1)'},
+            title:{display:true,text:'← Dominant culturel · Dominant économique →',color:'#4A4560'},
+            ticks:{color:'#4A4560'}},
+          y:{min:0,max:100,grid:{color:'rgba(255,255,255,.05)'},border:{color:'rgba(255,255,255,.1)'},
+            title:{display:true,text:'↑ Volume de capital total',color:'#4A4560'},
+            ticks:{color:'#4A4560'}}
+        }
+      }
+    });
+  }
+  if(name==='position' && window._BS){
+    chartPosition = destroyChartSafe(chartPosition);
+    var cp2 = g('chart-position'); if(!cp2) return;
+    var BS2 = window._BS;
+    chartPosition = new Chart(cp2,{
+      type:'bar',
+      data:{
+        labels:['Capital économique','Capital culturel','Capital social','Volume total'],
+        datasets:[
+          {label:'Votre profil',data:[BS2.capEco,BS2.capCul,BS2.capSoc,BS2.capTotal],backgroundColor:['rgba(255,184,0,.7)','rgba(157,111,255,.7)','rgba(255,107,186,.7)','rgba(59,255,158,.7)'],borderRadius:8,borderWidth:0},
+          {label:'Cadre supérieur type',data:[75,70,65,72],backgroundColor:['rgba(255,184,0,.2)','rgba(157,111,255,.2)','rgba(255,107,186,.2)','rgba(59,255,158,.2)'],borderRadius:8,borderWidth:0},
+        ]
+      },
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:'#4A4560',font:{size:11}}}},
+        scales:{x:{grid:{display:false},ticks:{color:'#4A4560'},border:{color:'transparent'}},
+                y:{max:100,grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return v+'/100'; },color:'#4A4560'},border:{color:'transparent'}}}
+      }
+    });
+  }
+}
+
+recalc();
+</script>
+</body>
+</html>

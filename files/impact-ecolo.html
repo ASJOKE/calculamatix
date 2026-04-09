@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mon impact écologique réel — La vérité sur mes gestes | Calculamatix</title>
+  <meta name="description" content="Combien de CO₂ émettez-vous vraiment ? Quel geste écolo est inutile, lequel change tout ? Calculateur complet basé sur les données ADEME 2025. Résultats qui choquent."/>
+  <link rel="canonical" href="https://calculamatix.com/impact-ecolo.html"/>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Calculateur impact écologique réel","description":"Calcule l'empreinte carbone réelle et identifie les gestes qui comptent vraiment vs ceux qui ne servent à rien.","applicationCategory":"EnvironmentApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#050a08;--card:#0c1410;--border:#162018;
+      --green:#00E86A;--lime:#AAFF00;--yellow:#FFD93D;
+      --red:#FF4040;--amber:#FF9500;--blue:#3B8FFF;
+      --teal:#00D4AA;--purple:#B06EFF;
+      --text:#E8F5EC;--muted:#3A5040;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:80px;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:radial-gradient(ellipse 80% 50% at 50% -5%,rgba(0,232,106,.05),transparent),
+                 radial-gradient(ellipse 40% 40% at 85% 85%,rgba(170,255,0,.03),transparent)}
+
+    nav{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:22px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:17px;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--yellow)}
+    .back{font-size:12px;color:var(--muted);text-decoration:none}
+
+    .hero{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:40px 24px 28px}
+    .htag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--green);background:rgba(0,232,106,.08);border:1px solid rgba(0,232,106,.2);padding:4px 14px;border-radius:100px;margin-bottom:14px;font-family:'DM Mono',monospace}
+    h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(22px,4.5vw,50px);letter-spacing:-2px;line-height:1.05;margin-bottom:10px}
+    h1 em{color:var(--green);font-style:normal}
+    h1 s{color:var(--red);text-decoration-color:var(--red)}
+    .hero-sub{font-size:14px;color:var(--muted);line-height:1.7;max-width:680px}
+
+    /* SCORE BANNER */
+    .score-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .score-box{border-radius:20px;padding:24px 28px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;border:2px solid;transition:all .4s}
+    .score-left{text-align:center;min-width:140px}
+    .score-emoji{font-size:48px;display:block;margin-bottom:4px}
+    .score-tonnes{font-family:'Unbounded',sans-serif;font-size:clamp(32px,5vw,52px);font-weight:900;line-height:1}
+    .score-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px;font-family:'DM Mono',monospace}
+    .score-divider{width:1px;height:60px;background:rgba(255,255,255,.08);flex-shrink:0}
+    .score-stats{display:flex;flex-wrap:wrap;gap:12px;flex:1}
+    .score-stat{text-align:center;min-width:100px}
+    .score-stat-v{font-family:'DM Mono',monospace;font-size:16px;font-weight:700}
+    .score-stat-l{font-size:10px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+
+    .tabs-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .tabs{display:flex;gap:4px;background:#080e0a;border:1px solid var(--border);border-radius:14px;padding:5px;width:fit-content;flex-wrap:wrap}
+    .tab{background:transparent;border:none;color:var(--muted);padding:9px 14px;border-radius:10px;font-size:13px;font-family:inherit;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+    .tab.on{background:var(--green);color:#020a05;font-weight:700}
+    .panel{display:none}.panel.on{display:block}
+
+    .wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:14px}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px}
+    .ctitle{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px}
+
+    .f{margin-bottom:14px}.f:last-child{margin-bottom:0}
+    .f label{display:flex;justify-content:space-between;font-size:12px;color:#4a6050;margin-bottom:6px}
+    .fval{font-family:'DM Mono',monospace;color:var(--green);font-size:12px}
+    .fhint{font-size:10px;color:#2a3a2e;margin-top:5px;line-height:1.5}
+
+    input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:#1a2a1e;border-radius:2px;outline:none;cursor:pointer}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--green);border-radius:50%;box-shadow:0 0 8px rgba(0,232,106,.4)}
+    select{width:100%;background:#0c1410;border:1px solid var(--border);border-radius:10px;color:var(--text);padding:10px 13px;font-size:14px;font-family:inherit;outline:none}
+
+    .toggle-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+    .toggle-btn{padding:6px 14px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-family:inherit;cursor:pointer;transition:all .15s}
+    .toggle-btn.on{background:rgba(0,232,106,.15);border-color:var(--green);color:var(--green);font-weight:700}
+
+    /* Impact bars */
+    .impact-bar{margin-bottom:14px}
+    .impact-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+    .impact-name{font-size:13px;color:var(--text)}
+    .impact-val{font-family:'DM Mono',monospace;font-size:12px}
+    .impact-track{height:10px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden;position:relative}
+    .impact-fill{height:100%;border-radius:5px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+    .impact-hint{font-size:10px;color:var(--muted);margin-top:3px}
+
+    /* Geste verdict */
+    .geste-card{padding:14px 16px;border-radius:12px;border:1px solid;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px}
+    .g-inutile{border-color:rgba(255,64,64,.2);background:rgba(255,64,64,.04)}
+    .g-moyen{border-color:rgba(255,149,0,.2);background:rgba(255,149,0,.04)}
+    .g-essentiel{border-color:rgba(0,232,106,.2);background:rgba(0,232,106,.04)}
+    .g-emoji{font-size:22px;flex-shrink:0}
+    .g-title{font-size:13px;font-weight:700;margin-bottom:3px}
+    .g-desc{font-size:11px;color:var(--muted);line-height:1.6}
+    .g-badge{font-family:'DM Mono',monospace;font-size:10px;padding:2px 10px;border-radius:100px;font-weight:700;margin-top:5px;display:inline-block}
+    .badge-inutile{background:rgba(255,64,64,.15);color:var(--red);border:1px solid rgba(255,64,64,.3)}
+    .badge-moyen{background:rgba(255,149,0,.15);color:var(--amber);border:1px solid rgba(255,149,0,.3)}
+    .badge-essentiel{background:rgba(0,232,106,.15);color:var(--green);border:1px solid rgba(0,232,106,.3)}
+
+    .m{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+    .ml{font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;font-family:'DM Mono',monospace}
+    .mv{font-family:'DM Mono',monospace;font-size:17px;font-weight:500}
+    .ms{font-size:10px;color:var(--muted);margin-top:4px}
+
+    .choc{text-align:center;padding:20px;background:linear-gradient(135deg,rgba(0,232,106,.06),transparent);border:1px solid rgba(0,232,106,.15);border-radius:14px;margin-bottom:10px}
+    .choc-num{font-family:'Unbounded',sans-serif;font-size:clamp(26px,4vw,44px);font-weight:900;color:var(--green);margin:6px 0}
+    .choc-label{font-size:12px;color:var(--muted);line-height:1.5}
+    .choc-src{font-size:10px;color:#1a2a1e;margin-top:6px;font-family:'DM Mono',monospace}
+
+    .cw{position:relative;width:100%;height:260px;margin-top:12px}
+    .src{background:#080e0a;border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:11px;color:#2a3a2e;line-height:1.8;font-family:'DM Mono',monospace}
+    .src strong{color:#3A5040}
+    .alerte{background:rgba(255,149,0,.05);border:1px solid rgba(255,149,0,.2);border-radius:12px;padding:14px;font-size:12px;color:#666;line-height:1.7}
+    .di{display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;margin-bottom:6px}
+    .di span:first-child{font-size:12px;color:var(--muted)}
+    .di span:last-child{font-family:'DM Mono',monospace;font-size:12px}
+
+    @media(max-width:640px){.g2,.g3{grid-template-columns:1fr 1fr}.tab{padding:8px 10px;font-size:11px}.score-box{flex-direction:column}.score-divider{display:none}}
+    @media(max-width:400px){.g2,.g3{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Retour</a>
+</nav>
+
+<div class="hero">
+  <div class="htag">🌍 Climat · ADEME · Vérité</div>
+  <h1>Mon impact<br><em>écologique réel</em></h1>
+  <p class="hero-sub">Les gestes écolo qu'on vous vend vs ceux qui changent vraiment quelque chose. Un Français émet <strong style="color:var(--text)">9 tonnes de CO₂/an</strong> — l'objectif est 2 tonnes. Découvrez où vous en êtes et ce qui compte <em>vraiment</em>.</p>
+</div>
+
+<!-- SCORE BANNER -->
+<div class="score-wrap">
+  <div class="score-box" id="score-box" style="background:rgba(255,64,64,.05);border-color:rgba(255,64,64,.3)">
+    <div class="score-left">
+      <span class="score-emoji" id="sc-emoji">🌍</span>
+      <div class="score-tonnes" id="sc-tonnes" style="color:var(--red)">—</div>
+      <div class="score-label">tonnes CO₂/an</div>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-stats">
+      <div class="score-stat"><div class="score-stat-v" id="sc-vs">—</div><div class="score-stat-l">vs moyenne française</div></div>
+      <div class="score-stat"><div class="score-stat-v" id="sc-objectif">—</div><div class="score-stat-l">fois l'objectif 2050</div></div>
+      <div class="score-stat"><div class="score-stat-v" id="sc-poste">—</div><div class="score-stat-l">Principal poste</div></div>
+      <div class="score-stat"><div class="score-stat-v" id="sc-gain">—</div><div class="score-stat-l">Gain max possible</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('transport',this)">🚗 Transport</button>
+    <button class="tab" onclick="showTab('alim',this)">🥩 Alimentation</button>
+    <button class="tab" onclick="showTab('logement',this)">🏠 Logement</button>
+    <button class="tab" onclick="showTab('conso',this)">📦 Consommation</button>
+    <button class="tab" onclick="showTab('verdict',this)">🎯 Verdict</button>
+    <button class="tab" onclick="showTab('data',this)">📊 Données</button>
+  </div>
+</div>
+
+<!-- TRANSPORT -->
+<div class="panel on" id="p-transport"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🚗 Voiture</div>
+      <div class="f">
+        <label>Km parcourus en voiture / an <span class="fval" id="vKm">12 000 km</span></label>
+        <input type="range" id="iKm" min="0" max="50000" step="1000" value="12000" oninput="recalc()">
+        <div class="fhint">Moyenne française : 12 000 km/an · 2,2 kg CO₂/km voiture thermique (ADEME)</div>
+      </div>
+      <div class="f">
+        <label>Type de véhicule</label>
+        <select id="iVehicule" onchange="recalc()">
+          <option value="0.218">🛻 SUV diesel (0,218 kg CO₂/km)</option>
+          <option value="0.196">🚗 Berline essence (0,196 kg CO₂/km)</option>
+          <option value="0.160" selected>🚙 Voiture moyenne (0,160 kg CO₂/km)</option>
+          <option value="0.120">🚗 Citadine hybride (0,120 kg CO₂/km)</option>
+          <option value="0.103">⚡ Voiture électrique (0,103 kg CO₂/km)</option>
+          <option value="0">🚴 Je n'utilise pas de voiture</option>
+        </select>
+        <div class="fhint">L'électrique n'est pas à 0 — fabrication + réseau électrique compris (ADEME 2025)</div>
+      </div>
+      <div class="f">
+        <label>Vols en avion / an <span class="fval" id="vVols">2 vols</span></label>
+        <input type="range" id="iVols" min="0" max="20" step="1" value="2" oninput="recalc()">
+        <div class="fhint">Paris→New York A/R = 1,8t CO₂ · Paris→Barcelone = 0,25t · Impact ×3 en haute altitude (forçage radiatif)</div>
+      </div>
+      <div class="f">
+        <label>Type de vol principal</label>
+        <select id="iVol" onchange="recalc()">
+          <option value="150">✈️ Court courrier Europe (~150 kg CO₂/vol)</option>
+          <option value="500" selected>✈️ Moyen courrier (~500 kg CO₂/vol)</option>
+          <option value="1800">✈️ Long courrier intercontinental (~1 800 kg CO₂/vol)</option>
+        </select>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">🚆 Transports du quotidien</div>
+      <div class="f">
+        <label>Mode de transport principal domicile-travail</label>
+        <select id="iCommute" onchange="recalc()">
+          <option value="0">🚶 À pied / vélo — 0 CO₂</option>
+          <option value="0.004">🚇 Métro / RER (0,004 kg CO₂/km)</option>
+          <option value="0.020">🚌 Bus électrique (0,020 kg CO₂/km)</option>
+          <option value="0.030" selected>🚌 Bus thermique (0,030 kg CO₂/km)</option>
+          <option value="0.103">🚗 Voiture (déjà compté ci-dessus)</option>
+        </select>
+        <div class="fhint">Le métro parisien émet 4 fois moins qu'un bus thermique (ADEME / RATP)</div>
+      </div>
+      <div class="f">
+        <label>Distance aller-retour domicile-travail <span class="fval" id="vDomTrav">20 km</span></label>
+        <input type="range" id="iDomTrav" min="0" max="100" step="5" value="20" oninput="recalc()">
+        <div class="fhint">250 jours travaillés/an</div>
+      </div>
+      <div class="f">
+        <label>Transports longue distance / an</label>
+        <select id="iTrain" onchange="recalc()">
+          <option value="0">Peu de déplacements longue distance</option>
+          <option value="50" selected>Quelques voyages en TGV (50 kg CO₂)</option>
+          <option value="100">Fréquents voyages en train (100 kg CO₂)</option>
+          <option value="200">Beaucoup de déplacements pro (200 kg CO₂)</option>
+        </select>
+        <div class="fhint">TGV : 0,003 kg CO₂/km — 25× moins qu'une voiture (ADEME)</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">📊 Impact transport — Ce que ça représente</div>
+    <div id="transport-detail"></div>
+    <div class="alerte" style="margin-top:12px">
+      <strong style="color:var(--amber)">Le vrai choc :</strong> Un seul vol Paris-New York A/R = 1,8 tonne de CO₂ = <strong>1 an entier</strong> de trajets domicile-travail en voiture pour un Français moyen. L'avion est de loin le poste le plus émissif à l'heure de voyage. <strong>1h d'avion = 20h de TGV en émissions.</strong>
+    </div>
+  </div>
+</div></div>
+
+<!-- ALIMENTATION -->
+<div class="panel" id="p-alim"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🥩 Régime alimentaire</div>
+      <div class="f">
+        <label>Consommation de viande rouge (bœuf, agneau)</label>
+        <select id="iViande" onchange="recalc()">
+          <option value="800">🥩 Quotidien — steak ou équivalent chaque jour</option>
+          <option value="500" selected>🍖 Régulier — 4-5 fois/semaine</option>
+          <option value="300">🥗 Modéré — 2-3 fois/semaine</option>
+          <option value="150">🌿 Rare — 1 fois/semaine ou moins</option>
+          <option value="0">❌ Jamais — végétarien/vegan</option>
+        </select>
+        <div class="fhint">1 kg de bœuf = 27 kg CO₂ · Un repas bœuf = 7 kg CO₂ vs 0,5 kg végétarien (ADEME impactco2.fr)</div>
+      </div>
+      <div class="f">
+        <label>Produits laitiers</label>
+        <select id="iLait" onchange="recalc()">
+          <option value="400">🧀 Beaucoup — fromage, yaourts, lait au quotidien</option>
+          <option value="200" selected>🥛 Modéré — quelques produits laitiers/jour</option>
+          <option value="80">🌱 Peu — végétal privilégié</option>
+          <option value="0">❌ Jamais — vegan</option>
+        </select>
+        <div class="fhint">1L de lait = 1,2 kg CO₂ · Le fromage est parmi les produits les plus émissifs (ADEME)</div>
+      </div>
+      <div class="f">
+        <label>Gaspillage alimentaire</label>
+        <select id="iGasp" onchange="recalc()">
+          <option value="150">😬 Beaucoup — souvent des restes à la poubelle</option>
+          <option value="80" selected>😐 Un peu — quelques aliments jetés/semaine</option>
+          <option value="20">😊 Peu — j'optimise mes courses</option>
+          <option value="0">✅ Zéro — congélateur, compost, rien ne se perd</option>
+        </select>
+        <div class="fhint">Les Français gaspillent en moyenne 20-30 kg/an de nourriture · = 150 kg CO₂ évitables</div>
+      </div>
+      <div class="f">
+        <label>Produits locaux et saison</label>
+        <select id="iLocal" onchange="recalc()">
+          <option value="200">Surtout importés, hors saison</option>
+          <option value="100" selected>Mixte — quelques efforts</option>
+          <option value="0">Essentiellement local et de saison</option>
+        </select>
+        <div class="fhint">Une mangue en hiver importée par avion = 3× l'empreinte d'une pomme locale (ADEME)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">🌿 Ce que chaque changement vous économise</div>
+      <div id="alim-gains"></div>
+      <div class="alerte" style="margin-top:14px">
+        <strong style="color:var(--amber)">Le vrai choc :</strong> Passer végétarien économise <strong>~1,5 tonne de CO₂/an</strong>. C'est plus que d'arrêter complètement de prendre l'avion en Europe. <strong>L'assiette est le levier individuel le plus puissant après la voiture.</strong> Un repas végétarien à la place d'un steak = 6,5 kg CO₂ évités = 40 km en voiture évités.
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- LOGEMENT -->
+<div class="panel" id="p-logement"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🏠 Chauffage</div>
+      <div class="f">
+        <label>Type de chauffage principal</label>
+        <select id="iChauffage" onchange="recalc()">
+          <option value="3500">🔥 Fioul — le plus émissif (3 500 kg CO₂/an)</option>
+          <option value="2200">🔥 Gaz naturel (2 200 kg CO₂/an)</option>
+          <option value="1500" selected>🔥 Gaz moyen logement (1 500 kg CO₂/an)</option>
+          <option value="400">⚡ Électricité résistance (400 kg CO₂/an)</option>
+          <option value="200">♻️ Pompe à chaleur (200 kg CO₂/an)</option>
+          <option value="150">🌿 Bois pellets (150 kg CO₂/an)</option>
+          <option value="50">🏙️ Réseau chaleur urbain (50 kg CO₂/an)</option>
+        </select>
+        <div class="fhint">Le fioul émet 70× plus que le réseau de chaleur. L'électricité française est très décarbonée (nucléaire)</div>
+      </div>
+      <div class="f">
+        <label>Surface du logement <span class="fval" id="vSurface">70 m²</span></label>
+        <input type="range" id="iSurface" min="15" max="300" step="5" value="70" oninput="recalc()">
+      </div>
+      <div class="f">
+        <label>Isolation du logement</label>
+        <select id="iIso" onchange="recalc()">
+          <option value="1.5">❄️ Très mal isolé — DPE F ou G</option>
+          <option value="1.2">😐 Mal isolé — DPE D ou E</option>
+          <option value="1.0" selected>😊 Moyen — DPE C</option>
+          <option value="0.7">🌟 Bien isolé — DPE B</option>
+          <option value="0.4">🏆 Très bien isolé — DPE A, BBC</option>
+        </select>
+        <div class="fhint">Un logement DPE G consomme 3× plus qu'un DPE B · 7,2 millions de logements classés F ou G en France</div>
+      </div>
+      <div class="f">
+        <label>Eau chaude</label>
+        <select id="iEau" onchange="recalc()">
+          <option value="300">🚿 Beaucoup — douches longues, bains fréquents</option>
+          <option value="180" selected>🚿 Moyen — 5-8 min de douche / jour</option>
+          <option value="80">🚿 Économe — douches courtes, peu de bains</option>
+        </select>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">💡 Électricité & équipements</div>
+      <div class="f">
+        <label>Consommation électrique estimée <span class="fval" id="vKwh">3 500 kWh</span></label>
+        <input type="range" id="iKwh" min="500" max="15000" step="500" value="3500" oninput="recalc()">
+        <div class="fhint">Moyenne française : 2 500-4 500 kWh/an hors chauffage · France : 0,057 kg CO₂/kWh (très faible grâce au nucléaire)</div>
+      </div>
+      <div class="f">
+        <label>Équipements numériques</label>
+        <select id="iNum" onchange="recalc()">
+          <option value="400">📱💻🖥️ Beaucoup — TV, PC, consoles, tablettes</option>
+          <option value="200" selected>📱💻 Moyen — smartphone + laptop</option>
+          <option value="80">📱 Minimum — smartphone principalement</option>
+        </select>
+        <div class="fhint">Ordinateur fixe = 452 kg CO₂ (fabrication) · Laptop = 178 kg · Smartphone = 38 kg (ADEME impactco2.fr)</div>
+      </div>
+      <div class="f">
+        <label>Streaming vidéo / jour <span class="fval" id="vStream">1h</span></label>
+        <input type="range" id="iStream" min="0" max="8" step="0.5" value="1" oninput="recalc()">
+        <div class="fhint">1h de streaming WiFi = 10g CO₂ · En 4G = 30g CO₂ · Peu par rapport au reste mais visible à l'échelle</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">🔥 Ce que ça coûte en CO₂ — et comment réduire</div>
+    <div id="logement-detail"></div>
+    <div class="alerte" style="margin-top:12px">
+      <strong style="color:var(--amber)">Rénovation vs gestes :</strong> Passer d'un logement DPE G à DPE B = économie de ~2 tonnes CO₂/an. Éteindre les appareils en veille = ~30 kg CO₂/an. <strong>La rénovation thermique vaut 60× plus que les gestes d'économie d'énergie.</strong> L'électricité française est déjà très décarbonée — l'enjeu c'est le chauffage.
+    </div>
+  </div>
+</div></div>
+
+<!-- CONSOMMATION -->
+<div class="panel" id="p-conso"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">👕 Vêtements & mode</div>
+      <div class="f">
+        <label>Achats de vêtements / an <span class="fval" id="vVet">30 pièces</span></label>
+        <input type="range" id="iVet" min="0" max="100" step="5" value="30" oninput="recalc()">
+        <div class="fhint">Un jean = 33 kg CO₂ · Un T-shirt = 7 kg CO₂ · La mode représente 10% des émissions mondiales</div>
+      </div>
+      <div class="f">
+        <label>Part de seconde main / reconditionné</label>
+        <select id="iSM" onchange="recalc()">
+          <option value="1.0">Jamais — tout neuf</option>
+          <option value="0.75" selected>Parfois — quelques achats d'occasion</option>
+          <option value="0.5">Souvent — majorité en seconde main</option>
+          <option value="0.2">Presque toujours — vinted, friperies, reconditionné</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Budget achats tech / an <span class="fval" id="vTech">500 €</span></label>
+        <input type="range" id="iTech" min="0" max="5000" step="100" value="500" oninput="recalc()">
+        <div class="fhint">Smartphone = 38-85 kg CO₂ · TV = 403 kg CO₂ · Laptop = 178 kg CO₂ (ADEME)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">🏖️ Loisirs & vacances</div>
+      <div class="f">
+        <label>Type de vacances principal</label>
+        <select id="iVacances" onchange="recalc()">
+          <option value="0">🏕️ En France, proche de chez moi</option>
+          <option value="200" selected>🌴 Europe — train ou voiture</option>
+          <option value="800">✈️ Europe — avion</option>
+          <option value="2000">🌏 Intercontinental — 1-2 voyages/an</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Animaux de compagnie</label>
+        <select id="iAnimaux" onchange="recalc()">
+          <option value="0">Pas d'animal</option>
+          <option value="200" selected>🐱 Chat (200 kg CO₂/an alimentation)</option>
+          <option value="500">🐕 Chien moyen (500 kg CO₂/an)</option>
+          <option value="900">🐕 Grand chien (900 kg CO₂/an)</option>
+        </select>
+        <div class="fhint">L'alimentation carnée des animaux de compagnie représente 1-3% de l'empreinte d'un ménage</div>
+      </div>
+      <div class="f">
+        <label>Services & abonnements (streaming, cloud…)</label>
+        <select id="iServices" onchange="recalc()">
+          <option value="50">Peu — 1-2 abonnements</option>
+          <option value="150" selected>Moyen — Netflix, Spotify, cloud, etc.</option>
+          <option value="300">Beaucoup — gros consommateur de services numériques</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- VERDICT -->
+<div class="panel" id="p-verdict"><div class="wrap">
+  <div class="card">
+    <div class="ctitle">🎯 Vos gestes — ce qui compte vs ce qui ne sert à rien</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.7">Basé sur votre profil. Classement par impact réel sur vos émissions totales. Source : ADEME, Nos Gestes Climat, impactco2.fr.</div>
+    <div id="gestes-list"></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">📊 Votre bilan CO₂ par poste</div>
+      <div class="cw"><canvas id="chart-poste"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">🎯 Actions prioritaires pour vous</div>
+      <div id="actions-list"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">🌍 Vous et les autres Français</div>
+    <div class="g3">
+      <div class="m"><div class="ml">Votre empreinte</div><div class="mv" id="v-empreinte" style="color:var(--green)">—</div><div class="ms">tonnes CO₂/an</div></div>
+      <div class="m"><div class="ml">Moyenne française</div><div class="mv" style="color:var(--amber)">9,1 t</div><div class="ms">tonnes CO₂/an</div></div>
+      <div class="m"><div class="ml">Objectif 2050</div><div class="mv" style="color:var(--green)">2 t</div><div class="ms">tonnes CO₂/an</div></div>
+    </div>
+    <div id="verdict-texte" style="margin-top:12px;padding:16px;background:rgba(0,0,0,.3);border-radius:10px;font-size:13px;color:var(--muted);line-height:1.8"></div>
+  </div>
+
+  <div class="src">
+    <strong>Sources :</strong> ADEME impactco2.fr (2025) · Citepa/ABC "Répartition de l'empreinte carbone des Français" (2023) · Nos Gestes Climat — ADEME (nosgestesclimat.fr) · ADEME "Guide des facteurs d'émission" Base Carbone 2025 · Info.gouv.fr "Calculez votre empreinte carbone" (2025) · ADEME Agir pour la Transition Écologique (agirpourlatransition.ademe.fr) · ImpactCO2.fr — Base Empreinte ADEME/ARCEP 2025
+  </div>
+</div></div>
+
+<!-- DONNÉES -->
+<div class="panel" id="p-data"><div class="wrap">
+  <div class="g3">
+    <div class="choc">
+      <div style="font-size:12px;color:var(--muted)">Empreinte moyenne Français</div>
+      <div class="choc-num">9,1 t</div>
+      <div class="choc-label">de CO₂ par an par personne</div>
+      <div class="choc-src">ADEME/Citepa 2023</div>
+    </div>
+    <div class="choc">
+      <div style="font-size:12px;color:var(--muted)">Objectif neutralité carbone</div>
+      <div class="choc-num">2 t</div>
+      <div class="choc-label">à atteindre d'ici 2050 — on en est à 4,5× trop</div>
+      <div class="choc-src">Accord de Paris / GIEC</div>
+    </div>
+    <div class="choc">
+      <div style="font-size:12px;color:var(--muted)">Part de l'avion</div>
+      <div class="choc-num">×3</div>
+      <div class="choc-label">impact multiplié par 3 à haute altitude (forçage radiatif)</div>
+      <div class="choc-src">GIEC / Statista</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">📊 Comparatif gestes — du moins au plus impactant</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Économies CO₂ annuelles estimées par action. Source : ADEME Base Carbone 2025.</div>
+    <div id="comparatif-gestes"></div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">🌍 Émissions par catégorie — France 2025</div>
+    <div class="g2" style="gap:10px">
+      <div>
+        <div class="di"><span>🚗 Transports</span><span style="color:var(--amber)">2,3 t/an (25%)</span></div>
+        <div class="di"><span>🥩 Alimentation</span><span style="color:var(--amber)">2,0 t/an (22%)</span></div>
+        <div class="di"><span>🏠 Logement</span><span style="color:var(--amber)">1,7 t/an (19%)</span></div>
+        <div class="di"><span>📦 Biens & services</span><span style="color:var(--amber)">2,4 t/an (26%)</span></div>
+        <div class="di"><span>🏛️ Services publics</span><span>0,7 t/an (8%)</span></div>
+      </div>
+      <div>
+        <div class="di"><span>1 vol Paris-NY A/R</span><span style="color:var(--red)">1,8 t CO₂</span></div>
+        <div class="di"><span>1 repas bœuf</span><span style="color:var(--red)">7 kg CO₂</span></div>
+        <div class="di"><span>1 repas végétarien</span><span style="color:var(--green)">0,5 kg CO₂</span></div>
+        <div class="di"><span>10 km voiture</span><span style="color:var(--amber)">2,2 kg CO₂</span></div>
+        <div class="di"><span>10 km TGV</span><span style="color:var(--green)">0,03 kg CO₂</span></div>
+        <div class="di"><span>1 jean neuf</span><span style="color:var(--amber)">33 kg CO₂</span></div>
+        <div class="di"><span>1 jean seconde main</span><span style="color:var(--green)">3 kg CO₂</span></div>
+        <div class="di"><span>Éteindre veille 1 an</span><span>~30 kg CO₂</span></div>
+        <div class="di"><span>Passer végétarien 1 an</span><span style="color:var(--green)">~1 500 kg CO₂</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">🧮 Graphique — Comparaison actions par impact</div>
+    <div class="cw"><canvas id="chart-actions"></canvas></div>
+  </div>
+
+  <div class="src">
+    <strong>Disclaimer :</strong> Ce calculateur est un outil de sensibilisation et d'estimation. Les facteurs d'émission sont issus de la Base Carbone ADEME et de l'étude Citepa/ABC 2023. Ils peuvent varier selon les méthodes de calcul, les années de référence et les situations individuelles. Pour un bilan carbone précis et certifié, consultez l'outil officiel Nos Gestes Climat (nosgestesclimat.fr) ou un expert bilan carbone. Ces estimations ne constituent pas un avis environnemental certifié.
+  </div>
+</div></div>
+
+<script>
+var activeTab = 'transport';
+var chartPoste = null, chartActions = null;
+Chart.defaults.color = '#3A5040';
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+
+function g(id){ return document.getElementById(id); }
+function sv(id){ var el=g(id); return el?+el.value:0; }
+function gv(id){ var el=g(id); return el?el.value:''; }
+function se(id,t){ var el=g(id); if(el) el.textContent=t; }
+function si(id,h){ var el=g(id); if(el) el.innerHTML=h; }
+function fmt(n){ return (Math.round(n*10)/10).toLocaleString('fr-FR'); }
+function destroyChart(c){ if(c){ try{c.destroy();}catch(e){} } return null; }
+
+function showTab(name,btn){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  g('p-'+name).classList.add('on');
+  btn.classList.add('on');
+  activeTab = name;
+  setTimeout(function(){ renderCharts(name); }, 80);
+}
+
+// ── CALCUL ──
+function recalc(){
+  var km      = sv('iKm');
+  var veh     = +gv('iVehicule');
+  var vols    = sv('iVols');
+  var volType = +gv('iVol');
+  var commute = +gv('iCommute');
+  var domTrav = sv('iDomTrav');
+  var train   = +gv('iTrain');
+
+  var viande  = +gv('iViande');
+  var lait    = +gv('iLait');
+  var gasp    = +gv('iGasp');
+  var local   = +gv('iLocal');
+
+  var chauff  = +gv('iChauffage');
+  var surface = sv('iSurface');
+  var iso     = +gv('iIso');
+  var eau     = +gv('iEau');
+  var kwh     = sv('iKwh');
+  var num     = +gv('iNum');
+  var stream  = sv('iStream');
+
+  var vet     = sv('iVet');
+  var sm      = +gv('iSM');
+  var tech    = sv('iTech');
+  var vacances= +gv('iVacances');
+  var animaux = +gv('iAnimaux');
+  var services= +gv('iServices');
+
+  // Labels
+  se('vKm', km.toLocaleString('fr-FR')+' km');
+  se('vVols', vols+' vol'+(vols>1?'s':''));
+  se('vDomTrav', domTrav+' km');
+  se('vSurface', surface+' m²');
+  se('vKwh', kwh.toLocaleString('fr-FR')+' kWh');
+  se('vStream', stream+'h/j');
+  se('vVet', vet+' pièces');
+  se('vTech', tech.toLocaleString('fr-FR')+'€');
+
+  // ── CO2 par poste (en kg) ──
+  var co2Voiture  = km * veh;
+  var co2Avion    = vols * volType;
+  var co2Commute  = commute * domTrav * 250;
+  var co2Train    = train;
+  var co2Transport = co2Voiture + co2Avion + co2Commute + co2Train;
+
+  var co2Viande   = viande;
+  var co2Lait     = lait;
+  var co2Gasp     = gasp;
+  var co2Local    = local;
+  var co2Alim     = co2Viande + co2Lait + co2Gasp + co2Local;
+
+  var co2Chauffage = chauff * (surface/70) * iso;
+  var co2Eau      = eau;
+  var co2Elec     = kwh * 0.057;
+  var co2Num      = num;
+  var co2Stream   = stream * 365 * 0.010;
+  var co2Logement = co2Chauffage + co2Eau + co2Elec + co2Num + co2Stream;
+
+  var co2Vet      = vet * 8 * sm;
+  var co2Tech2    = tech * 0.3;
+  var co2Vac      = vacances;
+  var co2Anim     = animaux;
+  var co2Serv     = services;
+  var co2Conso    = co2Vet + co2Tech2 + co2Vac + co2Anim + co2Serv;
+
+  var co2Services = 700; // Part incompressible services publics France
+
+  var totalKg = co2Transport + co2Alim + co2Logement + co2Conso + co2Services;
+  var totalT  = totalKg / 1000;
+
+  // ── SCORE BANNER ──
+  var emoji = totalT < 4 ? '🌱' : totalT < 6 ? '😐' : totalT < 9 ? '😟' : '🔥';
+  var couleur = totalT < 4 ? 'var(--green)' : totalT < 6 ? 'var(--amber)' : 'var(--red)';
+  var bgStyle = totalT < 4 ? 'rgba(0,232,106,.05)' : totalT < 6 ? 'rgba(255,149,0,.05)' : 'rgba(255,64,64,.05)';
+  var brdStyle = totalT < 4 ? 'rgba(0,232,106,.3)' : totalT < 6 ? 'rgba(255,149,0,.3)' : 'rgba(255,64,64,.3)';
+  var sb = g('score-box');
+  if(sb){ sb.style.background=bgStyle; sb.style.borderColor=brdStyle; }
+  se('sc-emoji', emoji);
+  se('sc-tonnes', fmt(totalT));
+  g('sc-tonnes').style.color = couleur;
+
+  var vsM = totalT < 9.1 ? '−'+fmt(9.1-totalT)+'t vs moy.' : '+'+fmt(totalT-9.1)+'t vs moy.';
+  se('sc-vs', vsM);
+  g('sc-vs').style.color = totalT < 9.1 ? 'var(--green)' : 'var(--red)';
+  se('sc-objectif', fmt(totalT/2)+'×');
+  g('sc-objectif').style.color = totalT/2 > 3 ? 'var(--red)' : 'var(--amber)';
+
+  var postes = [{n:'Transport',v:co2Transport},{n:'Alimentation',v:co2Alim},{n:'Logement',v:co2Logement},{n:'Consommation',v:co2Conso}];
+  postes.sort(function(a,b){ return b.v-a.v; });
+  se('sc-poste', postes[0].n);
+
+  var gainMax = Math.max(co2Avion * 0.8, (co2Voiture > 1000 ? co2Voiture * 0.6 : 0), co2Viande * 0.8);
+  se('sc-gain', '−'+fmt(gainMax/1000)+'t');
+
+  // ── TRANSPORT DETAIL ──
+  var maxT = Math.max(co2Voiture, co2Avion, co2Commute, 100);
+  si('transport-detail',
+    barHTML('🚗 Voiture personnelle', co2Voiture, maxT, 'var(--red)')
+    +barHTML('✈️ Avion', co2Avion, maxT, co2Avion>1000?'var(--red)':'var(--amber)')
+    +barHTML('🚌 Trajets quotidiens', co2Commute, maxT, 'var(--amber)')
+    +barHTML('🚆 Train longue distance', co2Train, maxT, 'var(--green)')
+  );
+
+  // ── ALIM GAINS ──
+  si('alim-gains', [
+    {e:'🥩', t:'Passer végétarien', kg:1500, note:'Économie la plus puissante sur l\'alimentation'},
+    {e:'🥗', t:'Réduire à 1 viande rouge/sem.', kg:Math.max(0,co2Viande-150), note:'vs votre consommation actuelle'},
+    {e:'🗑️', t:'Éliminer le gaspillage', kg:Math.max(0,gasp-20), note:'Actuellement : '+(gasp>80?'beaucoup':'modéré')},
+    {e:'🛒', t:'Manger local/saison', kg:Math.max(0,local-20), note:'Surtout éviter fruits exotiques hors saison'},
+  ].map(function(g2){
+    return '<div class="geste-card g-essentiel"><div class="g-emoji">'+g2.e+'</div><div>'
+      +'<div class="g-title" style="color:var(--green)">'+g2.t+'</div>'
+      +'<div class="g-desc">'+g2.note+'</div>'
+      +'<span class="g-badge badge-essentiel">−'+fmt(g2.kg/1000)+'t CO₂/an</span>'
+      +'</div></div>';
+  }).join(''));
+
+  // ── LOGEMENT DETAIL ──
+  si('logement-detail',
+    barHTML('🔥 Chauffage', co2Chauffage, Math.max(co2Chauffage,500), co2Chauffage>1500?'var(--red)':'var(--amber)')
+    +barHTML('💡 Électricité', co2Elec, Math.max(co2Chauffage,500), 'var(--green)')
+    +barHTML('🚿 Eau chaude', co2Eau, Math.max(co2Chauffage,500), 'var(--blue)')
+    +barHTML('📱 Équipements numériques', co2Num, Math.max(co2Chauffage,500), 'var(--purple)')
+  );
+
+  // ── DONNÉES STORE pour les graphiques ──
+  window._R = {
+    totalT: totalT,
+    postes: [co2Transport/1000, co2Alim/1000, co2Logement/1000, co2Conso/1000, co2Services/1000],
+    co2Avion: co2Avion, co2Voiture: co2Voiture, co2Viande: co2Viande, co2Chauffage: co2Chauffage,
+    co2Commute: co2Commute, co2Vet: co2Vet, co2Lait: co2Lait
+  };
+
+  if(activeTab==='verdict') buildVerdict();
+  if(activeTab==='data') renderCharts('data');
+
+  // Mettre à jour le total dans le panneau verdict
+  se('v-empreinte', fmt(totalT));
+}
+
+function barHTML(name, val, max, color){
+  var pct = max > 0 ? Math.min(100, Math.round(val/max*100)) : 0;
+  return '<div class="impact-bar">'
+    +'<div class="impact-top"><span class="impact-name">'+name+'</span><span class="impact-val" style="color:'+color+'">'+Math.round(val)+' kg</span></div>'
+    +'<div class="impact-track"><div class="impact-fill" style="width:'+pct+'%;background:'+color+'"></div></div>'
+    +'</div>';
+}
+
+function buildVerdict(){
+  if(!window._R) return;
+  var R = window._R;
+
+  // Gestes classés par impact
+  var gestes = [
+    {e:'✈️', t:'Réduire/arrêter l\'avion', kg:R.co2Avion*0.8, impact:'essentiel', note:'Votre avion actuel = '+(Math.round(R.co2Avion/1000*10)/10)+'t CO₂. C\'est probablement votre levier #1.'},
+    {e:'🥩', t:'Réduire la viande rouge', kg:R.co2Viande*0.7, impact:R.co2Viande>400?'essentiel':'moyen', note:'Passer d\'un repas bœuf à végétarien = −6,5 kg CO₂ à chaque fois.'},
+    {e:'🚗', t:'Réduire la voiture', kg:R.co2Voiture*0.4, impact:R.co2Voiture>2000?'essentiel':'moyen', note:'Covoiturage, vélo, TGV — le plus simple selon votre situation géographique.'},
+    {e:'🔥', t:'Rénover l\'isolation', kg:R.co2Chauffage*0.5, impact:R.co2Chauffage>1500?'essentiel':'moyen', note:'Passer DPE E à B = −1,5t/an. Le plus impactant pour le logement.'},
+    {e:'👕', t:'Acheter moins, occasion', kg:R.co2Vet*0.5, impact:'moyen', note:'Diviser ses achats par 2 et moitié d\'occasion = −40% de l\'impact mode.'},
+    {e:'🚿', t:'Douches plus courtes', kg:50, impact:'inutile', note:'5 min de moins = 50 kg CO₂/an. Réel mais marginal vs les autres postes.'},
+    {e:'💡', t:'Éteindre les veilles', kg:30, impact:'inutile', note:'30 kg CO₂/an — soit 0,3% de votre empreinte totale. L\'effort est réel, l\'impact dérisoire.'},
+    {e:'🛍️', t:'Refuser les sacs plastique', kg:1, impact:'inutile', note:'< 1 kg CO₂/an. Le geste qui rassure mais ne change rien à l\'échelle.'},
+    {e:'♻️', t:'Trier ses déchets', kg:40, impact:'inutile', note:'40 kg CO₂/an évités. Important mais 100× moins que d\'arrêter l\'avion.'},
+    {e:'🥦', t:'Manger local et de saison', kg:R.co2Avion>0?80:40, impact:'moyen', note:'Bon réflexe mais ne compense pas les grands postes. Évitez surtout les exotiques par avion.'},
+  ];
+  gestes.sort(function(a,b){ return b.kg-a.kg; });
+
+  si('gestes-list', gestes.map(function(g2){
+    var cls = g2.impact==='essentiel'?'g-essentiel':g2.impact==='moyen'?'g-moyen':'g-inutile';
+    var bdg = g2.impact==='essentiel'?'badge-essentiel':g2.impact==='moyen'?'badge-moyen':'badge-inutile';
+    var bLabel = g2.impact==='essentiel'?'🔥 Priorité absolue':g2.impact==='moyen'?'⚡ Impact réel':'🤷 Geste symbolique';
+    return '<div class="geste-card '+cls+'">'
+      +'<div class="g-emoji">'+g2.e+'</div>'
+      +'<div style="flex:1"><div class="g-title">'+g2.t+' — '+(Math.round(g2.kg/10)*10)+' kg CO₂/an</div>'
+      +'<div class="g-desc">'+g2.note+'</div>'
+      +'<span class="g-badge '+bdg+'">'+bLabel+'</span></div>'
+      +'</div>';
+  }).join(''));
+
+  // Actions prioritaires
+  var top3 = gestes.filter(function(g2){ return g2.impact==='essentiel'; }).slice(0,3);
+  if(top3.length < 3) top3 = top3.concat(gestes.filter(function(g2){ return g2.impact==='moyen'; })).slice(0,3);
+  si('actions-list', top3.map(function(g2,i){
+    return '<div style="padding:12px 14px;background:rgba(0,232,106,.04);border:1px solid rgba(0,232,106,.15);border-radius:10px;margin-bottom:8px">'
+      +'<div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:3px">'+(i+1)+'. '+g2.e+' '+g2.t+'</div>'
+      +'<div style="font-size:11px;color:var(--muted)">'+g2.note+'</div>'
+      +'<div style="font-family:DM Mono,monospace;font-size:11px;color:var(--lime);margin-top:4px">Gain : −'+fmt(g2.kg/1000)+'t CO₂/an</div>'
+      +'</div>';
+  }).join(''));
+
+  // Verdict texte
+  var totalT = R.totalT;
+  var vText = totalT < 3 ? '🌱 <strong style="color:var(--green)">Exemplaire.</strong> Votre empreinte est parmi les plus faibles de France. Vous êtes déjà sous la moyenne de 2× et vous approchez de l\'objectif 2050.'
+    : totalT < 6 ? '😊 <strong style="color:var(--green)">En dessous de la moyenne.</strong> Vous faites mieux que la plupart des Français. Quelques actions ciblées suffiraient à atteindre l\'objectif 2050.'
+    : totalT < 9 ? '😐 <strong style="color:var(--amber)">Dans la moyenne française.</strong> C\'est rassurant statistiquement, mais la moyenne française est 4,5× au-dessus de l\'objectif climatique. Il y a de la marge.'
+    : '🔥 <strong style="color:var(--red)">Au-dessus de la moyenne.</strong> Votre empreinte dépasse les 9t. Identifier et agir sur vos 2-3 postes principaux pourrait facilement vous faire gagner 3-4 tonnes.';
+  si('verdict-texte', vText);
+
+  // Comparatif gestes
+  var gesteData = [
+    {n:'Passer végétarien 1 an', kg:1500, c:'rgba(0,232,106,.7)'},
+    {n:'Arrêter l\'avion (court courrier)', kg:Math.round(R.co2Avion*0.8)||300, c:'rgba(0,232,106,.5)'},
+    {n:'Vendre sa voiture (→ vélo/TC)', kg:Math.round(R.co2Voiture*0.8)||1000, c:'rgba(0,232,106,.5)'},
+    {n:'Rénover isolation (G→B)', kg:1200, c:'rgba(59,143,255,.7)'},
+    {n:'Manger local/saison', kg:80, c:'rgba(255,149,0,.6)'},
+    {n:'Acheter seconde main', kg:200, c:'rgba(255,149,0,.5)'},
+    {n:'Trier ses déchets', kg:40, c:'rgba(255,64,64,.4)'},
+    {n:'Éteindre les veilles', kg:30, c:'rgba(255,64,64,.4)'},
+    {n:'Refuser les sacs plastique', kg:1, c:'rgba(255,64,64,.3)'},
+  ];
+  gesteData.sort(function(a,b){ return b.kg-a.kg; });
+  si('comparatif-gestes', gesteData.map(function(gd){
+    var pct = Math.round(gd.kg/1500*100);
+    return '<div class="impact-bar">'
+      +'<div class="impact-top"><span class="impact-name">'+gd.n+'</span><span class="impact-val">'+(gd.kg>=1000?fmt(gd.kg/1000)+'t':gd.kg+' kg')+' CO₂</span></div>'
+      +'<div class="impact-track"><div class="impact-fill" style="width:'+pct+'%;background:'+gd.c+'"></div></div>'
+      +'</div>';
+  }).join(''));
+
+  renderCharts('verdict');
+}
+
+function renderCharts(name){
+  if(name==='verdict' && window._R){
+    chartPoste = destroyChart(chartPoste);
+    var cp = g('chart-poste'); if(!cp) return;
+    chartPoste = new Chart(cp,{
+      type:'doughnut',
+      data:{
+        labels:['Transport','Alimentation','Logement','Consommation','Services publics'],
+        datasets:[{
+          data: window._R.postes,
+          backgroundColor:['rgba(255,64,64,.8)','rgba(255,149,0,.8)','rgba(59,143,255,.8)','rgba(176,110,255,.8)','rgba(0,212,170,.8)'],
+          borderWidth:2, borderColor:'#0c1410'
+        }]
+      },
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{labels:{color:'#3A5040',font:{size:11}}},
+          tooltip:{callbacks:{label:function(c){ return c.label+' : '+fmt(c.raw)+'t CO₂'; }}}}
+      }
+    });
+  }
+  if(name==='data'){
+    chartActions = destroyChart(chartActions);
+    var ca = g('chart-actions'); if(!ca) return;
+    chartActions = new Chart(ca,{
+      type:'bar',
+      data:{
+        labels:['Végétarien','Voiture→vélo','Rénover isolation','Arrêter avion EU','Acheter occasion','Manger local','Trier déchets','Éteindre veilles','Refuser sac'],
+        datasets:[{
+          label:'Économie CO₂ (kg/an)',
+          data:[1500,1000,1200,300,200,80,40,30,1],
+          backgroundColor:['rgba(0,232,106,.8)','rgba(0,232,106,.7)','rgba(59,143,255,.7)','rgba(0,232,106,.6)','rgba(255,149,0,.6)','rgba(255,149,0,.5)','rgba(255,64,64,.5)','rgba(255,64,64,.4)','rgba(255,64,64,.3)'],
+          borderRadius:6, borderWidth:0
+        }]
+      },
+      options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){ return c.raw>=1000?fmt(c.raw/1000)+'t CO₂/an':c.raw+' kg CO₂/an'; }}}},
+        scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:function(v){ return v>=1000?v/1000+'t':v+'kg'; },color:'#3A5040'},border:{color:'transparent'}},
+                y:{grid:{display:false},ticks:{color:'#3A5040',font:{size:11}},border:{color:'transparent'}}}
+      }
+    });
+  }
+}
+
+recalc();
+</script>
+</body>
+</html>
