@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Test politique 2025 — 80 questions, 5 axes, boussole complète | Calculamatix</title>
+  <meta name="description" content="Le test politique le plus complet en français. 80 situations concrètes, 5 axes (économique, culturel, autorité, souveraineté, écologie). Boussole en temps réel. Sources académiques."/>
+  <link rel="canonical" href="https://calculamatix.com/test-politique-2.html"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#07080f;--card:#0f1020;--border:#1a1c30;
+      --indigo:#6B7FFF;--purple:#A78BFA;--pink:#F472B6;
+      --green:#3BFF9E;--red:#F87171;--amber:#FBBF24;
+      --teal:#2DD4BF;--blue:#60A5FA;--orange:#FB923C;
+      --text:#EEF0FF;--muted:#404870;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:80px;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:radial-gradient(ellipse 70% 40% at 25% 0%,rgba(107,127,255,.06),transparent),
+                 radial-gradient(ellipse 50% 30% at 75% 100%,rgba(167,139,250,.04),transparent)}
+
+    nav{position:relative;z-index:10;max-width:960px;margin:0 auto;padding:22px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:17px;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--amber)}
+    .back{font-size:12px;color:var(--muted);text-decoration:none}
+
+    /* HERO */
+    .hero{position:relative;z-index:10;max-width:960px;margin:0 auto;padding:36px 24px 24px}
+    .htag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--indigo);background:rgba(107,127,255,.08);border:1px solid rgba(107,127,255,.2);padding:4px 14px;border-radius:100px;margin-bottom:12px;font-family:'DM Mono',monospace}
+    h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(20px,3.5vw,40px);letter-spacing:-1.5px;line-height:1.1;margin-bottom:10px}
+    h1 em{color:var(--indigo);font-style:normal}
+    .hero-sub{font-size:13px;color:var(--muted);line-height:1.7;max-width:680px}
+
+    /* DISCLAIMER */
+    .disc-box{position:relative;z-index:10;max-width:960px;margin:0 auto 16px;padding:0 24px}
+    .disc-inner{background:rgba(251,191,36,.04);border:1px solid rgba(251,191,36,.2);border-radius:12px;padding:14px 18px;font-size:12px;color:var(--muted);line-height:1.7}
+    .disc-inner strong{color:var(--amber)}
+
+    /* PROGRESS */
+    .prog-wrap{position:relative;z-index:10;max-width:960px;margin:0 auto 16px;padding:0 24px}
+    .prog-inner{background:var(--border);border-radius:100px;height:6px;overflow:hidden}
+    .prog-fill{height:100%;background:linear-gradient(90deg,var(--indigo),var(--purple));border-radius:100px;transition:width .3s ease}
+    .prog-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px;font-family:'DM Mono',monospace}
+
+    /* LIVE SCORES */
+    .live-wrap{position:relative;z-index:10;max-width:960px;margin:0 auto 16px;padding:0 24px}
+    .live-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .live-axis{display:flex;align-items:center;gap:6px;flex:1;min-width:140px}
+    .live-label{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;white-space:nowrap}
+    .live-bar-wrap{flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;position:relative}
+    .live-bar-center{position:absolute;left:50%;top:0;width:1px;height:100%;background:rgba(255,255,255,.2)}
+    .live-bar-fill{position:absolute;height:100%;border-radius:3px;transition:all .3s ease}
+    .live-val{font-family:'DM Mono',monospace;font-size:10px;width:28px;text-align:right;flex-shrink:0}
+
+    /* QUIZ */
+    .quiz-wrap{position:relative;z-index:10;max-width:960px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:10px}
+
+    .bloc-header{padding:16px 20px 8px;display:flex;align-items:flex-start;gap:12px}
+    .bloc-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);padding:3px 10px;background:var(--border);border-radius:100px;white-space:nowrap;flex-shrink:0;margin-top:2px}
+    .bloc-info{flex:1}
+    .bloc-title{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:var(--indigo);margin-bottom:4px}
+    .bloc-desc{font-size:12px;color:var(--muted);line-height:1.6}
+    .bloc-ref{font-size:10px;color:#2a2e50;margin-top:4px;font-family:'DM Mono',monospace;font-style:italic}
+    .bloc-sep{height:1px;background:var(--border);margin:0 20px}
+
+    .q-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color .2s}
+    .q-card.answered{border-color:rgba(107,127,255,.35)}
+    .q-inner{padding:16px 20px 14px}
+    .q-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:6px}
+    .q-text{font-size:14px;color:var(--text);line-height:1.65;margin-bottom:14px}
+    .q-context{font-size:11px;color:var(--muted);background:rgba(255,255,255,.03);border-left:2px solid var(--border);padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:12px;line-height:1.6;font-style:italic}
+
+    .likert{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+    .lik-btn{padding:8px 4px;border:1px solid var(--border);border-radius:10px;background:transparent;color:var(--muted);font-size:10px;font-family:inherit;cursor:pointer;transition:all .12s;text-align:center;line-height:1.3}
+    .lik-btn:hover{border-color:rgba(107,127,255,.4);color:var(--text);background:rgba(107,127,255,.06)}
+    .lik-btn.s-2{background:rgba(59,255,158,.15);border-color:var(--green);color:var(--green);font-weight:700}
+    .lik-btn.s-1{background:rgba(59,255,158,.07);border-color:rgba(59,255,158,.4);color:rgba(59,255,158,.8)}
+    .lik-btn.s0{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.2);color:var(--text)}
+    .lik-btn.s1{background:rgba(248,113,113,.07);border-color:rgba(248,113,113,.4);color:rgba(248,113,113,.8)}
+    .lik-btn.s2{background:rgba(248,113,113,.15);border-color:var(--red);color:var(--red);font-weight:700}
+
+    .btn-primary{background:linear-gradient(135deg,var(--indigo),var(--purple));border:none;color:#fff;padding:14px 36px;border-radius:12px;font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:opacity .2s;display:block;margin:24px auto;letter-spacing:.5px}
+    .btn-primary:hover{opacity:.85}
+    .btn-primary:disabled{opacity:.3;cursor:not-allowed}
+
+    /* RÉSULTATS */
+    .res-wrap{position:relative;z-index:10;max-width:960px;margin:0 auto;padding:0 24px;display:none;flex-direction:column;gap:14px}
+    .res-wrap.show{display:flex}
+
+    .res-header{text-align:center;padding:28px;background:linear-gradient(135deg,rgba(107,127,255,.08),rgba(167,139,250,.04));border:1px solid rgba(107,127,255,.2);border-radius:20px}
+    .res-emoji{font-size:52px;margin-bottom:10px}
+    .res-name{font-family:'Unbounded',sans-serif;font-size:clamp(16px,2.5vw,24px);font-weight:900;color:var(--indigo);margin-bottom:6px}
+    .res-sub{font-size:13px;color:var(--muted);line-height:1.7;max-width:520px;margin:0 auto}
+
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px}
+    .ctitle{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:14px}
+
+    .axis-row{margin-bottom:14px}
+    .axis-top{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px}
+    .axis-name{color:var(--text)}
+    .axis-val{font-family:'DM Mono',monospace;font-weight:700}
+    .axis-track{height:12px;background:rgba(255,255,255,.05);border-radius:6px;overflow:hidden;position:relative}
+    .axis-center{position:absolute;left:50%;top:0;width:2px;height:100%;background:rgba(255,255,255,.15)}
+    .axis-fill{position:absolute;height:100%;border-radius:6px;transition:all .6s ease}
+    .axis-ends{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px;font-family:'DM Mono',monospace}
+
+    .cw{position:relative;width:100%;height:280px;margin-top:10px}
+    .cw-radar{position:relative;width:100%;max-width:360px;height:360px;margin:0 auto}
+
+    .party-dot{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);margin:3px 5px}
+    .party-color{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+    /* SHARE */
+    .share-box{background:linear-gradient(135deg,rgba(107,127,255,.08),rgba(167,139,250,.04));border:1px solid rgba(107,127,255,.2);border-radius:16px;padding:20px}
+    .share-url{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--indigo);word-break:break-all;margin-bottom:12px;line-height:1.6}
+    .share-btns{display:flex;gap:8px;flex-wrap:wrap}
+    .share-btn{flex:1;min-width:100px;padding:10px 14px;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;text-align:center}
+    .share-btn:hover{opacity:.8}
+    .btn-x{background:#000;color:#fff;border:1px solid #333}
+    .btn-wa{background:#25D366;color:#fff}
+    .btn-copy{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--border)}
+    .btn-retry{background:transparent;border:1px solid var(--indigo);color:var(--indigo);padding:10px 24px;border-radius:10px;font-family:inherit;font-size:13px;cursor:pointer;margin:8px auto;display:block}
+
+    .src{background:#080912;border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:11px;color:#2a2e50;line-height:1.8;font-family:'DM Mono',monospace}
+    .src strong{color:#404870}
+
+    .theme-score{padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+    .ts-name{font-size:12px;color:var(--muted)}
+    .ts-val{font-family:'DM Mono',monospace;font-size:12px}
+
+    @media(max-width:640px){
+      .likert{grid-template-columns:repeat(5,1fr);gap:3px}
+      .lik-btn{font-size:9px;padding:7px 2px}
+      .g2{grid-template-columns:1fr}
+      .live-box{gap:6px}
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Retour</a>
+</nav>
+
+<div class="hero">
+  <div class="htag">🗳️ Politique · 80 questions · 5 axes</div>
+  <h1>Test politique<br><em>approfondi</em> 2025</h1>
+  <p class="hero-sub">80 situations concrètes. 5 dimensions politiques. Boussole en temps réel. Sources académiques pour chaque bloc thématique. Résultats partageables par lien.</p>
+</div>
+
+<div class="disc-box">
+  <div class="disc-inner">
+    <strong>⚠️ Avertissements essentiels :</strong> Ce test est un outil de réflexion personnelle, pas un diagnostic politique certifié. Aucune orientation n'est présentée comme meilleure qu'une autre. Les questions ont été formulées pour être aussi neutres que possible, mais toute question politique comporte inévitablement un cadrage. Les résultats ne vous "étiquettent" pas — ils indiquent des tendances sur 5 axes indépendants. Les partis de référence sont des estimations académiques (CEVIPOF/Sciences Po), non des positions officielles. <strong>Vos réponses restent dans votre navigateur — aucune donnée n'est transmise.</strong>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="prog-wrap" id="prog-wrap">
+  <div class="prog-inner"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  <div class="prog-labels"><span id="prog-done">0 / 80 questions</span><span id="prog-pct">0%</span></div>
+</div>
+
+<!-- LIVE SCORES -->
+<div class="live-wrap" id="live-wrap">
+  <div class="live-box">
+    <div class="live-axis">
+      <span class="live-label">💰 ÉCO</span>
+      <div class="live-bar-wrap"><div class="live-bar-center"></div><div class="live-bar-fill" id="lb-eco" style="background:var(--green)"></div></div>
+      <span class="live-val" id="lv-eco">0</span>
+    </div>
+    <div class="live-axis">
+      <span class="live-label">🌈 CULT</span>
+      <div class="live-bar-wrap"><div class="live-bar-center"></div><div class="live-bar-fill" id="lb-cul" style="background:var(--purple)"></div></div>
+      <span class="live-val" id="lv-cul">0</span>
+    </div>
+    <div class="live-axis">
+      <span class="live-label">🔒 AUT</span>
+      <div class="live-bar-wrap"><div class="live-bar-center"></div><div class="live-bar-fill" id="lb-aut" style="background:var(--blue)"></div></div>
+      <span class="live-val" id="lv-aut">0</span>
+    </div>
+    <div class="live-axis">
+      <span class="live-label">🌍 SOV</span>
+      <div class="live-bar-wrap"><div class="live-bar-center"></div><div class="live-bar-fill" id="lb-sov" style="background:var(--amber)"></div></div>
+      <span class="live-val" id="lv-sov">0</span>
+    </div>
+    <div class="live-axis">
+      <span class="live-label">🌿 ÉCO2</span>
+      <div class="live-bar-wrap"><div class="live-bar-center"></div><div class="live-bar-fill" id="lb-eco2" style="background:var(--teal)"></div></div>
+      <span class="live-val" id="lv-eco2">0</span>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="quiz-wrap" id="quiz-wrap"></div>
+<button class="btn-primary" id="btn-submit" onclick="showResults()" disabled>Voir mes résultats →</button>
+
+<!-- RÉSULTATS -->
+<div class="res-wrap" id="res-wrap">
+  <div class="res-header">
+    <div class="res-emoji" id="res-emoji">🗺️</div>
+    <div class="res-name" id="res-name">Votre profil politique</div>
+    <div class="res-sub" id="res-sub"></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Vos 5 axes détaillés</div>
+      <div id="axes-detail"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Radar — Votre empreinte politique</div>
+      <div class="cw-radar"><canvas id="chart-radar"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Boussole politique — Axes économique × culturel</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Votre position ⭐ comparée aux électorats des principaux partis français (estimations CEVIPOF, Perrineau "Le Vote clivé" 2022).</div>
+    <div class="cw"><canvas id="chart-compass"></canvas></div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:10px" id="party-legend"></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Scores par bloc thématique</div>
+      <div id="theme-scores"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Comparaison à la France</div>
+      <div id="france-compare"></div>
+    </div>
+  </div>
+
+  <div class="share-box">
+    <div class="ctitle" style="color:var(--indigo)">🔗 Partager vos résultats</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Ce lien encode vos scores. Quiconque clique dessus verra directement votre boussole.</div>
+    <div class="share-url" id="share-url">—</div>
+    <div class="share-btns">
+      <button class="share-btn btn-x" onclick="shareX()">𝕏 Twitter / X</button>
+      <button class="share-btn btn-wa" onclick="shareWA()">📱 WhatsApp</button>
+      <button class="share-btn btn-copy" onclick="copyURL()">📋 Copier le lien</button>
+    </div>
+  </div>
+
+  <div class="src">
+    <strong>Sources académiques :</strong><br>
+    · CEVIPOF/Sciences Po — Enquête électorale française 2017-2024 · Perrineau P. (dir.), "Le Vote clivé", PUG 2022<br>
+    · Piketty T., "Le Capital au XXIe siècle", Seuil 2013 · Rawls J., "Théorie de la justice", 1971<br>
+    · Bourdieu P. & Passeron J.-C., "La Reproduction", 1970 · Boudon R., "L'Inégalité des chances", 1973<br>
+    · Foucault M., "Surveiller et punir", 1975 · Habermas J., "L'Espace public", 1962<br>
+    · Tocqueville A., "De la démocratie en Amérique", 1835 · Rousseau J.-J., "Du Contrat social", 1762<br>
+    · Stiglitz J., "La Grande Désillusion", 2002 · Jonas H., "Le Principe responsabilité", 1979<br>
+    · Chomsky N. & Herman E., "La Fabrication du consentement", 1988<br>
+    · Chapel Hill Expert Survey (CHES) 2019 & 2022 — positionnement des partis européens<br>
+    · Rouban L., "Une France de gauche vote-t-elle à droite ?", CEVIPOF note 22, nov. 2024
+  </div>
+
+  <button class="btn-retry" onclick="resetQuiz()">↩ Recommencer</button>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// DONNÉES : 80 QUESTIONS en 20 blocs de 4
+// Axes : eco (gauche<0, droite>0), cul (progressiste<0, conservateur>0),
+//        aut (libertaire<0, autoritaire>0), sov (mondialiste<0, souverainiste>0),
+//        eco2 (décroissance<0, techno-optimiste>0)
+// w = poids sur chaque axe
+// ══════════════════════════════════════════════════════
+
+var BLOCS = [
+  // ── 1. FISCALITÉ & REDISTRIBUTION ──
+  {
+    num:1, title:"Fiscalité & Redistribution", emoji:"💰",
+    desc:"Comment financer la solidarité collective ? La question fiscale structure le clivage gauche-droite depuis le XIXe siècle.",
+    ref:"Thomas Piketty (\"Le Capital au XXIe siècle\", 2013) montre que les inégalités de patrimoine se creusent naturellement sans redistribution active. John Rawls (\"Théorie de la justice\", 1971) défend une fiscalité qui maximise le bien-être des plus défavorisés.",
+    questions:[
+      {id:1, text:"Une taxe de 90% sur les héritages supérieurs à 5 millions d'euros serait une mesure juste pour réduire les inégalités transmises de génération en génération.", w:{eco:-2,cul:0,aut:0,sov:0,eco2:0}},
+      {id:2, text:"La France devrait baisser significativement les impôts sur les sociétés pour attirer les entreprises étrangères et stimuler la croissance.", ctx:"La France a un taux d'imposition des sociétés de 25%, dans la moyenne européenne.", w:{eco:2,cul:0,aut:0,sov:0,eco2:0}},
+      {id:3, text:"Les services publics (école, hôpital, transport) devraient être financés par l'impôt progressif plutôt que par des contributions individuelles liées à l'usage.", w:{eco:-2,cul:0,aut:0,sov:0,eco2:0}},
+      {id:4, text:"Situation : Votre ville doit choisir entre baisser les impôts locaux de 15% ou maintenir le niveau de services publics (piscine municipale, bibliothèques, entretien des rues). Vous préférez :", choix:["Baisser les impôts — je m'organise moi-même","Baisser légèrement en réduisant les services secondaires","Maintenir — les services collectifs ont plus de valeur","Augmenter légèrement pour améliorer les services","Augmenter franchement pour des services de qualité"], w:{eco:1,cul:0,aut:0,sov:0,eco2:0}, isChoix:true}
+    ]
+  },
+
+  // ── 2. TRAVAIL & PROTECTION SOCIALE ──
+  {
+    num:2, title:"Travail & Protection sociale", emoji:"⚒️",
+    desc:"Le droit du travail, la protection contre le chômage et les conditions d'emploi sont au cœur du contrat social.",
+    ref:"Karl Marx voyait dans le travail salarié une aliénation fondamentale. John Maynard Keynes (1936) défendait l'intervention de l'État pour maintenir le plein emploi. Friedrich Hayek (\"La Route de la servitude\", 1944) argue que la protection sociale excessive réduit la liberté individuelle et l'initiative.",
+    questions:[
+      {id:5, text:"Le droit de grève devrait être limité dans les services essentiels (transports, hôpitaux) pour ne pas pénaliser les usagers.", w:{eco:1,cul:0,aut:1,sov:0,eco2:0}},
+      {id:6, text:"La durée légale du travail devrait être réduite à 32 heures par semaine, avec maintien du salaire.", w:{eco:-2,cul:0,aut:0,sov:0,eco2:0}},
+      {id:7, text:"Les allocations chômage devraient être conditionnées à une recherche d'emploi active et limitées dans la durée pour encourager le retour au travail.", w:{eco:1,cul:0,aut:1,sov:0,eco2:0}},
+      {id:8, text:"Situation : Une grande entreprise française menace de délocaliser 2 000 emplois si l'État n'allège pas ses charges sociales. Vous pensez que l'État devrait :", choix:["Refuser catégoriquement — c'est du chantage","Négocier sans réduire les droits sociaux","Accorder un allègement temporaire sous conditions","Accorder l'allègement pour sauver les emplois","Profiter pour réformer en profondeur le droit social"], w:{eco:1,cul:0,aut:0,sov:1,eco2:0}, isChoix:true}
+    ]
+  },
+
+  // ── 3. LOGEMENT & URBANISME ──
+  {
+    num:3, title:"Logement & Urbanisme", emoji:"🏠",
+    desc:"L'accès au logement est l'un des premiers marqueurs des inégalités sociales en France.",
+    ref:"Henri Lefebvre (\"Le Droit à la ville\", 1968) théorise le logement comme un droit fondamental, non une marchandise. Les économistes libéraux (Alain Bertaud) montrent que la régulation excessive des loyers crée des pénuries.",
+    questions:[
+      {id:9, text:"L'encadrement des loyers devrait être étendu à toutes les grandes villes françaises pour limiter la spéculation immobilière.", w:{eco:-2,cul:0,aut:0,sov:0,eco2:0}},
+      {id:10, text:"Les propriétaires de résidences secondaires dans les zones tendues devraient payer une taxe supplémentaire significative.", w:{eco:-1,cul:0,aut:0,sov:0,eco2:0}},
+      {id:11, text:"La loi SRU (obligation de 20-25% de logements sociaux par commune) devrait être renforcée et ses sanctions durcies pour les communes récalcitrantes.", w:{eco:-1,cul:0,aut:1,sov:0,eco2:0}},
+      {id:12, text:"Situation : Votre quartier résidentiel est proposé pour accueillir 400 logements sociaux. Les loyers locaux baisseront de 8%, la mixité sociale augmentera. Vous :", choix:["Soutenez totalement — c'est essentiel","Soutenez avec réserves si bien conçu","Ni pour ni contre — ça dépend des modalités","Opposé — trop d'impact sur mon quartier","Totalement opposé — ce n'est pas le bon endroit"], w:{eco:-1,cul:1,aut:0,sov:0,eco2:0}, isChoix:true}
+    ]
+  },
+
+  // ── 4. ÉCOLE & MÉRITE ──
+  {
+    num:4, title:"École & Méritocratie", emoji:"🎓",
+    desc:"L'école est-elle le grand égalisateur des chances ou le principal vecteur de reproduction sociale ?",
+    ref:"Pierre Bourdieu & Passeron (\"Les Héritiers\", 1964 ; \"La Reproduction\", 1970) montrent que l'école perpétue les inégalités en valorisant le capital culturel des classes dominantes. Raymond Boudon (\"L'Inégalité des chances\", 1973) insiste sur le rôle des stratégies familiales rationnelles.",
+    questions:[
+      {id:13, text:"La carte scolaire (obligation de fréquenter l'école de son secteur) devrait être supprimée pour laisser les familles choisir librement l'établissement de leurs enfants.", w:{eco:1,cul:0,aut:-1,sov:0,eco2:0}},
+      {id:14, text:"Les grandes écoles comme Polytechnique ou HEC devraient réserver un quota de 30% de leurs places aux étudiants boursiers.", w:{eco:-1,cul:-1,aut:0,sov:0,eco2:0}},
+      {id:15, text:"Les établissements scolaires privés sous contrat devraient être soumis aux mêmes obligations de mixité sociale que les établissements publics.", w:{eco:-1,cul:0,aut:1,sov:0,eco2:0}},
+      {id:16, text:"Situation : Votre enfant peut intégrer un lycée très réputé à 45 min de chez vous (hors carte) ou rester dans le lycée local de niveau moyen. Vous :", choix:["Restez au lycée local — la mixité est précieuse","Demandez une dérogation mais sans piston","Hésitez selon les filières disponibles","Choisissez le lycée réputé — c'est son avenir","Choisissez le réputé et revendiquez ce droit pour tous"], w:{eco:1,cul:0,aut:0,sov:0,eco2:0}, isChoix:true}
+    ]
+  },
+
+  // ── 5. SANTÉ & SOLIDARITÉ ──
+  {
+    num:5, title:"Santé & Solidarité", emoji:"🏥",
+    desc:"Le système de santé français mêle assurance sociale universelle et acteurs privés.",
+    ref:"William Beveridge (Rapport 1942) a posé les fondements de la sécurité sociale universelle, repris en France en 1945. Les partisans de la santé comme bien public s'opposent à ceux qui voient dans le marché une source d'efficacité.",
+    questions:[
+      {id:17, text:"Les dépassements d'honoraires des médecins de secteur 2 et 3 devraient être interdits pour garantir un accès aux soins égal pour tous.", w:{eco:-2,cul:0,aut:1,sov:0,eco2:0}},
+      {id:18, text:"Une partie des hôpitaux publics inefficaces devrait être privatisée pour améliorer leur gestion et réduire les dépenses de l'État.", w:{eco:2,cul:0,aut:0,sov:0,eco2:0}},
+      {id:19, text:"Les soins dentaires, optiques et psychiatriques devraient être intégralement remboursés par la Sécurité sociale, comme les soins courants.", w:{eco:-2,cul:0,aut:0,sov:0,eco2:0}},
+      {id:20, text:"Situation : La Sécurité sociale déficitaire doit choisir entre augmenter les cotisations patronales de 1,5 points ou réduire le remboursement de certains médicaments. Vous préférez :", choix:["Augmenter les cotisations — c'est aux employeurs de payer","Augmenter légèrement les deux","Réforme structurelle — ni l'un ni l'autre comme ça","Réduire les remboursements non essentiels","Privatiser une partie du système pour réduire le déficit"], w:{eco:-1,cul:0,aut:0,sov:0,eco2:0}, isChoix:true}
+    ]
+  },
+
+  // ── 6. JUSTICE & PEINES ──
+  {
+    num:6, title:"Justice & Peines", emoji:"⚖️",
+    desc:"Punir, réhabiliter ou prévenir ? Le rôle de la justice dans la société divise profondément les traditions politiques.",
+    ref:"Cesare Beccaria (\"Des délits et des peines\", 1764) a posé les bases de la justice pénale moderne en rejetant la torture et les peines arbitraires. Michel Foucault (\"Surveiller et punir\", 1975) analyse la prison comme instrument de contrôle social plutôt que de réhabilitation.",
+    questions:[
+      {id:21, text:"Les peines de prison ferme devraient être systématiquement prononcées pour les récidivistes, sans possibilité d'aménagement.", w:{eco:0,cul:1,aut:2,sov:0,eco2:0}},
+      {id:22, text:"Les peines alternatives à l'incarcération (travaux d'intérêt général, bracelets, amendes) devraient être davantage utilisées pour les petites infractions.", w:{eco:0,cul:-1,aut:-1,sov:0,eco2:0}},
+      {id:23, text:"Les conditions de détention dans les prisons françaises (surpopulation à 150%) constituent un problème prioritaire qui nécessite un investissement massif.", w:{eco:-1,cul:-1,aut:-1,sov:0,eco2:0}},
+      {id:24, text:"Situation : Un mineur de 16 ans commet un vol avec violence. Selon vous, la priorité doit être :", choix:["Sa réinsertion — punir ne sert à rien","Un accompagnement socio-éducatif renforcé","Une réponse pénale adaptée à l'acte","Une peine ferme pour l'exemple","Jugé comme un adulte — 16 ans c'est assez"], w:{eco:0,cul:1,aut:1,sov:0,eco2:0}, isChoix:true}
+    ]
+  },
+
+  // ── 7. SÉCURITÉ & LIBERTÉS ──
+  {
+    num:7, title:"Sécurité & Libertés", emoji:"🔒",
+    desc:"La tension entre sécurité collective et libertés individuelles est au cœur des démocraties modernes.",
+    ref:"John Stuart Mill (\"De la liberté\", 1859) défend que la liberté individuelle ne peut être limitée que pour prévenir un tort à autrui. Benjamin Franklin : \"Celui qui sacrifie sa liberté pour sa sécurité ne mérite ni l'une ni l'autre.\"",
+    questions:[
+      {id:25, text:"Les caméras de surveillance avec reconnaissance faciale devraient être autorisées dans les espaces publics pour lutter contre la délinquance.", w:{eco:0,cul:1,aut:2,sov:0,eco2:0}},
+      {id:26, text:"Les services de renseignement devraient pouvoir accéder aux communications chiffrées des citoyens en cas de suspicion terroriste, sans mandat judiciaire systématique.", w:{eco:0,cul:0,aut:2,sov:0,eco2:0}},
+      {id:27, text:"Le maintien de l'ordre lors des manifestations est actuellement trop violent et devrait faire l'objet d'une réforme profonde des pratiques policières.", w:{eco:0,cul:-2,aut:-2,sov:0,eco2:0}},
+      {id:28, text:"Situation : Une attaque terroriste est déjouée grâce à la surveillance de masse de communications privées. Vous pensez que :", choix:["La vie privée prime — les moyens ne justifient pas la fin","C'est acceptable exceptionnellement avec contrôle judiciaire","C'est un débat difficile sans réponse simple","La sécurité justifie des compromis sur la vie privée","Ce type de surveillance devrait être généralisé"], w:{eco:0,cul:0,aut:1,sov:0,eco2:0}, isChoix:true}
+    ]
+  },
+
+  // ── 8. IMMIGRATION & INTÉGRATION ──
+  {
+    num:8, title:"Immigration & Intégration", emoji:"🌍",
+    desc:"L'immigration est l'un des sujets les plus structurants du débat politique contemporain en France.",
+    ref:"Alexis de Tocqueville analysait déjà la tension entre égalité des droits et appartenance nationale. Les travaux de l'INED (enquête TeO2, 2020) montrent que la mobilité sociale des enfants d'immigrés est réelle mais freinée par des discriminations persistantes.",
+    questions:[
+      {id:29, text:"La France devrait significativement réduire le nombre de visas délivrés et durcir les conditions de regroupement familial.", w:{eco:0,cul:2,aut:1,sov:2,eco2:0}},
+      {id:30, text:"Les personnes sans papiers qui travaillent, paient des impôts et ne troublent pas l'ordre public devraient être régularisées.", w:{eco:0,cul:-2,aut:-1,sov:-1,eco2:0}},
+      {id:31, text:"La France est fondamentalement un pays d'accueil dont l'identité s'est toujours construite par l'apport des personnes venues d'ailleurs.", w:{eco:0,cul:-2,aut:0,sov:-2,eco2:0}},
+      {id:32, text:"Situation : Votre entreprise veut recruter un ingénieur qualifié hors UE car elle ne trouve pas de profil en France. Vous pensez que :", choix:["C'est normal — la mobilité internationale est une richesse","C'est acceptable si on a vraiment cherché en France","On devrait d'abord former des Français à ce métier","C'est problématique — priorité aux travailleurs locaux","C'est inacceptable — l'emploi français doit primer"], w:{eco:0,cul:0,aut:0,sov:1,eco2:0}, isChoix:true}
+    ]
+  },
+
+  // ── 9. LAÏCITÉ & RELIGION ──
+  {
+    num:9, title:"Laïcité & Religion", emoji:"🕌",
+    desc:"La laïcité française est un concept spécifique, né de l'histoire de la séparation de l'Église et de l'État (1905).",
+    ref:"La laïcité \"à la française\" se distingue du modèle anglosaxon de \"neutralité\" : elle vise à protéger l'espace public de toute influence religieuse. Certains juristes (Rémy Schwartz) distinguent laïcité stricte et liberté de conscience — un débat non tranché.",
+    questions:[
+      {id:33, text:"Le port du voile islamique devrait être interdit dans tous les espaces publics, y compris dans la rue.", w:{eco:0,cul:2,aut:2,sov:1,eco2:0}},
+      {id:34, text:"Les associations cultuelles devraient pouvoir recevoir des financements publics pour la construction de lieux de culte, comme c'est le cas en Alsace-Moselle.", w:{eco:0,cul:-1,aut:-1,sov:0,eco2:0}},
+      {id:35, text:"L'enseignement du fait religieux (histoire des religions, comparatisme) devrait être renforcé à l'école publique pour mieux comprendre le monde contemporain.", w:{eco:0,cul:-1,aut:0,sov:0,eco2:0}},
+      {id:36, text:"Situation : Une employée municipale demande à porter le foulard au travail, invoquant sa liberté religieuse. La loi l'interdit aux agents publics. Vous pensez que :", choix:["La loi est juste — la neutralité s'impose absolument","La loi est juste mais devrait prévoir des exceptions","C'est un débat légitime entre deux droits","La liberté de conscience prime sur la règle","La loi devrait être réformée pour autoriser les signes discrets"], w:{eco:0,cul:1,aut:1,sov:0,eco2:0}, isChoix:true}
+    ]
+  },
+
+  // ── 10. ÉGALITÉ FEMMES-HOMMES ──
+  {
+    num:10, title:"Égalité Femmes-Hommes", emoji:"⚡",
+    desc:"Les inégalités de genre persistent malgré les avancées législatives — écart salarial de 16,8%, sous-représentation politique, violences conjugales.",
+    ref:"Simone de Beauvoir (\"Le Deuxième Sexe\", 1949) : \"On ne naît pas femme, on le devient.\" Judith Butler (\"Gender Trouble\", 1990) va plus loin en déconstruisant le genre lui-même. Les féministes libérales défendent l'égalité des droits formels ; les féministes matérialistes insistent sur les structures économiques.",
+    questions:[
+      {id:37, text:"Des quotas légaux de 50% de femmes devraient être imposés dans les conseils d'administration de toutes les entreprises de plus de 50 salariés.", w:{eco:-1,cul:-2,aut:1,sov:0,eco2:0}},
+      {id:38, text:"L'écart salarial entre femmes et hommes est principalement dû à des choix individuels (temps partiel, secteurs choisis) plutôt qu'à des discriminations structurelles.", w:{eco:1,cul:1,aut:0,sov:0,eco2:0}},
+      {id:39, text:"L'écriture inclusive (\"iel\", point médian, doublets) devrait être autorisée dans les documents officiels de l'État français.", w:{eco:0,cul:-2,aut:-1,sov:0,eco2:0}},
+      {id:40, text:"Situation : Deux candidats à un poste dans une entreprise publique ont des profils équivalents — l'un est un homme, l'autre une femme dans un secteur très masculin (85% d'hommes). Vous pensez que :", choix:["Choisir selon le seul mérite, le genre est hors-sujet","Légèrement favoriser la femme à mérite égal","Imposer la parité — la règle s'applique à tous","La parité devrait être une obligation légale","Les quotas sont contreproductifs — méritocratie seule"], w:{eco:0,cul:-1,aut:0,sov:0,eco2:0}, isChoix:true}
+    ]
+  },
+
+  // ── 11. ENVIRONNEMENT & ÉNERGIE ──
+  {
+    num:11, title:"Environnement & Énergie", emoji:"🌿",
+    desc:"La crise climatique impose des choix politiques majeurs — entre urgence écologique, souveraineté énergétique et impact social.",
+    ref:"Hans Jonas (\"Le Principe responsabilité\", 1979) pose l'éthique de la responsabilité envers les générations futures. Les économistes de la décroissance (Latouche) s'opposent aux technologistes (Lomborg) qui misent sur l'innovation. Le GIEC (2023) confirme l'urgence d'une réduction des émissions de 43% d'ici 2030.",
+    questions:[
+      {id:41, text:"La France devrait sortir du nucléaire dans les 30 ans, même si cela implique une dépendance transitoire aux énergies fossiles.", w:{eco:0,cul:-1,aut:0,sov:-1,eco2:-1}},
+      {id:42, text:"Une taxe carbone significative sur les carburants est nécessaire pour accélérer la transition écologique, même si elle pèse sur les ménages modestes.", w:{eco:-1,cul:-1,aut:1,sov:0,eco2:-1}},
+      {id:43, text:"La décroissance économique (réduire volontairement le PIB) est une option politique légitime pour préserver l'environnement.", w:{eco:-2,cul:0,aut:0,sov:0,eco2:-2}},
+      {id:44, text:"Situation : Votre région doit choisir entre un parc éolien (40% de la production locale, paysage dégradé, emplois locaux) ou rester dépendante de l'électricité importée. Vous :", choix:["Pour l'éolien sans hésitation — urgence climatique","Pour, si la concertation locale est respectée","Ni pour ni contre — analyse coût/bénéfice","Contre — le paysage et le cadre de vie comptent","Contre — investissons plutôt dans le nucléaire"], w:{eco:0,cul:0,aut:0,sov:1,eco2:0}, isChoix:true}
+    ]
+  },
+
+  // ── 12. EUROPE & SOUVERAINETÉ ──
+  {
+    num:12, title:"Europe & Souveraineté", emoji:"🇪🇺",
+    desc:"L'Union européenne — projet de paix et de prospérité ou perte de souveraineté démocratique ? Un clivage transpartisan depuis Maastricht.",
+    ref:"Le \"déficit démocratique\" de l'UE (Majone, 1998) est reconnu même par ses partisans. Jürgen Habermas défend une \"Europe politique\" démocratisée. Les souverainistes (Chevènement à gauche, Wauquiez à droite) estiment que la nation reste le seul cadre de démocratie réelle.",
+    questions:[
+      {id:45, text:"La France devrait transférer davantage de compétences à l'Union européenne, notamment en matière de défense et de politique fiscale.", w:{eco:0,cul:0,aut:0,sov:-2,eco2:0}},
+      {id:46, text:"La France devrait pouvoir s'affranchir des règles européennes sur les déficits publics (Pacte de stabilité) pour financer ses investissements.", w:{eco:-1,cul:0,aut:0,sov:2,eco2:0}},
+      {id:47, text:"L'élargissement de l'UE aux Balkans et à l'Ukraine affaiblirait l'Union et devrait être suspendu.", w:{eco:0,cul:0,aut:0,sov:1,eco2:0}},
+      {id:48, text:"Situation : L'UE impose à la France d'ouvrir son marché ferroviaire à la concurrence privée. La SNCF risque de perdre des lignes rentables. Vous pensez que :", choix:["L'Europe prime — la concurrence améliorera le service","C'est acceptable si les lignes non rentables sont protégées","Ce dossier illustre le problème du déficit démocratique européen","La France devrait refuser et défendre son modèle","La France devrait reprendre sa souveraineté sur ce secteur"], w:{eco:0,cul:0,aut:0,sov:1,eco2:0}, isChoix:true}
+    ]
+  },
+
+  // ── 13. MONDIALISATION & COMMERCE ──
+  {
+    num:13, title:"Mondialisation & Commerce", emoji:"🌐",
+    desc:"Libre-échange ou protectionnisme ? La mondialisation a sorti des milliards de personnes de la pauvreté mais creusé les inégalités dans les pays développés.",
+    ref:"David Ricardo (\"Principes de l'économie politique\", 1817) fonde théoriquement le libre-échange (avantage comparatif). Joseph Stiglitz (\"La Grande Désillusion\", 2002) critique les institutions de Bretton Woods pour avoir imposé le libéralisme sans filet social.",
+    questions:[
+      {id:49, text:"La France devrait instaurer des droits de douane sur les produits importés ne respectant pas les normes sociales et environnementales européennes.", w:{eco:-1,cul:0,aut:1,sov:2,eco2:-1}},
+      {id:50, text:"La mondialisation a globalement amélioré le niveau de vie des Français et devrait être poursuivie et approfondie.", w:{eco:2,cul:0,aut:0,sov:-2,eco2:0}},
+      {id:51, text:"La France devrait nationaliser ou protéger les secteurs stratégiques (énergie, armement, pharmaceutique, IA) de tout rachat étranger.", w:{eco:-1,cul:0,aut:1,sov:2,eco2:0}},
+      {id:52, text:"Situation : Un accord commercial UE-Mercosur permettrait des importations de bœuf brésilien 30% moins cher, mais produit dans des conditions environnementales et sociales inférieures aux normes françaises. Vous :", choix:["Pour — les consommateurs bénéficient de prix bas","Pour avec clauses sociales et environnementales strictes","Abstention — c'est complexe","Contre — nos agriculteurs ne peuvent pas concurrencer","Contre radicalement — nos normes ne sont pas négociables"], w:{eco:0,cul:0,aut:0,sov:1,eco2:-1}, isChoix:true}
+    ]
+  },
+
+  // ── 14. MÉDIAS & DÉMOCRATIE ──
+  {
+    num:14, title:"Médias & Démocratie", emoji:"📺",
+    desc:"La concentration des médias entre quelques milliardaires est-elle une menace pour la démocratie ? Le débat sur la pluralité de l'information.",
+    ref:"Noam Chomsky & Edward Herman (\"La Fabrication du consentement\", 1988) théorisent comment les médias dominants servent les intérêts des élites. Jürgen Habermas (\"L'Espace public\", 1962) voit dans la presse indépendante un pilier de la démocratie délibérative.",
+    questions:[
+      {id:53, text:"Un seul propriétaire ne devrait pas pouvoir détenir plus de 20% des médias d'information (TV, presse, radio) en France.", w:{eco:-1,cul:-1,aut:1,sov:0,eco2:0}},
+      {id:54, text:"Le service public audiovisuel (France Télévisions, Radio France) devrait être renforcé et son financement sanctuarisé.", w:{eco:-1,cul:0,aut:0,sov:1,eco2:0}},
+      {id:55, text:"Les plateformes numériques (Facebook, TikTok, Twitter/X) devraient être davantage régulées par l'État pour lutter contre la désinformation.", w:{eco:0,cul:0,aut:1,sov:1,eco2:0}},
+      {id:56, text:"Situation : Un milliardaire français rachète le principal journal d'information du pays. La rédaction proteste. Vous pensez que :", choix:["C'est normal — comme toute entreprise, la presse peut être rachetée","C'est problématique mais légal — le marché décide","C'est dangereux — il faut un statut spécial pour les médias","L'État devrait bloquer ce rachat","L'État devrait nationaliser les grands médias d'information"], w:{eco:-1,cul:-1,aut:1,sov:0,eco2:0}, isChoix:true}
+    ]
+  },
+
+  // ── 15. NUMÉRIQUE & VIE PRIVÉE ──
+  {
+    num:15, title:"Numérique & Vie privée", emoji:"💻",
+    desc:"L'IA, la surveillance numérique et les GAFAM posent des questions nouvelles sur la souveraineté, la vie privée et la démocratie.",
+    ref:"Shoshana Zuboff (\"L'Âge du capitalisme de surveillance\", 2019) décrit l'exploitation des données personnelles comme un nouveau régime de pouvoir. Éric Sadin (\"La Silicolonisation du monde\", 2016) critique la domination des grandes plateformes sur nos modes de vie.",
+    questions:[
+      {id:57, text:"L'Union européenne devrait taxer beaucoup plus lourdement les GAFAM (Google, Apple, Facebook, Amazon, Microsoft) pour leur contribution à nos économies.", w:{eco:-1,cul:0,aut:1,sov:-1,eco2:0}},
+      {id:58, text:"Les données personnelles des citoyens français hébergées par des entreprises américaines représentent un risque de souveraineté inacceptable.", w:{eco:0,cul:0,aut:0,sov:2,eco2:0}},
+      {id:59, text:"L'intelligence artificielle générative (ChatGPT, etc.) devrait faire l'objet d'un moratoire le temps de mieux en comprendre les risques sociaux.", w:{eco:-1,cul:0,aut:1,sov:0,eco2:-1}},
+      {id:60, text:"Situation : Votre mairie propose d'utiliser un algorithme IA pour optimiser l'attribution des logements sociaux, HLM et aides sociales. Cela réduirait les délais de 40% mais supprimerait le pouvoir discrétionnaire des assistants sociaux. Vous :", choix:["Pour — l'efficacité et l'équité algorithmique prime","Pour si des humains gardent un droit de recours","Incertain — ça dépend de la transparence de l'algorithme","Contre — les situations humaines nécessitent du jugement","Contre radicalement — l'IA ne doit pas décider de droits sociaux"], w:{eco:0,cul:0,aut:1,sov:0,eco2:1}, isChoix:true}
+    ]
+  },
+
+  // ── 16. FAMILLE & SOCIÉTÉ ──
+  {
+    num:16, title:"Famille & Société", emoji:"👨‍👩‍👦",
+    desc:"Les évolutions du droit de la famille et les nouvelles formes de parentalité divisent les conceptions de la société.",
+    ref:"Le sociologue François de Singly (\"Libres ensemble\", 2000) analyse la famille contemporaine comme espace de réalisation individuelle. Les traditionalistes (Béatrice Bourges, famille naturelle) s'opposent aux partisans du pluralisme familial (Irène Théry).",
+    questions:[
+      {id:61, text:"La gestation pour autrui (GPA) devrait être légalisée en France dans un cadre strictement altruiste et encadré médicalement.", w:{eco:0,cul:-2,aut:-1,sov:0,eco2:0}},
+      {id:62, text:"L'adoption plénière par des couples de même sexe est une évolution positive pour les enfants et la société.", w:{eco:0,cul:-2,aut:0,sov:0,eco2:0}},
+      {id:63, text:"La politique familiale française (allocations, congés) devrait davantage encourager les familles nombreuses comme modèle social.", w:{eco:-1,cul:1,aut:0,sov:0,eco2:0}},
+      {id:64, text:"Situation : Un couple d'hommes demande à adopter un enfant de 3 ans. L'enfant était placé en famille d'accueil hétérosexuelle. L'assistante sociale hésite. Selon vous :", choix:["L'intérêt de l'enfant seul compte — l'orientation des parents est sans objet","L'adoption devrait être possible comme pour tous les couples","C'est un dossier complexe qui mérite une analyse au cas par cas","Une famille traditionnelle est préférable pour l'équilibre de l'enfant","L'adoption par des couples homosexuels devrait être impossible"], w:{eco:0,cul:-1,aut:0,sov:0,eco2:0}, isChoix:true}
+    ]
+  },
+
+  // ── 17. INSTITUTIONS & DÉMOCRATIE ──
+  {
+    num:17, title:"Institutions & Démocratie", emoji:"🏛️",
+    desc:"La Ve République est-elle adaptée aux défis contemporains ? Le débat sur les formes de la démocratie.",
+    ref:"Alexis de Tocqueville (\"De la démocratie en Amérique\", 1835) voyait la démocratie comme un idéal menacé par la tyrannie de la majorité. Jean-Jacques Rousseau (\"Du Contrat social\", 1762) défend la volonté générale comme source de légitimité politique. Les partisans du RIC s'appuient sur les pratiques suisses.",
+    questions:[
+      {id:65, text:"Le référendum d'initiative citoyenne (permettant à 500 000 signatures de déclencher un référendum) améliorerait significativement notre démocratie.", w:{eco:0,cul:-1,aut:-1,sov:1,eco2:0}},
+      {id:66, text:"La Ve République donne trop de pouvoirs au Président — une VIe République parlementaire serait plus démocratique.", w:{eco:0,cul:-1,aut:-2,sov:0,eco2:0}},
+      {id:67, text:"Le tirage au sort de citoyens pour des assemblées délibératives (comme la Convention citoyenne sur le climat) est un complément démocratique légitime.", w:{eco:0,cul:-1,aut:-1,sov:0,eco2:0}},
+      {id:68, text:"Situation : Le gouvernement fait passer une réforme controversée via l'article 49.3 (sans vote du Parlement). Des millions de personnes protestent dans la rue. Vous pensez :", choix:["C'est légal — respectons les institutions même imparfaites","C'est légal mais un signal d'alarme démocratique","C'est un abus de droit — à réformer constitutionnellement","C'est illégitime — le peuple dans la rue a raison","Le gouvernement devrait être renversé"], w:{eco:0,cul:-1,aut:-1,sov:1,eco2:0}, isChoix:true}
+    ]
+  },
+
+  // ── 18. ÉCONOMIE & MARCHÉ ──
+  {
+    num:18, title:"Économie de marché", emoji:"📈",
+    desc:"Le rôle de l'État dans l'économie — régulateur, acteur, ou spectateur ? Un débat fondateur entre traditions libérale, keynésienne et marxiste.",
+    ref:"Adam Smith (\"La Richesse des nations\", 1776) fonde la théorie du libre marché comme système auto-régulateur. Friedrich Hayek critique toute planification économique. John Maynard Keynes défend l'intervention de l'État pour soutenir la demande. Karl Polanyi (\"La Grande Transformation\", 1944) montre que le marché est une construction sociale, pas un état naturel.",
+    questions:[
+      {id:69, text:"La privatisation des grandes entreprises publiques (EDF, SNCF, La Poste) améliore globalement leur efficacité et la qualité du service.", w:{eco:2,cul:0,aut:0,sov:-1,eco2:0}},
+      {id:70, text:"L'État devrait créer un revenu universel de base (environ 800€/mois pour tous, conditionnant la suppression de certaines aides actuelles).", w:{eco:-1,cul:-1,aut:-1,sov:0,eco2:0}},
+      {id:71, text:"Le salaire minimum devrait être fixé à 1 600€ net par mois, même si cela entraîne des destructions d'emplois dans certains secteurs.", w:{eco:-2,cul:0,aut:0,sov:0,eco2:0}},
+      {id:72, text:"Situation : Une startup française dans l'IA veut lever des fonds mais doit choisir entre un investisseur public (BPI, moins d'argent mais souveraineté) ou un fonds américain (beaucoup plus d'argent, mais sortie probable de France). Vous pensez :", choix:["BPI absolument — la souveraineté technologique est vitale","BPI si les conditions permettent de croître suffisamment","Aux fondateurs de décider — c'est leur entreprise","Le fond américain si c'est le seul moyen de concurrencer","Fonds américain — mieux vaut une grande entreprise française aux US qu'une petite en France"], w:{eco:1,cul:0,aut:0,sov:1,eco2:0}, isChoix:true}
+    ]
+  },
+
+  // ── 19. INTERNATIONAL & DÉFENSE ──
+  {
+    num:19, title:"International & Défense", emoji:"🌐",
+    desc:"Quel rôle pour la France dans les affaires mondiales ? Atlantisme, gaullisme ou tiers-mondisme ?",
+    ref:"Charles de Gaulle théorisait l'indépendance nationale comme valeur cardinale — \"la politique de la France ne se fait pas à la corbeille\" (1963). Le général De Gaulle retira la France du commandement intégré de l'OTAN en 1966. Hubert Védrine parle d'\"hyperpuissance américaine\" et défend un monde multipolaire.",
+    questions:[
+      {id:73, text:"La France devrait augmenter significativement son budget militaire pour maintenir son rang de puissance mondiale autonome.", w:{eco:1,cul:0,aut:1,sov:2,eco2:0}},
+      {id:74, text:"La France devrait quitter le commandement intégré de l'OTAN pour retrouver une pleine indépendance stratégique.", w:{eco:0,cul:0,aut:0,sov:2,eco2:0}},
+      {id:75, text:"La France a un devoir moral d'accueillir les réfugiés des pays avec lesquels elle a eu des relations coloniales.", w:{eco:0,cul:-2,aut:0,sov:-1,eco2:0}},
+      {id:76, text:"Situation : Un pays allié demande à la France de participer à une intervention militaire à l'étranger non mandatée par l'ONU mais face à une dictature commettant des crimes contre l'humanité. Vous :", choix:["Oui sans condition — les droits humains transcendent la souveraineté","Oui si mandat de l'Assemblée nationale et durée limitée","Abstention — c'est toujours plus complexe que prévu","Non — la France ne devrait pas intervenir sans mandat ONU","Non absolument — la non-ingérence est un principe cardinal"], w:{eco:0,cul:0,aut:0,sov:0,eco2:0}, isChoix:true}
+    ]
+  },
+
+  // ── 20. AVENIR & GÉNÉRATIONS ──
+  {
+    num:20, title:"Avenir & Générations", emoji:"⏳",
+    desc:"La dette, les retraites et le changement climatique posent la question de notre responsabilité envers les générations futures.",
+    ref:"Hans Jonas (\"Le Principe responsabilité\", 1979) pose l'éthique de la précaution et du devoir envers les générations futures. John Rawls imagine un \"voile d'ignorance\" derrière lequel nous choisirions des règles sans savoir à quelle génération nous appartenons. La question de la \"justice intergénérationnelle\" est centrale dans les débats sur la dette publique et le climat.",
+    questions:[
+      {id:77, text:"La dette publique française (3 300 milliards d'euros) est une injustice envers les générations futures et doit être réduite en priorité, même au prix d'efforts immédiats.", w:{eco:1,cul:0,aut:0,sov:0,eco2:0}},
+      {id:78, text:"L'âge de départ à la retraite devrait être abaissé à 60 ans pour permettre aux générations actuelles de profiter d'une vie après le travail.", w:{eco:-2,cul:0,aut:0,sov:0,eco2:0}},
+      {id:79, text:"Les droits des générations futures (droit à un environnement sain, stabilité climatique) devraient être constitutionnellement protégés en France.", w:{eco:0,cul:-1,aut:0,sov:0,eco2:-2}},
+      {id:80, text:"Situation : Vous pouvez voter pour une politique qui améliore significativement votre niveau de vie aujourd'hui mais dégrade les finances publiques et le climat pour vos enfants et petits-enfants. Vous :", choix:["Votez pour — ma génération a aussi des droits","Votez pour si les dégradations futures sont modestes","Hésitez — c'est une question éthique difficile","Votez contre — on ne peut pas hypothéquer l'avenir","Votez contre absolument — justice intergénérationnelle prime"], w:{eco:0,cul:0,aut:0,sov:0,eco2:-1}, isChoix:true}
+    ]
+  }
+];
+
+// ── Partis de référence (CEVIPOF/Perrineau 2022) ──
+// [eco, cul] — gauche=négatif, droite/conservateur=positif
+var PARTIES = [
+  {n:'LFI',       c:'#EF4444', x:-70, y:15},
+  {n:'PS/NFP',    c:'#F97316', x:-40, y:-45},
+  {n:'EELV',      c:'#22C55E', x:-30, y:-65},
+  {n:'Renaissance',c:'#60A5FA',x:20,  y:-30},
+  {n:'LR',        c:'#6366F1', x:55,  y:-10},
+  {n:'RN',        c:'#8B5CF6', x:5,   y:70},
+  {n:'Reconquête',c:'#EC4899', x:35,  y:90},
+];
+
+// ── État ──
+var answers = {};
+var chartRadar=null, chartCompass=null;
+Chart.defaults.color='#404870';
+Chart.defaults.font.family="'DM Sans',sans-serif";
+
+function g(id){ return document.getElementById(id); }
+function se(id,t){ var el=g(id); if(el) el.textContent=t; }
+function si(id,h){ var el=g(id); if(el) el.innerHTML=h; }
+function destroyChart(c){ if(c){ try{c.destroy();}catch(e){} } return null; }
+
+// ── BUILD QUIZ ──
+function buildQuiz(){
+  var wrap=g('quiz-wrap'); if(!wrap) return;
+  var html='';
+  BLOCS.forEach(function(bloc){
+    html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:4px">';
+    html+='<div class="bloc-header">'
+      +'<div class="bloc-num">Bloc '+bloc.num+'/20</div>'
+      +'<div class="bloc-info">'
+      +'<div class="bloc-title">'+bloc.emoji+' '+bloc.title+'</div>'
+      +'<div class="bloc-desc">'+bloc.desc+'</div>'
+      +'<div class="bloc-ref">📚 '+bloc.ref+'</div>'
+      +'</div></div>'
+      +'<div class="bloc-sep"></div>';
+    bloc.questions.forEach(function(q){
+      var qId=q.id;
+      if(q.isChoix){
+        html+='<div class="q-card" id="qcard-'+qId+'">'
+          +'<div class="q-inner">'
+          +'<div class="q-num">Question '+qId+' / 80</div>'
+          +'<div class="q-text">'+q.text+'</div>'
+          +'<div style="display:flex;flex-direction:column;gap:6px">';
+        q.choix.forEach(function(c,ci){
+          var val=[2,1,0,-1,-2][ci];
+          html+='<button class="choix-btn" id="q'+qId+'c'+ci+'" onclick="setAnswer('+qId+','+val+',\'q'+qId+'\','+ci+')" '
+            +'style="text-align:left;padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:transparent;color:var(--muted);font-size:13px;font-family:inherit;cursor:pointer;transition:all .15s;line-height:1.4">'
+            +(ci===0?'🟢 ':ci===1?'🟡 ':ci===2?'⚪ ':ci===3?'🟠 ':'🔴 ')+c+'</button>';
+        });
+        html+='</div></div></div>';
+      } else {
+        html+='<div class="q-card" id="qcard-'+qId+'">'
+          +'<div class="q-inner">'
+          +'<div class="q-num">Question '+qId+' / 80</div>'
+          +(q.ctx?'<div class="q-context">📍 '+q.ctx+'</div>':'')
+          +'<div class="q-text">'+q.text+'</div>'
+          +'<div class="likert">'
+          +[['Tout à fait<br>d\'accord',2],['Plutôt<br>d\'accord',1],['Ni pour<br>ni contre',0],['Plutôt en<br>désaccord',-1],['Tout à fait<br>en désaccord',-2]].map(function(l){
+            return '<button class="lik-btn" id="q'+qId+'v'+l[1]+'" onclick="setAnswer('+qId+','+l[1]+',\'q'+qId+'\',null)">'+l[0]+'</button>';
+          }).join('')
+          +'</div></div></div>';
+      }
+    });
+    html+='</div>';
+  });
+  wrap.innerHTML=html;
+}
+
+function setAnswer(qid, val, prefix, choixIdx){
+  answers[qid]=val;
+  var card=g('qcard-'+qid); if(card) card.classList.add('answered');
+
+  // Reset visual
+  if(choixIdx!==null){
+    // Choix
+    for(var ci=0;ci<5;ci++){
+      var btn=g(prefix+'c'+ci);
+      if(btn){
+        btn.style.background='transparent';
+        btn.style.borderColor='var(--border)';
+        btn.style.color='var(--muted)';
+        btn.style.fontWeight='normal';
+      }
+    }
+    var sel=g(prefix+'c'+choixIdx);
+    if(sel){
+      sel.style.background='rgba(107,127,255,.15)';
+      sel.style.borderColor='var(--indigo)';
+      sel.style.color='var(--text)';
+      sel.style.fontWeight='700';
+    }
+  } else {
+    // Likert
+    [-2,-1,0,1,2].forEach(function(v){
+      var b=g('q'+qid+'v'+v); if(!b) return;
+      b.className='lik-btn';
+      if(v===val){
+        if(v===2) b.className+=' s-2';
+        else if(v===1) b.className+=' s-1';
+        else if(v===0) b.className+=' s0';
+        else if(v===-1) b.className+=' s1';
+        else b.className+=' s2';
+      }
+    });
+  }
+
+  updateProgress();
+  updateLiveScores();
+}
+
+function updateProgress(){
+  var done=Object.keys(answers).length;
+  var pct=Math.round(done/80*100);
+  var fill=g('prog-fill'); if(fill) fill.style.width=pct+'%';
+  se('prog-done',done+' / 80 questions');
+  se('prog-pct',pct+'%');
+  var btn=g('btn-submit'); if(btn) btn.disabled=done<80;
+  if(done===80 && btn) btn.textContent='🎉 Voir mes résultats →';
+}
+
+function calcScores(){
+  var totals={eco:0,cul:0,aut:0,sov:0,eco2:0};
+  var maxes={eco:0,cul:0,aut:0,sov:0,eco2:0};
+  BLOCS.forEach(function(bloc){
+    bloc.questions.forEach(function(q){
+      var ans=answers[q.id]||0;
+      Object.keys(q.w).forEach(function(axis){
+        var w=q.w[axis];
+        if(w!==0){
+          totals[axis]+=ans*w;
+          maxes[axis]+=Math.abs(w)*2;
+        }
+      });
+    });
+  });
+  var norm={};
+  Object.keys(totals).forEach(function(k){
+    norm[k]=maxes[k]>0?Math.round(totals[k]/maxes[k]*100):0;
+  });
+  return norm;
+}
+
+function updateLiveScores(){
+  var sc=calcScores();
+  function setLive(id,val,colorPos,colorNeg){
+    var bar=g('lb-'+id), lbl=g('lv-'+id);
+    if(!bar||!lbl) return;
+    var pct=Math.abs(val)/100*50;
+    var left=val<0;
+    if(left){
+      bar.style.left=(50-pct)+'%'; bar.style.width=pct+'%';
+      bar.style.background=colorNeg;
+    } else {
+      bar.style.left='50%'; bar.style.width=pct+'%';
+      bar.style.background=colorPos;
+    }
+    lbl.textContent=(val>0?'+':'')+val;
+    lbl.style.color=val<0?colorNeg:val>0?colorPos:'var(--muted)';
+  }
+  setLive('eco',sc.eco,'var(--red)','var(--green)');
+  setLive('cul',sc.cul,'var(--amber)','var(--purple)');
+  setLive('aut',sc.aut,'var(--blue)','var(--orange)');
+  setLive('sov',sc.sov,'var(--orange)','var(--indigo)');
+  setLive('eco2',sc.eco2,'var(--teal)','var(--pink)');
+}
+
+// ── PROFILS ──
+function getProfile(sc){
+  var profiles=[
+    {test:function(s){ return s.eco<=-50&&s.cul<=-40&&s.eco2<=-40; }, emoji:'🌿', name:'Gauche écologiste radicale', sub:'Vous combinez interventionnisme économique fort, progressisme culturel et une vision décroissante de l\'économie. Proche des courants de l\'écologie politique radicale et de l\'altermondialisme.'},
+    {test:function(s){ return s.eco<=-50&&s.cul<=-30; }, emoji:'🌹', name:'Gauche sociale-progressiste', sub:'Interventionnisme économique et valeurs progressistes. Proche de l\'électorat socialiste ou des partis verts européens modérés.'},
+    {test:function(s){ return s.eco<=-50&&s.cul>=30; }, emoji:'⚒️', name:'Gauche économique conservatrice', sub:'Fort interventionnisme économique combiné à des valeurs culturelles conservatrices. Profil rare mais présent dans certains électorats populaires.'},
+    {test:function(s){ return s.eco>=50&&s.cul<=-30&&s.aut<=-20; }, emoji:'🔵', name:'Libéral libertaire', sub:'Libéralisme économique et progressisme culturel avec une forte méfiance envers l\'autoritarisme. Proche des courants libertariens de gauche ou du centrisme social-libéral.'},
+    {test:function(s){ return s.eco>=50&&s.cul>=-30&&s.cul<=30; }, emoji:'💼', name:'Libéral pragmatique', sub:'Économie de marché et positions culturelles nuancées. Proche de l\'électorat centriste ou des droites libérales modérées.'},
+    {test:function(s){ return s.eco>=40&&s.cul>=40&&s.sov>=30; }, emoji:'🏛️', name:'Droite nationale-libérale', sub:'Libéralisme économique, conservatisme culturel et souverainisme. Proche de certaines fractions des droites conservatrices.'},
+    {test:function(s){ return s.eco>=-20&&s.eco<=20&&s.cul>=60&&s.sov>=50; }, emoji:'🎌', name:'Nationaliste conservateur', sub:'Vos positions sont avant tout définies par un conservatisme culturel fort et un souverainisme marqué, avec des positions économiques moins tranchées. Proche des droites radicales identitaires.'},
+    {test:function(s){ return s.sov<=(-50)&&s.eco>=-30&&s.eco<=30; }, emoji:'🌐', name:'Mondialiste pro-européen', sub:'Forte orientation vers l\'intégration européenne et la mondialisation, avec des positions économiques et culturelles variables. Proche des courants eurofédéralistes.'},
+    {test:function(s){ return s.aut<=-50&&Math.abs(s.eco)<=30; }, emoji:'🏴', name:'Libertaire', sub:'Méfiance profonde envers l\'autorité sous toutes ses formes. Proche des courants anarchistes, libertariens ou anticapitalistes libertaires.'},
+    {test:function(s){ return true; }, emoji:'🗺️', name:'Profil centriste complexe', sub:'Vos positions ne s\'inscrivent pas clairement dans un quadrant dominant. Vous possédez des opinions nuancées qui traversent les clivages traditionnels — ce qui correspond à une majorité de Français selon le CEVIPOF.'},
+  ];
+  for(var i=0;i<profiles.length;i++){ if(profiles[i].test(sc)) return profiles[i]; }
+  return profiles[profiles.length-1];
+}
+
+function showResults(){
+  var sc=calcScores();
+  var prof=getProfile(sc);
+
+  se('res-emoji',prof.emoji);
+  se('res-name',prof.name);
+  se('res-sub',prof.sub);
+
+  // Axes détaillés
+  var axesDef=[
+    {key:'eco', name:'Axe économique', neg:'◀ Gauche · État fort', pos:'Droite · Marché libre ▶', cNeg:'var(--green)', cPos:'var(--red)'},
+    {key:'cul', name:'Axe culturel', neg:'◀ Progressiste · Libertaire', pos:'Conservateur · Autoritaire ▶', cNeg:'var(--purple)', cPos:'var(--amber)'},
+    {key:'aut', name:'Axe autorité', neg:'◀ Libertaire · Anti-État sécuritaire', pos:'Autoritaire · Ordre public ▶', cNeg:'var(--teal)', cPos:'var(--blue)'},
+    {key:'sov', name:'Axe souveraineté', neg:'◀ Mondialiste · Pro-UE', pos:'Souverainiste · Nationaliste ▶', cNeg:'var(--indigo)', cPos:'var(--orange)'},
+    {key:'eco2', name:'Axe écologie', neg:'◀ Décroissance · Sobriété', pos:'Techno-optimiste · Croissance ▶', cNeg:'var(--green)', cPos:'var(--pink)'},
+  ];
+
+  var axHTML='';
+  axesDef.forEach(function(ax){
+    var val=sc[ax.key];
+    var pct=Math.abs(val)/100*50;
+    var left=val<0;
+    var c=val<0?ax.cNeg:val>0?ax.cPos:'var(--muted)';
+    axHTML+='<div class="axis-row">'
+      +'<div class="axis-ends"><span>'+ax.neg+'</span><span>'+ax.pos+'</span></div>'
+      +'<div class="axis-top" style="margin-top:4px"><span class="axis-name">'+ax.name+'</span>'
+      +'<span class="axis-val" style="color:'+c+'">'+(val>0?'+':'')+val+'</span></div>'
+      +'<div class="axis-track"><div class="axis-center"></div>'
+      +'<div class="axis-fill" style="'+(left?'left:'+(50-pct)+'%;':'left:50%;')+'width:'+pct+'%;background:'+c+'"></div>'
+      +'</div></div>';
+  });
+  si('axes-detail',axHTML);
+
+  // Scores par thème
+  var themeHTML='';
+  BLOCS.forEach(function(bloc){
+    var total=0,max=0;
+    bloc.questions.forEach(function(q){
+      var ans=answers[q.id]||0;
+      Object.keys(q.w).forEach(function(k){
+        var w=q.w[k];
+        total+=ans*w;
+        max+=Math.abs(w)*2;
+      });
+    });
+    var score=max>0?Math.round(total/max*100):0;
+    var c=score<-20?'var(--green)':score>20?'var(--red)':'var(--muted)';
+    themeHTML+='<div class="theme-score">'
+      +'<span class="ts-name">'+bloc.emoji+' '+bloc.title+'</span>'
+      +'<span class="ts-val" style="color:'+c+'">'+(score>0?'+':'')+score+'</span>'
+      +'</div>';
+  });
+  si('theme-scores',themeHTML);
+
+  // Comparaison France
+  var frCompare=[
+    {lbl:'Économique', fVal:-15, uVal:sc.eco},
+    {lbl:'Culturel', fVal:10, uVal:sc.cul},
+    {lbl:'Autorité', fVal:20, uVal:sc.aut},
+    {lbl:'Souveraineté', fVal:25, uVal:sc.sov},
+    {lbl:'Écologie', fVal:-20, uVal:sc.eco2},
+  ];
+  var frHTML='<div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">Estimations basées sur les enquêtes CEVIPOF (ENEF 2017-2024) sur le positionnement moyen des Français.</div>';
+  frCompare.forEach(function(fc){
+    var diff=fc.uVal-fc.fVal;
+    var diffLabel=diff>10?'+'+(Math.round(diff))+' vs France (plus à droite/conservateur)':diff<-10?(Math.round(diff))+' vs France (plus à gauche/progressiste)':'≈ Dans la moyenne française';
+    var c=diff>10?'var(--red)':diff<-10?'var(--green)':'var(--muted)';
+    frHTML+='<div style="padding:8px 12px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;margin-bottom:6px">'
+      +'<div style="display:flex;justify-content:space-between;margin-bottom:2px">'
+      +'<span style="font-size:12px;color:var(--text)">'+fc.lbl+'</span>'
+      +'<span style="font-family:DM Mono,monospace;font-size:11px">Vous: '+(fc.uVal>0?'+':'')+fc.uVal+' · France: '+(fc.fVal>0?'+':'')+fc.fVal+'</span>'
+      +'</div>'
+      +'<div style="font-size:10px;color:'+c+'">'+diffLabel+'</div>'
+      +'</div>';
+  });
+  si('france-compare',frHTML);
+
+  // URL de partage
+  var hash='#eco='+sc.eco+'&cul='+sc.cul+'&aut='+sc.aut+'&sov='+sc.sov+'&eco2='+sc.eco2;
+  var url='https://calculamatix.com/test-politique-2.html'+hash;
+  si('share-url',url);
+  window._shareURL=url;
+  window._shareProf=prof.name;
+  window._sc=sc;
+
+  // Cacher quiz, montrer résultats
+  g('quiz-wrap').style.display='none';
+  g('btn-submit').style.display='none';
+  g('prog-wrap').style.display='none';
+  g('live-wrap').style.display='none';
+  g('res-wrap').classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  setTimeout(function(){
+    drawRadar(sc);
+    drawCompass(sc);
+  },150);
+}
+
+function drawRadar(sc){
+  chartRadar=destroyChart(chartRadar);
+  var cv=g('chart-radar'); if(!cv) return;
+  chartRadar=new Chart(cv,{
+    type:'radar',
+    data:{
+      labels:['Éco. gauche','Progressiste','Libertaire','Mondialiste','Décroissance'],
+      datasets:[{
+        label:'Vous',
+        // Convertir de -100/+100 vers 0/100 en inversant le sens approprié
+        data:[
+          Math.round((-sc.eco+100)/2),  // gauche = haut
+          Math.round((-sc.cul+100)/2),  // progressiste = haut
+          Math.round((-sc.aut+100)/2),  // libertaire = haut
+          Math.round((-sc.sov+100)/2),  // mondialiste = haut
+          Math.round((-sc.eco2+100)/2), // décroissance = haut
+        ],
+        backgroundColor:'rgba(107,127,255,.15)',
+        borderColor:'rgba(107,127,255,.8)',
+        pointBackgroundColor:'rgba(107,127,255,.9)',
+        pointRadius:5,borderWidth:2
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:true,
+      plugins:{legend:{display:false}},
+      scales:{r:{min:0,max:100,
+        grid:{color:'rgba(255,255,255,.06)'},
+        angleLines:{color:'rgba(255,255,255,.06)'},
+        pointLabels:{color:'#6B7FFF',font:{size:11}},
+        ticks:{display:false}
+      }}
+    }
+  });
+}
+
+function drawCompass(sc){
+  chartCompass=destroyChart(chartCompass);
+  var cv=g('chart-compass'); if(!cv) return;
+  chartCompass=new Chart(cv,{
+    type:'scatter',
+    data:{datasets:[
+      ...PARTIES.map(function(p){
+        return {label:p.n,data:[{x:p.x,y:-p.y}],backgroundColor:p.c+'CC',borderColor:p.c,pointRadius:10,borderWidth:2};
+      }),
+      {label:'⭐ Vous',data:[{x:sc.eco,y:-sc.cul}],backgroundColor:'#FFD93D',borderColor:'#FFD93D',pointRadius:14,pointHoverRadius:16,borderWidth:3,pointStyle:'star'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:function(c){
+          if(c.dataset.label==='⭐ Vous') return '⭐ Vous (éco:'+sc.eco+', cult:'+sc.cul+')';
+          var p=PARTIES.find(function(x){return x.n===c.dataset.label;});
+          return p?p.n:'';
+        }}}},
+      scales:{
+        x:{min:-105,max:105,grid:{color:'rgba(255,255,255,.05)'},border:{color:'rgba(255,255,255,.1)'},
+          title:{display:true,text:'← Gauche économique · Droite économique →',color:'#404870',font:{size:10}},
+          ticks:{color:'#404870'}},
+        y:{min:-105,max:105,grid:{color:'rgba(255,255,255,.05)'},border:{color:'rgba(255,255,255,.1)'},
+          title:{display:true,text:'↑ Progressiste · Conservateur ↓',color:'#404870',font:{size:10}},
+          ticks:{color:'#404870'}}
+      }
+    },
+    plugins:[{id:'quadrants',beforeDraw:function(chart){
+      var ctx=chart.ctx,ca=chart.chartArea;
+      var mx=(ca.left+ca.right)/2,my=(ca.top+ca.bottom)/2;
+      ctx.save();
+      ctx.font='9px DM Mono,monospace'; ctx.fillStyle='rgba(255,255,255,.1)'; ctx.textAlign='center';
+      ctx.fillText('Altermondialiste',mx-(ca.right-ca.left)/4,my-(ca.bottom-ca.top)/4);
+      ctx.fillText('Individualiste',mx+(ca.right-ca.left)/4,my-(ca.bottom-ca.top)/4);
+      ctx.fillText('Nationaliste',mx-(ca.right-ca.left)/4,my+(ca.bottom-ca.top)/4);
+      ctx.fillText('Conservateur',mx+(ca.right-ca.left)/4,my+(ca.bottom-ca.top)/4);
+      ctx.strokeStyle='rgba(255,255,255,.1)'; ctx.setLineDash([4,4]); ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(mx,ca.top); ctx.lineTo(mx,ca.bottom); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(ca.left,my); ctx.lineTo(ca.right,my); ctx.stroke();
+      ctx.restore();
+    }}]
+  });
+
+  // Légende partis
+  var legEl=g('party-legend');
+  if(legEl){
+    legEl.innerHTML=PARTIES.map(function(p){
+      return '<span class="party-dot"><span class="party-color" style="background:'+p.c+'"></span>'+p.n+'</span>';
+    }).join('')+'<span class="party-dot"><span class="party-color" style="background:#FFD93D"></span>⭐ Vous</span>';
+  }
+}
+
+// ── SHARE ──
+function shareX(){
+  var sc=window._sc||{};
+  var txt='Mon profil politique sur Calculamatix :\n'+
+    (window._shareProf||'')+'\n\n'+
+    '💰 Éco: '+(sc.eco>0?'+':'')+sc.eco+
+    ' | 🌈 Cult: '+(sc.cul>0?'+':'')+sc.cul+
+    ' | 🔒 Aut: '+(sc.aut>0?'+':'')+sc.aut+'\n'+
+    (window._shareURL||'');
+  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(txt),'_blank');
+}
+function shareWA(){
+  var txt='Mon profil politique 🗳️\n\n'+
+    '📊 '+(window._shareProf||'')+'\n'+
+    '💰 Économique: '+(window._sc&&window._sc.eco>0?'+':'')+((window._sc&&window._sc.eco)||0)+'\n'+
+    '🌈 Culturel: '+(window._sc&&window._sc.cul>0?'+':'')+((window._sc&&window._sc.cul)||0)+'\n'+
+    '🌍 Souveraineté: '+(window._sc&&window._sc.sov>0?'+':'')+((window._sc&&window._sc.sov)||0)+'\n\n'+
+    (window._shareURL||'');
+  window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');
+}
+function copyURL(){
+  navigator.clipboard.writeText(window._shareURL||'').then(function(){
+    var btn=document.querySelector('.btn-copy');
+    if(btn){ btn.textContent='✅ Copié !'; setTimeout(function(){ btn.textContent='📋 Copier le lien'; },2000); }
+  });
+}
+
+// ── RESET ──
+function resetQuiz(){
+  answers={};
+  g('res-wrap').classList.remove('show');
+  g('quiz-wrap').style.display='';
+  g('btn-submit').style.display='';
+  g('prog-wrap').style.display='';
+  g('live-wrap').style.display='';
+  g('btn-submit').disabled=true;
+  g('btn-submit').textContent='Voir mes résultats →';
+  buildQuiz();
+  updateProgress();
+  updateLiveScores();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── CHARGER DEPUIS URL si résultats partagés ──
+function loadFromURL(){
+  var hash=window.location.hash;
+  if(!hash||hash.length<10) return false;
+  var params={};
+  hash.substring(1).split('&').forEach(function(p){
+    var parts=p.split('=');
+    if(parts.length===2) params[parts[0]]=parseInt(parts[1]);
+  });
+  if(params.eco===undefined) return false;
+  // Afficher directement les résultats depuis l'URL
+  var sc={eco:params.eco||0,cul:params.cul||0,aut:params.aut||0,sov:params.sov||0,eco2:params.eco2||0};
+  window._sc=sc;
+  window._shareURL=window.location.href;
+  var prof=getProfile(sc);
+  window._shareProf=prof.name;
+
+  // Simuler showResults avec les scores de l'URL
+  answers={};BLOCS.forEach(function(b){b.questions.forEach(function(q){answers[q.id]=0;});});
+  se('res-emoji',prof.emoji);
+  se('res-name',prof.name+' (résultats partagés)');
+  se('res-sub',prof.sub);
+  si('axes-detail','<div style="font-size:12px;color:var(--muted);padding:10px">Résultats reçus via lien partagé. Scores : Économique: '+(sc.eco>0?'+':'')+sc.eco+' | Culturel: '+(sc.cul>0?'+':'')+sc.cul+' | Autorité: '+(sc.aut>0?'+':'')+sc.aut+' | Souveraineté: '+(sc.sov>0?'+':'')+sc.sov+' | Écologie: '+(sc.eco2>0?'+':'')+sc.eco2+'</div>');
+  si('theme-scores','');
+  si('france-compare','');
+  si('share-url',window.location.href);
+
+  g('quiz-wrap').style.display='none';
+  g('btn-submit').style.display='none';
+  g('prog-wrap').style.display='none';
+  g('live-wrap').style.display='none';
+  g('res-wrap').classList.add('show');
+  setTimeout(function(){ drawRadar(sc); drawCompass(sc); },150);
+  return true;
+}
+
+// ── INIT ──
+if(!loadFromURL()){
+  buildQuiz();
+  updateProgress();
+}
+</script>
+</body>
+</html>
