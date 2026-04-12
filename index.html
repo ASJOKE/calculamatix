@@ -515,6 +515,258 @@
   </div>
 </div>
 
+  <!-- ═══════════════════════════════════════
+     CARROUSEL À LA UNE — Calculamatix
+     À coller juste avant <!-- Filters -->
+     ═══════════════════════════════════════ -->
+
+<div class="carousel-wrap">
+  <div class="carousel-label">⭐ À la une</div>
+  <div class="carousel-outer">
+    <div class="carousel-track" id="carouselTrack">
+
+      <!-- Slide 1 — Test politique -->
+      <a class="carousel-slide" href="test-politique-2.html" style="--sc:#6B7FFF">
+        <div class="cs-left">
+          <div class="cs-tag" style="background:rgba(107,127,255,.15);color:#6B7FFF">🗳️ Société · 80 questions</div>
+          <div class="cs-title">Suis-je vraiment de gauche ou de droite ?</div>
+          <div class="cs-desc">5 axes, 20 thèmes, mises en situation concrètes. Boussole politique en temps réel. Le test le plus complet en français.</div>
+          <div class="cs-cta" style="color:#6B7FFF">Faire le test →</div>
+        </div>
+        <div class="cs-right">
+          <div class="cs-emoji">🗳️</div>
+          <div class="cs-stats">
+            <div class="cs-stat" style="--sc:#6B7FFF"><span>80</span>questions</div>
+            <div class="cs-stat" style="--sc:#6B7FFF"><span>5</span>axes</div>
+            <div class="cs-stat" style="--sc:#6B7FFF"><span>20</span>thèmes</div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Slide 2 — Impact écolo -->
+      <a class="carousel-slide" href="impact-ecolo.html" style="--sc:#00E86A">
+        <div class="cs-left">
+          <div class="cs-tag" style="background:rgba(0,232,106,.15);color:#00E86A">🌍 Écologie · ADEME 2025</div>
+          <div class="cs-title">Mon impact écologique réel</div>
+          <div class="cs-desc">Éteindre les veilles ou arrêter l'avion ? Quels gestes changent vraiment quelque chose ? La vérité en chiffres ADEME.</div>
+          <div class="cs-cta" style="color:#00E86A">Calculer mon impact →</div>
+        </div>
+        <div class="cs-right">
+          <div class="cs-emoji">🌍</div>
+          <div class="cs-stats">
+            <div class="cs-stat" style="--sc:#00E86A"><span>9t</span>moyenne FR</div>
+            <div class="cs-stat" style="--sc:#00E86A"><span>2t</span>objectif 2050</div>
+            <div class="cs-stat" style="--sc:#00E86A"><span>×45</span>avion vs veilles</div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Slide 3 — Coût enfant -->
+      <a class="carousel-slide" href="cout-enfant.html" style="--sc:#F472B6">
+        <div class="cs-left">
+          <div class="cs-tag" style="background:rgba(244,114,182,.15);color:#F472B6">👶 Famille · INSEE & CAF</div>
+          <div class="cs-title">Le vrai coût d'un enfant de 0 à 18 ans</div>
+          <div class="cs-desc">Garde, école, activités, vêtements, alimentation, aides CAF. Le calcul complet que personne ne fait avant d'avoir un enfant.</div>
+          <div class="cs-cta" style="color:#F472B6">Calculer le coût →</div>
+        </div>
+        <div class="cs-right">
+          <div class="cs-emoji">👶</div>
+          <div class="cs-stats">
+            <div class="cs-stat" style="--sc:#F472B6"><span>160k€</span>en moyenne</div>
+            <div class="cs-stat" style="--sc:#F472B6"><span>18 ans</span>de calcul</div>
+            <div class="cs-stat" style="--sc:#F472B6"><span>CAF</span>aides incluses</div>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- Contrôles -->
+  <div class="carousel-controls">
+    <button class="c-btn" onclick="cPrev()">←</button>
+    <div class="c-dots">
+      <button class="c-dot active" onclick="cGo(0)"></button>
+      <button class="c-dot" onclick="cGo(1)"></button>
+      <button class="c-dot" onclick="cGo(2)"></button>
+    </div>
+    <button class="c-btn" onclick="cNext()">→</button>
+  </div>
+</div>
+
+<style>
+.carousel-wrap {
+  max-width: 1100px;
+  margin: 32px auto 8px;
+  padding: 0 24px;
+  position: relative;
+  z-index: 10;
+}
+.carousel-label {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+.carousel-outer {
+  overflow: hidden;
+  border-radius: 20px;
+}
+.carousel-track {
+  display: flex;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.carousel-slide {
+  min-width: 100%;
+  display: flex;
+  gap: 24px;
+  padding: 28px 32px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 20px;
+  text-decoration: none;
+  color: #F0EDE6;
+  align-items: center;
+  box-sizing: border-box;
+  transition: background .2s;
+}
+.carousel-slide:hover { background: rgba(255,255,255,.05); }
+
+.cs-left { flex: 1; min-width: 0; }
+.cs-tag {
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 100px;
+  margin-bottom: 14px;
+  font-family: 'DM Mono', monospace;
+}
+.cs-title {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 900;
+  font-size: clamp(16px, 2.2vw, 22px);
+  letter-spacing: -1px;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  color: #F0EDE6;
+}
+.cs-desc {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.65;
+  margin-bottom: 18px;
+  max-width: 500px;
+}
+.cs-cta {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+
+.cs-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+  min-width: 140px;
+}
+.cs-emoji { font-size: 54px; line-height: 1; }
+.cs-stats { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.cs-stat {
+  text-align: center;
+  background: rgba(0,0,0,.35);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 10px;
+  color: #555;
+  font-family: 'DM Mono', monospace;
+}
+.cs-stat span {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--sc);
+  margin-bottom: 2px;
+}
+
+.carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 14px;
+}
+.c-btn {
+  background: rgba(255,255,255,.06);
+  border: 1px solid #2a2a2a;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  color: #666;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.c-btn:hover { background: rgba(255,255,255,.12); color: #F0EDE6; }
+.c-dots { display: flex; gap: 8px; align-items: center; }
+.c-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: #333;
+  cursor: pointer;
+  transition: all .25s;
+  padding: 0;
+}
+.c-dot.active {
+  background: #FFD93D;
+  width: 24px;
+  border-radius: 4px;
+}
+
+@media (max-width: 640px) {
+  .carousel-slide { flex-direction: column; padding: 22px 20px; gap: 14px; }
+  .cs-right { flex-direction: row; min-width: auto; width: 100%; }
+  .cs-emoji { font-size: 38px; }
+  .cs-stats { display: none; }
+}
+</style>
+
+<script>
+(function(){
+  var idx = 0;
+  var total = 3;
+  var timer;
+
+  function go(n) {
+    idx = ((n % total) + total) % total;
+    var track = document.getElementById('carouselTrack');
+    if (track) track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+    document.querySelectorAll('.c-dot').forEach(function(d, i) {
+      d.classList.toggle('active', i === idx);
+    });
+    clearInterval(timer);
+    timer = setInterval(function(){ go(idx + 1); }, 5000);
+  }
+
+  window.cGo   = go;
+  window.cNext = function(){ go(idx + 1); };
+  window.cPrev = function(){ go(idx - 1); };
+
+  timer = setInterval(function(){ go(idx + 1); }, 5000);
+})();
+</script>
+
 <!-- Filters -->
 <div class="filters">
   <button class="filter-btn active" data-filter="all">Tout voir</button>
