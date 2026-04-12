@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mon bilan voyageur — toute ma vie de voyages en chiffres | Calculamatix</title>
+  <meta name="description" content="Reconstituez l'impact carbone de tous vos voyages. Profil voyageur, boussole, comparaison mondiale. Suis-je dans le 1% des plus gros émetteurs aériens ? Données ADEME & GIEC."/>
+  <link rel="canonical" href="https://calculamatix.com/bilan-voyageur.html"/>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#080610;--card:#10102a;--border:#1a1a3a;
+      --indigo:#7C6FFF;--violet:#B06EFF;--pink:#FF6BAA;
+      --green:#3BFF9E;--red:#FF4D6A;--amber:#FFAA3B;
+      --teal:#00D4C8;--blue:#4D9FFF;--gold:#FFD700;
+      --text:#EEE8FF;--muted:#4A4570;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:80px;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(124,111,255,.07),transparent)}
+
+    nav{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:22px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:17px;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--gold)}
+    .back{font-size:12px;color:var(--muted);text-decoration:none}
+
+    .hero{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:40px 24px 28px}
+    .htag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--indigo);background:rgba(124,111,255,.08);border:1px solid rgba(124,111,255,.2);padding:4px 14px;border-radius:100px;margin-bottom:14px;font-family:'DM Mono',monospace}
+    h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(22px,4vw,46px);letter-spacing:-2px;line-height:1.05;margin-bottom:10px}
+    h1 em{color:var(--indigo);font-style:normal}
+    .hero-sub{font-size:14px;color:var(--muted);line-height:1.7;max-width:680px}
+
+    /* PROFIL BANNER */
+    .profil-wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto 20px;padding:0 24px}
+    .profil-box{background:linear-gradient(135deg,rgba(124,111,255,.08),rgba(176,110,255,.04));border:2px solid rgba(124,111,255,.3);border-radius:20px;padding:24px 28px;display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+    .pb-emoji{font-size:52px;flex-shrink:0}
+    .pb-info{flex:1}
+    .pb-type{font-family:'Unbounded',sans-serif;font-size:clamp(14px,2vw,20px);font-weight:900;color:var(--indigo);margin-bottom:4px}
+    .pb-desc{font-size:12px;color:var(--muted);line-height:1.6;max-width:400px}
+    .pb-divider{width:1px;height:60px;background:rgba(255,255,255,.08);flex-shrink:0}
+    .pb-stats{display:flex;flex-wrap:wrap;gap:14px}
+    .pb-stat{text-align:center;min-width:100px}
+    .pb-stat-v{font-family:'DM Mono',monospace;font-size:16px;font-weight:700}
+    .pb-stat-l{font-size:10px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+
+    .wrap{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:14px}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px}
+    .ctitle{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px}
+
+    /* VOYAGE FORM */
+    .voyage-form{background:rgba(124,111,255,.04);border:1px solid rgba(124,111,255,.2);border-radius:14px;padding:16px;margin-bottom:10px}
+    .voyage-form-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .voyage-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--indigo)}
+    .voyage-del{background:rgba(255,77,106,.1);border:1px solid rgba(255,77,106,.2);border-radius:6px;color:var(--red);font-size:11px;padding:3px 10px;cursor:pointer;font-family:inherit}
+    .vrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+    .vrow select, .vrow input{background:#10102a;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:12px;font-family:inherit;outline:none;width:100%}
+    .vrow-3{grid-template-columns:1fr 1fr 1fr}
+    .vlabel{font-size:10px;color:var(--muted);margin-bottom:3px;font-family:'DM Mono',monospace}
+
+    .btn-add{background:rgba(124,111,255,.1);border:1px solid rgba(124,111,255,.3);border-radius:10px;color:var(--indigo);font-size:13px;font-family:inherit;padding:10px 20px;cursor:pointer;width:100%;transition:all .15s;font-weight:600}
+    .btn-add:hover{background:rgba(124,111,255,.2)}
+    .btn-calc{background:linear-gradient(135deg,var(--indigo),var(--violet));border:none;color:#fff;padding:14px 36px;border-radius:12px;font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;cursor:pointer;display:block;margin:16px auto;letter-spacing:.5px}
+    .btn-calc:hover{opacity:.85}
+
+    .m{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+    .ml{font-size:10px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;font-family:'DM Mono',monospace}
+    .mv{font-family:'DM Mono',monospace;font-size:17px;font-weight:500}
+    .ms{font-size:10px;color:var(--muted);margin-top:4px}
+
+    .cw{position:relative;width:100%;height:280px;margin-top:12px}
+    .cw-sm{height:220px}
+
+    /* Boussole voyageur */
+    .boussole-wrap{position:relative;width:100%;max-width:340px;height:340px;margin:0 auto}
+
+    .di{display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;margin-bottom:6px}
+    .di span:first-child{font-size:12px;color:var(--muted)}
+    .di span:last-child{font-family:'DM Mono',monospace;font-size:12px}
+
+    .badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:100px;font-size:11px;font-weight:700;font-family:'DM Mono',monospace}
+
+    .src{background:#060410;border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:11px;color:#2a2450;line-height:1.8;font-family:'DM Mono',monospace}
+    .src strong{color:#4A4570}
+
+    .choc{text-align:center;padding:16px;background:linear-gradient(135deg,rgba(124,111,255,.07),transparent);border:1px solid rgba(124,111,255,.2);border-radius:14px;margin-bottom:8px}
+    .choc-num{font-family:'Unbounded',sans-serif;font-size:clamp(22px,3.5vw,36px);font-weight:900;color:var(--indigo);margin:4px 0}
+    .choc-label{font-size:11px;color:var(--muted);line-height:1.5}
+
+    .rang-bar{height:16px;background:rgba(255,255,255,.05);border-radius:8px;overflow:hidden;margin:8px 0}
+    .rang-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,var(--green),var(--indigo),var(--red));transition:width .5s}
+
+    @media(max-width:640px){.g2,.g3{grid-template-columns:1fr}.vrow{grid-template-columns:1fr}.profil-box{flex-direction:column}.pb-divider{display:none}}
+  </style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Retour</a>
+</nav>
+
+<div class="hero">
+  <div class="htag">🌍 Voyages · ADEME · GIEC 2023</div>
+  <h1>Mon <em>bilan</em><br>voyageur</h1>
+  <p class="hero-sub">Reconstituez tous vos voyages des dernières années. Calculez votre empreinte carbone cumulée, découvrez votre profil de voyageur, et comparez-vous au reste du monde. Suis-je dans le 1% des plus gros émetteurs ?</p>
+</div>
+
+<!-- PROFIL BANNER -->
+<div class="profil-wrap">
+  <div class="profil-box" id="profil-box">
+    <div class="pb-emoji" id="pb-emoji">🗺️</div>
+    <div class="pb-info">
+      <div class="pb-type" id="pb-type">Ajoutez vos voyages</div>
+      <div class="pb-desc" id="pb-desc">Entrez au moins un voyage pour calculer votre profil et votre empreinte carbone cumulée.</div>
+    </div>
+    <div class="pb-divider"></div>
+    <div class="pb-stats">
+      <div class="pb-stat"><div class="pb-stat-v" id="pbs-total" style="color:var(--indigo)">—</div><div class="pb-stat-l">kg CO₂ total</div></div>
+      <div class="pb-stat"><div class="pb-stat-v" id="pbs-voyages" style="color:var(--violet)">—</div><div class="pb-stat-l">voyages saisis</div></div>
+      <div class="pb-stat"><div class="pb-stat-v" id="pbs-km" style="color:var(--teal)">—</div><div class="pb-stat-l">km parcourus</div></div>
+      <div class="pb-stat"><div class="pb-stat-v" id="pbs-rang" style="color:var(--gold)">—</div><div class="pb-stat-l">% mondial émetteurs</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- SAISIE VOYAGES -->
+  <div class="card">
+    <div class="ctitle">✈️ Vos voyages — ajoutez-les un par un</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6">
+      Reconstructez votre historique de voyages sur les 3-5 dernières années. Soyez honnête — c'est pour vous, personne ne voit vos données.
+    </div>
+    <div id="voyages-list"></div>
+    <button class="btn-add" onclick="addVoyage()">+ Ajouter un voyage</button>
+    <button class="btn-calc" onclick="calcAll()">📊 Calculer mon bilan voyageur</button>
+  </div>
+
+  <!-- RÉSULTATS — masqués jusqu'au calcul -->
+  <div id="results-wrap" style="display:none;flex-direction:column;gap:14px">
+
+    <!-- Totaux -->
+    <div class="g3">
+      <div class="m"><div class="ml">CO₂ total cumulé</div><div class="mv" id="r-total" style="color:var(--indigo)">—</div><div class="ms">kg CO₂ équivalent</div></div>
+      <div class="m"><div class="ml">Moyenne par voyage</div><div class="mv" id="r-moy" style="color:var(--violet)">—</div><div class="ms">kg CO₂</div></div>
+      <div class="m"><div class="ml">Km parcourus</div><div class="mv" id="r-km" style="color:var(--teal)">—</div><div class="ms">km au total</div></div>
+    </div>
+
+    <!-- Graphiques -->
+    <div class="g2">
+      <div class="card">
+        <div class="ctitle">📊 Répartition par type de transport</div>
+        <div class="cw"><canvas id="chart-transport"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="ctitle">📅 CO₂ par voyage</div>
+        <div class="cw"><canvas id="chart-voyages"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Boussole voyageur -->
+    <div class="g2">
+      <div class="card">
+        <div class="ctitle">🧭 Votre boussole de voyageur</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">
+          Axe horizontal : impact environnemental (faible → fort) · Axe vertical : fréquence vs durée (séjours courts fréquents → voyages longs rares)
+        </div>
+        <div class="cw"><canvas id="chart-boussole"></canvas></div>
+        <div id="boussole-verdict" style="margin-top:10px;font-size:12px;color:var(--muted);line-height:1.7;padding:10px;background:rgba(0,0,0,.3);border-radius:8px"></div>
+      </div>
+      <div class="card">
+        <div class="ctitle">🌍 Vous vs le monde</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6">Votre empreinte carbone voyage comparée aux différents segments mondiaux.</div>
+        <div id="rang-mondial"></div>
+        <div class="rang-bar"><div class="rang-fill" id="rang-fill" style="width:50%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px">
+          <span>Faible impact</span><span>Moyen</span><span>Top 1%</span>
+        </div>
+        <div id="rang-detail" style="margin-top:12px"></div>
+      </div>
+    </div>
+
+    <!-- Chiffres chocs -->
+    <div class="g3">
+      <div class="choc">
+        <div style="font-size:11px;color:var(--muted)">Vos km totaux représentent</div>
+        <div class="choc-num" id="choc-terre">—</div>
+        <div class="choc-label">fois le tour de la Terre (40 075 km)</div>
+      </div>
+      <div class="choc">
+        <div style="font-size:11px;color:var(--muted)">Équivalent en steaks</div>
+        <div class="choc-num" id="choc-steaks">—</div>
+        <div class="choc-label">repas avec du bœuf pour le même impact CO₂</div>
+      </div>
+      <div class="choc">
+        <div style="font-size:11px;color:var(--muted)">Arbres à planter</div>
+        <div class="choc-num" id="choc-arbres">—</div>
+        <div class="choc-label">pendant 30 ans pour compenser vos voyages</div>
+      </div>
+    </div>
+
+    <!-- Analyse détaillée -->
+    <div class="g2">
+      <div class="card">
+        <div class="ctitle">🔍 Analyse de vos habitudes</div>
+        <div id="analyse-habitudes"></div>
+      </div>
+      <div class="card">
+        <div class="ctitle">💡 Vos leviers personnels</div>
+        <div id="leviers-perso"></div>
+      </div>
+    </div>
+
+    <!-- Simulateur de compromis -->
+    <div class="card" style="background:rgba(124,111,255,.04);border-color:rgba(124,111,255,.2)">
+      <div class="ctitle" style="color:var(--indigo)">🎮 Simulateur — Et si je changeais mes habitudes ?</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Voyez en temps réel l'impact de changer vos habitudes de voyage.</div>
+      <div class="g2">
+        <div>
+          <div class="vlabel">Si je remplaçais mes vols par le train quand possible</div>
+          <select id="sim-train" onchange="updateSim()" style="background:#10102a;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:12px;font-family:inherit;outline:none;width:100%;margin-bottom:8px">
+            <option value="0">Je ne change rien</option>
+            <option value="0.3">Je remplace 30% de mes vols par le train</option>
+            <option value="0.6">Je remplace 60% de mes vols par le train</option>
+            <option value="0.9">Je remplace presque tous mes vols courts</option>
+          </select>
+          <div class="vlabel">Si j'allongeais mes séjours (moins de voyages, plus longs)</div>
+          <select id="sim-duree" onchange="updateSim()" style="background:#10102a;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:12px;font-family:inherit;outline:none;width:100%;margin-bottom:8px">
+            <option value="1">Aucun changement</option>
+            <option value="0.8">Séjours 25% plus longs</option>
+            <option value="0.6">Séjours 40% plus longs (-20% de voyages)</option>
+            <option value="0.4">Je divise par 2 mes voyages, double la durée</option>
+          </select>
+          <div class="vlabel">Si je choisissais des hébergements plus écoresponsables</div>
+          <select id="sim-heberg" onchange="updateSim()" style="background:#10102a;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:12px;font-family:inherit;outline:none;width:100%">
+            <option value="1">Même type d'hébergement</option>
+            <option value="0.7">Auberges / Airbnb plutôt qu'hôtels</option>
+            <option value="0.5">Camping / chez l'habitant majoritairement</option>
+          </select>
+        </div>
+        <div>
+          <div style="padding:20px;background:rgba(0,0,0,.3);border-radius:12px;text-align:center;height:100%;display:flex;flex-direction:column;justify-content:center;gap:12px">
+            <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px">Avec ces changements</div>
+            <div style="font-family:'Unbounded',sans-serif;font-size:clamp(24px,4vw,40px);font-weight:900;color:var(--green)" id="sim-result">—</div>
+            <div style="font-size:12px;color:var(--muted)" id="sim-gain">kg CO₂ économisés</div>
+            <div style="font-size:11px;color:var(--indigo)" id="sim-pct">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="src">
+      <strong>Sources :</strong> ADEME Base Carbone 2025 · GIEC AR6 WG3 2023 (forçage radiatif aviation × 2) · SNCF Note Comparateur Modal 2025 · Our World in Data — Aviation emissions (2023) · Statista : 1% des passagers aériens = 50% des émissions (2020) · ADEME "Répartition empreinte carbone Français" (Citepa/ABC 2023) · Atmosfair : compensation carbone certifiée Gold Standard · Pixidia "Voyage éco-responsable 2026" (facteurs d'émission avion) · ADEME agirpourlatransition.ademe.fr — hébergements durables
+    </div>
+  </div>
+
+</div>
+
+<script>
+var voyages = [];
+var voyageCount = 0;
+var chartT=null, chartV=null, chartB=null;
+Chart.defaults.color='#4A4570';
+Chart.defaults.font.family="'DM Sans',sans-serif";
+
+var FACTEURS = {
+  avion_court:230, avion_moyen:180, avion_long:150,
+  avion_business:540, tgv:2.4, train:20, bus:30,
+  voiture:195, voiture2:97, voiture4:49, ferry:130
+};
+
+var HEBERG_FACTEURS = {
+  camping:2.5, auberge:4.5, airbnb:6.5, hotel3:7.0, hotel5:10.5, resort:15.0
+};
+
+function g(id){ return document.getElementById(id); }
+function se(id,t){ var el=g(id); if(el) el.textContent=t; }
+function si(id,h){ var el=g(id); if(el) el.innerHTML=h; }
+function fmt(n){ return Math.round(n).toLocaleString('fr-FR'); }
+function destroyChart(c){ if(c){ try{c.destroy();}catch(e){} } return null; }
+
+function addVoyage(){
+  voyageCount++;
+  var id = voyageCount;
+  voyages.push({id:id});
+
+  var el = document.createElement('div');
+  el.className = 'voyage-form';
+  el.id = 'vf-'+id;
+  el.innerHTML =
+    '<div class="voyage-form-header">'
+    +'<span class="voyage-num">✈️ Voyage #'+id+'</span>'
+    +'<button class="voyage-del" onclick="removeVoyage('+id+')">✕ Supprimer</button>'
+    +'</div>'
+    +'<div class="vrow">'
+    +'<div><div class="vlabel">Destination</div><input type="text" id="v'+id+'-dest" placeholder="Ex: Barcelone, Thaïlande..." style="background:#10102a;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:12px;font-family:inherit;outline:none;width:100%"/></div>'
+    +'<div><div class="vlabel">Année</div><select id="v'+id+'-annee" style="background:#10102a;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:12px;font-family:inherit;outline:none;width:100%">'
+    +[2026,2025,2024,2023,2022,2021,2020,2019].map(function(y){return '<option value="'+y+'"'+(y===2024?' selected':'')+'>'+y+'</option>';}).join('')
+    +'</select></div>'
+    +'</div>'
+    +'<div class="vrow vrow-3">'
+    +'<div><div class="vlabel">Transport</div><select id="v'+id+'-transport" style="background:#10102a;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:12px;font-family:inherit;outline:none;width:100%">'
+    +'<option value="avion_court">✈️ Avion court</option>'
+    +'<option value="avion_moyen" selected>✈️ Avion moyen</option>'
+    +'<option value="avion_long">✈️ Avion long</option>'
+    +'<option value="avion_business">✈️ Business ×3</option>'
+    +'<option value="tgv">🚄 TGV</option>'
+    +'<option value="train">🚂 Train</option>'
+    +'<option value="bus">🚌 Bus</option>'
+    +'<option value="voiture">🚗 Voiture seul</option>'
+    +'<option value="voiture2">🚗 Voiture ×2</option>'
+    +'<option value="voiture4">🚗 Voiture ×4</option>'
+    +'</select></div>'
+    +'<div><div class="vlabel">Distance A/R (km)</div><input type="number" id="v'+id+'-dist" value="2000" min="100" max="50000" style="background:#10102a;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:12px;font-family:inherit;outline:none;width:100%"/></div>'
+    +'<div><div class="vlabel">Nuits</div><input type="number" id="v'+id+'-nuits" value="7" min="1" max="90" style="background:#10102a;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:12px;font-family:inherit;outline:none;width:100%"/></div>'
+    +'</div>'
+    +'<div class="vrow">'
+    +'<div><div class="vlabel">Hébergement</div><select id="v'+id+'-heberg" style="background:#10102a;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:12px;font-family:inherit;outline:none;width:100%">'
+    +'<option value="camping">⛺ Camping</option>'
+    +'<option value="auberge">🛏️ Auberge de jeunesse</option>'
+    +'<option value="airbnb">🏠 Airbnb / location</option>'
+    +'<option value="hotel3" selected>🏨 Hôtel 3*</option>'
+    +'<option value="hotel5">🏨 Hôtel 5*</option>'
+    +'<option value="resort">🏝️ Resort tout inclus</option>'
+    +'</select></div>'
+    +'<div><div class="vlabel">Type de voyage</div><select id="v'+id+'-type" style="background:#10102a;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:12px;font-family:inherit;outline:none;width:100%">'
+    +'<option value="culture">🏛️ Culturel / découverte</option>'
+    +'<option value="plage" selected>🏖️ Soleil / plage</option>'
+    +'<option value="nature">🏔️ Nature / randonnée</option>'
+    +'<option value="biz">💼 Professionnel</option>'
+    +'<option value="festif">🎉 Week-end festif</option>'
+    +'</select></div>'
+    +'</div>';
+  g('voyages-list').appendChild(el);
+}
+
+function removeVoyage(id){
+  var el = g('vf-'+id);
+  if(el) el.remove();
+  voyages = voyages.filter(function(v){ return v.id !== id; });
+}
+
+function getVoyageData(){
+  var data = [];
+  var forms = document.querySelectorAll('.voyage-form');
+  forms.forEach(function(form){
+    var id = form.id.replace('vf-','');
+    var dest    = (g('v'+id+'-dest')    && g('v'+id+'-dest').value)    || 'Inconnu';
+    var annee   = +(g('v'+id+'-annee') && g('v'+id+'-annee').value)    || 2024;
+    var trans   = (g('v'+id+'-transport') && g('v'+id+'-transport').value) || 'avion_moyen';
+    var dist    = +(g('v'+id+'-dist')   && g('v'+id+'-dist').value)    || 2000;
+    var nuits   = +(g('v'+id+'-nuits') && g('v'+id+'-nuits').value)    || 7;
+    var heberg  = (g('v'+id+'-heberg') && g('v'+id+'-heberg').value)   || 'hotel3';
+    var type    = (g('v'+id+'-type')   && g('v'+id+'-type').value)     || 'plage';
+
+    var factTrans = FACTEURS[trans] || 180;
+    var co2Trans  = Math.round(dist * factTrans / 1000);
+    var factHeb   = HEBERG_FACTEURS[heberg] || 7;
+    var co2Heb    = Math.round(factHeb * nuits);
+    var co2Total  = co2Trans + co2Heb + Math.round(400 * nuits/7); // alimentation estimée
+
+    data.push({dest:dest, annee:annee, trans:trans, dist:dist, nuits:nuits, heberg:heberg, type:type,
+      co2Trans:co2Trans, co2Heb:co2Heb, co2Total:co2Total});
+  });
+  return data;
+}
+
+function calcAll(){
+  var data = getVoyageData();
+  if(data.length === 0){ alert('Ajoutez au moins un voyage !'); return; }
+
+  var totalCO2  = data.reduce(function(s,v){ return s+v.co2Total; }, 0);
+  var totalKm   = data.reduce(function(s,v){ return s+v.dist; }, 0);
+  var nbVoyages = data.length;
+  var moyCO2    = Math.round(totalCO2/nbVoyages);
+
+  // Rang mondial (1% = > 50t avion/an, 10% > 10t, 50% > 1t, etc.)
+  var totalT = totalCO2/1000;
+  var rangPct, rangLabel;
+  if(totalT > 50)       { rangPct=1;  rangLabel='Top 1% mondial — émetteurs extrêmes'; }
+  else if(totalT > 20)  { rangPct=3;  rangLabel='Top 3% — gros voyageur aérien'; }
+  else if(totalT > 10)  { rangPct=10; rangLabel='Top 10% — voyageur fréquent'; }
+  else if(totalT > 5)   { rangPct=25; rangLabel='Top 25% — voyageur régulier'; }
+  else if(totalT > 2)   { rangPct=50; rangLabel='Moitié supérieure — voyageur moyen'; }
+  else                   { rangPct=75; rangLabel='Impact faible — voyageur occasionnel'; }
+
+  // Profil voyageur
+  var avgDist = totalKm/nbVoyages;
+  var avgNuits = data.reduce(function(s,v){return s+v.nuits;},0)/nbVoyages;
+  var avionPct = data.filter(function(v){return v.trans.startsWith('avion');}).length/nbVoyages;
+
+  var profil, profilEmoji, profilDesc;
+  if(avionPct > 0.8 && avgDist > 5000){ profil='Globe-trotter aérien'; profilEmoji='🌏'; profilDesc='Vous voyagez loin et souvent en avion. Votre impact est élevé mais vos expériences sont riches. La clé : moins mais plus long.'; }
+  else if(avionPct > 0.6 && avgNuits < 5){ profil='Adepte du week-end city trip'; profilEmoji='🏙️'; profilDesc='Beaucoup de courts séjours en avion. C\'est le profil le plus émissif par jour passé en voyage — l\'avion pour 3 jours est rarement justifié.'; }
+  else if(avionPct < 0.3){ profil='Voyageur éco-conscient'; profilEmoji='🌱'; profilDesc='Vous privilégiez les transports terrestres. Votre empreinte voyage est parmi les plus faibles tout en maintenant une vraie vie de voyageur.'; }
+  else if(avgNuits > 14){ profil='Voyageur lent'; profilEmoji='⏳'; profilDesc='Vous restez longtemps sur place. C\'est la meilleure façon de voyager — l\'impact du transport est amorti sur une longue durée.'; }
+  else{ profil='Voyageur standard'; profilEmoji='🧳'; profilDesc='Un profil équilibré de voyageur français. Quelques leviers existent pour réduire votre impact sans sacrifier l\'expérience.'; }
+
+  // Axe boussole : impact (0-100) et style (fréquent/court à gauche, rare/long à droite)
+  var axeImpact = Math.min(100, Math.round(totalT/50*100));
+  var axeStyle  = Math.min(100, Math.round(avgNuits/21*100));
+
+  // Update banner
+  se('pb-emoji', profilEmoji);
+  se('pb-type', profil);
+  se('pb-desc', profilDesc);
+  se('pbs-total', fmt(totalCO2)+' kg');
+  se('pbs-voyages', nbVoyages);
+  se('pbs-km', fmt(totalKm)+' km');
+  se('pbs-rang', 'Top '+rangPct+'%');
+  g('pbs-rang').style.color = rangPct <= 10 ? 'var(--red)' : rangPct <= 25 ? 'var(--amber)' : 'var(--green)';
+
+  // Stats
+  se('r-total', fmt(totalCO2)+' kg');
+  se('r-moy', fmt(moyCO2)+' kg');
+  se('r-km', fmt(totalKm)+' km');
+
+  // Chiffres chocs
+  se('choc-terre', (totalKm/40075).toFixed(1)+'×');
+  se('choc-steaks', fmt(Math.round(totalCO2/7)));
+  se('choc-arbres', Math.ceil(totalCO2/25));
+
+  // Rang mondial
+  si('rang-mondial',
+    '<div style="font-family:DM Mono,monospace;font-size:13px;font-weight:700;color:'+(rangPct<=10?'var(--red)':rangPct<=25?'var(--amber)':'var(--green)')+'">'+rangLabel+'</div>'
+    +'<div style="font-size:11px;color:var(--muted);margin-top:4px">'+totalT.toFixed(1)+'t CO₂ en voyages sur la période saisie</div>'
+  );
+  var rf = g('rang-fill');
+  if(rf) rf.style.width = Math.min(100, rangPct===1?95:rangPct===3?80:rangPct===10?65:rangPct===25?45:rangPct===50?30:15)+'%';
+
+  si('rang-detail', [
+    {l:'1% des voyageurs aériens', v:'> 50t CO₂', note:'50% des émissions de l\'aviation mondiale (Statista 2020)'},
+    {l:'Voyageur fréquent (top 10%)', v:'> 10t CO₂', note:''},
+    {l:'Votre empreinte voyage', v:totalT.toFixed(1)+'t CO₂', note:'', highlight:true},
+    {l:'Français moyen (voyages)', v:'~2t CO₂/an', note:''},
+    {l:'Budget carbone soutenable', v:'2t CO₂/an total', note:'Objectif GIEC 2050'},
+  ].map(function(r){
+    return '<div style="padding:7px 10px;background:'+(r.highlight?'rgba(124,111,255,.15)':'rgba(255,255,255,.02)')+';border:1px solid '+(r.highlight?'rgba(124,111,255,.4)':'var(--border)')+';border-radius:7px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center">'
+      +'<span style="font-size:11px;color:'+(r.highlight?'var(--text)':'var(--muted)')+'">'+r.l+(r.note?'<br><span style="font-size:9px;color:#2a2450">'+r.note+'</span>':'')+'</span>'
+      +'<span style="font-family:DM Mono,monospace;font-size:12px;color:'+(r.highlight?'var(--indigo)':r.v.includes('2t')&&r.v!==totalT.toFixed(1)+'t CO₂'?'var(--green)':'var(--muted)')+'">'+r.v+'</span>'
+      +'</div>';
+  }).join(''));
+
+  // Analyse habitudes
+  var habText = '';
+  if(avionPct > 0.7) habText += '<div style="padding:8px 10px;background:rgba(255,77,106,.06);border-left:2px solid var(--red);border-radius:0 6px 6px 0;margin-bottom:6px;font-size:12px;color:var(--muted)">🔴 <strong style="color:var(--text)">'+Math.round(avionPct*100)+'% de vos voyages en avion</strong> — c\'est votre principal levier de réduction.</div>';
+  if(avgNuits < 5) habText += '<div style="padding:8px 10px;background:rgba(255,170,59,.06);border-left:2px solid var(--amber);border-radius:0 6px 6px 0;margin-bottom:6px;font-size:12px;color:var(--muted)">🟡 <strong style="color:var(--text)">Séjours courts ('+avgNuits.toFixed(0)+' nuits en moyenne)</strong> — l\'impact du vol n\'est pas amorti.</div>';
+  if(avgNuits > 12) habText += '<div style="padding:8px 10px;background:rgba(59,255,158,.06);border-left:2px solid var(--green);border-radius:0 6px 6px 0;margin-bottom:6px;font-size:12px;color:var(--muted)">🟢 <strong style="color:var(--text)">Longs séjours ('+avgNuits.toFixed(0)+' nuits)</strong> — vous amorti bien l\'impact du transport.</div>';
+  if(avionPct < 0.3) habText += '<div style="padding:8px 10px;background:rgba(59,255,158,.06);border-left:2px solid var(--green);border-radius:0 6px 6px 0;margin-bottom:6px;font-size:12px;color:var(--muted)">🟢 <strong style="color:var(--text)">Peu d\'avion</strong> — votre empreinte voyage est bien inférieure à la moyenne.</div>';
+  habText += '<div class="di" style="margin-top:8px"><span>Distance moyenne par voyage</span><span>'+fmt(avgDist)+' km</span></div>';
+  habText += '<div class="di"><span>Durée moyenne par voyage</span><span>'+avgNuits.toFixed(1)+' nuits</span></div>';
+  habText += '<div class="di"><span>Impact moyen transport</span><span>'+fmt(data.reduce(function(s,v){return s+v.co2Trans;},0)/nbVoyages)+' kg CO₂</span></div>';
+  si('analyse-habitudes', habText);
+
+  // Leviers personnels
+  var leviersHTML = '';
+  var co2AvionTotal = data.reduce(function(s,v){return s+v.co2Trans;},0);
+  var co2TrainAlt   = data.reduce(function(s,v){return s+Math.round(v.dist*2.4/1000);},0);
+  leviersHTML += '<div style="padding:10px 12px;background:rgba(59,255,158,.05);border:1px solid rgba(59,255,158,.2);border-radius:10px;margin-bottom:8px">';
+  leviersHTML += '<div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:4px">🚄 Si vous preniez le train</div>';
+  leviersHTML += '<div style="font-size:11px;color:var(--muted)">Économie potentielle : -'+fmt(Math.max(0,co2AvionTotal-co2TrainAlt))+' kg CO₂ (-'+Math.round(Math.max(0,co2AvionTotal-co2TrainAlt)/totalCO2*100)+'%)</div>';
+  leviersHTML += '</div>';
+  leviersHTML += '<div style="padding:10px 12px;background:rgba(0,212,200,.05);border:1px solid rgba(0,212,200,.2);border-radius:10px;margin-bottom:8px">';
+  leviersHTML += '<div style="font-size:12px;font-weight:700;color:var(--teal);margin-bottom:4px">⏱️ Si vous allongiez vos séjours de 50%</div>';
+  leviersHTML += '<div style="font-size:11px;color:var(--muted)">Impact par jour divisé par 1,5 — même expérience, moins d\'impact relatif</div>';
+  leviersHTML += '</div>';
+  leviersHTML += '<div style="padding:10px 12px;background:rgba(124,111,255,.05);border:1px solid rgba(124,111,255,.2);border-radius:10px">';
+  leviersHTML += '<div style="font-size:12px;font-weight:700;color:var(--indigo);margin-bottom:4px">🏕️ Si vous changiez d\'hébergement</div>';
+  var co2HebTotal = data.reduce(function(s,v){return s+v.co2Heb;},0);
+  var co2CampingAlt = data.reduce(function(s,v){return s+Math.round(2.5*v.nuits);},0);
+  leviersHTML += '<div style="font-size:11px;color:var(--muted)">Camping/auberge au lieu d\'hôtel : -'+fmt(Math.max(0,co2HebTotal-co2CampingAlt))+' kg CO₂</div>';
+  leviersHTML += '</div>';
+  si('leviers-perso', leviersHTML);
+
+  // Stockage pour simulateur
+  window._BILAN = {totalCO2:totalCO2, co2AvionTotal:co2AvionTotal, co2TrainAlt:co2TrainAlt};
+
+  // Afficher résultats
+  var rw = g('results-wrap');
+  if(rw){ rw.style.display='flex'; }
+  setTimeout(function(){
+    drawCharts(data, totalCO2, axeImpact, axeStyle);
+  }, 100);
+  g('results-wrap').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function updateSim(){
+  if(!window._BILAN) return;
+  var B = window._BILAN;
+  var trainFactor  = +g('sim-train').value || 0;
+  var dureeFactor  = +g('sim-duree').value || 1;
+  var hebFactor    = +g('sim-heberg').value || 1;
+
+  var nouvCO2 = B.totalCO2
+    - Math.round(B.co2AvionTotal * trainFactor * 0.98) // 98% économisé si train
+    * dureeFactor
+    * hebFactor;
+  nouvCO2 = Math.max(0, nouvCO2);
+  var gain = B.totalCO2 - nouvCO2;
+  var pct  = Math.round(gain/B.totalCO2*100);
+
+  se('sim-result', fmt(nouvCO2)+' kg');
+  se('sim-gain', fmt(gain)+' kg CO₂ économisés');
+  se('sim-pct', '-'+pct+'% d\'impact par rapport à vos habitudes actuelles');
+  g('sim-result').style.color = pct > 50 ? 'var(--green)' : pct > 20 ? 'var(--teal)' : 'var(--amber)';
+}
+
+function drawCharts(data, totalCO2, axeImpact, axeStyle){
+  // Chart transport
+  chartT = destroyChart(chartT);
+  var cvT = g('chart-transport'); if(!cvT) return;
+  var transTypes = {};
+  data.forEach(function(v){
+    var label = v.trans.startsWith('avion') ? '✈️ Avion' : v.trans==='tgv'?'🚄 TGV':v.trans==='bus'?'🚌 Bus':v.trans.startsWith('voiture')?'🚗 Voiture':'🚂 Train';
+    transTypes[label] = (transTypes[label]||0) + v.co2Trans;
+  });
+  var colors = ['rgba(255,77,106,.8)','rgba(59,255,158,.8)','rgba(59,143,255,.8)','rgba(255,170,59,.8)','rgba(176,110,255,.8)'];
+  chartT = new Chart(cvT, {
+    type:'doughnut',
+    data:{labels:Object.keys(transTypes),datasets:[{data:Object.values(transTypes),backgroundColor:colors,borderWidth:2,borderColor:'#10102a'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#4A4570',font:{size:11}}},tooltip:{callbacks:{label:function(c){return c.label+' : '+fmt(c.raw)+' kg ('+Math.round(c.raw/totalCO2*100)+'%)';}}}}}}
+  );
+
+  // Chart voyages
+  chartV = destroyChart(chartV);
+  var cvV = g('chart-voyages'); if(!cvV) return;
+  chartV = new Chart(cvV, {
+    type:'bar',
+    data:{
+      labels:data.map(function(v,i){ return (v.dest||'Voyage '+(i+1)).substring(0,12); }),
+      datasets:[
+        {label:'Transport',data:data.map(function(v){return v.co2Trans;}),backgroundColor:'rgba(255,77,106,.7)',borderRadius:4,borderWidth:0},
+        {label:'Hébergement',data:data.map(function(v){return v.co2Heb;}),backgroundColor:'rgba(255,170,59,.7)',borderRadius:4,borderWidth:0},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#4A4570',font:{size:10}}}},
+      scales:{x:{stacked:true,grid:{display:false},ticks:{color:'#4A4570',font:{size:10}},border:{color:'transparent'}},
+              y:{stacked:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4A4570'},border:{color:'transparent'}}}
+    }
+  });
+
+  // Chart boussole
+  chartB = destroyChart(chartB);
+  var cvB = g('chart-boussole'); if(!cvB) return;
+  chartB = new Chart(cvB, {
+    type:'scatter',
+    data:{datasets:[
+      {label:'Voyageur lent éco',data:[{x:10,y:80}],backgroundColor:'rgba(59,255,158,.8)',pointRadius:10},
+      {label:'Backpacker',data:[{x:20,y:40}],backgroundColor:'rgba(0,212,200,.8)',pointRadius:10},
+      {label:'Voyageur moyen',data:[{x:50,y:50}],backgroundColor:'rgba(255,170,59,.8)',pointRadius:10},
+      {label:'City tripper',data:[{x:60,y:20}],backgroundColor:'rgba(255,77,106,.8)',pointRadius:10},
+      {label:'Globe-trotter',data:[{x:80,y:70}],backgroundColor:'rgba(255,107,170,.8)',pointRadius:10},
+      {label:'⭐ Vous',data:[{x:axeImpact,y:axeStyle}],backgroundColor:'#FFD700',borderColor:'#FFD700',pointRadius:14,pointStyle:'star',borderWidth:2},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label;}}}},
+      scales:{
+        x:{min:0,max:100,grid:{color:'rgba(255,255,255,.05)'},title:{display:true,text:'→ Impact environnemental (faible → fort)',color:'#4A4570',font:{size:10}},ticks:{display:false}},
+        y:{min:0,max:100,grid:{color:'rgba(255,255,255,.05)'},title:{display:true,text:'↑ Voyages longs et rares',color:'#4A4570',font:{size:10}},ticks:{display:false}}
+      }
+    }
+  });
+
+  // Verdict boussole
+  var bVerdict = '';
+  if(axeImpact < 30) bVerdict = '🟢 <strong style="color:var(--green)">Voyageur à faible impact</strong> — votre empreinte voyage est bien inférieure à la moyenne. Continuez comme ça.';
+  else if(axeImpact < 60) bVerdict = '🟡 <strong style="color:var(--amber)">Voyageur standard</strong> — profil proche de la moyenne française. Quelques ajustements suffiraient.';
+  else bVerdict = '🔴 <strong style="color:var(--red)">Voyageur à fort impact</strong> — votre empreinte voyage est significative. Le potentiel de réduction est important sans sacrifier l\'expérience.';
+  si('boussole-verdict', bVerdict);
+
+  updateSim();
+}
+
+// Ajouter 2 voyages d'exemple au démarrage
+addVoyage();
+addVoyage();
+</script>
+</body>
+</html>
