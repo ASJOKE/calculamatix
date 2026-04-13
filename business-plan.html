@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Business Plan Pro — Simulateur complet gratuit | Calculamatix</title>
+  <meta name="description" content="Simulateur de business plan professionnel gratuit. Seuil de rentabilité, cashflow 24 mois, fiscalité IS/IR, PDF téléchargeable. Ce que les consultants facturent 1500€, gratuit."/>
+  <link rel="canonical" href="https://calculamatix.com/business-plan"/>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#080810;--bg2:#0d0d1a;--card:#111122;--border:#1e1e3a;
+      --accent:#6C63FF;--accent2:#FF6B6B;--accent3:#00D4AA;--gold:#FFB800;
+      --green:#00E676;--red:#FF4444;--amber:#FFB300;--blue:#448AFF;
+      --text:#F0EEFF;--muted:#4A4870;--muted2:#2a2850;
+      --sidebar:220px;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;display:flex;flex-direction:column}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:
+        radial-gradient(ellipse 60% 50% at 15% 10%,rgba(108,99,255,.08),transparent),
+        radial-gradient(ellipse 40% 40% at 85% 90%,rgba(0,212,170,.05),transparent),
+        radial-gradient(ellipse 50% 30% at 50% 50%,rgba(255,107,107,.03),transparent)}
+
+    /* ─── LAYOUT ─── */
+    .app{display:flex;min-height:100vh;position:relative;z-index:1}
+
+    /* ─── SIDEBAR ─── */
+    .sidebar{
+      width:var(--sidebar);flex-shrink:0;
+      background:var(--bg2);border-right:1px solid var(--border);
+      display:flex;flex-direction:column;
+      position:fixed;top:0;left:0;height:100vh;z-index:100;
+      overflow:hidden;
+    }
+    .sb-logo{padding:24px 20px 20px;border-bottom:1px solid var(--border)}
+    .sb-logo-main{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:var(--text);letter-spacing:-.3px}
+    .sb-logo-sub{font-size:10px;color:var(--muted);margin-top:2px;font-family:'DM Mono',monospace}
+    .sb-badge{display:inline-block;background:rgba(108,99,255,.15);border:1px solid rgba(108,99,255,.3);color:var(--accent);font-size:9px;padding:2px 7px;border-radius:100px;margin-top:6px;font-family:'DM Mono',monospace}
+
+    .sb-nav{flex:1;padding:16px 12px;overflow-y:auto}
+    .sb-section{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;padding:0 8px;margin:14px 0 6px;font-family:'DM Mono',monospace}
+
+    .sb-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;transition:all .15s;margin-bottom:2px;font-size:13px;color:var(--muted);border:1px solid transparent}
+    .sb-item:hover{background:rgba(108,99,255,.08);color:var(--text)}
+    .sb-item.active{background:rgba(108,99,255,.15);border-color:rgba(108,99,255,.3);color:var(--accent);font-weight:600}
+    .sb-item.done{color:var(--green)}
+    .sb-item.done .sb-check{background:var(--green);border-color:var(--green);color:#000}
+    .sb-num{width:20px;height:20px;border-radius:50%;border:1px solid var(--muted2);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;font-family:'DM Mono',monospace;transition:all .15s}
+    .sb-item.active .sb-num{background:var(--accent);border-color:var(--accent);color:#fff}
+    .sb-check{width:20px;height:20px;border-radius:50%;border:1px solid var(--muted2);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+
+    .sb-score-wrap{padding:12px;margin:8px 12px;background:rgba(108,99,255,.07);border:1px solid rgba(108,99,255,.2);border-radius:12px}
+    .sb-score-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-family:'DM Mono',monospace}
+    .sb-score-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--accent)}
+    .sb-score-sub{font-size:10px;color:var(--muted);margin-top:2px}
+    .sb-score-bar{height:4px;background:var(--muted2);border-radius:2px;margin-top:8px;overflow:hidden}
+    .sb-score-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--amber),var(--green));border-radius:2px;transition:width .5s ease}
+
+    .sb-footer{padding:12px;border-top:1px solid var(--border);font-size:10px;color:var(--muted2);font-family:'DM Mono',monospace}
+
+    /* ─── MAIN ─── */
+    .main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+    /* ─── TOP BAR ─── */
+    .topbar{
+      position:sticky;top:0;z-index:50;
+      background:rgba(8,8,16,.8);backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--border);
+      padding:14px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+    }
+    .topbar-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--text)}
+    .topbar-sub{font-size:11px;color:var(--muted);margin-top:1px}
+    .topbar-actions{display:flex;gap:8px}
+    .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 14px;border-radius:8px;font-size:12px;font-family:inherit;cursor:pointer;transition:all .15s}
+    .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+    .btn-primary{background:var(--accent);border:none;color:#fff;padding:8px 16px;border-radius:8px;font-size:12px;font-family:'Syne',sans-serif;font-weight:700;cursor:pointer;transition:all .15s;letter-spacing:.3px}
+    .btn-primary:hover{opacity:.85;transform:translateY(-1px)}
+    .btn-success{background:var(--green);color:#000}
+    .btn-success:hover{opacity:.85}
+
+    /* ─── PANELS ─── */
+    .panel{display:none;flex:1;padding:32px}
+    .panel.active{display:block}
+
+    .panel-header{margin-bottom:28px}
+    .panel-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
+    .panel-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(22px,3vw,32px);letter-spacing:-1px;line-height:1.1;margin-bottom:8px}
+    .panel-title em{color:var(--accent);font-style:normal}
+    .panel-desc{font-size:14px;color:var(--muted);line-height:1.7;max-width:600px}
+
+    /* ─── GRID LAYOUTS ─── */
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .g1{display:grid;grid-template-columns:1fr;gap:16px}
+
+    /* ─── CARDS ─── */
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;transition:border-color .2s}
+    .card:hover{border-color:#2e2e5a}
+    .card-title{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px}
+
+    /* ─── FORM ELEMENTS ─── */
+    .f{margin-bottom:16px}
+    .f:last-child{margin-bottom:0}
+    .f label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:7px;font-family:'DM Mono',monospace}
+    .fval{color:var(--accent);font-weight:500}
+    .fhint{font-size:10px;color:var(--muted2);margin-top:5px;line-height:1.5}
+
+    input[type=range]{width:100%;-webkit-appearance:none;height:3px;background:var(--muted2);border-radius:2px;outline:none;cursor:pointer}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--accent);border-radius:50%;box-shadow:0 0 8px rgba(108,99,255,.5)}
+
+    input[type=number],input[type=text],select,textarea{
+      width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:10px;
+      color:var(--text);padding:11px 14px;font-size:14px;font-family:'DM Sans',sans-serif;
+      outline:none;transition:border-color .15s;
+    }
+    input[type=number]:focus,input[type=text]:focus,select:focus{border-color:var(--accent)}
+    input[type=number]::placeholder,input[type=text]::placeholder{color:var(--muted2)}
+    select option{background:var(--bg2)}
+
+    .input-prefix{position:relative}
+    .input-prefix input{padding-left:32px}
+    .input-prefix::before{content:attr(data-prefix);position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);pointer-events:none;font-family:'DM Mono',monospace}
+
+    /* ─── SELECTOR CARDS ─── */
+    .selector-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:8px}
+    .sel-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 12px;cursor:pointer;transition:all .15s;text-align:center}
+    .sel-card:hover{border-color:rgba(108,99,255,.4);background:rgba(108,99,255,.05)}
+    .sel-card.active{border-color:var(--accent);background:rgba(108,99,255,.12)}
+    .sel-emoji{font-size:24px;margin-bottom:6px;display:block}
+    .sel-label{font-size:11px;color:var(--muted);font-weight:500;line-height:1.3}
+    .sel-card.active .sel-label{color:var(--accent);font-weight:700}
+
+    /* ─── KPI CARDS ─── */
+    .kpi{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+    .kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-family:'DM Mono',monospace}
+    .kpi-val{font-family:'Syne',sans-serif;font-size:clamp(20px,3vw,28px);font-weight:800;line-height:1}
+    .kpi-sub{font-size:11px;color:var(--muted);margin-top:5px}
+    .kpi-trend{font-size:11px;font-family:'DM Mono',monospace;margin-top:4px}
+    .trend-up{color:var(--green)}
+    .trend-down{color:var(--red)}
+    .trend-neutral{color:var(--muted)}
+
+    /* ─── TABLEAU ─── */
+    .table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
+    table{width:100%;border-collapse:collapse;font-size:12px}
+    th{background:var(--bg2);color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.8px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    td{padding:10px 14px;border-bottom:1px solid var(--muted2);color:var(--text);font-family:'DM Mono',monospace}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:rgba(108,99,255,.04)}
+    .td-pos{color:var(--green)}
+    .td-neg{color:var(--red)}
+    .td-bold{font-weight:700;color:var(--text)}
+
+    /* ─── JAUGE ─── */
+    .gauge-wrap{position:relative;width:160px;height:100px;margin:0 auto}
+    .gauge-svg{width:100%;height:100%}
+    .gauge-val{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-family:'Syne',sans-serif;font-size:26px;font-weight:800;text-align:center}
+    .gauge-label{position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--muted);white-space:nowrap;font-family:'DM Mono',monospace}
+
+    /* ─── SCENARIOS ─── */
+    .scenario-tabs{display:flex;gap:4px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:4px;width:fit-content;margin-bottom:16px}
+    .scenario-tab{padding:6px 14px;border-radius:7px;font-size:12px;font-family:'DM Mono',monospace;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .15s}
+    .scenario-tab.active{background:var(--accent);color:#fff;font-weight:700}
+
+    /* ─── PROGRESS STEPS ─── */
+    .progress-bar{display:flex;gap:0;margin-bottom:24px;align-items:center}
+    .progress-step{flex:1;height:3px;background:var(--muted2);border-radius:2px;transition:background .3s}
+    .progress-step.done{background:var(--accent)}
+    .progress-step.current{background:linear-gradient(90deg,var(--accent),rgba(108,99,255,.3))}
+
+    /* ─── ALERTE / INFO ─── */
+    .info-box{background:rgba(108,99,255,.07);border:1px solid rgba(108,99,255,.2);border-radius:12px;padding:14px 16px;font-size:12px;color:var(--muted);line-height:1.7;margin-top:12px}
+    .info-box strong{color:var(--text)}
+    .warn-box{background:rgba(255,179,0,.06);border:1px solid rgba(255,179,0,.2);border-radius:12px;padding:14px 16px;font-size:12px;color:var(--muted);line-height:1.7;margin-top:12px}
+    .warn-box strong{color:var(--amber)}
+    .disc-box{background:rgba(255,68,68,.05);border:1px solid rgba(255,68,68,.15);border-radius:12px;padding:12px 16px;font-size:11px;color:var(--muted);line-height:1.7;margin-top:12px;font-family:'DM Mono',monospace}
+
+    /* ─── CHART CONTAINERS ─── */
+    .cw{position:relative;width:100%;height:240px}
+    .cw-lg{height:320px}
+    .cw-sm{height:180px}
+
+    /* ─── NEXT BUTTON ─── */
+    .nav-actions{display:flex;justify-content:space-between;align-items:center;margin-top:28px;padding-top:20px;border-top:1px solid var(--border)}
+    .btn-next{background:linear-gradient(135deg,var(--accent),#8B80FF);border:none;color:#fff;padding:12px 28px;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .15s;letter-spacing:.3px;display:flex;align-items:center;gap:8px}
+    .btn-next:hover{opacity:.88;transform:translateY(-1px)}
+    .btn-prev{background:transparent;border:1px solid var(--border);color:var(--muted);padding:12px 20px;border-radius:10px;font-family:inherit;font-size:13px;cursor:pointer;transition:all .15s}
+    .btn-prev:hover{border-color:var(--accent);color:var(--accent)}
+
+    /* ─── SAISONNALITE ─── */
+    .season-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:10px}
+    .season-month{text-align:center}
+    .season-bar{height:60px;background:var(--muted2);border-radius:4px;display:flex;align-items:flex-end;overflow:hidden;cursor:pointer;transition:background .15s}
+    .season-bar:hover{background:#2e2e5a}
+    .season-fill{width:100%;background:var(--accent);border-radius:4px;transition:height .2s}
+    .season-label{font-size:9px;color:var(--muted);margin-top:4px;font-family:'DM Mono',monospace}
+    .season-val{font-size:9px;color:var(--accent);margin-top:2px;font-family:'DM Mono',monospace}
+
+    /* ─── PDF PREVIEW ─── */
+    .pdf-preview{background:#fff;border-radius:12px;padding:32px;color:#111;font-family:'DM Sans',sans-serif;max-width:680px;margin:0 auto;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+    .pdf-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #6C63FF}
+    .pdf-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#6C63FF}
+    .pdf-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#111;margin-bottom:4px}
+    .pdf-sub{font-size:12px;color:#666}
+    .pdf-section{margin-bottom:20px}
+    .pdf-section-title{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#6C63FF;font-family:'DM Mono',monospace;margin-bottom:10px;padding-bottom:4px;border-bottom:1px solid #eee}
+    .pdf-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+    .pdf-kpi{background:#f8f7ff;border-radius:8px;padding:12px;text-align:center}
+    .pdf-kpi-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#6C63FF}
+    .pdf-kpi-label{font-size:10px;color:#666;margin-top:2px}
+    .pdf-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:12px}
+    .pdf-row:last-child{border-bottom:none;font-weight:700}
+    .pdf-disc{font-size:9px;color:#999;line-height:1.6;margin-top:16px;padding-top:12px;border-top:1px solid #eee}
+
+    @media(max-width:900px){
+      .sidebar{transform:translateX(-100%);transition:transform .3s}
+      .sidebar.open{transform:translateX(0)}
+      .main{margin-left:0}
+      .g2,.g3{grid-template-columns:1fr}
+      .panel{padding:20px}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+<!-- ─── SIDEBAR ─── -->
+<nav class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-main">Calculamatix</div>
+    <div class="sb-logo-sub">Business Plan Pro</div>
+    <span class="sb-badge">✦ Gratuit & Sourcé</span>
+  </div>
+
+  <div class="sb-nav">
+    <div class="sb-section">Modules</div>
+    <div class="sb-item active" onclick="goTo(0)" id="nav-0">
+      <div class="sb-num">1</div>Le projet
+    </div>
+    <div class="sb-item" onclick="goTo(1)" id="nav-1">
+      <div class="sb-num">2</div>Revenus
+    </div>
+    <div class="sb-item" onclick="goTo(2)" id="nav-2">
+      <div class="sb-num">3</div>Charges
+    </div>
+    <div class="sb-item" onclick="goTo(3)" id="nav-3">
+      <div class="sb-num">4</div>Fiscalité
+    </div>
+    <div class="sb-item" onclick="goTo(4)" id="nav-4">
+      <div class="sb-num">5</div>Viabilité
+    </div>
+    <div class="sb-item" onclick="goTo(5)" id="nav-5">
+      <div class="sb-num">6</div>Export PDF
+    </div>
+
+    <div class="sb-section" style="margin-top:20px">Score global</div>
+    <div class="sb-score-wrap">
+      <div class="sb-score-label">Viabilité du projet</div>
+      <div class="sb-score-val" id="sb-score">—</div>
+      <div class="sb-score-sub" id="sb-score-label">Complétez les modules</div>
+      <div class="sb-score-bar"><div class="sb-score-fill" id="sb-score-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="sb-footer">
+    <a href="index.html" style="color:var(--muted2);text-decoration:none">← Calculamatix</a><br>
+    Sources : URSSAF · impots.gouv · INSEE · Bpifrance
+  </div>
+</nav>
+
+<!-- ─── MAIN ─── -->
+<div class="main">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="topbar-title">Module 1 — Le projet</div>
+      <div class="topbar-sub" id="topbar-sub">Définissez votre projet et votre statut juridique optimal</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn-ghost" onclick="goTo(5)">📄 Exporter PDF</button>
+      <button class="btn-primary" onclick="goTo(4)">📊 Voir le bilan</button>
+    </div>
+  </div>
+
+  <!-- ════ PANEL 0 — LE PROJET ════ -->
+  <div class="panel active" id="panel-0">
+    <div class="panel-header">
+      <div class="panel-tag">Module 01 / 06</div>
+      <h1 class="panel-title">Votre <em>projet</em></h1>
+      <p class="panel-desc">Décrivez votre projet en quelques informations clés. L'outil adapte automatiquement tous les calculs selon votre secteur et votre statut juridique.</p>
+    </div>
+
+    <div class="progress-bar" id="progress-bar">
+      <div class="progress-step current"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+    </div>
+
+    <div class="g2" style="gap:20px">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <div class="card-title">🎯 Type de projet</div>
+          <div class="selector-grid" id="type-selector">
+            <div class="sel-card active" onclick="selectType(this,'service')" data-val="service">
+              <span class="sel-emoji">💼</span>
+              <div class="sel-label">Service / Conseil</div>
+            </div>
+            <div class="sel-card" onclick="selectType(this,'commerce')" data-val="commerce">
+              <span class="sel-emoji">🛍️</span>
+              <div class="sel-label">Commerce / Retail</div>
+            </div>
+            <div class="sel-card" onclick="selectType(this,'ecommerce')" data-val="ecommerce">
+              <span class="sel-emoji">🌐</span>
+              <div class="sel-label">E-commerce / Digital</div>
+            </div>
+            <div class="sel-card" onclick="selectType(this,'restaurant')" data-val="restaurant">
+              <span class="sel-emoji">🍽️</span>
+              <div class="sel-label">Restaurant / Food</div>
+            </div>
+            <div class="sel-card" onclick="selectType(this,'artisan')" data-val="artisan">
+              <span class="sel-emoji">🔨</span>
+              <div class="sel-label">Artisanat / BTP</div>
+            </div>
+            <div class="sel-card" onclick="selectType(this,'tech')" data-val="tech">
+              <span class="sel-emoji">💻</span>
+              <div class="sel-label">Tech / SaaS</div>
+            </div>
+            <div class="sel-card" onclick="selectType(this,'sante')" data-val="sante">
+              <span class="sel-emoji">🏥</span>
+              <div class="sel-label">Santé / Bien-être</div>
+            </div>
+            <div class="sel-card" onclick="selectType(this,'formation')" data-val="formation">
+              <span class="sel-emoji">🎓</span>
+              <div class="sel-label">Formation / Éduc.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📋 Informations générales</div>
+          <div class="f">
+            <label>Nom du projet</label>
+            <input type="text" id="nom-projet" placeholder="Ex: Agence de communication digitale" oninput="recalc()"/>
+          </div>
+          <div class="f">
+            <label>Stade du projet</label>
+            <select id="stade" onchange="recalc()">
+              <option value="idee">💡 Idée — Je veux valider la faisabilité</option>
+              <option value="demarrage">🚀 Démarrage — Je lance dans les 6 mois</option>
+              <option value="existant">📈 Existant — Je veux optimiser mon activité</option>
+            </select>
+          </div>
+          <div class="f">
+            <label>Département / Région</label>
+            <select id="region" onchange="recalc()">
+              <option value="idf">🗼 Île-de-France</option>
+              <option value="province" selected>🌾 Province (hors IDF)</option>
+              <option value="dom">🌴 DOM-TOM</option>
+            </select>
+            <div class="fhint">Le lieu impacte certains coûts (loyer, salaires) et certaines aides (exonérations zones rurales)</div>
+          </div>
+          <div class="f">
+            <label>Apport personnel disponible <span class="fval" id="v-apport">10 000 €</span></label>
+            <input type="range" id="i-apport" min="0" max="200000" step="1000" value="10000" oninput="recalc()"/>
+            <div class="fhint">Montant que vous pouvez investir de votre poche au démarrage</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <div class="card-title">⚖️ Statut juridique</div>
+          <div class="f">
+            <label>Votre situation actuelle</label>
+            <select id="situation" onchange="updateStatutReco()">
+              <option value="salarie">👔 Salarié — je garde mon emploi au début</option>
+              <option value="chomeur">📋 Demandeur d'emploi (ACRE possible)</option>
+              <option value="etudiant">🎓 Étudiant</option>
+              <option value="independant">💼 Déjà indépendant</option>
+            </select>
+          </div>
+          <div class="f">
+            <label>CA prévisionnel année 1 <span class="fval" id="v-ca-prev">50 000 €</span></label>
+            <input type="range" id="i-ca-prev" min="5000" max="1000000" step="5000" value="50000" oninput="updateStatutReco()"/>
+          </div>
+
+          <div id="statut-reco" style="margin-top:4px">
+            <!-- Rempli par JS -->
+          </div>
+
+          <div class="f" style="margin-top:14px">
+            <label>Statut retenu</label>
+            <select id="statut-choisi" onchange="recalc()">
+              <option value="micro">🟡 Micro-entreprise (auto-entrepreneur)</option>
+              <option value="eurl">🔵 EURL (associé unique)</option>
+              <option value="sasu" selected>🟣 SASU (société par actions simplifiée unipersonnelle)</option>
+              <option value="sas">⚫ SAS (avec associés)</option>
+              <option value="sarl">🟠 SARL</option>
+              <option value="liberal">🩺 Profession libérale</option>
+            </select>
+          </div>
+
+          <div id="statut-detail" class="info-box" style="margin-top:8px">
+            <!-- Rempli par JS -->
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🧮 Récapitulatif projet</div>
+          <div id="projet-recap">
+            <div style="font-size:13px;color:var(--muted);line-height:1.7">Complétez les informations pour voir le récapitulatif.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <div style="font-size:12px;color:var(--muted)">Module 1 / 6</div>
+      <button class="btn-next" onclick="goTo(1)">Revenus & CA → <span>→</span></button>
+    </div>
+  </div>
+
+  <!-- ════ PANEL 1 — REVENUS ════ -->
+  <div class="panel" id="panel-1">
+    <div class="panel-header">
+      <div class="panel-tag">Module 02 / 06</div>
+      <h1 class="panel-title">Vos <em>revenus</em></h1>
+      <p class="panel-desc">Définissez votre modèle économique, vos prix et volumes. Les scénarios pessimiste, réaliste et optimiste sont générés automatiquement.</p>
+    </div>
+
+    <div class="scenario-tabs">
+      <button class="scenario-tab active" onclick="setScenario('real',this)">📊 Réaliste</button>
+      <button class="scenario-tab" onclick="setScenario('pess',this)">📉 Pessimiste</button>
+      <button class="scenario-tab" onclick="setScenario('opt',this)">📈 Optimiste</button>
+    </div>
+
+    <div class="g2" style="gap:20px">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <div class="card-title">💰 Modèle de revenus</div>
+          <div class="f">
+            <label>Type de facturation</label>
+            <select id="type-facturation" onchange="recalc()">
+              <option value="tjm">⏱️ Taux journalier (TJM / freelance)</option>
+              <option value="mensuel">📅 Abonnement / mensuel récurrent</option>
+              <option value="unitaire">📦 Vente à l'unité (produit / service)</option>
+              <option value="mixte">🔀 Mixte (plusieurs sources)</option>
+            </select>
+          </div>
+
+          <div id="revenus-fields"><!-- Rempli dynamiquement --></div>
+
+          <div class="f">
+            <label>Taux de TVA applicable</label>
+            <select id="tva" onchange="recalc()">
+              <option value="0">0% — Exonéré (micro <seuils, export)</option>
+              <option value="5.5">5,5% — Réduit (alimentaire, logement social)</option>
+              <option value="10">10% — Réduit (restauration, travaux)</option>
+              <option value="20" selected>20% — Taux normal</option>
+            </select>
+          </div>
+
+          <div class="f">
+            <label>Délai de paiement moyen clients <span class="fval" id="v-delai">30 jours</span></label>
+            <input type="range" id="i-delai" min="0" max="90" step="15" value="30" oninput="recalc()"/>
+            <div class="fhint">Impact direct sur votre besoin en fonds de roulement (BFR)</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📅 Saisonnalité mensuelle</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Cliquez sur les barres pour ajuster l'activité mois par mois (100% = mois plein)</div>
+          <div class="season-grid" id="season-grid"><!-- Rempli par JS --></div>
+          <div class="fhint" style="margin-top:8px">La saisonnalité impacte le cashflow mensuel et le BFR nécessaire</div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="g2" style="margin-bottom:0">
+          <div class="kpi">
+            <div class="kpi-label">CA Annuel (réaliste)</div>
+            <div class="kpi-val" id="kpi-ca" style="color:var(--accent)">—</div>
+            <div class="kpi-sub">hors taxes</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">CA Mensuel moyen</div>
+            <div class="kpi-val" id="kpi-ca-mois" style="color:var(--blue)">—</div>
+            <div class="kpi-sub">hors taxes</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📊 Projection 3 scénarios</div>
+          <div class="cw cw-sm"><canvas id="chart-scenarios"></canvas></div>
+          <div style="display:flex;gap:16px;margin-top:12px;font-size:11px;font-family:'DM Mono',monospace">
+            <span style="color:var(--red)">■ Pessimiste : <span id="ca-pess">—</span></span>
+            <span style="color:var(--accent)">■ Réaliste : <span id="ca-real">—</span></span>
+            <span style="color:var(--green)">■ Optimiste : <span id="ca-opt">—</span></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📈 Croissance projetée</div>
+          <div class="f">
+            <label>Taux de croissance mensuel estimé <span class="fval" id="v-croissance">5%</span></label>
+            <input type="range" id="i-croissance" min="0" max="30" step="1" value="5" oninput="recalc()"/>
+            <div class="fhint">Croissance réaliste pour un service B2B : 5-10%/mois · E-commerce : 10-20%/mois · SaaS : 15-30%/mois</div>
+          </div>
+          <div class="info-box">
+            <strong>Règle des 3 ans :</strong> La plupart des entreprises atteignent leur régime de croisière entre 18 et 36 mois. Une croissance de 10%/mois donne ×3 en 12 mois, ×9 en 24 mois.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn-prev" onclick="goTo(0)">← Projet</button>
+      <button class="btn-next" onclick="goTo(2)">Charges → <span>→</span></button>
+    </div>
+  </div>
+
+  <!-- ════ PANEL 2 — CHARGES ════ -->
+  <div class="panel" id="panel-2">
+    <div class="panel-header">
+      <div class="panel-tag">Module 03 / 06</div>
+      <h1 class="panel-title">Vos <em>charges</em></h1>
+      <p class="panel-desc">Charges fixes, variables et personnel. Les cotisations sociales patronales sont calculées automatiquement selon le statut choisi.</p>
+    </div>
+
+    <div class="g2" style="gap:20px">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <div class="card-title">🏗️ Charges fixes mensuelles</div>
+
+          <div class="f">
+            <label>Loyer / hébergement <span class="fval" id="v-loyer">0 €</span></label>
+            <input type="range" id="i-loyer" min="0" max="10000" step="100" value="0" oninput="recalc()"/>
+            <div class="fhint">Si vous travaillez depuis chez vous : 0€. Bureau partagé : 200-600€. Local commercial : 800-5000€</div>
+          </div>
+
+          <div class="f">
+            <label>Salaires bruts (hors vous) <span class="fval" id="v-salaires">0 €</span></label>
+            <input type="range" id="i-salaires" min="0" max="50000" step="500" value="0" oninput="recalc()"/>
+            <div class="fhint">Coût total employeur = salaire brut × 1,42 (charges patronales incluses · Source : URSSAF 2025)</div>
+          </div>
+
+          <div class="f">
+            <label>Comptable / expert-comptable <span class="fval" id="v-compta">150 €</span></label>
+            <input type="range" id="i-compta" min="0" max="1000" step="50" value="150" oninput="recalc()"/>
+            <div class="fhint">Micro : 0-100€/mois · SASU/SAS : 150-400€/mois · Très recommandé dès le démarrage</div>
+          </div>
+
+          <div class="f">
+            <label>Assurances professionnelles <span class="fval" id="v-assurance">50 €</span></label>
+            <input type="range" id="i-assurance" min="0" max="500" step="25" value="50" oninput="recalc()"/>
+          </div>
+
+          <div class="f">
+            <label>Abonnements & logiciels <span class="fval" id="v-logiciels">100 €</span></label>
+            <input type="range" id="i-logiciels" min="0" max="2000" step="50" value="100" oninput="recalc()"/>
+            <div class="fhint">Suite Office, CRM, outils métier, hébergement web...</div>
+          </div>
+
+          <div class="f">
+            <label>Marketing & communication <span class="fval" id="v-marketing">200 €</span></label>
+            <input type="range" id="i-marketing" min="0" max="5000" step="100" value="200" oninput="recalc()"/>
+          </div>
+
+          <div class="f">
+            <label>Autres charges fixes <span class="fval" id="v-autres-fixes">100 €</span></label>
+            <input type="range" id="i-autres-fixes" min="0" max="2000" step="50" value="100" oninput="recalc()"/>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <div class="card-title">📦 Charges variables</div>
+          <div class="f">
+            <label>Taux de charges variables (% du CA) <span class="fval" id="v-taux-var">20%</span></label>
+            <input type="range" id="i-taux-var" min="0" max="80" step="1" value="20" oninput="recalc()"/>
+            <div class="fhint">
+              Service pur : 5-15% · E-commerce : 30-50% · Restaurant : 25-35% (matières premières) · Commerce : 40-60%
+            </div>
+          </div>
+          <div class="f">
+            <label>Investissements initiaux <span class="fval" id="v-invest">5 000 €</span></label>
+            <input type="range" id="i-invest" min="0" max="200000" step="1000" value="5000" oninput="recalc()"/>
+            <div class="fhint">Matériel, véhicule, aménagement... Amorti sur <span id="v-amort-duree">5 ans</span> (coût mensuel : <span id="v-amort-mois">—</span>)</div>
+          </div>
+          <div class="f">
+            <label>Durée d'amortissement <span class="fval" id="v-amort">5 ans</span></label>
+            <input type="range" id="i-amort" min="1" max="10" step="1" value="5" oninput="recalc()"/>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">💰 Votre rémunération</div>
+          <div class="f">
+            <label>Rémunération souhaitée nette / mois <span class="fval" id="v-remu">2 500 €</span></label>
+            <input type="range" id="i-remu" min="500" max="20000" step="250" value="2500" oninput="recalc()"/>
+            <div class="fhint" id="remu-hint">En SASU : dividendes + salaire. En micro : c'est votre bénéfice net. Les cotisations sont calculées automatiquement.</div>
+          </div>
+          <div id="remu-detail" class="info-box"><!-- Rempli par JS --></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📊 Répartition des charges</div>
+          <div class="cw cw-sm"><canvas id="chart-charges"></canvas></div>
+          <div id="charges-total" style="margin-top:10px;font-size:13px;color:var(--muted)"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn-prev" onclick="goTo(1)">← Revenus</button>
+      <button class="btn-next" onclick="goTo(3)">Fiscalité → <span>→</span></button>
+    </div>
+  </div>
+
+  <!-- ════ PANEL 3 — FISCALITÉ ════ -->
+  <div class="panel" id="panel-3">
+    <div class="panel-header">
+      <div class="panel-tag">Module 04 / 06</div>
+      <h1 class="panel-title">Votre <em>fiscalité</em></h1>
+      <p class="panel-desc">IS vs IR, TVA, cotisations sociales — calculés selon votre statut et vos revenus réels. Ce que votre comptable vous expliquera au premier RDV, en clair.</p>
+    </div>
+
+    <div class="g2" style="gap:20px">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <div class="card-title">🧾 Comparaison IS vs IR</div>
+          <div id="is-ir-compare"><!-- Rempli par JS --></div>
+          <div class="disc-box">
+            ⚠️ Ces estimations sont indicatives. La fiscalité réelle dépend de votre situation personnelle complète (revenus du foyer, parts fiscales, charges déductibles). Consultez un expert-comptable pour votre situation précise. Sources : impots.gouv.fr 2025 · URSSAF 2025 · service-public.fr
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📋 Cotisations sociales</div>
+          <div id="cotisations-detail"><!-- Rempli par JS --></div>
+          <div class="info-box" style="margin-top:10px">
+            <strong>ACRE (1ère année) :</strong> Si vous êtes demandeur d'emploi, vous bénéficiez d'une exonération de 50% des cotisations sociales la 1ère année. Source : URSSAF 2025.
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <div class="card-title">💰 Ce qui reste dans votre poche</div>
+          <div class="cw cw-sm"><canvas id="chart-waterfall"></canvas></div>
+          <div id="waterfall-legend" style="margin-top:10px"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📊 Tableau de bord fiscal</div>
+          <div id="fiscal-dashboard"><!-- Rempli par JS --></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🎯 Optimisations possibles</div>
+          <div id="fiscal-optims"><!-- Rempli par JS --></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn-prev" onclick="goTo(2)">← Charges</button>
+      <button class="btn-next" onclick="goTo(4)">Viabilité → <span>→</span></button>
+    </div>
+  </div>
+
+  <!-- ════ PANEL 4 — VIABILITÉ ════ -->
+  <div class="panel" id="panel-4">
+    <div class="panel-header">
+      <div class="panel-tag">Module 05 / 06</div>
+      <h1 class="panel-title">La <em>viabilité</em></h1>
+      <p class="panel-desc">Seuil de rentabilité, cashflow sur 24 mois, BFR, délai avant bénéfice. Les indicateurs que les banques et investisseurs regardent en premier.</p>
+    </div>
+
+    <div class="g3" style="margin-bottom:16px">
+      <div class="kpi">
+        <div class="kpi-label">Score de viabilité</div>
+        <div class="kpi-val" id="score-global" style="color:var(--accent)">—</div>
+        <div class="kpi-sub">/100 — <span id="score-label">—</span></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Seuil de rentabilité</div>
+        <div class="kpi-val" id="kpi-sr" style="color:var(--amber)">—</div>
+        <div class="kpi-sub">CA mensuel minimum</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Premier bénéfice</div>
+        <div class="kpi-val" id="kpi-breakeven" style="color:var(--blue)">—</div>
+        <div class="kpi-sub">mois estimé</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">BFR nécessaire</div>
+        <div class="kpi-val" id="kpi-bfr" style="color:var(--accent2)">—</div>
+        <div class="kpi-sub">Besoin en fonds de roulement</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Trésorerie min.</div>
+        <div class="kpi-val" id="kpi-treso" style="color:var(--green)">—</div>
+        <div class="kpi-sub">Pour tenir 3 mois</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">ROI à 3 ans</div>
+        <div class="kpi-val" id="kpi-roi" style="color:var(--accent3)">—</div>
+        <div class="kpi-sub">Retour sur investissement</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title">📈 Cashflow mensuel sur 24 mois — 3 scénarios</div>
+      <div class="cw cw-lg"><canvas id="chart-cashflow"></canvas></div>
+      <div style="display:flex;gap:20px;margin-top:12px;font-size:11px;font-family:'DM Mono',monospace;flex-wrap:wrap">
+        <span style="color:var(--red)">━━ Pessimiste</span>
+        <span style="color:var(--accent)">━━ Réaliste</span>
+        <span style="color:var(--green)">━━ Optimiste</span>
+        <span style="color:var(--amber)">--- Seuil de rentabilité</span>
+      </div>
+    </div>
+
+    <div class="g2" style="gap:16px">
+      <div class="card">
+        <div class="card-title">📊 Tableau prévisionnel mensuel (12 mois)</div>
+        <div class="table-wrap">
+          <table id="tableau-previsionnel"><!-- Rempli par JS --></table>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <div class="card-title">🎯 Analyse des risques</div>
+          <div id="analyse-risques"><!-- Rempli par JS --></div>
+        </div>
+        <div class="card">
+          <div class="card-title">✅ Points forts du projet</div>
+          <div id="points-forts"><!-- Rempli par JS --></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn-prev" onclick="goTo(3)">← Fiscalité</button>
+      <button class="btn-next btn-success" onclick="goTo(5)">📄 Exporter le Business Plan → <span>→</span></button>
+    </div>
+  </div>
+
+  <!-- ════ PANEL 5 — EXPORT PDF ════ -->
+  <div class="panel" id="panel-5">
+    <div class="panel-header">
+      <div class="panel-tag">Module 06 / 06</div>
+      <h1 class="panel-title">Votre <em>Business Plan</em></h1>
+      <p class="panel-desc">Prévisualisation du document complet. Imprimez-le ou sauvegardez-le en PDF depuis votre navigateur (Fichier → Imprimer → Enregistrer en PDF).</p>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap">
+      <button class="btn-primary" onclick="window.print()">🖨️ Imprimer / Sauvegarder PDF</button>
+      <button class="btn-ghost" onclick="goTo(0)">✏️ Modifier les données</button>
+    </div>
+
+    <div class="pdf-preview" id="pdf-content">
+      <!-- Rempli par JS -->
+    </div>
+
+    <div class="disc-box" style="max-width:680px;margin:16px auto 0">
+      ⚠️ DISCLAIMER LÉGAL : Ce document est généré automatiquement à titre informatif et pédagogique. Il ne constitue pas un conseil financier, juridique ou fiscal certifié. Les projections sont des estimations basées sur les données saisies et des hypothèses moyennes de marché. Consultez un expert-comptable agréé et un avocat spécialisé avant toute décision entrepreneuriale. Sources des taux utilisés : URSSAF 2025 · Direction Générale des Finances Publiques (impots.gouv.fr) 2025 · INSEE · Bpifrance · service-public.fr · Code du commerce.
+    </div>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+<script>
+Chart.defaults.color='#4A4870';
+Chart.defaults.font.family="'DM Sans',sans-serif";
+
+// ── ÉTAT GLOBAL ──
+var S = {
+  type:'service', stade:'idee', region:'province',
+  apport:10000, situation:'salarie', caPrev:50000, statut:'sasu',
+  nomProjet:'',
+  typeFacturation:'tjm', tjm:400, joursParMois:15,
+  abonnement:0, nbClients:0, prixUnit:0, volumeUnit:0,
+  tva:20, delai:30, croissance:5,
+  saisonCo:[100,100,100,100,100,100,100,100,100,100,100,100],
+  scenario:'real',
+  loyer:0, salaires:0, compta:150, assurance:50, logiciels:100, marketing:200, autresFixes:100,
+  tauxVar:20, invest:5000, amort:5, remu:2500,
+  acre:false,
+};
+
+var charts = {};
+
+function g(id){ return document.getElementById(id); }
+function se(id,t){ var el=g(id); if(el) el.textContent=t; }
+function si(id,h){ var el=g(id); if(el) el.innerHTML=h; }
+function fmt(n){ return Math.round(n).toLocaleString('fr-FR'); }
+function fmtE(n){ return fmt(n)+'€'; }
+function destroyChart(key){ if(charts[key]){ try{charts[key].destroy();}catch(e){} } }
+
+// ── NAVIGATION ──
+var currentPanel = 0;
+var panels = ['panel-0','panel-1','panel-2','panel-3','panel-4','panel-5'];
+var navLabels = [
+  ['Module 1 — Le projet','Définissez votre projet et votre statut juridique optimal'],
+  ['Module 2 — Revenus & CA','Modèle économique, prix, volumes et saisonnalité'],
+  ['Module 3 — Charges','Fixes, variables, personnel et rémunération'],
+  ['Module 4 — Fiscalité','IS/IR, cotisations sociales, optimisations'],
+  ['Module 5 — Viabilité','Seuil de rentabilité, cashflow 24 mois, score'],
+  ['Module 6 — Export','Votre business plan complet prêt à imprimer'],
+];
+
+function goTo(idx){
+  panels.forEach(function(p,i){
+    var el=g(p); if(el) el.classList.toggle('active',i===idx);
+    var nav=g('nav-'+i);
+    if(nav){
+      nav.classList.remove('active','done');
+      if(i===idx) nav.classList.add('active');
+      else if(i<idx) nav.classList.add('done');
+    }
+  });
+  currentPanel=idx;
+  se('topbar-title', navLabels[idx][0]);
+  se('topbar-sub', navLabels[idx][1]);
+  updateProgressBar(idx);
+  setTimeout(function(){
+    if(idx===1) renderChartsPanel1();
+    if(idx===2) renderChartsPanel2();
+    if(idx===3) renderPanel3();
+    if(idx===4) renderPanel4();
+    if(idx===5) renderPDF();
+  },80);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateProgressBar(idx){
+  var steps=document.querySelectorAll('.progress-step');
+  steps.forEach(function(s,i){
+    s.classList.remove('done','current');
+    if(i<idx) s.classList.add('done');
+    else if(i===idx) s.classList.add('current');
+  });
+}
+
+// ── SÉLECTEURS TYPE ──
+function selectType(el,val){
+  document.querySelectorAll('.sel-card').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  S.type=val;
+  updateStatutReco();
+  updateRevenusFields();
+  recalc();
+}
+
+// ── STATUT RECO ──
+var STATUTS = {
+  micro:{nom:'Micro-entreprise',plafond:'Plafond CA : 77 700€ (services) · 188 700€ (commerce)',cotis:'22% (services) · 12,3% (commerce)',avantage:'Simplicité maximale, comptabilité allégée, pas de TVA sous seuil',inconvenient:'Plafond CA, pas de déduction de charges réelles'},
+  eurl:{nom:'EURL',plafond:'Pas de plafond CA',cotis:'~45% sur rémunération (TNS)',avantage:'Crédibilité, déduction charges réelles, IS ou IR au choix',inconvenient:'Comptabilité obligatoire, cotisations élevées'},
+  sasu:{nom:'SASU',plafond:'Pas de plafond CA',cotis:'~65% sur salaire (régime général)',avantage:'Régime général salarié, dividendes peu chargés, crédibilité maximale',inconvenient:'Charges salariales élevées, coût de création plus élevé'},
+  sas:{nom:'SAS',plafond:'Pas de plafond CA',cotis:'~65% sur salaires dirigeants',avantage:'Flexibilité maximale, entrée d\'investisseurs facilitée',inconvenient:'Nécessite plusieurs associés idéalement'},
+  sarl:{nom:'SARL',plafond:'Pas de plafond CA',cotis:'~45% TNS (gérant majoritaire)',avantage:'Structure éprouvée, régime TNS moins chargé',inconvenient:'Moins flexible que SAS'},
+  liberal:{nom:'Profession libérale',plafond:'Pas de plafond',cotis:'~45% (CIPAV ou URSSAF selon activité)',avantage:'Adapté aux professions réglementées',inconvenient:'Réservé aux activités libérales réglementées'},
+};
+
+function updateStatutReco(){
+  S.situation=g('situation')?g('situation').value:'salarie';
+  S.caPrev=g('i-ca-prev')?+g('i-ca-prev').value:50000;
+  if(g('v-ca-prev')) g('v-ca-prev').textContent=fmtE(S.caPrev);
+
+  var reco='sasu';
+  if(S.caPrev < 30000) reco='micro';
+  else if(S.caPrev < 77700 && S.type==='service') reco='micro';
+  else if(S.type==='service' && S.situation==='salarie') reco='sasu';
+  else if(S.type==='commerce' || S.type==='restaurant') reco='sarl';
+  else reco='sasu';
+
+  var r=STATUTS[reco]||STATUTS.sasu;
+  var el=g('statut-reco');
+  if(el) el.innerHTML='<div class="warn-box"><strong style="color:var(--gold)">✦ Recommandation automatique : '+r.nom+'</strong><br>'
+    +'<span style="font-size:11px">'+r.avantage+' · Basé sur votre CA prévisionnel et votre type d\'activité. Vérifiez avec un expert-comptable.</span></div>';
+
+  updateStatutDetail();
+  recalc();
+}
+
+function updateStatutDetail(){
+  S.statut=g('statut-choisi')?g('statut-choisi').value:'sasu';
+  var s=STATUTS[S.statut]||STATUTS.sasu;
+  var el=g('statut-detail');
+  if(el) el.innerHTML='<strong>'+s.nom+' :</strong> '+s.avantage+'<br><span style="color:var(--accent2);font-size:10px">⚠ '+s.inconvenient+'</span><br><span style="font-size:10px;color:var(--muted2)">Cotisations : '+s.cotis+' · Source : URSSAF 2025</span>';
+}
+
+// ── CHAMPS REVENUS DYNAMIQUES ──
+function updateRevenusFields(){
+  S.typeFacturation=g('type-facturation')?g('type-facturation').value:'tjm';
+  var el=g('revenus-fields'); if(!el) return;
+
+  if(S.typeFacturation==='tjm'){
+    el.innerHTML=''
+      +'<div class="f"><label>Taux journalier moyen (TJM HT) <span class="fval" id="v-tjm">400 €</span></label>'
+      +'<input type="range" id="i-tjm" min="100" max="3000" step="50" value="400" oninput="recalc()"/>'
+      +'<div class="fhint">Junior service : 300-500€ · Senior : 600-900€ · Expert/direction : 1000-2000€+ · Données Malt 2025</div></div>'
+      +'<div class="f"><label>Jours facturables / mois <span class="fval" id="v-jours">15 jours</span></label>'
+      +'<input type="range" id="i-jours" min="1" max="22" step="1" value="15" oninput="recalc()"/>'
+      +'<div class="fhint">22 jours ouvrés max · Prévoir congés, formation, prospection → 15-18 jours réalistes</div></div>';
+  } else if(S.typeFacturation==='mensuel'){
+    el.innerHTML=''
+      +'<div class="f"><label>Prix abonnement mensuel HT <span class="fval" id="v-abo">500 €</span></label>'
+      +'<input type="range" id="i-abo" min="10" max="10000" step="10" value="500" oninput="recalc()"/></div>'
+      +'<div class="f"><label>Nombre de clients actifs <span class="fval" id="v-nb-clients">10</span></label>'
+      +'<input type="range" id="i-nb-clients" min="1" max="1000" step="1" value="10" oninput="recalc()"/></div>'
+      +'<div class="f"><label>Taux de churn mensuel (%) <span class="fval" id="v-churn">5%</span></label>'
+      +'<input type="range" id="i-churn" min="0" max="30" step="1" value="5" oninput="recalc()"/>'
+      +'<div class="fhint">Churn moyen SaaS B2B : 2-5%/mois · B2C : 5-15%/mois · Objectif : < 2%</div></div>';
+  } else if(S.typeFacturation==='unitaire'){
+    el.innerHTML=''
+      +'<div class="f"><label>Prix de vente unitaire HT <span class="fval" id="v-prix-unit">50 €</span></label>'
+      +'<input type="range" id="i-prix-unit" min="1" max="10000" step="1" value="50" oninput="recalc()"/></div>'
+      +'<div class="f"><label>Volume de ventes / mois <span class="fval" id="v-vol-unit">100 unités</span></label>'
+      +'<input type="range" id="i-vol-unit" min="1" max="10000" step="10" value="100" oninput="recalc()"/></div>'
+      +'<div class="f"><label>Taux de marge brute (%) <span class="fval" id="v-marge">50%</span></label>'
+      +'<input type="range" id="i-marge" min="5" max="95" step="1" value="50" oninput="recalc()"/>'
+      +'<div class="fhint">Marge brute = (CA - coût de revient) / CA · E-commerce standard : 30-50% · Logiciel : 70-90%</div></div>';
+  } else {
+    el.innerHTML='<div class="f"><label>CA total estimé / mois HT <span class="fval" id="v-ca-mixte">5 000 €</span></label>'
+      +'<input type="range" id="i-ca-mixte" min="500" max="200000" step="500" value="5000" oninput="recalc()"/></div>';
+  }
+  recalc();
+}
+
+// ── SAISONNALITÉ ──
+function initSeason(){
+  var el=g('season-grid'); if(!el) return;
+  var mois=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  el.innerHTML=mois.map(function(m,i){
+    return '<div class="season-month">'
+      +'<div class="season-bar" onclick="cycleSeason('+i+')" title="Cliquer pour ajuster">'
+      +'<div class="season-fill" id="sf-'+i+'" style="height:'+S.saisonCo[i]+'%"></div></div>'
+      +'<div class="season-label">'+m+'</div>'
+      +'<div class="season-val" id="sv-'+i+'">'+S.saisonCo[i]+'%</div>'
+      +'</div>';
+  }).join('');
+}
+
+function cycleSeason(i){
+  var vals=[25,50,75,100,125,150];
+  var cur=S.saisonCo[i];
+  var next=vals[(vals.indexOf(cur)+1)%vals.length]||100;
+  S.saisonCo[i]=next;
+  var fill=g('sf-'+i), val=g('sv-'+i);
+  if(fill) fill.style.height=Math.min(next,150)+'%';
+  if(val) val.textContent=next+'%';
+  recalc();
+}
+
+// ── CALCUL PRINCIPAL ──
+function recalc(){
+  readInputs();
+  var CA=calcCA();
+  var charges=calcCharges();
+  var fisc=calcFiscalite(CA, charges);
+  var score=calcScore(CA, charges, fisc);
+  updateSidebarScore(score);
+  updateKPIs(CA, charges, fisc, score);
+  updateProjetRecap(CA);
+  updateRemuDetail(fisc);
+}
+
+function readInputs(){
+  function rv(id){ var el=g(id); return el?+el.value:0; }
+  function gval(id){ var el=g(id); return el?el.value:''; }
+
+  S.apport=rv('i-apport');
+  S.nomProjet=gval('nom-projet')||'Mon projet';
+  S.stade=gval('stade')||'idee';
+  S.region=gval('region')||'province';
+  S.statut=gval('statut-choisi')||'sasu';
+  S.situation=gval('situation')||'salarie';
+  S.typeFacturation=gval('type-facturation')||'tjm';
+  S.tva=rv('tva')||20;
+  S.delai=rv('i-delai')||30;
+  S.croissance=rv('i-croissance')||5;
+  S.loyer=rv('i-loyer');
+  S.salaires=rv('i-salaires');
+  S.compta=rv('i-compta');
+  S.assurance=rv('i-assurance');
+  S.logiciels=rv('i-logiciels');
+  S.marketing=rv('i-marketing');
+  S.autresFixes=rv('i-autres-fixes');
+  S.tauxVar=rv('i-taux-var')||20;
+  S.invest=rv('i-invest');
+  S.amort=rv('i-amort')||5;
+  S.remu=rv('i-remu')||2500;
+
+  // Labels range
+  function setLabel(lid,val,suffix){ var el=g(lid); if(el) el.textContent=suffix?fmtE(val)+suffix:fmtE(val); }
+  if(g('v-apport')) g('v-apport').textContent=fmtE(S.apport);
+  if(g('v-delai')) g('v-delai').textContent=S.delai+' jours';
+  if(g('v-croissance')) g('v-croissance').textContent=S.croissance+'%';
+  if(g('v-loyer')) g('v-loyer').textContent=fmtE(S.loyer);
+  if(g('v-salaires')) g('v-salaires').textContent=fmtE(S.salaires);
+  if(g('v-compta')) g('v-compta').textContent=fmtE(S.compta);
+  if(g('v-assurance')) g('v-assurance').textContent=fmtE(S.assurance);
+  if(g('v-logiciels')) g('v-logiciels').textContent=fmtE(S.logiciels);
+  if(g('v-marketing')) g('v-marketing').textContent=fmtE(S.marketing);
+  if(g('v-autres-fixes')) g('v-autres-fixes').textContent=fmtE(S.autresFixes);
+  if(g('v-taux-var')) g('v-taux-var').textContent=S.tauxVar+'%';
+  if(g('v-invest')) g('v-invest').textContent=fmtE(S.invest);
+  if(g('v-amort')) g('v-amort').textContent=S.amort+' ans';
+  if(g('v-remu')) g('v-remu').textContent=fmtE(S.remu);
+  var amortMens=S.invest/(S.amort*12);
+  if(g('v-amort-mois')) g('v-amort-mois').textContent=fmtE(amortMens)+'/mois';
+  if(g('v-amort-duree')) g('v-amort-duree').textContent=S.amort+' ans';
+
+  // Revenus fields labels
+  if(S.typeFacturation==='tjm'){
+    S.tjm=rv('i-tjm')||400; if(g('v-tjm')) g('v-tjm').textContent=fmtE(S.tjm);
+    S.joursParMois=rv('i-jours')||15; if(g('v-jours')) g('v-jours').textContent=S.joursParMois+' jours';
+  } else if(S.typeFacturation==='mensuel'){
+    S.abonnement=rv('i-abo')||500; if(g('v-abo')) g('v-abo').textContent=fmtE(S.abonnement);
+    S.nbClients=rv('i-nb-clients')||10; if(g('v-nb-clients')) g('v-nb-clients').textContent=S.nbClients;
+    S.churn=rv('i-churn')||5; if(g('v-churn')) g('v-churn').textContent=S.churn+'%';
+  } else if(S.typeFacturation==='unitaire'){
+    S.prixUnit=rv('i-prix-unit')||50; if(g('v-prix-unit')) g('v-prix-unit').textContent=fmtE(S.prixUnit);
+    S.volumeUnit=rv('i-vol-unit')||100; if(g('v-vol-unit')) g('v-vol-unit').textContent=S.volumeUnit+' unités';
+    S.marge=rv('i-marge')||50; if(g('v-marge')) g('v-marge').textContent=S.marge+'%';
+  } else {
+    S.caMixte=rv('i-ca-mixte')||5000; if(g('v-ca-mixte')) g('v-ca-mixte').textContent=fmtE(S.caMixte);
+  }
+}
+
+function calcCA(){
+  var caBase=0;
+  if(S.typeFacturation==='tjm') caBase=S.tjm*S.joursParMois;
+  else if(S.typeFacturation==='mensuel') caBase=S.abonnement*S.nbClients;
+  else if(S.typeFacturation==='unitaire') caBase=S.prixUnit*S.volumeUnit;
+  else caBase=S.caMixte||5000;
+
+  var saison=S.saisonCo.reduce(function(a,b){return a+b;},0)/1200;
+  var caAnnuel=caBase*12*saison;
+  var facteur=S.scenario==='pess'?0.65:S.scenario==='opt'?1.45:1.0;
+  return {
+    mensuel:caBase,
+    annuel:caAnnuel,
+    reel:caBase*facteur,
+    reelAnnuel:caAnnuel*facteur,
+    pess:caBase*0.65,
+    real:caBase,
+    opt:caBase*1.45,
+    saison:saison,
+  };
+}
+
+function calcCharges(){
+  var fixes=S.loyer+S.compta+S.assurance+S.logiciels+S.marketing+S.autresFixes;
+  var salariauxEmployes=S.salaires*1.42; // charges patronales
+  var amortMens=S.invest/(S.amort*12);
+
+  // Cotisations dirigeant selon statut
+  var coeff={micro:0.22,eurl:0.45,sasu:0.65,sas:0.65,sarl:0.45,liberal:0.45}[S.statut]||0.45;
+  var remuBrut=S.remu/(1-coeff*0.5); // approximation rémunération brute
+  var cotisDir=remuBrut*coeff;
+
+  var totalFixes=fixes+salariauxEmployes+amortMens+cotisDir;
+  var variables=calcCA().reel*S.tauxVar/100;
+  var total=totalFixes+variables;
+
+  return {
+    fixes:fixes,
+    salariauxEmployes:salariauxEmployes,
+    amortMens:amortMens,
+    cotisDir:cotisDir,
+    totalFixes:totalFixes,
+    variables:variables,
+    total:total,
+    coeff:coeff,
+    remuBrut:remuBrut,
+  };
+}
+
+function calcFiscalite(CA, charges){
+  var benefBrut=CA.reel-charges.total;
+  var tauxIS=benefBrut<=42500?0.15:0.25; // IS PME 2025
+  var IS=Math.max(0,benefBrut)*tauxIS;
+
+  // IR approximatif (barème progressif 2025)
+  var revImposable=Math.max(0,benefBrut-charges.cotisDir*0.10); // abattement partiel
+  var IR=calcIR(revImposable*12)/12;
+
+  var netIS=benefBrut-IS;
+  var netIR=benefBrut-IR;
+
+  return {
+    benefBrut:benefBrut,
+    IS:IS,tauxIS:tauxIS,netIS:netIS,
+    IR:IR,netIR:netIR,
+    meilleureOption:netIS>netIR?'IS':'IR',
+    cotisDir:charges.cotisDir,
+    tvaCollectee:CA.reel*S.tva/100,
+  };
+}
+
+function calcIR(revAnnuel){
+  // Barème 2025 tranche
+  var t=[[0,11497,0],[11497,29315,.11],[29315,83823,.30],[83823,180294,.41],[180294,Infinity,.45]];
+  var ir=0;
+  t.forEach(function(tr){
+    if(revAnnuel>tr[0]) ir+=(Math.min(revAnnuel,tr[1])-tr[0])*tr[2];
+  });
+  return ir/12;
+}
+
+function calcScore(CA, charges, fisc){
+  var score=50;
+  // Rentabilité
+  var tauxRenta=CA.reel>0?fisc.benefBrut/CA.reel*100:0;
+  if(tauxRenta>25) score+=20;
+  else if(tauxRenta>10) score+=10;
+  else if(tauxRenta<0) score-=20;
+
+  // Couverture charges
+  var couverture=CA.reel>0?CA.reel/charges.totalFixes:0;
+  if(couverture>2) score+=15;
+  else if(couverture>1.2) score+=5;
+  else if(couverture<1) score-=15;
+
+  // Apport vs BFR
+  var bfr=charges.totalFixes*3;
+  if(S.apport>bfr) score+=10;
+  else if(S.apport<bfr*0.3) score-=10;
+
+  // Type projet
+  if(S.type==='tech'||S.type==='service') score+=5;
+
+  return Math.min(100,Math.max(0,Math.round(score)));
+}
+
+function updateSidebarScore(score){
+  var colors={0:'var(--red)',50:'var(--amber)',70:'var(--accent3)',85:'var(--green)'};
+  var c=score<40?'var(--red)':score<60?'var(--amber)':score<80?'var(--accent3)':'var(--green)';
+  var labels={0:'Très risqué',40:'Fragile',60:'Viable',80:'Solide',90:'Excellent'};
+  var label=score<40?'Très risqué':score<60?'Fragile':score<80?'Viable':score<90?'Solide':'Excellent';
+  var sb=g('sb-score'); if(sb){sb.textContent=score+'/100';sb.style.color=c;}
+  se('sb-score-label',label);
+  var fill=g('sb-score-fill'); if(fill) fill.style.width=score+'%';
+}
+
+function updateKPIs(CA, charges, fisc, score){
+  if(g('kpi-ca')) g('kpi-ca').textContent=fmtE(CA.reel);
+  if(g('kpi-ca-mois')) g('kpi-ca-mois').textContent=fmtE(CA.reel);
+  if(g('ca-pess')) g('ca-pess').textContent=fmtE(CA.pess);
+  if(g('ca-real')) g('ca-real').textContent=fmtE(CA.real);
+  if(g('ca-opt')) g('ca-opt').textContent=fmtE(CA.opt);
+  if(g('score-global')) g('score-global').textContent=score+'/100';
+  var sl=g('score-label');
+  if(sl) sl.textContent=score<40?'Très risqué':score<60?'Fragile':score<80?'Viable':score<90?'Solide':'Excellent';
+
+  // Seuil de rentabilité
+  var sr=CA.reel>0?charges.totalFixes/(1-S.tauxVar/100):0;
+  if(g('kpi-sr')) g('kpi-sr').textContent=fmtE(sr);
+
+  // Breakeven (mois)
+  var breakeven=CA.reel>0?Math.ceil(charges.invest/(fisc.benefBrut||1)):99;
+  breakeven=Math.min(breakeven,36);
+  if(g('kpi-breakeven')) g('kpi-breakeven').textContent=breakeven<=0?'Immédiat':breakeven+'e mois';
+
+  // BFR
+  var bfr=charges.totalFixes*(S.delai/30+1);
+  if(g('kpi-bfr')) g('kpi-bfr').textContent=fmtE(bfr);
+
+  // Tréso min
+  if(g('kpi-treso')) g('kpi-treso').textContent=fmtE(charges.totalFixes*3);
+
+  // ROI 3 ans
+  var totalInvest=S.apport+S.invest;
+  var benfAnnuel=fisc.benefBrut*12;
+  var roi=totalInvest>0?(benfAnnuel*3-totalInvest)/totalInvest*100:0;
+  if(g('kpi-roi')) g('kpi-roi').textContent=(roi>0?'+':'')+Math.round(roi)+'%';
+}
+
+function updateProjetRecap(CA){
+  var el=g('projet-recap'); if(!el) return;
+  el.innerHTML=''
+    +'<div style="display:flex;flex-direction:column;gap:6px">'
+    +'<div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--bg2);border-radius:8px;font-size:12px">'
+    +'<span style="color:var(--muted)">Projet</span><span>'+S.nomProjet+'</span></div>'
+    +'<div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--bg2);border-radius:8px;font-size:12px">'
+    +'<span style="color:var(--muted)">Statut</span><span>'+(STATUTS[S.statut]||{nom:S.statut}).nom+'</span></div>'
+    +'<div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--bg2);border-radius:8px;font-size:12px">'
+    +'<span style="color:var(--muted)">CA estimé/an</span><span style="color:var(--accent)">'+fmtE(CA.annuel)+'</span></div>'
+    +'<div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--bg2);border-radius:8px;font-size:12px">'
+    +'<span style="color:var(--muted)">Apport</span><span>'+fmtE(S.apport)+'</span></div>'
+    +'</div>';
+}
+
+function updateRemuDetail(fisc){
+  var el=g('remu-detail'); if(!el) return;
+  var coeff=fisc.cotisDir/(S.remu||1);
+  el.innerHTML='<strong>Coût réel de votre rémunération :</strong><br>'
+    +'Net souhaité : '+fmtE(S.remu)+'/mois<br>'
+    +'Cotisations estimées : '+fmtE(fisc.cotisDir)+'/mois<br>'
+    +'<strong style="color:var(--accent)">Coût total entreprise : '+fmtE(S.remu+fisc.cotisDir)+'/mois</strong><br>'
+    +'<span style="font-size:10px;color:var(--muted2)">Source : URSSAF 2025 — taux '+S.statut+'</span>';
+}
+
+// ── GRAPHIQUES ──
+function renderChartsPanel1(){
+  destroyChart('scenarios');
+  var cv=g('chart-scenarios'); if(!cv) return;
+  var CA=calcCA();
+  var mois=['J','F','M','A','M','J','J','A','S','O','N','D'];
+  var mult=S.saisonCo.map(function(v){return v/100;});
+  charts['scenarios']=new Chart(cv,{
+    type:'bar',
+    data:{labels:mois,datasets:[
+      {label:'Pessimiste',data:mois.map(function(_,i){return CA.pess*mult[i];}),backgroundColor:'rgba(255,68,68,.4)',borderRadius:4,borderWidth:0},
+      {label:'Réaliste',data:mois.map(function(_,i){return CA.real*mult[i];}),backgroundColor:'rgba(108,99,255,.6)',borderRadius:4,borderWidth:0},
+      {label:'Optimiste',data:mois.map(function(_,i){return CA.opt*mult[i];}),backgroundColor:'rgba(0,230,118,.4)',borderRadius:4,borderWidth:0},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{color:'#4A4870',font:{size:9}},border:{color:'transparent'}},
+              y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4A4870',callback:function(v){return v>=1000?Math.round(v/1000)+'k':v;}},border:{color:'transparent'}}}
+    }
+  });
+}
+
+function renderChartsPanel2(){
+  destroyChart('charges');
+  var cv=g('chart-charges'); if(!cv) return;
+  var charges=calcCharges();
+  var CA=calcCA();
+  var labels=['Loyer','Salariés','Cotis. dir.','Compta','Assur.','Logiciels','Marketing','Autres fixes','Variables','Amortiss.'];
+  var data=[S.loyer,charges.salariauxEmployes,charges.cotisDir,S.compta,S.assurance,S.logiciels,S.marketing,S.autresFixes,charges.variables,charges.amortMens];
+  charts['charges']=new Chart(cv,{
+    type:'doughnut',
+    data:{labels:labels,datasets:[{data:data,backgroundColor:['rgba(108,99,255,.8)','rgba(255,107,107,.8)','rgba(0,212,170,.8)','rgba(255,184,0,.8)','rgba(68,138,255,.8)','rgba(167,99,255,.8)','rgba(0,212,170,.6)','rgba(255,107,107,.6)','rgba(108,99,255,.4)','rgba(255,184,0,.5)'],borderWidth:2,borderColor:'#111122'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.label+' : '+fmtE(c.raw)+' ('+Math.round(c.raw/charges.total*100)+'%)';}}}}},
+  });
+  var totalEl=g('charges-total');
+  if(totalEl) totalEl.innerHTML='Total charges/mois : <strong style="color:var(--accent2)">'+fmtE(charges.total)+'</strong> · Fixes : '+fmtE(charges.totalFixes)+' · Variables : '+fmtE(charges.variables);
+}
+
+function renderPanel3(){
+  var CA=calcCA(), charges=calcCharges(), fisc=calcFiscalite(CA,charges);
+
+  // IS vs IR
+  var el=g('is-ir-compare'); if(el){
+    el.innerHTML=''
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'
+      +'<div style="background:rgba(108,99,255,.08);border:1px solid rgba(108,99,255,.2);border-radius:10px;padding:14px;text-align:center">'
+      +'<div style="font-size:10px;color:var(--accent);font-family:DM Mono,monospace;margin-bottom:4px">IMPÔT SUR LES SOCIÉTÉS</div>'
+      +'<div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:var(--accent)">'+fmtE(fisc.IS)+'/mois</div>'
+      +'<div style="font-size:10px;color:var(--muted);margin-top:4px">Taux : '+(fisc.tauxIS*100)+'% (PME 2025)</div>'
+      +'<div style="font-size:11px;color:var(--green);margin-top:6px">Net après IS : '+fmtE(fisc.netIS)+'/mois</div>'
+      +(fisc.meilleureOption==='IS'?'<div style="font-size:10px;color:var(--green);margin-top:4px">✓ Plus avantageux pour vous</div>':'')
+      +'</div>'
+      +'<div style="background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.2);border-radius:10px;padding:14px;text-align:center">'
+      +'<div style="font-size:10px;color:var(--accent3);font-family:DM Mono,monospace;margin-bottom:4px">IMPÔT SUR LE REVENU</div>'
+      +'<div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:var(--accent3)">'+fmtE(fisc.IR)+'/mois</div>'
+      +'<div style="font-size:10px;color:var(--muted);margin-top:4px">Barème progressif 2025</div>'
+      +'<div style="font-size:11px;color:var(--green);margin-top:6px">Net après IR : '+fmtE(fisc.netIR)+'/mois</div>'
+      +(fisc.meilleureOption==='IR'?'<div style="font-size:10px;color:var(--green);margin-top:4px">✓ Plus avantageux pour vous</div>':'')
+      +'</div>'
+      +'</div>'
+      +'<div class="warn-box">⚠️ Ces calculs sont des estimations basées sur votre bénéfice mensuel seul, sans tenir compte de votre foyer fiscal complet (parts, autres revenus, déductions). Source : impots.gouv.fr barème 2025.</div>';
+  }
+
+  // Cotisations
+  var cotEl=g('cotisations-detail'); if(cotEl){
+    var COTIS={
+      micro:'Cotisation forfaitaire : 22% du CA (services) ou 12,3% (commerce). Inclut maladie, retraite, allocations familiales.',
+      sasu:'Régime général assimilé salarié. Cotisations : ~65% du salaire brut. Protection sociale complète (chômage inclus si option).',
+      eurl:'Régime TNS (Travailleur Non Salarié). ~45% des bénéfices. Moins de protection que salarié mais cotisations plus faibles.',
+      sarl:'Régime TNS si gérant majoritaire (~45%). Régime assimilé salarié si gérant minoritaire (~65%).',
+      liberal:'CIPAV ou URSSAF selon activité. ~45% en moyenne. Régime retraite spécifique.',
+      sas:'Régime général assimilé salarié pour le président. ~65% du salaire brut.'
+    };
+    cotEl.innerHTML='<div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:10px">'+
+      (COTIS[S.statut]||COTIS.sasu)+'</div>'
+      +'<div style="display:flex;flex-direction:column;gap:6px">'
+      +'<div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--bg2);border-radius:8px;font-size:12px"><span style="color:var(--muted)">Rémunération nette visée</span><span>'+fmtE(S.remu)+'/mois</span></div>'
+      +'<div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--bg2);border-radius:8px;font-size:12px"><span style="color:var(--muted)">Cotisations estimées</span><span style="color:var(--amber)">'+fmtE(charges.cotisDir)+'/mois</span></div>'
+      +'<div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--bg2);border-radius:8px;font-size:12px;font-weight:700"><span>Coût total entreprise</span><span style="color:var(--accent2)">'+fmtE(S.remu+charges.cotisDir)+'/mois</span></div>'
+      +'</div>'
+      +'<div style="font-size:10px;color:var(--muted2);margin-top:8px;font-family:DM Mono,monospace">Source : URSSAF 2025 — taux indicatifs, peuvent varier selon activité et options choisies</div>';
+  }
+
+  // Dashboard fiscal
+  var fd=g('fiscal-dashboard'); if(fd){
+    fd.innerHTML=[
+      {l:'CA mensuel HT',v:fmtE(CA.reel)},
+      {l:'Charges totales',v:fmtE(charges.total),c:'var(--red)'},
+      {l:'Bénéfice brut',v:fmtE(fisc.benefBrut),c:fisc.benefBrut>0?'var(--green)':'var(--red)'},
+      {l:'Impôt ('+fisc.meilleureOption+')',v:fmtE(fisc.meilleureOption==='IS'?fisc.IS:fisc.IR),c:'var(--amber)'},
+      {l:'Net disponible',v:fmtE(fisc.meilleureOption==='IS'?fisc.netIS:fisc.netIR),c:'var(--accent)'},
+      {l:'TVA collectée',v:fmtE(fisc.tvaCollectee),c:'var(--muted)'},
+    ].map(function(r){
+      return '<div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--bg2);border-radius:8px;font-size:12px;margin-bottom:5px">'
+        +'<span style="color:var(--muted)">'+r.l+'</span>'
+        +'<span style="font-family:DM Mono,monospace;color:'+(r.c||'var(--text)')+'">'+r.v+'</span></div>';
+    }).join('');
+  }
+
+  // Optimisations
+  var fo=g('fiscal-optims'); if(fo){
+    var optims=[];
+    if(S.statut==='sasu') optims.push({t:'Dividendes en SASU',d:'Les dividendes en SASU sont soumis aux prélèvements sociaux à 17,2% (PFU). Bien plus avantageux que le salaire pour la partie au-dessus de vos besoins immédiats.'});
+    if(S.remu>5000) optims.push({t:'PEE / PERCO',d:'Plan d\'épargne entreprise : jusqu\'à 3x votre versement en abondement exonéré. Très efficace pour les rémunérations élevées.'});
+    optims.push({t:'Frais réels déductibles',d:'Note de frais, déplacements, téléphone pro, matériel... Réduisent directement le bénéfice imposable. Conservez vos justificatifs.'});
+    if(S.invest>0) optims.push({t:'Amortissement accéléré',d:'Certains investissements peuvent bénéficier d\'un amortissement dégressif ou exceptionnel (ex: matériel informatique). Consultez votre comptable.'});
+    fo.innerHTML=optims.map(function(o){
+      return '<div style="padding:10px 12px;background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.15);border-radius:8px;margin-bottom:8px">'
+        +'<div style="font-size:12px;font-weight:700;color:var(--accent3);margin-bottom:3px">✓ '+o.t+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);line-height:1.5">'+o.d+'</div></div>';
+    }).join('');
+  }
+
+  renderWaterfall(CA,charges,fisc);
+}
+
+function renderWaterfall(CA,charges,fisc){
+  destroyChart('waterfall');
+  var cv=g('chart-waterfall'); if(!cv) return;
+  var data=[CA.reel,-charges.variables,-charges.totalFixes,(fisc.meilleureOption==='IS'?-fisc.IS:-fisc.IR)];
+  var net=data.reduce(function(a,b){return a+b;},0);
+  charts['waterfall']=new Chart(cv,{
+    type:'bar',
+    data:{
+      labels:['CA mensuel','- Variables','- Charges fixes','- Impôts','= Net'],
+      datasets:[{
+        data:[CA.reel,charges.variables,charges.totalFixes,(fisc.meilleureOption==='IS'?fisc.IS:fisc.IR),Math.abs(net)],
+        backgroundColor:[
+          'rgba(108,99,255,.7)','rgba(255,107,107,.7)','rgba(255,107,107,.5)','rgba(255,184,0,.7)',
+          net>0?'rgba(0,230,118,.7)':'rgba(255,68,68,.7)'
+        ],
+        borderRadius:6,borderWidth:0
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{color:'#4A4870',font:{size:10}},border:{color:'transparent'}},
+              y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4A4870',callback:function(v){return Math.round(v/1000)+'k€';}},border:{color:'transparent'}}}
+    }
+  });
+}
+
+function renderPanel4(){
+  var CA=calcCA(),charges=calcCharges(),fisc=calcFiscalite(CA,charges),score=calcScore(CA,charges,fisc);
+  updateSidebarScore(score);
+  updateKPIs(CA,charges,fisc,score);
+  renderCashflow(CA,charges,fisc);
+  renderTableau(CA,charges,fisc);
+  renderAnalyse(CA,charges,fisc,score);
+}
+
+function renderCashflow(CA,charges,fisc){
+  destroyChart('cashflow');
+  var cv=g('chart-cashflow'); if(!cv) return;
+  var labels=[];
+  var dataPess=[],dataReal=[],dataOpt=[];
+  var sr=charges.totalFixes/(1-S.tauxVar/100);
+
+  for(var m=1;m<=24;m++){
+    labels.push('M'+m);
+    var growFactor=Math.pow(1+S.croissance/100,m-1);
+    var saisonFactor=S.saisonCo[(m-1)%12]/100;
+    var caM_real=CA.real*growFactor*saisonFactor;
+    var caM_pess=CA.pess*growFactor*saisonFactor;
+    var caM_opt=CA.opt*growFactor*saisonFactor;
+    var chargeVar_real=caM_real*S.tauxVar/100;
+    var chargeVar_pess=caM_pess*S.tauxVar/100;
+    var chargeVar_opt=caM_opt*S.tauxVar/100;
+    dataReal.push(Math.round(caM_real-chargeVar_real-charges.totalFixes));
+    dataPess.push(Math.round(caM_pess-chargeVar_pess-charges.totalFixes));
+    dataOpt.push(Math.round(caM_opt-chargeVar_opt-charges.totalFixes));
+  }
+
+  charts['cashflow']=new Chart(cv,{
+    type:'line',
+    data:{labels:labels,datasets:[
+      {label:'Pessimiste',data:dataPess,borderColor:'rgba(255,68,68,.7)',backgroundColor:'rgba(255,68,68,.05)',fill:true,tension:.3,borderWidth:2,pointRadius:0},
+      {label:'Réaliste',data:dataReal,borderColor:'rgba(108,99,255,.9)',backgroundColor:'rgba(108,99,255,.08)',fill:true,tension:.3,borderWidth:2.5,pointRadius:0},
+      {label:'Optimiste',data:dataOpt,borderColor:'rgba(0,230,118,.7)',backgroundColor:'rgba(0,230,118,.05)',fill:true,tension:.3,borderWidth:2,pointRadius:0},
+      {label:'Seuil rentabilité',data:Array(24).fill(0),borderColor:'rgba(255,184,0,.5)',borderDash:[6,3],pointRadius:0,borderWidth:1.5,fill:false},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label+' : '+fmtE(c.raw);}}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#4A4870',font:{size:9},maxTicksLimit:12},border:{color:'transparent'}},
+              y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4A4870',callback:function(v){return (v>=0?'':'')+Math.round(v/1000)+'k€';}},border:{color:'transparent'}}}}
+  });
+}
+
+function renderTableau(CA,charges,fisc){
+  var el=g('tableau-previsionnel'); if(!el) return;
+  var moisNoms=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  var rows='<thead><tr><th>Mois</th><th>CA HT</th><th>Charges</th><th>Résultat</th><th>Cumulé</th></tr></thead><tbody>';
+  var cumul=0;
+  for(var m=0;m<12;m++){
+    var growFactor=Math.pow(1+S.croissance/100,m);
+    var saisonFactor=S.saisonCo[m]/100;
+    var caM=Math.round(CA.real*growFactor*saisonFactor);
+    var chargeM=Math.round(charges.totalFixes+caM*S.tauxVar/100);
+    var resultat=caM-chargeM;
+    cumul+=resultat;
+    rows+='<tr><td>'+moisNoms[m]+'</td>'
+      +'<td class="td-bold">'+fmtE(caM)+'</td>'
+      +'<td class="td-neg">'+fmtE(chargeM)+'</td>'
+      +'<td class="'+(resultat>=0?'td-pos':'td-neg')+'">'+fmtE(resultat)+'</td>'
+      +'<td class="'+(cumul>=0?'td-pos':'td-neg')+'">'+fmtE(cumul)+'</td>'
+      +'</tr>';
+  }
+  rows+='</tbody>';
+  el.innerHTML=rows;
+}
+
+function renderAnalyse(CA,charges,fisc,score){
+  var risques=[], forts=[];
+
+  if(fisc.benefBrut<0) risques.push({t:'Cashflow négatif',d:'Vos charges dépassent vos revenus au scénario réaliste. Réduisez les charges fixes ou augmentez le CA minimum.'});
+  if(S.apport<charges.totalFixes*3) risques.push({t:'Trésorerie insuffisante',d:'Votre apport couvre moins de 3 mois de charges fixes. Prévoyez une réserve ou un financement complémentaire.'});
+  if(S.tauxVar>60) risques.push({t:'Charges variables élevées',d:'Un taux de charges variables >60% laisse peu de marge. Vérifiez vos coûts d\'achat et négociez vos fournisseurs.'});
+  if(S.croissance>20) risques.push({t:'Croissance optimiste',d:'Une croissance >20%/mois est exceptionnelle. Assurez-vous d\'avoir la capacité opérationnelle pour suivre.'});
+
+  if(fisc.benefBrut>0) forts.push({t:'Modèle rentable',d:'Votre activité génère un bénéfice au scénario réaliste dès le démarrage.'});
+  if(S.type==='service'||S.type==='tech') forts.push({t:'Faibles investissements',d:'Les services et le tech nécessitent peu de capital initial — excellent pour démarrer.'});
+  if(S.apport>charges.totalFixes*3) forts.push({t:'Bonne assise financière',d:'Votre apport couvre plus de 3 mois de charges — vous pouvez absorber un démarrage lent.'});
+  if(S.statut==='micro'&&CA.real<77700) forts.push({t:'Micro-entreprise adaptée',d:'Votre CA prévisionnel est compatible avec le régime micro — simplicité maximale.'});
+
+  var rEl=g('analyse-risques');
+  if(rEl) rEl.innerHTML=(risques.length?risques:
+    [{t:'Aucun risque majeur détecté',d:'Votre projet semble viable selon les paramètres saisis.'}]).map(function(r){
+    return '<div style="padding:10px 12px;background:rgba(255,68,68,.05);border:1px solid rgba(255,68,68,.15);border-radius:8px;margin-bottom:6px">'
+      +'<div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:3px">⚠ '+r.t+'</div>'
+      +'<div style="font-size:11px;color:var(--muted);line-height:1.5">'+r.d+'</div></div>';
+  }).join('');
+
+  var fEl=g('points-forts');
+  if(fEl) fEl.innerHTML=(forts.length?forts:
+    [{t:'Complétez tous les modules',d:'Remplissez les revenus et charges pour voir les points forts de votre projet.'}]).map(function(f){
+    return '<div style="padding:10px 12px;background:rgba(0,230,118,.05);border:1px solid rgba(0,230,118,.15);border-radius:8px;margin-bottom:6px">'
+      +'<div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:3px">✓ '+f.t+'</div>'
+      +'<div style="font-size:11px;color:var(--muted);line-height:1.5">'+f.d+'</div></div>';
+  }).join('');
+}
+
+function renderPDF(){
+  var CA=calcCA(),charges=calcCharges(),fisc=calcFiscalite(CA,charges),score=calcScore(CA,charges,fisc);
+  var date=new Date().toLocaleDateString('fr-FR',{year:'numeric',month:'long',day:'numeric'});
+  var el=g('pdf-content'); if(!el) return;
+  var scoreColor=score<40?'#FF4444':score<60?'#FFB300':score<80?'#6C63FF':'#00E676';
+  var moisNoms=['Janv.','Févr.','Mars','Avr.','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.'];
+
+  el.innerHTML=''
+    +'<div class="pdf-header">'
+    +'<div><div class="pdf-logo">Calculamatix</div><div style="font-size:10px;color:#888;margin-top:2px">Business Plan Pro — Simulateur gratuit</div></div>'
+    +'<div style="text-align:right"><div style="font-size:10px;color:#888">Généré le '+date+'</div>'
+    +'<div style="font-size:10px;color:#888;margin-top:2px">Document non certifié — usage indicatif</div></div>'
+    +'</div>'
+
+    +'<div class="pdf-title">'+S.nomProjet+'</div>'
+    +'<div class="pdf-sub">Business Plan Prévisionnel · '+(STATUTS[S.statut]||{nom:S.statut}).nom+' · '+({idf:'Île-de-France',province:'Province',dom:'DOM-TOM'}[S.region]||S.region)+'</div>'
+
+    +'<div style="margin:16px 0;padding:12px;background:#f8f7ff;border-radius:8px;display:flex;align-items:center;justify-content:space-between">'
+    +'<div><div style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px">Score de viabilité</div>'
+    +'<div style="font-size:32px;font-weight:800;color:'+scoreColor+'">'+score+'/100</div>'
+    +'<div style="font-size:11px;color:#666">'+(score<40?'Très risqué':score<60?'Fragile':score<80?'Viable':score<90?'Solide':'Excellent')+'</div></div>'
+    +'<div style="font-size:11px;color:#666;max-width:300px;line-height:1.5">Ce score est calculé automatiquement selon votre rentabilité, vos charges, votre apport et votre modèle économique. Il est fourni à titre indicatif.</div>'
+    +'</div>'
+
+    +'<div class="pdf-section"><div class="pdf-section-title">1. Résumé Exécutif</div>'
+    +'<div class="pdf-kpis">'
+    +'<div class="pdf-kpi"><div class="pdf-kpi-val">'+fmtE(CA.annuel)+'</div><div class="pdf-kpi-label">CA prévisionnel an 1</div></div>'
+    +'<div class="pdf-kpi"><div class="pdf-kpi-val">'+fmtE(charges.total)+'</div><div class="pdf-kpi-label">Charges totales/mois</div></div>'
+    +'<div class="pdf-kpi"><div class="pdf-kpi-val" style="color:'+(fisc.benefBrut>0?'#6C63FF':'#FF4444')+'">'+fmtE(fisc.benefBrut)+'</div><div class="pdf-kpi-label">Bénéfice mensuel est.</div></div>'
+    +'<div class="pdf-kpi"><div class="pdf-kpi-val">'+fmtE(S.apport)+'</div><div class="pdf-kpi-label">Apport personnel</div></div>'
+    +'<div class="pdf-kpi"><div class="pdf-kpi-val">'+fmtE(charges.totalFixes/(1-S.tauxVar/100))+'</div><div class="pdf-kpi-label">Seuil de rentabilité</div></div>'
+    +'<div class="pdf-kpi"><div class="pdf-kpi-val">'+fmtE(charges.totalFixes*3)+'</div><div class="pdf-kpi-label">Tréso. recommandée</div></div>'
+    +'</div></div>'
+
+    +'<div class="pdf-section"><div class="pdf-section-title">2. Structure financière mensuelle</div>'
+    +'<div class="pdf-row"><span>CA mensuel HT (réaliste)</span><span style="font-weight:700">'+fmtE(CA.reel)+'</span></div>'
+    +'<div class="pdf-row"><span>Charges variables ('+S.tauxVar+'% du CA)</span><span style="color:#FF4444">- '+fmtE(charges.variables)+'</span></div>'
+    +'<div class="pdf-row"><span>Loyer / locaux</span><span>- '+fmtE(S.loyer)+'</span></div>'
+    +'<div class="pdf-row"><span>Rémunération dirigeant + cotisations</span><span>- '+fmtE(S.remu+charges.cotisDir)+'</span></div>'
+    +'<div class="pdf-row"><span>Personnel salarié (charges incluses)</span><span>- '+fmtE(charges.salariauxEmployes)+'</span></div>'
+    +'<div class="pdf-row"><span>Amortissements</span><span>- '+fmtE(charges.amortMens)+'</span></div>'
+    +'<div class="pdf-row"><span>Autres charges fixes</span><span>- '+fmtE(S.compta+S.assurance+S.logiciels+S.marketing+S.autresFixes)+'</span></div>'
+    +'<div class="pdf-row" style="border-top:2px solid #6C63FF;margin-top:4px;padding-top:8px"><span>Bénéfice avant impôt</span><span style="color:'+(fisc.benefBrut>=0?'#6C63FF':'#FF4444')+'">'+fmtE(fisc.benefBrut)+'</span></div>'
+    +'<div class="pdf-row"><span>Impôt estimé ('+fisc.meilleureOption+')</span><span style="color:#FFB300">- '+fmtE(fisc.meilleureOption==='IS'?fisc.IS:fisc.IR)+'</span></div>'
+    +'<div class="pdf-row" style="font-weight:700;font-size:13px"><span>Net disponible mensuel</span><span style="color:#6C63FF">'+fmtE(fisc.meilleureOption==='IS'?fisc.netIS:fisc.netIR)+'</span></div>'
+    +'</div>'
+
+    +'<div class="pdf-section"><div class="pdf-section-title">3. Projection 12 mois</div>'
+    +'<table style="width:100%;border-collapse:collapse;font-size:11px">'
+    +'<thead><tr style="background:#f0f0ff">'
+    +'<th style="padding:6px 8px;text-align:left;color:#6C63FF;font-size:9px;text-transform:uppercase;letter-spacing:.8px">Mois</th>'
+    +'<th style="padding:6px 8px;text-align:right;color:#6C63FF;font-size:9px;text-transform:uppercase;letter-spacing:.8px">CA HT</th>'
+    +'<th style="padding:6px 8px;text-align:right;color:#6C63FF;font-size:9px;text-transform:uppercase;letter-spacing:.8px">Charges</th>'
+    +'<th style="padding:6px 8px;text-align:right;color:#6C63FF;font-size:9px;text-transform:uppercase;letter-spacing:.8px">Résultat</th>'
+    +'<th style="padding:6px 8px;text-align:right;color:#6C63FF;font-size:9px;text-transform:uppercase;letter-spacing:.8px">Cumulé</th>'
+    +'</tr></thead><tbody>'
+    +function(){
+      var rows='';var cumul=0;
+      for(var m=0;m<12;m++){
+        var gF=Math.pow(1+S.croissance/100,m);
+        var sF=S.saisonCo[m]/100;
+        var caM=Math.round(CA.real*gF*sF);
+        var cM=Math.round(charges.totalFixes+caM*S.tauxVar/100);
+        var res=caM-cM;cumul+=res;
+        rows+='<tr style="border-bottom:1px solid #f0f0f0">'
+          +'<td style="padding:5px 8px">'+moisNoms[m]+'</td>'
+          +'<td style="padding:5px 8px;text-align:right">'+fmtE(caM)+'</td>'
+          +'<td style="padding:5px 8px;text-align:right;color:#FF4444">'+fmtE(cM)+'</td>'
+          +'<td style="padding:5px 8px;text-align:right;color:'+(res>=0?'#6C63FF':'#FF4444')+'">'+fmtE(res)+'</td>'
+          +'<td style="padding:5px 8px;text-align:right;font-weight:'+(m===11?700:400)+';color:'+(cumul>=0?'#6C63FF':'#FF4444')+'">'+fmtE(cumul)+'</td>'
+          +'</tr>';
+      }
+      return rows;
+    }()
+    +'</tbody></table></div>'
+
+    +'<div class="pdf-section"><div class="pdf-section-title">4. Statut juridique & fiscalité</div>'
+    +'<div class="pdf-row"><span>Statut retenu</span><span>'+(STATUTS[S.statut]||{nom:S.statut}).nom+'</span></div>'
+    +'<div class="pdf-row"><span>Option fiscale recommandée</span><span>'+fisc.meilleureOption+'</span></div>'
+    +'<div class="pdf-row"><span>Taux cotisations sociales estimé</span><span>'+(charges.coeff*100).toFixed(0)+'%</span></div>'
+    +'<div class="pdf-row"><span>TVA applicable</span><span>'+S.tva+'%</span></div>'
+    +'<div class="pdf-row"><span>ACRE applicable</span><span>'+(S.situation==='chomeur'?'Oui — 50% d\'exonération an 1':'Non')+'</span></div>'
+    +'</div>'
+
+    +'<div class="pdf-disc">Ce document a été généré automatiquement par Calculamatix (calculamatix.com/business-plan) le '+date+'. Il est fourni à titre informatif et pédagogique uniquement. Il ne constitue pas un conseil financier, juridique, fiscal ou comptable certifié. Les projections sont des estimations basées sur les données saisies par l\'utilisateur et des hypothèses de marché génériques. Toute décision entrepreneuriale doit être prise après consultation d\'un expert-comptable inscrit à l\'Ordre (oec.fr), d\'un avocat spécialisé et/ou d\'un conseiller Bpifrance ou CCI. Sources des taux et données : URSSAF 2025 · Direction Générale des Finances Publiques (impots.gouv.fr) 2025 · INSEE · Bpifrance · service-public.fr · Code du commerce · Données sectorielles : Malt 2025 (TJM), banques françaises (taux crédit).</div>';
+}
+
+function setScenario(sc,btn){
+  S.scenario=sc;
+  document.querySelectorAll('.scenario-tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  recalc();
+}
+
+// ── INIT ──
+initSeason();
+updateStatutReco();
+updateStatutDetail();
+updateRevenusFields();
+recalc();
+
+// Écouter les changements de select non bindés
+['type-facturation','tva','statut-choisi','situation'].forEach(function(id){
+  var el=g(id);
+  if(el){
+    el.addEventListener('change',function(){
+      if(id==='type-facturation') updateRevenusFields();
+      if(id==='statut-choisi') updateStatutDetail();
+      recalc();
+    });
+  }
+});
+</script>
+</body>
+</html>
