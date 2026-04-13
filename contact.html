@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact — Calculamatix</title>
+  <meta name="description" content="Une idée de calculateur ? Une erreur à signaler ? Un message à nous envoyer ? On répond à tout."/>
+  <link rel="canonical" href="https://calculamatix.com/contact"/>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#0e0e0e;--card:#1a1a1a;--border:#2a2a2a;--yellow:#FFD93D;--orange:#FF6B2B;--green:#3BFF9E;--text:#F0EDE6;--muted:#666}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;padding-bottom:80px}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 40% at 50% 0%,rgba(255,217,61,.04),transparent);pointer-events:none;z-index:0}
+
+    nav{position:relative;z-index:10;max-width:1100px;margin:0 auto;padding:28px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:20px;text-decoration:none;color:var(--text);letter-spacing:-1px}
+    .logo span{color:var(--yellow)}
+    .back{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+    .back:hover{color:var(--text)}
+
+    .hero{position:relative;z-index:10;max-width:600px;margin:60px auto 0;padding:0 24px;text-align:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--yellow);background:rgba(255,217,61,.08);border:1px solid rgba(255,217,61,.2);padding:5px 16px;border-radius:100px;margin-bottom:24px;font-family:'DM Mono',monospace;letter-spacing:.5px}
+    h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(26px,5vw,44px);letter-spacing:-2px;line-height:1.05;margin-bottom:16px}
+    h1 em{color:var(--yellow);font-style:normal}
+    .hero-lead{font-size:15px;color:var(--muted);line-height:1.8}
+
+    /* RAISONS */
+    .raisons{position:relative;z-index:10;max-width:600px;margin:40px auto 0;padding:0 24px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .raison{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--card);border:1px solid var(--border);border-radius:12px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .15s}
+    .raison:hover,.raison.active{border-color:var(--yellow);color:var(--text);background:#1f1e15}
+    .raison-emoji{font-size:18px;flex-shrink:0}
+
+    /* FORM */
+    .form-wrap{position:relative;z-index:10;max-width:600px;margin:24px auto 0;padding:0 24px}
+    .form-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px}
+
+    .f{margin-bottom:18px}
+    .f:last-child{margin-bottom:0}
+    .f label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px}
+    .f input,.f textarea,.f select{width:100%;background:#111;border:1px solid var(--border);border-radius:12px;color:var(--text);padding:13px 16px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;resize:none}
+    .f input:focus,.f textarea:focus,.f select:focus{border-color:var(--yellow)}
+    .f input::placeholder,.f textarea::placeholder{color:#333}
+    .f textarea{height:140px;line-height:1.6}
+    .f select option{background:#111}
+
+    .submit-btn{width:100%;background:var(--yellow);color:#000;font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;padding:15px;border:none;border-radius:12px;cursor:pointer;transition:opacity .2s,transform .2s;letter-spacing:.3px;margin-top:4px}
+    .submit-btn:hover{opacity:.88;transform:translateY(-1px)}
+    .submit-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+    /* SUCCESS */
+    .success-box{display:none;text-align:center;padding:40px 28px;background:rgba(59,255,158,.05);border:1px solid rgba(59,255,158,.2);border-radius:20px}
+    .success-emoji{font-size:52px;margin-bottom:16px}
+    .success-title{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:900;color:var(--green);margin-bottom:10px;letter-spacing:-1px}
+    .success-desc{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px}
+    .success-back{display:inline-flex;align-items:center;gap:8px;background:var(--yellow);color:#000;font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;padding:12px 22px;border-radius:10px;text-decoration:none;transition:opacity .2s}
+    .success-back:hover{opacity:.88}
+
+    /* INFO */
+    .info-strip{position:relative;z-index:10;max-width:600px;margin:16px auto 0;padding:0 24px}
+    .info-inner{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#111;border:1px solid #1a1a1a;border-radius:10px;font-size:12px;color:#3a3a3a;font-family:'DM Mono',monospace}
+    .info-inner span{color:#2a2a2a}
+
+    @media(max-width:500px){.raisons{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Retour</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">✉️ On répond à tout</div>
+  <h1>Dites-nous<br><em>tout</em></h1>
+  <p class="hero-lead">Une idée de calculateur ? Une erreur à signaler ? Une question ? Un simple bonjour ? On lit tous les messages et on répond.</p>
+</div>
+
+<!-- RAISONS -->
+<div class="raisons">
+  <div class="raison" onclick="setRaison(this,'💡 Idée de calculateur')">
+    <span class="raison-emoji">💡</span>J'ai une idée de calculateur
+  </div>
+  <div class="raison" onclick="setRaison(this,'🐛 Erreur à signaler')">
+    <span class="raison-emoji">🐛</span>J'ai trouvé une erreur
+  </div>
+  <div class="raison" onclick="setRaison(this,'📢 Autre chose')">
+    <span class="raison-emoji">📢</span>Autre chose
+  </div>
+  <div class="raison" onclick="setRaison(this,'👋 Simple bonjour')">
+    <span class="raison-emoji">👋</span>Simple bonjour
+  </div>
+</div>
+
+<!-- FORMULAIRE -->
+<div class="form-wrap">
+  <div class="form-card" id="formCard">
+    <form id="contactForm" action="https://formspree.io/f/mnjlqlno" method="POST">
+
+      <!-- Champ caché pour le sujet -->
+      <input type="hidden" name="sujet" id="sujetHidden" value="Message depuis Calculamatix"/>
+
+      <div class="f">
+        <label>Votre prénom</label>
+        <input type="text" name="prenom" placeholder="Comment on vous appelle ?" required/>
+      </div>
+
+      <div class="f">
+        <label>Votre email</label>
+        <input type="email" name="email" placeholder="Pour qu'on puisse vous répondre" required/>
+      </div>
+
+      <div class="f">
+        <label>Votre message</label>
+        <textarea name="message" id="messageField" placeholder="Racontez-nous tout..." required></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Envoyer le message →</button>
+    </form>
+  </div>
+
+  <!-- Succès -->
+  <div class="success-box" id="successBox">
+    <div class="success-emoji">🎉</div>
+    <div class="success-title">Message reçu !</div>
+    <div class="success-desc">Merci pour votre message. On le lit et on répond — promis. En attendant, allez explorer les calculateurs !</div>
+    <a class="success-back" href="index.html">← Retour aux calculateurs</a>
+  </div>
+</div>
+
+<div class="info-strip">
+  <div class="info-inner">
+    🔒 <span>Vos données sont uniquement utilisées pour répondre à votre message. Aucun tracking, aucune revente.</span>
+  </div>
+</div>
+
+<script>
+function setRaison(el, label){
+  document.querySelectorAll('.raison').forEach(function(r){ r.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('sujetHidden').value = label;
+
+  // Pré-remplir le placeholder selon le contexte
+  var field = document.getElementById('messageField');
+  if(label.includes('Idée')) field.placeholder = 'Décrivez votre idée de calculateur — quel sujet, quelles données, pourquoi ça serait utile...';
+  else if(label.includes('Erreur')) field.placeholder = 'Décrivez l\'erreur — sur quelle page, quel chiffre vous semble faux, et si possible la source que vous avez trouvée...';
+  else if(label.includes('bonjour')) field.placeholder = 'Bonjour ! 👋';
+  else field.placeholder = 'Racontez-nous tout...';
+}
+
+document.getElementById('contactForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours...';
+
+  var data = new FormData(this);
+  fetch('https://formspree.io/f/mnjlqlno', {
+    method: 'POST',
+    body: data,
+    headers: { 'Accept': 'application/json' }
+  }).then(function(r){
+    if(r.ok){
+      document.getElementById('formCard').style.display = 'none';
+      document.getElementById('successBox').style.display = 'block';
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Envoyer le message →';
+      alert('Oups ! Une erreur s\'est produite. Réessayez dans quelques instants.');
+    }
+  }).catch(function(){
+    btn.disabled = false;
+    btn.textContent = 'Envoyer le message →';
+    alert('Oups ! Une erreur s\'est produite. Réessayez dans quelques instants.');
+  });
+});
+</script>
+
+<script src="/suggestions.js"></script>
+<script>renderFooter('contact')</script>
+</body>
+</html>
