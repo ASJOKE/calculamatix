@@ -419,56 +419,75 @@
       border-radius: 100px;
     }
 
-    /* ─── SEO TEXT ─── */
-    .seo-section {
-      max-width: 800px;
-      margin: 80px auto 0;
-      padding: 0 24px;
-      border-top: 1px solid #1e1e1e;
-      padding-top: 48px;
-    }
+/* ─── SEO ─── */
+.seo-section {
+  max-width: 1100px;
+  margin: 60px auto 0;
+  padding: 32px 24px;
+  border-top: 1px solid #141414;
+}
 
-    .seo-section h2 {
-      font-family: 'Unbounded', sans-serif;
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      color: var(--text);
-    }
+.seo-section h2 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #222;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+}
 
-    .seo-section p {
-      font-size: 15px;
-      color: #555;
-      line-height: 1.8;
-      margin-bottom: 16px;
-    }
+.seo-section p {
+  font-size: 12px;
+  color: #1e1e1e;
+  line-height: 1.8;
+  margin-bottom: 8px;
+  max-width: 720px;
+}
 
-    /* ─── FOOTER ─── */
-    footer {
-      max-width: 1100px;
-      margin: 60px auto 0;
-      padding: 32px 24px;
-      border-top: 1px solid #1a1a1a;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: gap;
-      gap: 16px;
-    }
+/* ─── FOOTER ─── */
+footer {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 24px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
 
-    .footer-logo {
-      font-family: 'Unbounded', sans-serif;
-      font-size: 14px;
-      font-weight: 900;
-    }
+.footer-logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 15px;
+  font-weight: 900;
+  color: #F0EDE6;
+  letter-spacing: -0.5px;
+}
 
-    .footer-logo span { color: var(--yellow); }
+.footer-logo span { color: var(--yellow); }
 
-    footer p {
-      font-size: 12px;
-      color: #333;
-    }
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
 
+.footer-links a {
+  font-size: 13px;
+  color: #444;
+  text-decoration: none;
+  font-family: 'DM Sans', sans-serif;
+  transition: color .15s;
+}
+
+.footer-links a:hover { color: var(--yellow); }
+
+footer p {
+  font-size: 12px;
+  color: #222;
+  font-family: 'DM Mono', monospace;
+}
     /* ─── ANIMATIONS ─── */
     .card {
       animation: fadeUp 0.4s ease both;
@@ -1106,12 +1125,13 @@
 
 <footer>
   <div class="footer-logo">Calcula<span>matix</span></div>
+  <div class="footer-links">
     <a href="a-propos.html">À propos</a>
-<a href="contact.html">Contact</a>
-
+    <a href="contact.html">Contact</a>
+  </div>
   <p>Fait avec curiosité — 2025</p>
 </footer>
-
+  
 <script>
   // Search
   const searchInput = document.getElementById('searchInput');
