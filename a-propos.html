@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>À propos — Calculamatix, les calculateurs de la vraie vie</title>
+  <meta name="description" content="Calculamatix c'est des calculateurs gratuits, sans pub, sur des questions que tout le monde se pose vraiment. Coût d'un enfant, test politique, impact écolo... Le tout sourcé et ludique."/>
+  <link rel="canonical" href="https://calculamatix.com/a-propos"/>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
+  <meta property="og:title" content="À propos — Calculamatix"/>
+  <meta property="og:description" content="Des calculateurs gratuits et ludiques sur des questions que tout le monde se pose vraiment."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://calculamatix.com/a-propos"/>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"AboutPage","name":"À propos de Calculamatix","description":"Des calculateurs gratuits et ludiques sur des questions de la vraie vie.","url":"https://calculamatix.com/a-propos","publisher":{"@type":"Organization","name":"Calculamatix","url":"https://calculamatix.com"}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#0e0e0e;--card:#1a1a1a;--border:#2a2a2a;--yellow:#FFD93D;--orange:#FF6B2B;--green:#3BFF9E;--blue:#3BB5FF;--purple:#A855F7;--text:#F0EDE6;--muted:#666}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;padding-bottom:80px}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 40% at 50% 0%,rgba(255,217,61,.04),transparent);pointer-events:none;z-index:0}
+
+    nav{position:relative;z-index:10;max-width:1100px;margin:0 auto;padding:28px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Unbounded',sans-serif;font-weight:900;font-size:20px;text-decoration:none;color:var(--text);letter-spacing:-1px}
+    .logo span{color:var(--yellow)}
+    .back{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+    .back:hover{color:var(--text)}
+
+    .hero{position:relative;z-index:10;max-width:720px;margin:60px auto 0;padding:0 24px;text-align:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--yellow);background:rgba(255,217,61,.08);border:1px solid rgba(255,217,61,.2);padding:5px 16px;border-radius:100px;margin-bottom:24px;font-family:'DM Mono',monospace;letter-spacing:.5px}
+    h1{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(26px,5vw,50px);letter-spacing:-2px;line-height:1.05;margin-bottom:20px}
+    h1 em{color:var(--yellow);font-style:normal}
+    .hero-lead{font-size:clamp(15px,2vw,17px);color:var(--muted);line-height:1.8;max-width:560px;margin:0 auto}
+
+    .content{position:relative;z-index:10;max-width:720px;margin:60px auto 0;padding:0 24px;display:flex;flex-direction:column;gap:52px}
+
+    .bloc-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--yellow);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}
+    .bloc h2{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(17px,2.5vw,24px);letter-spacing:-1px;line-height:1.2;margin-bottom:14px}
+    .bloc p{font-size:15px;color:var(--muted);line-height:1.85;margin-bottom:12px}
+    .bloc p:last-child{margin-bottom:0}
+    .bloc p strong{color:var(--text);font-weight:600}
+
+    .rules{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+    .rule{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;background:var(--card);border:1px solid var(--border);border-radius:14px;transition:border-color .2s}
+    .rule:hover{border-color:#3a3a3a}
+    .rule-emoji{font-size:24px;flex-shrink:0;margin-top:1px}
+    .rule-text strong{display:block;font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
+    .rule-text span{font-size:12px;color:var(--muted);line-height:1.5}
+
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+    .stat-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center}
+    .stat-num{font-family:'Unbounded',sans-serif;font-size:clamp(20px,3vw,28px);font-weight:900;color:var(--yellow);margin-bottom:4px}
+    .stat-lbl{font-size:11px;color:var(--muted);line-height:1.4}
+
+    .faq{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+    .faq-item{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+    .faq-q{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;cursor:pointer;font-size:14px;font-weight:600;color:var(--text);gap:12px;transition:background .15s}
+    .faq-q:hover{background:#1f1f1f}
+    .faq-icon{color:var(--yellow);font-size:18px;flex-shrink:0;transition:transform .2s}
+    .faq-a{font-size:13px;color:var(--muted);line-height:1.7;padding:0 18px 16px;display:none}
+    .faq-item.open .faq-icon{transform:rotate(45deg)}
+    .faq-item.open .faq-a{display:block}
+
+    .calcs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+    .calc-chip{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--muted);font-size:12px;transition:all .15s}
+    .calc-chip:hover{border-color:#3a3a3a;color:var(--text);transform:translateY(-1px)}
+
+    .sep{height:1px;background:var(--border)}
+
+    .cta-box{background:linear-gradient(135deg,rgba(255,217,61,.08),rgba(255,107,43,.04));border:1px solid rgba(255,217,61,.2);border-radius:20px;padding:36px;text-align:center}
+    .cta-box h2{font-family:'Unbounded',sans-serif;font-size:clamp(17px,2.5vw,22px);font-weight:900;letter-spacing:-1px;margin-bottom:10px}
+    .cta-box p{font-size:14px;color:var(--muted);margin-bottom:22px;line-height:1.7}
+    .cta-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+    .cta-btn{display:inline-flex;align-items:center;gap:8px;background:var(--yellow);color:#000;font-family:'Unbounded',sans-serif;font-weight:700;font-size:12px;padding:13px 24px;border-radius:11px;text-decoration:none;transition:opacity .2s,transform .2s;letter-spacing:.3px}
+    .cta-btn:hover{opacity:.88;transform:translateY(-2px)}
+    .cta-btn-ghost{background:transparent;border:1px solid #3a3a3a;color:var(--muted)}
+    .cta-btn-ghost:hover{color:var(--text);border-color:#555}
+
+    @media(max-width:600px){.stats-row{grid-template-columns:1fr 1fr}.calcs-grid{grid-template-columns:1fr 1fr}.cta-btns{flex-direction:column;align-items:center}}
+  </style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Retour</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">✦ Mais c'est quoi ce site ?</div>
+  <h1>Des calculs pour des trucs<br><em>vraiment utiles</em></h1>
+  <p class="hero-lead">Pas de pub. Pas de compte à créer. Pas de bullshit. Juste des réponses chiffrées à des questions que tout le monde se pose — et que personne ne prenait le temps de calculer proprement.</p>
+</div>
+
+<div class="content">
+
+  <div class="bloc">
+    <div class="bloc-label">🌱 L'origine</div>
+    <h2>Comment c'est né</h2>
+    <p>Tout a commencé avec une question très bête : <strong>passer à l'E85 ça vaut vraiment le coup ou pas ?</strong> On a cherché un calculateur simple sur Google. On a trouvé des articles de blog flous, des tableurs Excel à télécharger et des sites avec 47 pubs qui clignotent.</p>
+    <p>Alors on en a codé un en une heure. Puis un autre sur le crédit conso. Puis sur le coût d'un enfant. Puis sur le test politique. Et on s'est rendu compte que <strong>des dizaines de questions de la vraie vie méritaient un vrai outil</strong> — pas un article, pas une app avec abonnement.</p>
+    <p>C'est ça Calculamatix. Des calculs sérieux sur des sujets qui nous concernent tous — présentés de façon claire, sourcée, et sans se prendre la tête.</p>
+  </div>
+
+  <div class="sep"></div>
+
+  <div class="bloc">
+    <div class="bloc-label">📋 Nos règles</div>
+    <h2>Ce qu'on s'est promis</h2>
+    <div class="rules">
+      <div class="rule">
+        <div class="rule-emoji">🚫</div>
+        <div class="rule-text"><strong>Zéro pub, pour toujours</strong><span>Pas de Google Ads, pas de bannières, pas de "partenaires". On préfère rester petit que de vendre votre attention.</span></div>
+      </div>
+      <div class="rule">
+        <div class="rule-emoji">📚</div>
+        <div class="rule-text"><strong>Chaque chiffre est sourcé</strong><span>INSEE, ADEME, CAF, INSERM, CEVIPOF... Vous pouvez vérifier. On cite nos sources en bas de chaque calculateur.</span></div>
+      </div>
+      <div class="rule">
+        <div class="rule-emoji">🎯</div>
+        <div class="rule-text"><strong>Utile ET fun</strong><span>On fait des calculateurs éducatifs et ludiques — pas des rapports ennuyeux. Si c'est pas agréable à utiliser, on recommence.</span></div>
+      </div>
+      <div class="rule">
+        <div class="rule-emoji">🙅</div>
+        <div class="rule-text"><strong>Pas de culpabilisation</strong><span>Nos calculateurs écolos ne vous disent pas d'arrêter de voyager. Les données informent, elles ne condamnent pas.</span></div>
+      </div>
+      <div class="rule">
+        <div class="rule-emoji">♾️</div>
+        <div class="rule-text"><strong>Gratuit pour toujours</strong><span>Pas de version premium, pas de freemium, pas de paywall. Tous les calculateurs sont et resteront gratuits.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+
+  <div class="bloc">
+    <div class="bloc-label">📊 En chiffres</div>
+    <h2>Calculamatix aujourd'hui</h2>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num">20+</div><div class="stat-lbl">calculateurs dispo</div></div>
+      <div class="stat-box"><div class="stat-num">0€</div><div class="stat-lbl">ça coûte</div></div>
+      <div class="stat-box"><div class="stat-num">0</div><div class="stat-lbl">publicités</div></div>
+      <div class="stat-box"><div class="stat-num">50+</div><div class="stat-lbl">sources citées</div></div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+
+  <div class="bloc">
+    <div class="bloc-label">❓ FAQ</div>
+    <h2>Les questions qu'on nous pose</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">C'est vraiment gratuit ? Il y a pas un catch ?<span class="faq-icon">+</span></div>
+        <div class="faq-a">Vraiment gratuit. Le site tourne sur Netlify (gratuit pour les petits sites) et on n'a pas de coûts majeurs. On fait ça parce qu'on trouve ça utile, pas pour gagner de l'argent. Si un jour on cherche à se financer, ce sera transparent — un bouton "soutenir" optionnel, jamais de pub cachée.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Vous récoltez mes données ?<span class="faq-icon">+</span></div>
+        <div class="faq-a">Non. Tous les calculs se passent dans votre navigateur — rien n'est envoyé sur nos serveurs. Pas de Google Analytics, pas de cookies publicitaires. Vos réponses au test politique restent sur votre écran, point.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">D'où viennent vos chiffres ?<span class="faq-icon">+</span></div>
+        <div class="faq-a">On s'appuie sur des données publiques et académiques : INSEE pour les revenus, ADEME pour l'écologie, CAF et UNAF pour la famille, INSERM pour la santé, CEVIPOF/Sciences Po pour le politique, GIEC pour le climat. Les sources sont citées en bas de chaque calculateur.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">J'ai trouvé une erreur, comment vous prévenir ?<span class="faq-icon">+</span></div>
+        <div class="faq-a">On adore ça ! La précision des données c'est ce qui nous différencie. Envoyez-nous un message via la page contact avec la source que vous avez trouvée — on met à jour rapidement.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Vous allez faire quoi comme prochain calculateur ?<span class="faq-icon">+</span></div>
+        <div class="faq-a">Plein de choses ! Le coût de vos abonnements oubliés, le coût de votre café quotidien, combien vaut votre attention pour les GAFAM... Si vous avez une idée, la page contact est là pour ça.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep"></div>
+
+  <div class="bloc">
+    <div class="bloc-label">🧮 Ce qu'on a fait</div>
+    <h2>Tous les calculateurs</h2>
+    <div class="calcs-grid">
+      <a class="calc-chip" href="cout-enfant.html">👶 Coût d'un enfant</a>
+      <a class="calc-chip" href="cout-chien.html">🐕 Coût d'un chien</a>
+      <a class="calc-chip" href="cout-sommeil.html">😴 Coût du sommeil</a>
+      <a class="calc-chip" href="impact-ecolo.html">🌍 Impact écologique</a>
+      <a class="calc-chip" href="impact-voyage.html">✈️ Impact voyage</a>
+      <a class="calc-chip" href="bilan-voyageur.html">🗺️ Bilan voyageur</a>
+      <a class="calc-chip" href="test-politique-2.html">🗳️ Test politique</a>
+      <a class="calc-chip" href="trajectoire-sociale.html">🏛️ Trajectoire sociale</a>
+      <a class="calc-chip" href="louer-vs-acheter.html">🏠 Louer vs Acheter</a>
+      <a class="calc-chip" href="panneaux-solaires.html">☀️ Panneaux solaires</a>
+      <a class="calc-chip" href="voiture-electrique-vs-thermique.html">⚡ Voiture électrique</a>
+      <a class="calc-chip" href="credit-conso.html">💳 Crédit conso</a>
+      <a class="calc-chip" href="roi-grande-ecole.html">🎓 ROI Grande École</a>
+      <a class="calc-chip" href="roi-formation.html">📚 ROI Formation</a>
+      <a class="calc-chip" href="e85-ethanol.html">⛽ E85 vs SP95</a>
+      <a class="calc-chip" href="changer-telephone.html">📱 Changer de tél ?</a>
+      <a class="calc-chip" href="renover-ou-demenager.html">🔨 Rénover ou partir</a>
+      <a class="calc-chip" href="perte-de-poids.html">⚖️ Perte de poids</a>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <h2>Une idée de calculateur ?</h2>
+    <p>On est toujours en train d'en faire de nouveaux. Si vous avez une question de la vraie vie qui mériterait un vrai calcul — on veut l'entendre.</p>
+    <div class="cta-btns">
+      <a class="cta-btn" href="index.html">Voir tous les calculateurs →</a>
+      <a class="cta-btn cta-btn-ghost" href="contact.html">Proposer une idée</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggleFaq(el){
+  el.parentElement.classList.toggle('open');
+}
+</script>
+<script src="/suggestions.js"></script>
+<script>renderFooter('a-propos')</script>
+</body>
+</html>
