@@ -528,6 +528,82 @@
   </div>
 </section>
 
+  <!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <span>💡 Un Français dort 1h30 de moins qu'en 1970</span>
+    <span>👶 Un enfant coûte 160 000€ en moyenne sur 18 ans</span>
+    <span>🌍 9 tonnes de CO₂ par Français par an</span>
+    <span>🐕 Un chien coûte jusqu'à 1 500€ par an</span>
+    <span>😴 Le manque de sommeil coûte 3 000€/an en productivité perdue</span>
+    <span>🏠 Loyer vs achat : le point d'équilibre est à 7 ans en moyenne</span>
+    <span>⚡ Une voiture électrique devient rentable après 4 ans</span>
+    <span>🎓 Un bac +5 rapporte 300 000€ de plus sur une carrière</span>
+    <span>🌍 Un vol Paris-New York = 2,5 tonnes de CO₂ par personne</span>
+    <span>📱 88% des gens changent de téléphone alors qu'il fonctionne encore</span>
+    <span>☀️ Des panneaux solaires s'amortissent en 8 ans en moyenne</span>
+    <span>🗳️ 60% des Français ne savent pas se situer sur l'échiquier politique</span>
+    <!-- Doublon pour boucle infinie fluide -->
+    <span>💡 Un Français dort 1h30 de moins qu'en 1970</span>
+    <span>👶 Un enfant coûte 160 000€ en moyenne sur 18 ans</span>
+    <span>🌍 9 tonnes de CO₂ par Français par an</span>
+    <span>🐕 Un chien coûte jusqu'à 1 500€ par an</span>
+    <span>😴 Le manque de sommeil coûte 3 000€/an en productivité perdue</span>
+    <span>🏠 Loyer vs achat : le point d'équilibre est à 7 ans en moyenne</span>
+    <span>⚡ Une voiture électrique devient rentable après 4 ans</span>
+    <span>🎓 Un bac +5 rapporte 300 000€ de plus sur une carrière</span>
+    <span>🌍 Un vol Paris-New York = 2,5 tonnes de CO₂ par personne</span>
+    <span>📱 88% des gens changent de téléphone alors qu'il fonctionne encore</span>
+    <span>☀️ Des panneaux solaires s'amortissent en 8 ans en moyenne</span>
+    <span>🗳️ 60% des Français ne savent pas se situer sur l'échiquier politique</span>
+  </div>
+</div>
+
+<style>
+.ticker-wrap {
+  width: 100%;
+  overflow: hidden;
+  background: #111;
+  border-top: 1px solid #1a1a1a;
+  border-bottom: 1px solid #1a1a1a;
+  padding: 12px 0;
+  position: relative;
+  z-index: 10;
+  mask-image: linear-gradient(90deg, transparent, black 5%, black 95%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 5%, black 95%, transparent);
+}
+.ticker-track {
+  display: flex;
+  gap: 0;
+  width: max-content;
+  animation: ticker 40s linear infinite;
+}
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+.ticker-track span {
+  font-size: 13px;
+  color: #555;
+  white-space: nowrap;
+  padding: 0 40px;
+  font-family: 'DM Mono', monospace;
+  transition: color 0.2s;
+}
+.ticker-track span:hover {
+  color: #FFD93D;
+  cursor: default;
+}
+.ticker-track span::after {
+  content: '·';
+  margin-left: 40px;
+  color: #2a2a2a;
+}
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+</style>
+
 <div class="stats">
   <div class="stat">
     <div class="stat-num" id="calc-count">20</div>
