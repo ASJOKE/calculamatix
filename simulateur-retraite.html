@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simulateur retraite 2025 — Calculez votre pension, votre âge de départ | Calculamatix</title>
+  <meta name="description" content="Calculez votre retraite : âge de départ, trimestres manquants, montant de pension estimé, décote/surcote. Données officielles CNAV 2025. Gratuit, clair, sans jargon."/>
+  <link rel="canonical" href="https://calculamatix.com/simulateur-retraite"/>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0a0f0a;--bg2:#111811;--card:#161e16;--border:#223022;
+      --green:#2ECC71;--green2:#27AE60;--amber:#F39C12;--red:#E74C3C;
+      --blue:#3498DB;--teal:#1ABC9C;--purple:#9B59B6;--gold:#F1C40F;
+      --text:#EEF5EE;--muted:#5A7A5A;--muted2:#2A3A2A;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;padding-bottom:80px;font-size:16px;line-height:1.6}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:radial-gradient(ellipse 70% 40% at 50% 0%,rgba(46,204,113,.05),transparent),
+                 radial-gradient(ellipse 40% 30% at 80% 80%,rgba(52,152,219,.03),transparent)}
+
+    /* ─── NAV ─── */
+    nav{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--gold)}
+    .back-btn{font-size:14px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .15s}
+    .back-btn:hover{color:var(--text)}
+
+    /* ─── HERO ─── */
+    .hero{position:relative;z-index:10;max-width:1060px;margin:48px auto 0;padding:0 24px;text-align:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--green);background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.25);padding:7px 18px;border-radius:100px;margin-bottom:20px;font-family:'DM Mono',monospace}
+    h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,5vw,52px);letter-spacing:-1.5px;line-height:1.1;margin-bottom:14px}
+    h1 em{color:var(--green);font-style:normal}
+    .hero-sub{font-size:17px;color:var(--muted);line-height:1.75;max-width:620px;margin:0 auto 16px}
+    .hero-note{font-size:13px;color:var(--muted2);font-family:'DM Mono',monospace;padding:10px 16px;background:rgba(46,204,113,.04);border:1px solid rgba(46,204,113,.1);border-radius:10px;display:inline-block}
+
+    /* ─── RÉSULTAT BANNER ─── */
+    .result-banner{position:relative;z-index:10;max-width:1060px;margin:32px auto 0;padding:0 24px}
+    .rb-inner{border-radius:20px;padding:28px 32px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;border:2px solid rgba(46,204,113,.3);background:rgba(46,204,113,.05);transition:all .4s}
+    .rb-main{text-align:center;min-width:160px}
+    .rb-emoji{font-size:42px;display:block;margin-bottom:8px}
+    .rb-pension{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1;color:var(--green)}
+    .rb-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:5px;font-family:'DM Mono',monospace}
+    .rb-divider{width:1px;height:70px;background:rgba(255,255,255,.08);flex-shrink:0}
+    .rb-stats{display:flex;flex-wrap:wrap;gap:16px;flex:1}
+    .rb-stat{text-align:center;min-width:120px}
+    .rb-stat-v{font-family:'Syne',sans-serif;font-size:18px;font-weight:700}
+    .rb-stat-l{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4}
+
+    /* ─── TABS ─── */
+    .tabs-wrap{position:relative;z-index:10;max-width:1060px;margin:24px auto 0;padding:0 24px}
+    .tabs{display:flex;gap:4px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:5px;flex-wrap:wrap}
+    .tab{background:transparent;border:none;color:var(--muted);padding:10px 16px;border-radius:10px;font-size:14px;font-family:inherit;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+    .tab.on{background:var(--green);color:#051205;font-weight:700}
+    .panel{display:none}.panel.on{display:block}
+
+    /* ─── CONTENT ─── */
+    .wrap{position:relative;z-index:10;max-width:1060px;margin:20px auto 0;padding:0 24px;display:flex;flex-direction:column;gap:16px}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+
+    /* ─── CARD ─── */
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px}
+    .ctitle{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:18px}
+
+    /* ─── FORMULAIRE ─── */
+    .f{margin-bottom:18px}.f:last-child{margin-bottom:0}
+    .f label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;color:var(--text);margin-bottom:8px;font-weight:500}
+    .fval{font-family:'DM Mono',monospace;color:var(--green);font-size:14px;font-weight:700}
+    .fhint{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.6;background:rgba(255,255,255,.02);padding:8px 10px;border-radius:8px;border-left:2px solid var(--border)}
+
+    input[type=range]{width:100%;-webkit-appearance:none;height:5px;background:var(--muted2);border-radius:3px;outline:none;cursor:pointer;margin:4px 0}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:var(--green);border-radius:50%;box-shadow:0 0 10px rgba(46,204,113,.4)}
+
+    select,input[type=number]{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:12px;color:var(--text);padding:13px 16px;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s}
+    select:focus,input[type=number]:focus{border-color:var(--green)}
+    select option{background:var(--bg2)}
+
+    /* ─── KPI ─── */
+    .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .kpi{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;transition:border-color .2s}
+    .kpi:hover{border-color:rgba(46,204,113,.3)}
+    .kpi-emoji{font-size:28px;display:block;margin-bottom:8px}
+    .kpi-val{font-family:'Syne',sans-serif;font-size:clamp(18px,2.5vw,24px);font-weight:800;line-height:1;margin-bottom:5px}
+    .kpi-label{font-size:12px;color:var(--muted);line-height:1.4}
+    .kpi-sub{font-size:11px;color:var(--muted2);margin-top:5px;font-family:'DM Mono',monospace}
+
+    /* ─── BARRES ─── */
+    .barre{margin-bottom:14px}
+    .barre-top{display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px}
+    .barre-label{color:var(--text);font-weight:500}
+    .barre-val{font-family:'DM Mono',monospace;font-weight:700}
+    .barre-track{height:12px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden}
+    .barre-fill{height:100%;border-radius:6px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+    .barre-note{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5}
+
+    /* ─── TIMELINE ─── */
+    .timeline{display:flex;flex-direction:column;gap:0;position:relative}
+    .timeline::before{content:'';position:absolute;left:20px;top:0;bottom:0;width:2px;background:var(--border)}
+    .tl-item{display:flex;gap:16px;padding:0 0 24px 0;position:relative}
+    .tl-dot{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;font-size:18px;font-weight:700;font-family:'Syne',sans-serif}
+    .tl-content{flex:1;padding-top:8px}
+    .tl-age{font-size:16px;font-weight:700;font-family:'Syne',sans-serif;margin-bottom:3px}
+    .tl-desc{font-size:14px;color:var(--muted);line-height:1.6}
+    .tl-badge{display:inline-block;font-size:11px;font-family:'DM Mono',monospace;padding:3px 10px;border-radius:100px;margin-top:5px}
+
+    /* ─── TABLEAU ─── */
+    .table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
+    table{width:100%;border-collapse:collapse;font-size:14px}
+    th{background:var(--bg2);color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.8px;padding:12px 16px;text-align:left;border-bottom:1px solid var(--border)}
+    td{padding:12px 16px;border-bottom:1px solid var(--muted2);color:var(--text);font-family:'DM Mono',monospace}
+    tr:last-child td{border-bottom:none;font-weight:700}
+    tr:hover td{background:rgba(46,204,113,.03)}
+    .td-green{color:var(--green)}
+    .td-red{color:var(--red)}
+    .td-amber{color:var(--amber)}
+
+    /* ─── INFO / ALERTE ─── */
+    .info-box{background:rgba(46,204,113,.06);border:1px solid rgba(46,204,113,.2);border-radius:12px;padding:16px 18px;font-size:14px;color:var(--muted);line-height:1.75;margin-top:12px}
+    .info-box strong{color:var(--text);font-weight:600}
+    .warn-box{background:rgba(243,156,18,.06);border:1px solid rgba(243,156,18,.2);border-radius:12px;padding:16px 18px;font-size:14px;color:var(--muted);line-height:1.75;margin-top:12px}
+    .warn-box strong{color:var(--amber)}
+    .good-box{background:rgba(46,204,113,.06);border:1px solid rgba(46,204,113,.2);border-radius:12px;padding:16px 18px;font-size:14px;color:var(--muted);line-height:1.75;margin-top:12px}
+    .good-box strong{color:var(--green)}
+    .disc-box{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-size:12px;color:var(--muted2);line-height:1.7;margin-top:12px;font-family:'DM Mono',monospace}
+
+    /* ─── CHART ─── */
+    .cw{position:relative;width:100%;height:260px;margin-top:12px}
+    .cw-lg{height:320px}
+
+    /* ─── SECTION SEP ─── */
+    .sep{height:1px;background:var(--border);margin:8px 0}
+
+    /* ─── MONTANT HIGHLIGHT ─── */
+    .montant-big{font-family:'Syne',sans-serif;font-size:clamp(32px,5vw,52px);font-weight:800;line-height:1;margin:12px 0}
+
+    /* ─── PRINT ─── */
+    @media print{
+      nav,.tabs-wrap,button{display:none!important}
+      .panel{display:block!important}
+      body{background:#fff;color:#111}
+      .card{border:1px solid #ddd;background:#fff}
+    }
+
+    @media(max-width:640px){
+      .g2,.g3,.kpi-grid{grid-template-columns:1fr}
+      .rb-inner{flex-direction:column}
+      .rb-divider{display:none}
+      .tab{font-size:13px;padding:8px 12px}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back-btn" href="index.html">← Retour</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">🏛️ Retraite · Données officielles · CNAV 2025</div>
+  <h1>Mon simulateur<br><em>retraite</em> complet</h1>
+  <p class="hero-sub">À quel âge partirez-vous vraiment ? Combien toucherez-vous ? Que faire si vous avez des trimestres manquants ? Des réponses claires, sans jargon.</p>
+  <div class="hero-note">⚠️ Outil de simulation — pour un calcul officiel certifié, consultez info-retraite.fr ou votre caisse de retraite</div>
+</div>
+
+<!-- RÉSULTAT BANNER -->
+<div class="result-banner">
+  <div class="rb-inner" id="rb-inner">
+    <div class="rb-main">
+      <span class="rb-emoji" id="rb-emoji">🕐</span>
+      <div class="rb-pension" id="rb-pension">— €/mois</div>
+      <div class="rb-label">Pension estimée nette</div>
+    </div>
+    <div class="rb-divider"></div>
+    <div class="rb-stats">
+      <div class="rb-stat"><div class="rb-stat-v" id="rb-age" style="color:var(--green)">—</div><div class="rb-stat-l">Âge de départ<br>au taux plein</div></div>
+      <div class="rb-stat"><div class="rb-stat-v" id="rb-trimestres" style="color:var(--blue)">—</div><div class="rb-stat-l">Trimestres<br>requis / validés</div></div>
+      <div class="rb-stat"><div class="rb-stat-v" id="rb-manquants" style="color:var(--amber)">—</div><div class="rb-stat-l">Trimestres<br>manquants</div></div>
+      <div class="rb-stat"><div class="rb-stat-v" id="rb-taux" style="color:var(--teal)">—</div><div class="rb-stat-l">Taux de<br>remplacement</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('profil',this)">👤 Mon profil</button>
+    <button class="tab" onclick="showTab('carriere',this)">📋 Ma carrière</button>
+    <button class="tab" onclick="showTab('pension',this)">💰 Ma pension</button>
+    <button class="tab" onclick="showTab('scenarios',this)">📊 Scénarios</button>
+    <button class="tab" onclick="showTab('conseils',this)">💡 Conseils</button>
+  </div>
+</div>
+
+<!-- ════ PROFIL ════ -->
+<div class="panel on" id="p-profil"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">👤 Votre situation</div>
+
+      <div class="f">
+        <label>Votre année de naissance <span class="fval" id="v-naissance">1965</span></label>
+        <input type="range" id="i-naissance" min="1950" max="1990" step="1" value="1965" oninput="recalc()"/>
+        <div class="fhint">Votre année de naissance détermine votre âge légal de départ et le nombre de trimestres requis. Source : Décret réforme 2023 + LFSS 2026.</div>
+      </div>
+
+      <div class="f">
+        <label>Votre statut professionnel</label>
+        <select id="i-statut" onchange="recalc()">
+          <option value="prive" selected>👔 Salarié du secteur privé (CNAV + Agirc-Arrco)</option>
+          <option value="fonctionnaire">🏛️ Fonctionnaire d'État</option>
+          <option value="hospitalier">🏥 Fonctionnaire hospitalier / territorial</option>
+          <option value="independant">💼 Travailleur indépendant (SSI)</option>
+          <option value="liberal">⚖️ Profession libérale (CIPAV)</option>
+          <option value="agricole">🌾 Salarié agricole (MSA)</option>
+          <option value="mixte">🔀 Carrière mixte (plusieurs régimes)</option>
+        </select>
+      </div>
+
+      <div class="f">
+        <label>Votre situation familiale</label>
+        <select id="i-famille" onchange="recalc()">
+          <option value="0">Sans enfant</option>
+          <option value="1">1 enfant</option>
+          <option value="2">2 enfants</option>
+          <option value="3" selected>3 enfants ou plus (+10% pension de base)</option>
+        </select>
+        <div class="fhint">À partir de 3 enfants : majoration de 10% sur la pension de base du régime général. Source : Article L351-12 du Code de la Sécurité sociale.</div>
+      </div>
+
+      <div class="f">
+        <label>Trimestres déjà validés <span class="fval" id="v-trim-valides">100 trim.</span></label>
+        <input type="range" id="i-trim-valides" min="0" max="200" step="1" value="100" oninput="recalc()"/>
+        <div class="fhint">Vous trouvez ce chiffre sur votre relevé de carrière (Assurance retraite en ligne sur info-retraite.fr). Compte les trimestres cotisés + assimilés (chômage, maladie, maternité).</div>
+      </div>
+
+      <div class="f">
+        <label>Âge actuel estimé <span class="fval" id="v-age-actuel">—</span></label>
+        <div id="age-actuel-display" style="padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;font-family:'DM Mono',monospace;font-size:14px;color:var(--green)">Calculé automatiquement</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ctitle">📊 Vos droits actuels</div>
+      <div id="droits-actuels">
+        <div style="font-size:14px;color:var(--muted)">Complétez votre profil pour voir vos droits.</div>
+      </div>
+
+      <div class="sep" style="margin:16px 0"></div>
+
+      <div class="ctitle" style="margin-top:0">⏱️ Votre âge légal de départ</div>
+      <div id="age-legal-detail"></div>
+
+      <div class="info-box" style="margin-top:16px">
+        <strong>Réforme 2023 + LFSS 2026 :</strong> L'âge légal de départ a été progressivement relevé à 64 ans. La LFSS 2026 a suspendu la réforme pour certaines générations. L'âge du taux plein automatique (sans décote quelle que soit la situation) reste entre 65 et 67 ans selon votre année de naissance. Source : service-public.fr · info-retraite.fr
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ════ CARRIÈRE ════ -->
+<div class="panel" id="p-carriere"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">💼 Votre parcours professionnel</div>
+
+      <div class="f">
+        <label>Salaire brut mensuel actuel <span class="fval" id="v-salaire">2 500 €</span></label>
+        <input type="range" id="i-salaire" min="1000" max="15000" step="100" value="2500" oninput="recalc()"/>
+        <div class="fhint">Pour le privé : base de calcul plafonnée au Plafond Annuel de la Sécurité Sociale (PASS = 46 368 €/an en 2025). Au-delà, les cotisations retraite de base ne s'appliquent plus sur la partie excédentaire.</div>
+      </div>
+
+      <div class="f">
+        <label>Évolution de salaire estimée / an <span class="fval" id="v-evol-salaire">2%</span></label>
+        <input type="range" id="i-evol-salaire" min="0" max="10" step="0.5" value="2" oninput="recalc()"/>
+        <div class="fhint">L'inflation moyenne sur 30 ans est d'environ 1,5-2% / an. Votre salaire moyen des 25 meilleures années est revalorisé selon l'inflation officielle.</div>
+      </div>
+
+      <div class="f">
+        <label>Périodes hors emploi (chômage, maladie, congé parental) <span class="fval" id="v-hors-emploi">0 trim.</span></label>
+        <input type="range" id="i-hors-emploi" min="0" max="40" step="1" value="0" oninput="recalc()"/>
+        <div class="fhint">Ces périodes génèrent des trimestres assimilés : 1 trimestre tous les 50 jours de chômage indemnisé (max 4/an). La maladie et la maternité comptent aussi. Source : CNAV 2025.</div>
+      </div>
+
+      <div class="f">
+        <label>Trimestres carrière longue (début avant 20 ans) <span class="fval" id="v-carriere-longue">0 trim.</span></label>
+        <input type="range" id="i-carriere-longue" min="0" max="20" step="1" value="0" oninput="recalc()"/>
+        <div class="fhint">Si vous avez commencé à travailler avant 20 ans avec suffisamment de trimestres cotisés, vous pouvez partir plus tôt (dès 58-60 ans selon les cas). Dispositif "carrière longue".</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ctitle">🧮 Trimestres — votre situation</div>
+      <div id="trimestres-detail"></div>
+
+      <div class="sep" style="margin:16px 0"></div>
+
+      <div class="ctitle" style="margin-top:0">📅 Trimestres manquants</div>
+      <div id="trimestres-manquants"></div>
+
+      <div class="info-box" style="margin-top:16px">
+        <strong>Le rachat de trimestres :</strong> Vous pouvez racheter des trimestres manquants (études, années incomplètes). Coût : de 1 500€ à 5 000€ par trimestre selon votre salaire et votre âge. Intéressant surtout si vous êtes proche de la retraite. Consultez votre caisse de retraite.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">📈 Votre carrière projetée — trimestres cumulés</div>
+    <div class="cw"><canvas id="chart-carriere"></canvas></div>
+    <div style="font-size:13px;color:var(--muted);margin-top:10px;line-height:1.6" id="carriere-legende"></div>
+  </div>
+</div></div>
+
+<!-- ════ PENSION ════ -->
+<div class="panel" id="p-pension"><div class="wrap">
+  <div class="kpi-grid" style="margin-bottom:16px">
+    <div class="kpi">
+      <span class="kpi-emoji">🏦</span>
+      <div class="kpi-val" id="kpi-base" style="color:var(--green)">—</div>
+      <div class="kpi-label">Retraite de base<br>(CNAV)</div>
+      <div class="kpi-sub">50% du SAM × trimestres</div>
+    </div>
+    <div class="kpi">
+      <span class="kpi-emoji">➕</span>
+      <div class="kpi-val" id="kpi-compl" style="color:var(--blue)">—</div>
+      <div class="kpi-label">Retraite complémentaire<br>(Agirc-Arrco)</div>
+      <div class="kpi-sub">~50-65% de la base privé</div>
+    </div>
+    <div class="kpi">
+      <span class="kpi-emoji">💰</span>
+      <div class="kpi-val" id="kpi-total" style="color:var(--teal)">—</div>
+      <div class="kpi-label">Total brut mensuel</div>
+      <div class="kpi-sub">Avant prélèvements sociaux</div>
+    </div>
+    <div class="kpi">
+      <span class="kpi-emoji">✅</span>
+      <div class="kpi-val" id="kpi-net" style="color:var(--amber)">—</div>
+      <div class="kpi-label">Estimation nette</div>
+      <div class="kpi-sub">Après CSG/CRDS (~10%)</div>
+    </div>
+    <div class="kpi">
+      <span class="kpi-emoji">📊</span>
+      <div class="kpi-val" id="kpi-taux-rempl" style="color:var(--purple)">—</div>
+      <div class="kpi-label">Taux de remplacement</div>
+      <div class="kpi-sub">% de votre dernier salaire</div>
+    </div>
+    <div class="kpi">
+      <span class="kpi-emoji">🌿</span>
+      <div class="kpi-val" id="kpi-minimum" style="color:var(--green)">903 €</div>
+      <div class="kpi-label">Minimum contributif</div>
+      <div class="kpi-sub">Plancher légal 2025</div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🔢 Détail du calcul</div>
+      <div id="calcul-detail"></div>
+      <div class="disc-box">
+        Les formules utilisées sont celles du régime général CNAV (secteur privé). Retraite de base = SAM × 50% × (trimestres validés / trimestres requis). Complémentaire Agirc-Arrco estimée à 55% de la base. Source : lassuranceretraite.fr · info-retraite.fr · CNAV 2025.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ctitle">📊 Répartition de votre pension</div>
+      <div class="cw"><canvas id="chart-pension"></canvas></div>
+      <div id="pension-note" style="margin-top:12px;font-size:13px;color:var(--muted);line-height:1.6"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">📋 Comparaison décote / taux plein / surcote</div>
+    <div style="font-size:14px;color:var(--muted);margin-bottom:14px;line-height:1.6">Impact sur votre pension selon l'âge de départ choisi. La décote est de <strong style="color:var(--text)">−1,25% par trimestre manquant</strong>. La surcote est de <strong style="color:var(--text)">+1,25% par trimestre supplémentaire</strong>. Source : info-retraite.fr.</div>
+    <div class="table-wrap">
+      <table id="tableau-depart"></table>
+    </div>
+  </div>
+</div></div>
+
+<!-- ════ SCÉNARIOS ════ -->
+<div class="panel" id="p-scenarios"><div class="wrap">
+  <div class="card" style="margin-bottom:0">
+    <div class="ctitle">📈 Évolution de votre pension selon l'âge de départ</div>
+    <div style="font-size:14px;color:var(--muted);margin-bottom:14px;line-height:1.6">Chaque année supplémentaire travaillée peut augmenter votre pension de 3 à 8% selon votre situation. Voici l'impact précis pour votre profil.</div>
+    <div class="cw cw-lg"><canvas id="chart-scenarios"></canvas></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🎯 Scénario — Départ au plus tôt</div>
+      <div id="scenario-tot"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">🏆 Scénario — Départ optimal</div>
+      <div id="scenario-opt"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">💰 Combien perdez-vous avec une décote ?</div>
+    <div style="font-size:14px;color:var(--muted);margin-bottom:14px;line-height:1.6">Une décote est définitive et s'applique toute votre vie. Voici l'impact cumulé sur 20 ans de retraite.</div>
+    <div id="impact-decote"></div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">🧮 Et si vous travailliez encore X années ?</div>
+    <div class="cw"><canvas id="chart-impact"></canvas></div>
+    <div id="impact-legende" style="margin-top:12px;font-size:13px;color:var(--muted);line-height:1.6"></div>
+  </div>
+</div></div>
+
+<!-- ════ CONSEILS ════ -->
+<div class="panel" id="p-conseils"><div class="wrap">
+  <div class="card" style="background:rgba(46,204,113,.04);border-color:rgba(46,204,113,.25)">
+    <div class="ctitle" style="color:var(--green)">✅ Ce que vous devez faire maintenant</div>
+    <div id="actions-prioritaires"></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">📋 Vérifiez votre relevé de carrière</div>
+      <div style="font-size:14px;color:var(--muted);line-height:1.75">
+        <p style="margin-bottom:10px">Sur <strong style="color:var(--text)">info-retraite.fr</strong>, vous pouvez :</p>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0;font-size:16px">✓</span><span>Voir tous vos trimestres validés dans chaque régime</span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0;font-size:16px">✓</span><span>Corriger des erreurs (périodes manquantes, empleurs non déclarés)</span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0;font-size:16px">✓</span><span>Simuler différents âges de départ avec vos vraies données</span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0;font-size:16px">✓</span><span>Demander un rendez-vous avec un conseiller retraite (gratuit)</span></div>
+        </div>
+        <div class="info-box" style="margin-top:12px">
+          <strong>Bon à savoir :</strong> À partir de 55 ans, vous pouvez corriger votre relevé de carrière directement en ligne sur info-retraite.fr. Avant, contactez votre caisse de retraite.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ctitle">💡 Les trimestres "bonus"</div>
+      <div style="font-size:14px;color:var(--muted);line-height:1.75;display:flex;flex-direction:column;gap:10px">
+        <div style="padding:10px 12px;background:rgba(46,204,113,.05);border:1px solid rgba(46,204,113,.15);border-radius:10px">
+          <strong style="color:var(--green);display:block;margin-bottom:3px">👶 Maternité / adoption</strong>
+          4 trimestres par enfant pour la mère (accouchement + éducation). Attention : les conditions ont évolué. Vérifiez sur info-retraite.fr.
+        </div>
+        <div style="padding:10px 12px;background:rgba(52,152,219,.05);border:1px solid rgba(52,152,219,.15);border-radius:10px">
+          <strong style="color:var(--blue);display:block;margin-bottom:3px">😷 Maladie / invalidité</strong>
+          Les périodes en arrêt maladie longue durée (>60 jours) génèrent des trimestres assimilés.
+        </div>
+        <div style="padding:10px 12px;background:rgba(155,89,182,.05);border:1px solid rgba(155,89,182,.15);border-radius:10px">
+          <strong style="color:var(--purple);display:block;margin-bottom:3px">📚 Rachat d'années d'études</strong>
+          Possible dans la limite de 12 trimestres. Coût variable. Rentable si vous êtes proche de la retraite.
+        </div>
+        <div style="padding:10px 12px;background:rgba(243,156,18,.05);border:1px solid rgba(243,156,18,.15);border-radius:10px">
+          <strong style="color:var(--amber);display:block;margin-bottom:3px">🎖️ Service militaire</strong>
+          Le service national (avant 2001) donne droit à des trimestres assimilés.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">🏦 Compléter sa retraite — les options</div>
+    <div class="g2" style="gap:12px">
+      <div style="padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:12px">
+        <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px">📊 PER (Plan d'Épargne Retraite)</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.65">Versements déductibles de vos impôts. Capital ou rente à la retraite. Très avantageux si vous êtes fortement imposé. Disponible depuis 2019 (remplace PERP et Madelin).</div>
+      </div>
+      <div style="padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:12px">
+        <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px">🏠 Immobilier locatif</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.65">Revenu complémentaire régulier à la retraite. Peut être financé par le crédit pendant la vie active. Attention : gestion et risques locatifs à prévoir.</div>
+      </div>
+      <div style="padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:12px">
+        <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px">📈 Assurance-vie</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.65">Enveloppe fiscalement avantageuse après 8 ans. Fonds euros (sécurisé) + unités de compte. Idéale pour préparer sa retraite avec de la flexibilité.</div>
+      </div>
+      <div style="padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:12px">
+        <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px">⏰ Cumul emploi-retraite</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.65">Vous pouvez continuer à travailler tout en touchant votre retraite. Depuis 2023 : les trimestres supplémentaires cotisés ouvrent de nouveaux droits.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">📞 Où obtenir de l'aide officielle et gratuite</div>
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:14px;color:var(--muted);line-height:1.7">
+      <div style="padding:12px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)"><strong style="color:var(--text)">🌐 info-retraite.fr</strong> — Le portail officiel de l'Union Retraite. Votre compte retraite, relevé de carrière, simulation officielle.</div>
+      <div style="padding:12px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)"><strong style="color:var(--text)">📞 39 60</strong> — Numéro national de l'Assurance retraite. Gratuit depuis un fixe, 7j/7.</div>
+      <div style="padding:12px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)"><strong style="color:var(--text)">🏢 Votre caisse de retraite</strong> — Rendez-vous gratuit avec un conseiller retraite. Recommandé dès 55 ans.</div>
+      <div style="padding:12px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)"><strong style="color:var(--text)">💼 Bpifrance / CCI</strong> — Si vous êtes indépendant, des conseillers spécialisés peuvent vous aider à optimiser votre situation retraite.</div>
+    </div>
+  </div>
+
+  <div class="disc-box">
+    ⚠️ DISCLAIMER IMPORTANT : Ce simulateur est un outil pédagogique et d'estimation. Il ne remplace pas un calcul officiel de votre caisse de retraite. Les montants affichés sont des estimations basées sur les règles générales du régime général CNAV 2025 et peuvent différer de votre situation réelle (carrières mixtes, périodes à l'étranger, régimes spéciaux, etc.). Pour un calcul officiel et certifié, utilisez le simulateur "Mon estimation retraite" sur info-retraite.fr ou prenez rendez-vous avec votre caisse de retraite. Sources : CNAV · lassuranceretraite.fr · info-retraite.fr · service-public.fr · Décret réforme retraites 2023 · LFSS 2026 · AG2R La Mondiale · Code de la Sécurité sociale.
+  </div>
+</div></div>
+
+<script>
+Chart.defaults.color='#5A7A5A';
+Chart.defaults.font.family="'DM Sans',sans-serif";
+Chart.defaults.font.size=13;
+
+var charts={};
+var activeTab='profil';
+
+// Trimestres requis par année de naissance (Source: CNAV + réforme 2023 + LFSS 2026)
+var TRIM_REQUIS = {
+  1950:160,1951:161,1952:162,1953:163,1954:164,1955:164,1956:165,1957:165,
+  1958:166,1959:167,1960:167,1961:168,1962:168,1963:169,1964:169,
+  1965:170,1966:171,1967:171,1968:172,
+};
+function getTrimestresRequis(naissance){
+  if(naissance<=1950) return 160;
+  if(naissance>=1968) return 172;
+  return TRIM_REQUIS[naissance]||172;
+}
+
+// Âge légal de départ (réforme 2023 + suspension LFSS 2026)
+var AGE_LEGAL = {
+  1955:62,1956:62.25,1957:62.5,1958:62.75,1959:63,1960:63.25,
+  1961:63.5,1962:63.75,1963:64,1964:64,
+  1965:64,1966:64,1967:64,1968:64,
+};
+function getAgeLegal(naissance){
+  if(naissance<=1954) return 62;
+  if(naissance>=1965) return 64;
+  return AGE_LEGAL[naissance]||64;
+}
+
+// Âge taux plein automatique (sans décote)
+function getAgeTauxPleinAuto(naissance){
+  if(naissance<=1951) return 65;
+  return 67;
+}
+
+function g(id){ return document.getElementById(id); }
+function sv(id){ var el=g(id); return el?+el.value:0; }
+function gv(id){ var el=g(id); return el?el.value:''; }
+function se(id,t){ var el=g(id); if(el) el.textContent=t; }
+function si(id,h){ var el=g(id); if(el) el.innerHTML=h; }
+function fmt(n,dec){ return (Math.round(n*(dec?Math.pow(10,dec):1))/(dec?Math.pow(10,dec):1)).toLocaleString('fr-FR'); }
+function fmtE(n){ return fmt(Math.round(n))+'€'; }
+function destroyChart(key){ if(charts[key]){ try{charts[key].destroy();}catch(e){} } }
+
+function showTab(name,btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  g('p-'+name).classList.add('on');
+  btn.classList.add('on');
+  activeTab=name;
+  setTimeout(function(){
+    if(name==='carriere') renderCarriereChart();
+    if(name==='pension') renderPensionCharts();
+    if(name==='scenarios') renderScenariosCharts();
+    if(name==='conseils') renderConseils();
+  },80);
+}
+
+function recalc(){
+  var naissance=sv('i-naissance');
+  var statut=gv('i-statut');
+  var famille=+gv('i-famille');
+  var trimValides=sv('i-trim-valides');
+  var salaire=sv('i-salaire');
+  var evolSalaire=sv('i-evol-salaire');
+  var horsEmploi=sv('i-hors-emploi');
+  var carriereL=sv('i-carriere-longue');
+
+  // Labels
+  se('v-naissance', naissance);
+  se('v-trim-valides', trimValides+' trim.');
+  if(g('v-salaire')) g('v-salaire').textContent=fmtE(salaire*12/12)+'/mois';
+  if(g('v-evol-salaire')) g('v-evol-salaire').textContent=evolSalaire+'%/an';
+  if(g('v-hors-emploi')) g('v-hors-emploi').textContent=horsEmploi+' trim.';
+  if(g('v-carriere-longue')) g('v-carriere-longue').textContent=carriereL+' trim.';
+
+  var anneeActuelle=2025;
+  var ageActuel=anneeActuelle-naissance;
+  se('v-age-actuel', ageActuel+' ans');
+  if(g('age-actuel-display')) g('age-actuel-display').textContent=ageActuel+' ans en '+anneeActuelle;
+
+  var trimRequis=getTrimestresRequis(naissance);
+  var ageLegal=getAgeLegal(naissance);
+  var ageTauxPleinAuto=getAgeTauxPleinAuto(naissance);
+
+  // Trimestres totaux (validés + assimilés chômage/maladie)
+  var trimTotal=trimValides+horsEmploi;
+  var trimManquants=Math.max(0,trimRequis-trimTotal);
+
+  // Années avant départ (à l'âge légal)
+  var anneesRestantes=Math.max(0,ageLegal-ageActuel);
+  var trimFuturs=anneesRestantes*4;
+  var trimAtDepart=Math.min(trimTotal+trimFuturs, trimRequis+20);
+
+  // SAM estimé (25 meilleures années, plafonné PASS=46368€/an en 2025)
+  var salaireAnnuel=salaire*12;
+  var PASS=46368;
+  var salaireRetenu=Math.min(salaireAnnuel,PASS);
+  var sam=salaireRetenu*(1+evolSalaire/100*0.5); // légère revalorisation
+  
+  // Retraite de base CNAV
+  var tauxBase=0.50;
+  var prorata=Math.min(trimAtDepart,trimRequis)/trimRequis;
+  var majEnfants=famille>=3?1.10:1.0;
+  var pensionBase=sam/12*tauxBase*prorata*majEnfants;
+
+  // Décote / surcote
+  var trimExcedentaires=trimAtDepart-trimRequis;
+  var decoteParTrimestre=0.0125;
+  var surcoteParTrimestre=0.0125;
+  var coeff=1;
+  if(trimManquants>0 && ageActuel+anneesRestantes<ageTauxPleinAuto){
+    coeff=Math.max(0.75,1-trimManquants*decoteParTrimestre);
+  } else if(trimExcedentaires>0){
+    coeff=1+trimExcedentaires*surcoteParTrimestre;
+  }
+  pensionBase*=coeff;
+
+  // Complémentaire (Agirc-Arrco : ~55% de la base pour salarié privé)
+  var facteurCompl={prive:0.55,fonctionnaire:0,hospitalier:0,independant:0.30,liberal:0.25,agricole:0.45,mixte:0.45}[statut]||0.55;
+  var pensionCompl=statut==='fonctionnaire'||statut==='hospitalier'?0:pensionBase*facteurCompl;
+
+  // Pour fonctionnaires : formule différente (75% dernier traitement)
+  if(statut==='fonctionnaire'||statut==='hospitalier'){
+    pensionBase=salaireRetenu/12*0.75*prorata;
+    pensionCompl=0;
+  }
+
+  var pensionBrut=pensionBase+pensionCompl;
+  var tauxPrelevement=0.10; // CSG/CRDS ~10%
+  var pensionNet=pensionBrut*(1-tauxPrelevement);
+  var pensionMinimum=903.93; // Minimum contributif 2025
+  pensionNet=Math.max(pensionNet,pensionMinimum);
+
+  var tauxRemplacement=salaire>0?Math.round(pensionNet/salaire*100):0;
+
+  // BANNER
+  var emoji=tauxRemplacement>70?'😊':tauxRemplacement>50?'😐':tauxRemplacement>30?'😟':'⚠️';
+  var couleur=tauxRemplacement>70?'var(--green)':tauxRemplacement>50?'var(--amber)':'var(--red)';
+  se('rb-emoji',emoji);
+  if(g('rb-pension')){g('rb-pension').textContent=fmtE(pensionNet)+'/mois';g('rb-pension').style.color=couleur;}
+  se('rb-age',ageLegal+' ans');
+  se('rb-trimestres',trimRequis+' / '+fmt(trimAtDepart));
+  se('rb-manquants',trimManquants>0?trimManquants+' trim.':'✅ Complet');
+  if(g('rb-manquants')) g('rb-manquants').style.color=trimManquants>0?'var(--amber)':'var(--green)';
+  se('rb-taux',tauxRemplacement+'%');
+  if(g('rb-taux')) g('rb-taux').style.color=couleur;
+
+  // DROITS ACTUELS
+  var DA=g('droits-actuels');
+  if(DA){
+    DA.innerHTML=''
+      +barreHTML('Trimestres validés',trimTotal,trimRequis,'var(--green)',trimTotal+' / '+trimRequis+' requis')
+      +barreHTML('Trimestres manquants',trimManquants,trimRequis,'var(--amber)',trimManquants>0?trimManquants+' à compléter':'Aucun — taux plein atteint !')
+      +'<div style="margin-top:10px;padding:12px;background:rgba(46,204,113,.05);border:1px solid rgba(46,204,113,.1);border-radius:10px;font-size:13px;color:var(--muted)">'
+      +'<strong style="color:var(--text)">À l\'âge légal ('+ageLegal+' ans)</strong> : vous aurez environ <strong style="color:var(--green)">'+fmt(trimAtDepart)+' trimestres</strong>.'
+      +(trimManquants>0?' Il vous manquera encore <strong style="color:var(--amber)">'+trimManquants+' trimestres</strong> pour le taux plein.':' Vous atteindrez le taux plein. 🎉')
+      +'</div>';
+  }
+
+  // ÂGE LÉGAL DETAIL
+  var ALD=g('age-legal-detail');
+  if(ALD){
+    ALD.innerHTML=''
+      +'<div style="display:flex;flex-direction:column;gap:6px">'
+      +'<div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--bg2);border-radius:10px;font-size:14px">'
+      +'<span style="color:var(--muted)">🗓️ Âge légal (réforme 2023)</span><span style="font-family:DM Mono,monospace;color:var(--green);font-weight:700">'+ageLegal+' ans</span></div>'
+      +'<div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--bg2);border-radius:10px;font-size:14px">'
+      +'<span style="color:var(--muted)">📅 Trimestres requis</span><span style="font-family:DM Mono,monospace">'+trimRequis+' trimestres</span></div>'
+      +'<div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--bg2);border-radius:10px;font-size:14px">'
+      +'<span style="color:var(--muted)">🛡️ Taux plein automatique</span><span style="font-family:DM Mono,monospace">'+ageTauxPleinAuto+' ans (sans condition)</span></div>'
+      +'<div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--bg2);border-radius:10px;font-size:14px">'
+      +'<span style="color:var(--muted)">📅 Votre année de départ</span><span style="font-family:DM Mono,monospace;color:var(--blue)">'+(naissance+ageLegal)+'</span></div>'
+      +'</div>';
+  }
+
+  // TRIMESTRES DETAIL
+  var TD=g('trimestres-detail');
+  if(TD){
+    TD.innerHTML=barreHTML('Trimestres cotisés',trimValides,trimRequis,'var(--green)',trimValides+' trimestres')
+      +barreHTML('Trimestres assimilés (chômage/maladie)',horsEmploi,40,'var(--blue)',horsEmploi+' trimestres')
+      +barreHTML('Total validés',trimTotal,trimRequis,'var(--teal)',trimTotal+' sur '+trimRequis+' requis');
+  }
+
+  // TRIMESTRES MANQUANTS
+  var TM=g('trimestres-manquants');
+  if(TM){
+    if(trimManquants<=0){
+      TM.innerHTML='<div class="good-box"><strong>🎉 Félicitations !</strong> Vous avez déjà tous vos trimestres pour partir au taux plein. Si vous continuez à travailler, vous bénéficierez d\'une surcote de +1,25% par trimestre supplémentaire.</div>';
+    } else {
+      TM.innerHTML='<div class="warn-box"><strong>⚠️ '+trimManquants+' trimestres manquants.</strong><br>'
+        +'Pour les combler, vous pouvez :<br>'
+        +'• Travailler encore '+Math.ceil(trimManquants/4)+' an(s) environ<br>'
+        +'• Racheter des trimestres (coût : ~'+fmtE(trimManquants*2500)+' à '+fmtE(trimManquants*5000)+')<br>'
+        +'• Vérifier des périodes non enregistrées (chômage, maladie, maternité)<br>'
+        +'• Partir quand même avec une décote de '+(Math.round(trimManquants*1.25*10)/10)+'%</div>';
+    }
+  }
+
+  // KPIs pension
+  se('kpi-base',fmtE(pensionBase));
+  se('kpi-compl',statut==='fonctionnaire'||statut==='hospitalier'?'Incluse':fmtE(pensionCompl));
+  se('kpi-total',fmtE(pensionBrut));
+  se('kpi-net',fmtE(pensionNet)+'/mois');
+  se('kpi-taux-rempl',tauxRemplacement+'%');
+
+  // Calcul détail
+  var CD=g('calcul-detail');
+  if(CD){
+    var formule=statut==='fonctionnaire'?
+      'Pension = Dernier traitement × 75% × (Trimestres / Durée requise)':
+      'Pension = SAM × 50% × (Trimestres validés / Trimestres requis)';
+    CD.innerHTML=''
+      +'<div style="font-size:13px;color:var(--muted2);font-family:DM Mono,monospace;margin-bottom:12px;padding:10px;background:rgba(0,0,0,.3);border-radius:8px">Formule : '+formule+'</div>'
+      +'<div style="display:flex;flex-direction:column;gap:6px">'
+      +detailRow('Salaire annuel moyen (SAM)',fmtE(sam/12)+'/mois brut','Moyenne 25 meilleures années plafonnée PASS')
+      +detailRow('Taux de liquidation',Math.round(tauxBase*100)+'%',statut==='fonctionnaire'?'75% (fonctionnaires)':'50% (salarié privé)')
+      +detailRow('Prorata trimestres',Math.round(prorata*100)+'%',fmt(trimAtDepart)+' / '+trimRequis+' trimestres')
+      +(coeff!==1?detailRow(coeff<1?'Décote appliquée':'Surcote appliquée',(Math.round((coeff-1)*1000)/10)+'%',coeff<1?trimManquants+' trim. manquants × 1,25%':trimExcedentaires+' trim. supp. × 1,25%'):'')
+      +(majEnfants>1?detailRow('Majoration enfants','+10%','3 enfants ou plus (Art. L351-12 CSS)'):'')
+      +detailRow('Retraite de base brute',fmtE(pensionBase)+'/mois','CNAV')
+      +(pensionCompl>0?detailRow('Complémentaire Agirc-Arrco',fmtE(pensionCompl)+'/mois','Estimation ~55% de la base'):'')
+      +detailRow('CSG/CRDS','-'+Math.round(tauxPrelevement*100)+'%','Prélèvements sociaux sur pensions')
+      +'<div style="display:flex;justify-content:space-between;padding:12px 14px;background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);border-radius:10px;font-size:15px;font-weight:700;margin-top:6px">'
+      +'<span>💰 Pension nette estimée</span>'
+      +'<span style="font-family:Syne,sans-serif;color:var(--green)">'+fmtE(pensionNet)+'/mois</span></div>'
+      +'</div>';
+  }
+
+  // Note pension
+  var PN=g('pension-note');
+  if(PN) PN.innerHTML='Taux de remplacement : <strong style="color:'+(tauxRemplacement>65?'var(--green)':tauxRemplacement>50?'var(--amber)':'var(--red)')+'">'+tauxRemplacement+'%</strong> de votre dernier salaire. '
+    +(tauxRemplacement>65?'✅ Bon niveau — dans la moyenne haute française.':tauxRemplacement>50?'⚠️ Niveau moyen — pensez à compléter avec une épargne retraite.':'⚠️ Niveau faible — une épargne complémentaire est recommandée.')
+    +'<br><span style="font-size:12px;color:var(--muted2)">Taux de remplacement moyen en France : 50-75% selon statut. Source : COR (Conseil d\'Orientation des Retraites) 2024.</span>';
+
+  // TABLEAU DÉPART
+  var TBL=g('tableau-depart');
+  if(TBL){
+    var rows='<thead><tr><th>Âge de départ</th><th>Trimestres</th><th>Situation</th><th>Pension mensuelle</th><th>Évolution</th></tr></thead><tbody>';
+    var ages=[ageLegal-2,ageLegal-1,ageLegal,ageLegal+1,ageLegal+2,ageTauxPleinAuto];
+    ages=ages.filter(function(a,i,arr){return arr.indexOf(a)===i&&a>=60&&a<=70;});
+    ages.forEach(function(age){
+      var anneesSuppl=age-ageActuel;
+      var trimEst=Math.min(trimTotal+Math.max(0,anneesSuppl)*4,trimRequis+20);
+      var trimManq=Math.max(0,trimRequis-trimEst);
+      var coe=1;
+      if(trimManq>0&&age<ageTauxPleinAuto) coe=Math.max(0.75,1-trimManq*0.0125);
+      else if(trimEst>trimRequis) coe=1+(trimEst-trimRequis)*0.0125;
+      var pBase=sam/12*0.5*Math.min(trimEst,trimRequis)/trimRequis*majEnfants*coe;
+      var pCompl=pBase*(statut==='fonctionnaire'?0:facteurCompl);
+      var pNet=Math.max(pensionMinimum,(pBase+pCompl)*(1-tauxPrelevement));
+      var pct=Math.round(pNet/pensionNet*100);
+      var situation=trimManq>0&&age<ageTauxPleinAuto?'Décote -'+Math.round(trimManq*1.25)+'%':trimEst>trimRequis?'Surcote +'+Math.round((trimEst-trimRequis)*1.25)+'%':'Taux plein ✅';
+      var isOptimal=trimManq===0;
+      rows+='<tr style="'+(age===ageLegal?'background:rgba(46,204,113,.06)':'')+'">'
+        +'<td style="font-weight:'+(isOptimal?700:400)+'"><strong>'+(age===ageLegal?'⭐ ':'')+age+' ans</strong></td>'
+        +'<td>'+fmt(trimEst)+'</td>'
+        +'<td class="'+(trimManq>0?'td-amber':trimEst>trimRequis?'td-green':'td-green')+'">'+situation+'</td>'
+        +'<td class="'+(pNet>=pensionNet*0.95?'td-green':'td-amber')+'" style="font-weight:700">'+fmtE(pNet)+'/mois</td>'
+        +'<td>'+(pct===100?'Référence':(pct>100?'<span class="td-green">+':'<span class="td-amber">')+Math.abs(pct-100)+'%'+(pct!==100?'</span>':''))+'</td>'
+        +'</tr>';
+    });
+    rows+='</tbody>';
+    TBL.innerHTML=rows;
+  }
+
+  // Stocker pour les graphiques
+  window._R={
+    naissance,ageLegal,ageTauxPleinAuto,trimRequis,trimTotal,trimManquants,
+    trimAtDepart,anneesRestantes,ageActuel,
+    sam,statut,famille,majEnfants,facteurCompl,
+    pensionBase,pensionCompl,pensionBrut,pensionNet,pensionMinimum,
+    salaire,tauxRemplacement,coeff,evolSalaire,horsEmploi,trimValides,
+  };
+
+  if(activeTab==='carriere') renderCarriereChart();
+  if(activeTab==='pension') renderPensionCharts();
+  if(activeTab==='scenarios') renderScenariosCharts();
+  if(activeTab==='conseils') renderConseils();
+}
+
+function barreHTML(nom,val,max,couleur,note){
+  var pct=max>0?Math.min(100,Math.round(val/max*100)):0;
+  return '<div class="barre">'
+    +'<div class="barre-top"><span class="barre-label">'+nom+'</span><span class="barre-val" style="color:'+couleur+'">'+note+'</span></div>'
+    +'<div class="barre-track"><div class="barre-fill" style="width:'+pct+'%;background:'+couleur+'"></div></div>'
+    +'</div>';
+}
+
+function detailRow(label,val,note){
+  return '<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:9px 12px;background:rgba(255,255,255,.02);border-radius:8px;margin-bottom:4px">'
+    +'<div><div style="font-size:13px;color:var(--text)">'+label+'</div>'+(note?'<div style="font-size:11px;color:var(--muted2)">'+note+'</div>':'')+'</div>'
+    +'<div style="font-family:DM Mono,monospace;font-size:13px;font-weight:700;text-align:right;flex-shrink:0;margin-left:12px">'+val+'</div></div>';
+}
+
+function renderCarriereChart(){
+  if(!window._R) return;
+  var R=window._R;
+  destroyChart('carriere');
+  var cv=g('chart-carriere'); if(!cv) return;
+  var labels=[],dataAct=[],dataFut=[],dataSeuil=[];
+  var anneeActuelle=2025;
+  for(var age=Math.max(18,R.ageActuel-10);age<=70;age++){
+    labels.push(age+' ans\n('+(R.naissance+age)+')');
+    var anneesDepuis=age-R.ageActuel;
+    var trimEst=anneesDepuis<0?Math.max(0,R.trimTotal+anneesDepuis*4):R.trimTotal+anneesDepuis*4;
+    trimEst=Math.max(0,Math.min(trimEst,R.trimRequis+20));
+    if(age<=R.ageActuel) dataAct.push(trimEst);
+    else { dataAct.push(null); dataFut.push(trimEst); }
+    dataSeuil.push(R.trimRequis);
+  }
+  charts['carriere']=new Chart(cv,{
+    type:'line',
+    data:{labels:labels,datasets:[
+      {label:'Trimestres validés',data:dataAct,borderColor:'var(--green)',backgroundColor:'rgba(46,204,113,.1)',fill:true,tension:.3,borderWidth:2.5,pointRadius:0},
+      {label:'Trimestres projetés',data:dataFut,borderColor:'rgba(46,204,113,.4)',borderDash:[6,3],backgroundColor:'rgba(46,204,113,.04)',fill:true,tension:.3,borderWidth:2,pointRadius:0},
+      {label:'Trimestres requis',data:dataSeuil,borderColor:'var(--amber)',borderDash:[4,4],pointRadius:0,borderWidth:1.5,fill:false},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{labels:{color:'#5A7A5A',font:{size:12}}},
+        tooltip:{callbacks:{label:function(c){return c.dataset.label+' : '+c.raw+' trimestres';}}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#5A7A5A',font:{size:10},maxTicksLimit:10},border:{color:'transparent'}},
+              y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#5A7A5A'},border:{color:'transparent'},
+                title:{display:true,text:'Trimestres',color:'#5A7A5A'}}}
+    }
+  });
+  var CL=g('carriere-legende');
+  if(CL) CL.innerHTML='La ligne <strong style="color:var(--green)">verte</strong> montre vos trimestres réels. La <strong style="color:var(--amber)">ligne orange pointillée</strong> est le seuil à atteindre ('+R.trimRequis+' trimestres). La zone hachurée montre vos trimestres projetés si vous continuez à travailler.';
+}
+
+function renderPensionCharts(){
+  if(!window._R) return;
+  var R=window._R;
+  destroyChart('pension');
+  var cv=g('chart-pension'); if(!cv) return;
+  charts['pension']=new Chart(cv,{
+    type:'doughnut',
+    data:{labels:['Retraite de base (CNAV)','Complémentaire (Agirc-Arrco)','Prélèvements (CSG/CRDS)'],
+      datasets:[{data:[R.pensionBase,R.pensionCompl,R.pensionBrut*0.10],
+        backgroundColor:['rgba(46,204,113,.8)','rgba(52,152,219,.8)','rgba(231,76,60,.5)'],
+        borderWidth:3,borderColor:'var(--card)'}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#5A7A5A',font:{size:12}}},
+        tooltip:{callbacks:{label:function(c){return c.label+' : '+Math.round(c.raw)+'€';}}}}}
+  });
+}
+
+function renderScenariosCharts(){
+  if(!window._R) return;
+  var R=window._R;
+
+  // Chart scénarios selon âge
+  destroyChart('scenarios');
+  var cv=g('chart-scenarios'); if(!cv) return;
+  var ages=[],pensions=[];
+  for(var age=60;age<=70;age++){
+    var anneesSuppl=age-R.ageActuel;
+    var trimEst=Math.min(R.trimTotal+Math.max(0,anneesSuppl)*4,R.trimRequis+20);
+    var trimManq=Math.max(0,R.trimRequis-trimEst);
+    var coe=1;
+    if(trimManq>0&&age<R.ageTauxPleinAuto) coe=Math.max(0.75,1-trimManq*0.0125);
+    else if(trimEst>R.trimRequis) coe=1+(trimEst-R.trimRequis)*0.0125;
+    var pBase=R.sam/12*0.5*Math.min(trimEst,R.trimRequis)/R.trimRequis*R.majEnfants*coe;
+    var pCompl=R.statut==='fonctionnaire'?0:pBase*R.facteurCompl;
+    var pNet=Math.max(R.pensionMinimum,(pBase+pCompl)*0.90);
+    ages.push(age+' ans');
+    pensions.push(Math.round(pNet));
+  }
+  charts['scenarios']=new Chart(cv,{
+    type:'bar',
+    data:{labels:ages,datasets:[{
+      label:'Pension nette mensuelle',
+      data:pensions,
+      backgroundColor:pensions.map(function(p,i){
+        return i===ages.indexOf(R.ageLegal+' ans')?'rgba(46,204,113,.9)':'rgba(46,204,113,.35)';
+      }),
+      borderRadius:8,borderWidth:0
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:function(c){return fmtE(c.raw)+'/mois';}}},
+        annotation:{}
+      },
+      scales:{x:{grid:{display:false},ticks:{color:'#5A7A5A'},border:{color:'transparent'}},
+              y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#5A7A5A',callback:function(v){return Math.round(v)+'€';}},border:{color:'transparent'}}}
+    }
+  });
+
+  // Scénarios texte
+  var anneesManq=Math.max(0,Math.ceil(R.trimManquants/4));
+  var pensTot=pensions[0], pensOpt=pensions[pensions.length-3]||pensions[pensions.length-1];
+  si('scenario-tot','<div class="warn-box"><strong>Départ au plus tôt ('+Math.max(60,R.ageLegal-2)+' ans) :</strong><br>'
+    +'Pension estimée : <strong>'+fmtE(pensTot)+'/mois</strong><br>'
+    +'Décote probable : '+Math.round((1-pensTot/R.pensionNet)*100)+'%<br>'
+    +'Perte définitive sur 20 ans de retraite : '+fmtE((R.pensionNet-pensTot)*12*20)+'<br>'
+    +'<strong style="color:var(--amber)">⚠️ Réfléchissez bien — la décote est définitive.</strong></div>');
+  si('scenario-opt','<div class="good-box"><strong>Départ optimal (taux plein atteint) :</strong><br>'
+    +'Pension estimée : <strong>'+fmtE(R.pensionNet)+'/mois</strong><br>'
+    +'Âge conseillé : '+R.ageLegal+' ans'+(R.trimManquants>0?' (ou '+anneesManq+' an(s) de plus)':'')+'<br>'
+    +'Gain vs départ anticipé : +'+fmtE((R.pensionNet-pensTot)*12)+'/an<br>'
+    +'<strong style="color:var(--green)">✅ La meilleure option dans la plupart des cas.</strong></div>');
+
+  // Impact décote
+  var ID=g('impact-decote');
+  if(ID&&R.trimManquants>0){
+    var perteMens=R.pensionNet*R.trimManquants*0.0125;
+    ID.innerHTML=barreHTML('Perte mensuelle avec décote actuelle',perteMens,R.pensionNet,'var(--red)',fmtE(perteMens)+'/mois')
+      +barreHTML('Perte sur 10 ans',perteMens*12*10,R.pensionNet*12*10,'var(--amber)',fmtE(perteMens*12*10))
+      +barreHTML('Perte sur 20 ans',perteMens*12*20,R.pensionNet*12*20,'var(--red)',fmtE(perteMens*12*20))
+      +'<div class="warn-box"><strong>Conclusion :</strong> Sur 20 ans de retraite, votre décote de '+Math.round(R.trimManquants*1.25)+'% vous ferait perdre environ <strong>'+fmtE(perteMens*12*20)+'</strong>. Racheter ces trimestres (coût ~'+fmtE(R.trimManquants*2500)+') peut être très rentable. Simulez avec votre caisse de retraite.</div>';
+  } else if(ID){
+    ID.innerHTML='<div class="good-box"><strong>✅ Vous n\'avez pas de décote !</strong><br>Vous avez tous vos trimestres requis. Travailler plus longtemps vous donnera une surcote de +1,25% par trimestre supplémentaire.</div>';
+  }
+
+  // Chart impact
+  destroyChart('impact');
+  var cvi=g('chart-impact'); if(!cvi) return;
+  var anneesSup=[0,1,2,3,4,5],gains=[];
+  anneesSup.forEach(function(a){
+    var trimEst=Math.min(R.trimAtDepart+a*4,R.trimRequis+20);
+    var coe=1+(Math.max(0,trimEst-R.trimRequis))*0.0125;
+    var pBase=R.sam/12*0.5*Math.min(trimEst,R.trimRequis)/R.trimRequis*R.majEnfants*coe;
+    var pCompl=R.statut==='fonctionnaire'?0:pBase*R.facteurCompl;
+    gains.push(Math.round(Math.max(R.pensionMinimum,(pBase+pCompl)*0.90)));
+  });
+  charts['impact']=new Chart(cvi,{
+    type:'line',
+    data:{labels:anneesSup.map(function(a){return a===0?'Maintenant':'+'+a+' an'+(a>1?'s':'');}),
+      datasets:[{label:'Pension mensuelle',data:gains,borderColor:'var(--green)',backgroundColor:'rgba(46,204,113,.1)',fill:true,tension:.4,borderWidth:2.5,pointRadius:6,pointBackgroundColor:'var(--green)'}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fmtE(c.raw)+'/mois';}}},},
+      scales:{x:{grid:{display:false},ticks:{color:'#5A7A5A'},border:{color:'transparent'}},
+              y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#5A7A5A',callback:function(v){return Math.round(v)+'€';}},border:{color:'transparent'}}}
+    }
+  });
+  var IL=g('impact-legende');
+  if(IL) IL.innerHTML='Chaque année supplémentaire travaillée au-delà du taux plein augmente votre pension de <strong style="color:var(--green)">+5% environ</strong> (surcote +1,25% par trimestre). Gain sur 20 ans de retraite : <strong>'+fmtE((gains[gains.length-1]-gains[0])*12*20)+'</strong>.';
+}
+
+function renderConseils(){
+  if(!window._R) return;
+  var R=window._R;
+  var AP=g('actions-prioritaires'); if(!AP) return;
+  var actions=[];
+  actions.push({priority:'high',icon:'🔍',title:'Vérifiez votre relevé de carrière',desc:'Allez sur info-retraite.fr et vérifiez que tous vos trimestres sont bien enregistrés. Des périodes entières peuvent manquer (premiers emplois, intérim, stages rémunérés).'});
+  if(R.trimManquants>0){
+    actions.push({priority:'high',icon:'⚠️',title:R.trimManquants+' trimestres manquants — agissez',desc:'Vous avez '+R.trimManquants+' trimestres manquants. Options : travailler encore '+Math.ceil(R.trimManquants/4)+' an(s) · racheter des trimestres (~'+Math.round(R.trimManquants*2500)+'€) · vérifier des trimestres non enregistrés.'});
+  }
+  if(R.ageActuel<55){
+    actions.push({priority:'medium',icon:'📊',title:'Ouvrez un PER (Plan d\'Épargne Retraite)',desc:'Plus tôt vous commencez, plus votre épargne fructifie. Les versements sont déductibles de votre revenu imposable. À 35 ans, 200€/mois pendant 30 ans = environ 90 000€ à la retraite.'});
+  }
+  if(R.tauxRemplacement<60){
+    actions.push({priority:'medium',icon:'💰',title:'Prévoyez une épargne complémentaire',desc:'Votre taux de remplacement estimé est de '+R.tauxRemplacement+'% — en dessous de la moyenne. Une épargne de '+fmtE((R.salaire*0.10))+'€/mois (10% du salaire) dans un PER ou une assurance-vie peut combler l\'écart.'});
+  }
+  actions.push({priority:'low',icon:'📞',title:'Prenez rendez-vous avec votre caisse de retraite',desc:'Gratuit, sans engagement. Un conseiller retraite analysera votre situation réelle avec vos vraies données. Recommandé dès 50 ans.'});
+
+  AP.innerHTML=actions.map(function(a){
+    var c=a.priority==='high'?'var(--red)':a.priority==='medium'?'var(--amber)':'var(--green)';
+    return '<div style="display:flex;gap:14px;padding:14px 16px;background:rgba(255,255,255,.02);border:1px solid '+(a.priority==='high'?'rgba(231,76,60,.2)':a.priority==='medium'?'rgba(243,156,18,.2)':'rgba(46,204,113,.15)')+';border-radius:12px;margin-bottom:10px">'
+      +'<span style="font-size:24px;flex-shrink:0">'+a.icon+'</span>'
+      +'<div><div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px">'+a.title+'</div>'
+      +'<div style="font-size:13px;color:var(--muted);line-height:1.65">'+a.desc+'</div></div></div>';
+  }).join('');
+}
+
+// ── INIT ──
+recalc();
+</script>
+
+<script src="/suggestions.js"></script>
+<script>renderFooter('simulateur-retraite')</script>
+</body>
+</html>
