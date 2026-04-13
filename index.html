@@ -28,12 +28,66 @@
       --card-bg: #1a1a1a;
       --card-border: #2a2a2a;
     }
+
     body {
       background: var(--bg);
       color: var(--text);
       font-family: 'DM Sans', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ─── CURSEUR CUSTOM ─── */
+    .cursor {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      background: var(--yellow);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease, width 0.2s ease, height 0.2s ease, opacity 0.2s ease;
+      mix-blend-mode: difference;
+    }
+
+    .cursor-ring {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid rgba(255, 217, 61, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.12s ease, width 0.25s ease, height 0.25s ease, opacity 0.2s ease;
+    }
+
+    body:has(a:hover) .cursor,
+    body:has(button:hover) .cursor {
+      width: 20px;
+      height: 20px;
+    }
+
+    body:has(a:hover) .cursor-ring,
+    body:has(button:hover) .cursor-ring {
+      width: 52px;
+      height: 52px;
+      border-color: rgba(255, 217, 61, 0.8);
+    }
+
+    /* ─── BARRE DE SCROLL ─── */
+    .scroll-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--yellow), var(--orange));
+      z-index: 9997;
+      width: 0%;
+      transition: width 0.1s linear;
+      border-radius: 0 2px 2px 0;
     }
 
     /* ─── NOISE OVERLAY ─── */
@@ -59,11 +113,7 @@
       justify-content: space-between;
     }
 
-    .logo {
-      display: flex;
-      align-items: baseline;
-      gap: 0;
-    }
+    .logo { display: flex; align-items: baseline; gap: 0; }
 
     .logo-calc {
       font-family: 'Unbounded', sans-serif;
@@ -182,6 +232,7 @@
       color: var(--text);
       outline: none;
       transition: border-color 0.2s;
+      cursor: text;
     }
 
     .search-wrap input::placeholder { color: #444; }
@@ -206,9 +257,7 @@
       flex-wrap: wrap;
     }
 
-    .stat {
-      text-align: center;
-    }
+    .stat { text-align: center; }
 
     .stat-num {
       font-family: 'Unbounded', sans-serif;
@@ -241,7 +290,7 @@
       border-radius: 100px;
       font-size: 13px;
       font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
+      cursor: none;
       transition: all 0.15s;
       display: flex;
       align-items: center;
@@ -275,136 +324,139 @@
     }
 
     /* ─── CARD ─── */
-  .card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 20px;
-  padding: 28px;
-  text-decoration: none;
-  color: var(--text);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease, border-color 0.2s ease;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  will-change: transform;
-}
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 28px;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease, border-color 0.2s ease, opacity 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      cursor: none;
+      will-change: transform;
+      /* Scroll reveal — état initial */
+      opacity: 0;
+      transform: translateY(24px);
+    }
 
-.card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--accent-color, var(--yellow));
-  opacity: 0;
-  transition: opacity 0.25s ease;
-  pointer-events: none;
-}
+    /* Carte visible après scroll reveal */
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-.card::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--accent-color, var(--yellow));
-  transform: scaleX(0);
-  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
-  transform-origin: left;
-  border-radius: 0 0 20px 20px;
-}
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--accent-color, var(--yellow));
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+    }
 
-.card:hover {
-  border-color: var(--accent-color, var(--yellow));
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 16px 40px rgba(0,0,0,.4), 0 0 0 1px var(--accent-color, var(--yellow)), 0 8px 20px color-mix(in srgb, var(--accent-color, var(--yellow)) 15%, transparent);
-}
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent-color, var(--yellow));
+      transform: scaleX(0);
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+      transform-origin: left;
+      border-radius: 0 0 20px 20px;
+    }
 
-.card:hover::before { opacity: 0.06; }
-.card:hover::after  { transform: scaleX(1); }
+    .card:hover {
+      border-color: var(--accent-color, var(--yellow));
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 16px 40px rgba(0,0,0,.4), 0 0 0 1px var(--accent-color, var(--yellow)), 0 8px 20px color-mix(in srgb, var(--accent-color, var(--yellow)) 15%, transparent);
+    }
 
-.card-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  background: var(--icon-bg, #252525);
-  border: 1px solid #333;
-  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
-}
+    .card:hover::before { opacity: 0.06; }
+    .card:hover::after  { transform: scaleX(1); }
 
-.card:hover .card-icon {
-  transform: scale(1.1) rotate(-4deg);
-}
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      background: var(--icon-bg, #252525);
+      border: 1px solid #333;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
 
-.card-meta {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
+    .card:hover .card-icon { transform: scale(1.1) rotate(-4deg); }
 
-.card-tag {
-  font-size: 11px;
-  padding: 3px 10px;
-  border-radius: 100px;
-  font-weight: 500;
-  white-space: nowrap;
-  background: var(--tag-bg, #252525);
-  color: var(--tag-color, #888);
-}
+    .card-meta {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
 
-.card h3 {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-  line-height: 1.3;
-  transition: color 0.2s;
-}
+    .card-tag {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-weight: 500;
+      white-space: nowrap;
+      background: var(--tag-bg, #252525);
+      color: var(--tag-color, #888);
+    }
 
-.card:hover h3 {
-  color: var(--accent-color, var(--yellow));
-}
+    .card h3 {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      line-height: 1.3;
+      transition: color 0.2s;
+    }
 
-.card p {
-  font-size: 13px;
-  color: #666;
-  line-height: 1.6;
-  flex: 1;
-}
+    .card:hover h3 { color: var(--accent-color, var(--yellow)); }
 
-.card-arrow {
-  align-self: flex-end;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid #2a2a2a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  color: #444;
-  transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
-}
+    .card p {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.6;
+      flex: 1;
+    }
 
-.card:hover .card-arrow {
-  border-color: var(--accent-color, var(--yellow));
-  color: var(--accent-color, var(--yellow));
-  background: color-mix(in srgb, var(--accent-color, var(--yellow)) 12%, transparent);
-  transform: translateX(4px) scale(1.1);
-}
+    .card-arrow {
+      align-self: flex-end;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid #2a2a2a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #444;
+      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
 
-.card.soon {
-  opacity: 0.5;
-  cursor: default;
-}
-.card.soon:hover { transform: none; }
+    .card:hover .card-arrow {
+      border-color: var(--accent-color, var(--yellow));
+      color: var(--accent-color, var(--yellow));
+      background: color-mix(in srgb, var(--accent-color, var(--yellow)) 12%, transparent);
+      transform: translateX(4px) scale(1.1);
+    }
+
+    .card.soon { opacity: 0.5; cursor: default; }
+    .card.soon:hover { transform: none; }
+    .card.soon.visible { opacity: 0.5; }
 
     .soon-badge {
       position: absolute;
@@ -419,91 +471,75 @@
       border-radius: 100px;
     }
 
-/* ─── SEO ─── */
-.seo-section {
-  max-width: 1100px;
-  margin: 60px auto 0;
-  padding: 32px 24px;
-  border-top: 1px solid #141414;
-}
-
-.seo-section h2 {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  color: #222;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: 12px;
-}
-
-.seo-section p {
-  font-size: 12px;
-  color: #1e1e1e;
-  line-height: 1.8;
-  margin-bottom: 8px;
-  max-width: 720px;
-}
-
-/* ─── FOOTER ─── */
-footer {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 20px 24px 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.footer-logo {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 15px;
-  font-weight: 900;
-  color: #F0EDE6;
-  letter-spacing: -0.5px;
-}
-
-.footer-logo span { color: var(--yellow); }
-
-.footer-links {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.footer-links a {
-  font-size: 13px;
-  color: #444;
-  text-decoration: none;
-  font-family: 'DM Sans', sans-serif;
-  transition: color .15s;
-}
-
-.footer-links a:hover { color: var(--yellow); }
-
-footer p {
-  font-size: 12px;
-  color: #222;
-  font-family: 'DM Mono', monospace;
-}
-    /* ─── ANIMATIONS ─── */
-    .card {
-      animation: fadeUp 0.4s ease both;
+    /* ─── SEO ─── */
+    .seo-section {
+      max-width: 1100px;
+      margin: 60px auto 0;
+      padding: 32px 24px;
+      border-top: 1px solid #141414;
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
+    .seo-section h2 {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: #222;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
     }
 
-    .card:nth-child(1) { animation-delay: 0.05s; }
-    .card:nth-child(2) { animation-delay: 0.1s; }
-    .card:nth-child(3) { animation-delay: 0.15s; }
-    .card:nth-child(4) { animation-delay: 0.2s; }
-    .card:nth-child(5) { animation-delay: 0.25s; }
-    .card:nth-child(6) { animation-delay: 0.3s; }
+    .seo-section p {
+      font-size: 12px;
+      color: #1e1e1e;
+      line-height: 1.8;
+      margin-bottom: 8px;
+      max-width: 720px;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 24px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-logo {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 15px;
+      font-weight: 900;
+      color: #F0EDE6;
+      letter-spacing: -0.5px;
+    }
+
+    .footer-logo span { color: var(--yellow); }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: #444;
+      text-decoration: none;
+      font-family: 'DM Sans', sans-serif;
+      transition: color .15s;
+    }
+
+    .footer-links a:hover { color: var(--yellow); }
+
+    footer p {
+      font-size: 12px;
+      color: #222;
+      font-family: 'DM Mono', monospace;
+    }
 
     /* ─── BG GLOW ─── */
     .glow {
@@ -511,7 +547,7 @@ footer p {
       width: 600px;
       height: 600px;
       border-radius: 50%;
-      background: radial-gradient(circle, var(--yellow)08 0%, transparent 70%);
+      background: radial-gradient(circle, #FFD93D08 0%, transparent 70%);
       pointer-events: none;
       top: -200px;
       left: -200px;
@@ -522,10 +558,20 @@ footer p {
       .stats { gap: 24px; }
       .grid { grid-template-columns: 1fr; }
       header { flex-direction: column; gap: 16px; align-items: flex-start; }
+      .cursor, .cursor-ring { display: none; }
+      body { cursor: auto; }
+      .filter-btn, .card { cursor: pointer; }
     }
   </style>
 </head>
 <body>
+
+<!-- CURSEUR CUSTOM -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- BARRE DE SCROLL -->
+<div class="scroll-bar" id="scrollBar"></div>
 
 <div class="glow"></div>
 
@@ -547,7 +593,7 @@ footer p {
   </div>
 </section>
 
-  <!-- TICKER -->
+<!-- TICKER -->
 <div class="ticker-wrap">
   <div class="ticker-track">
     <span>💡 Un Français dort 1h30 de moins qu'en 1970</span>
@@ -562,7 +608,6 @@ footer p {
     <span>📱 88% des gens changent de téléphone alors qu'il fonctionne encore</span>
     <span>☀️ Des panneaux solaires s'amortissent en 8 ans en moyenne</span>
     <span>🗳️ 60% des Français ne savent pas se situer sur l'échiquier politique</span>
-    <!-- Doublon pour boucle infinie fluide -->
     <span>💡 Un Français dort 1h30 de moins qu'en 1970</span>
     <span>👶 Un enfant coûte 160 000€ en moyenne sur 18 ans</span>
     <span>🌍 9 tonnes de CO₂ par Français par an</span>
@@ -597,9 +642,7 @@ footer p {
   width: max-content;
   animation: ticker 40s linear infinite;
 }
-.ticker-track:hover {
-  animation-play-state: paused;
-}
+.ticker-track:hover { animation-play-state: paused; }
 .ticker-track span {
   font-size: 13px;
   color: #555;
@@ -608,24 +651,18 @@ footer p {
   font-family: 'DM Mono', monospace;
   transition: color 0.2s;
 }
-.ticker-track span:hover {
-  color: #FFD93D;
-  cursor: default;
-}
-.ticker-track span::after {
-  content: '·';
-  margin-left: 40px;
-  color: #2a2a2a;
-}
+.ticker-track span:hover { color: #FFD93D; cursor: default; }
+.ticker-track span::after { content: '·'; margin-left: 40px; color: #2a2a2a; }
 @keyframes ticker {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 </style>
 
+<!-- STATS avec compteurs animés -->
 <div class="stats">
   <div class="stat">
-    <div class="stat-num" id="calc-count">20</div>
+    <div class="stat-num" id="calc-count" data-target="20">0</div>
     <div class="stat-label">calculateurs dispo</div>
   </div>
   <div class="stat">
@@ -633,7 +670,7 @@ footer p {
     <div class="stat-label">ça coûte</div>
   </div>
   <div class="stat">
-    <div class="stat-num">0</div>
+    <div class="stat-num" data-target="0">0</div>
     <div class="stat-label">publicités</div>
   </div>
 </div>
@@ -643,7 +680,6 @@ footer p {
   <div class="carousel-outer">
     <div class="carousel-track" id="carouselTrack">
 
-      <!-- Slide 1 — Test politique -->
       <a class="carousel-slide" href="test-politique-2.html" style="--sc:#6B7FFF">
         <div class="cs-left">
           <div class="cs-tag" style="background:rgba(107,127,255,.15);color:#6B7FFF">🗳️ Société · 80 questions</div>
@@ -661,7 +697,6 @@ footer p {
         </div>
       </a>
 
-      <!-- Slide 2 — Impact écolo -->
       <a class="carousel-slide" href="impact-ecolo.html" style="--sc:#00E86A">
         <div class="cs-left">
           <div class="cs-tag" style="background:rgba(0,232,106,.15);color:#00E86A">🌍 Écologie · ADEME 2025</div>
@@ -679,7 +714,6 @@ footer p {
         </div>
       </a>
 
-      <!-- Slide 3 — Coût enfant -->
       <a class="carousel-slide" href="cout-enfant.html" style="--sc:#F472B6">
         <div class="cs-left">
           <div class="cs-tag" style="background:rgba(244,114,182,.15);color:#F472B6">👶 Famille · INSEE & CAF</div>
@@ -699,8 +733,6 @@ footer p {
 
     </div>
   </div>
-
-  <!-- Contrôles -->
   <div class="carousel-controls">
     <button class="c-btn" onclick="cPrev()">←</button>
     <div class="c-dots">
@@ -713,177 +745,30 @@ footer p {
 </div>
 
 <style>
-.carousel-wrap {
-  max-width: 1100px;
-  margin: 32px auto 8px;
-  padding: 0 24px;
-  position: relative;
-  z-index: 10;
-}
-.carousel-label {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  color: #444;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 12px;
-}
-.carousel-outer {
-  overflow: hidden;
-  border-radius: 20px;
-}
-.carousel-track {
-  display: flex;
-  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.carousel-slide {
-  min-width: 100%;
-  display: flex;
-  gap: 24px;
-  padding: 28px 32px;
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 20px;
-  text-decoration: none;
-  color: #F0EDE6;
-  align-items: center;
-  box-sizing: border-box;
-  transition: background .2s;
-}
-.carousel-slide:hover { background: rgba(255,255,255,.05); }
-
-.cs-left { flex: 1; min-width: 0; }
-.cs-tag {
-  display: inline-flex;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 12px;
-  border-radius: 100px;
-  margin-bottom: 14px;
-  font-family: 'DM Mono', monospace;
-}
-.cs-title {
-  font-family: 'Unbounded', sans-serif;
-  font-weight: 900;
-  font-size: clamp(16px, 2.2vw, 22px);
-  letter-spacing: -1px;
-  line-height: 1.2;
-  margin-bottom: 12px;
-  color: #F0EDE6;
-}
-.cs-desc {
-  font-size: 13px;
-  color: #666;
-  line-height: 1.65;
-  margin-bottom: 18px;
-  max-width: 500px;
-}
-.cs-cta {
-  font-family: 'Unbounded', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .3px;
-}
-
-.cs-right {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  flex-shrink: 0;
-  min-width: 140px;
-}
-.cs-emoji { font-size: 54px; line-height: 1; }
-.cs-stats { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
-.cs-stat {
-  text-align: center;
-  background: rgba(0,0,0,.35);
-  border-radius: 10px;
-  padding: 8px 10px;
-  font-size: 10px;
-  color: #555;
-  font-family: 'DM Mono', monospace;
-}
-.cs-stat span {
-  display: block;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--sc);
-  margin-bottom: 2px;
-}
-
-.carousel-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  margin-top: 14px;
-}
-.c-btn {
-  background: rgba(255,255,255,.06);
-  border: 1px solid #2a2a2a;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  color: #666;
-  font-size: 15px;
-  cursor: pointer;
-  transition: all .15s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.c-btn:hover { background: rgba(255,255,255,.12); color: #F0EDE6; }
-.c-dots { display: flex; gap: 8px; align-items: center; }
-.c-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  border: none;
-  background: #333;
-  cursor: pointer;
-  transition: all .25s;
-  padding: 0;
-}
-.c-dot.active {
-  background: #FFD93D;
-  width: 24px;
-  border-radius: 4px;
-}
-
-@media (max-width: 640px) {
-  .carousel-slide { flex-direction: column; padding: 22px 20px; gap: 14px; }
-  .cs-right { flex-direction: row; min-width: auto; width: 100%; }
-  .cs-emoji { font-size: 38px; }
-  .cs-stats { display: none; }
-}
+.carousel-wrap { max-width:1100px;margin:32px auto 8px;padding:0 24px;position:relative;z-index:10 }
+.carousel-label { font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px }
+.carousel-outer { overflow:hidden;border-radius:20px }
+.carousel-track { display:flex;transition:transform 0.45s cubic-bezier(0.4,0,0.2,1) }
+.carousel-slide { min-width:100%;display:flex;gap:24px;padding:28px 32px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:20px;text-decoration:none;color:#F0EDE6;align-items:center;box-sizing:border-box;transition:background .2s }
+.carousel-slide:hover { background:rgba(255,255,255,.05) }
+.cs-left { flex:1;min-width:0 }
+.cs-tag { display:inline-flex;font-size:11px;font-weight:600;padding:4px 12px;border-radius:100px;margin-bottom:14px;font-family:'DM Mono',monospace }
+.cs-title { font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(16px,2.2vw,22px);letter-spacing:-1px;line-height:1.2;margin-bottom:12px;color:#F0EDE6 }
+.cs-desc { font-size:13px;color:#666;line-height:1.65;margin-bottom:18px;max-width:500px }
+.cs-cta { font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;letter-spacing:.3px }
+.cs-right { display:flex;flex-direction:column;align-items:center;gap:16px;flex-shrink:0;min-width:140px }
+.cs-emoji { font-size:54px;line-height:1 }
+.cs-stats { display:flex;gap:8px;flex-wrap:wrap;justify-content:center }
+.cs-stat { text-align:center;background:rgba(0,0,0,.35);border-radius:10px;padding:8px 10px;font-size:10px;color:#555;font-family:'DM Mono',monospace }
+.cs-stat span { display:block;font-size:14px;font-weight:700;color:var(--sc);margin-bottom:2px }
+.carousel-controls { display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px }
+.c-btn { background:rgba(255,255,255,.06);border:1px solid #2a2a2a;border-radius:50%;width:36px;height:36px;color:#666;font-size:15px;cursor:none;transition:all .15s;display:flex;align-items:center;justify-content:center }
+.c-btn:hover { background:rgba(255,255,255,.12);color:#F0EDE6 }
+.c-dots { display:flex;gap:8px;align-items:center }
+.c-dot { width:8px;height:8px;border-radius:50%;border:none;background:#333;cursor:none;transition:all .25s;padding:0 }
+.c-dot.active { background:#FFD93D;width:24px;border-radius:4px }
+@media(max-width:640px){.carousel-slide{flex-direction:column;padding:22px 20px;gap:14px}.cs-right{flex-direction:row;min-width:auto;width:100%}.cs-emoji{font-size:38px}.cs-stats{display:none}}
 </style>
-
-<script>
-(function(){
-  var idx = 0;
-  var total = 3;
-  var timer;
-
-  function go(n) {
-    idx = ((n % total) + total) % total;
-    var track = document.getElementById('carouselTrack');
-    if (track) track.style.transform = 'translateX(-' + (idx * 100) + '%)';
-    document.querySelectorAll('.c-dot').forEach(function(d, i) {
-      d.classList.toggle('active', i === idx);
-    });
-    clearInterval(timer);
-    timer = setInterval(function(){ go(idx + 1); }, 5000);
-  }
-
-  window.cGo   = go;
-  window.cNext = function(){ go(idx + 1); };
-  window.cPrev = function(){ go(idx - 1); };
-
-  timer = setInterval(function(){ go(idx + 1); }, 5000);
-})();
-</script>
 
 <!-- Filters -->
 <div class="filters">
@@ -900,203 +785,142 @@ footer p {
   <div class="grid" id="calcGrid">
 
     <a class="card" href="impact-ecolo.html" data-cat="ecologie" style="--accent-color: #00E86A">
-  <div class="card-icon" style="--icon-bg: #030a06;">🌍</div>
-  <div class="card-meta">
-    <h3>Mon impact écologique réel</h3>
-    <span class="card-tag" style="--tag-bg: #030a06; --tag-color: #00E86A;">Écologie</span>
-  </div>
-  <p>Quels gestes changent vraiment quelque chose ? Éteindre les veilles ou arrêter l'avion ? La vérité en chiffres ADEME.</p>
-  <div class="card-arrow">→</div>
-</a>
+      <div class="card-icon" style="--icon-bg: #030a06;">🌍</div>
+      <div class="card-meta"><h3>Mon impact écologique réel</h3><span class="card-tag" style="--tag-bg: #030a06; --tag-color: #00E86A;">Écologie</span></div>
+      <p>Quels gestes changent vraiment quelque chose ? Éteindre les veilles ou arrêter l'avion ? La vérité en chiffres ADEME.</p>
+      <div class="card-arrow">→</div>
+    </a>
 
-<a class="card" href="trajectoire-sociale.html" data-cat="societe" style="--accent-color: #9D6FFF">
-  <div class="card-icon" style="--icon-bg: #0a0616;">🏛️</div>
-  <div class="card-meta">
-    <h3>Ma trajectoire sociale</h3>
-    <span class="card-tag" style="--tag-bg: #0a0616; --tag-color: #9D6FFF;">Société</span>
-  </div>
-  <p>Percentile réel, capitaux de Bourdieu, mobilité sociale. Où êtes-vous vraiment dans l'espace social français ?</p>
-  <div class="card-arrow">→</div>
-</a>
+    <a class="card" href="trajectoire-sociale.html" data-cat="societe" style="--accent-color: #9D6FFF">
+      <div class="card-icon" style="--icon-bg: #0a0616;">🏛️</div>
+      <div class="card-meta"><h3>Ma trajectoire sociale</h3><span class="card-tag" style="--tag-bg: #0a0616; --tag-color: #9D6FFF;">Société</span></div>
+      <p>Percentile réel, capitaux de Bourdieu, mobilité sociale. Où êtes-vous vraiment dans l'espace social français ?</p>
+      <div class="card-arrow">→</div>
+    </a>
 
     <a class="card" href="panneaux-solaires.html" data-cat="argent" style="--accent-color: #FFD93D">
-  <div class="card-icon" style="--icon-bg: #2b2610;">☀️</div>
-  <div class="card-meta">
-    <h3>Panneaux solaires — Rentabilité</h3>
-    <span class="card-tag" style="--tag-bg: #2b2610; --tag-color: #FFD93D;">Énergie</span>
-  </div>
-  <p>ROI réel, économies sur 25 ans, impact batterie, CO₂ économisé. Tarifs EDF OA T2 2026.</p>
-  <div class="card-arrow">→</div>
-</a>
+      <div class="card-icon" style="--icon-bg: #2b2610;">☀️</div>
+      <div class="card-meta"><h3>Panneaux solaires — Rentabilité</h3><span class="card-tag" style="--tag-bg: #2b2610; --tag-color: #FFD93D;">Énergie</span></div>
+      <p>ROI réel, économies sur 25 ans, impact batterie, CO₂ économisé. Tarifs EDF OA T2 2026.</p>
+      <div class="card-arrow">→</div>
+    </a>
 
     <a class="card" href="renover-ou-demenager.html" data-cat="argent" style="--accent-color: #C084FC">
-  <div class="card-icon" style="--icon-bg: #1e1020;">🏠</div>
-  <div class="card-meta">
-    <h3>Rénover ou Déménager ?</h3>
-    <span class="card-tag" style="--tag-bg: #1e1020; --tag-color: #C084FC;">Immobilier</span>
-  </div>
-  <p>Tous les frais cachés du déménagement vs le vrai coût des travaux. Impact DPE, plus-value, économies énergie. Données 2026.</p>
-  <div class="card-arrow">→</div>
-</a>
+      <div class="card-icon" style="--icon-bg: #1e1020;">🏠</div>
+      <div class="card-meta"><h3>Rénover ou Déménager ?</h3><span class="card-tag" style="--tag-bg: #1e1020; --tag-color: #C084FC;">Immobilier</span></div>
+      <p>Tous les frais cachés du déménagement vs le vrai coût des travaux. Impact DPE, plus-value, économies énergie. Données 2026.</p>
+      <div class="card-arrow">→</div>
+    </a>
 
     <a class="card" href="roi-grande-ecole.html" data-cat="argent" style="--accent-color: #C084FC">
-  <div class="card-icon" style="--icon-bg: #1a0f2e;">🎓</div>
-  <div class="card-meta">
-    <h3>ROI Grande École vs Université</h3>
-    <span class="card-tag" style="--tag-bg: #1a0f2e; --tag-color: #C084FC;">Éducation</span>
-  </div>
-  <p>Votre école vaut-elle son prix ? Frais réels, coût d'opportunité et gain salarial sur 20 ans. Données CGE & InserSup 2025.</p>
-  <div class="card-arrow">→</div>
-</a>
+      <div class="card-icon" style="--icon-bg: #1a0f2e;">🎓</div>
+      <div class="card-meta"><h3>ROI Grande École vs Université</h3><span class="card-tag" style="--tag-bg: #1a0f2e; --tag-color: #C084FC;">Éducation</span></div>
+      <p>Votre école vaut-elle son prix ? Frais réels, coût d'opportunité et gain salarial sur 20 ans. Données CGE & InserSup 2025.</p>
+      <div class="card-arrow">→</div>
+    </a>
 
     <a class="card" href="impact-voyage.html" data-cat="ecologie" style="--accent-color: #00D4C8">
-  <div class="card-icon" style="--icon-bg: #030f0e;">✈️</div>
-  <div class="card-meta">
-    <h3>Impact carbone de mon voyage</h3>
-    <span class="card-tag" style="--tag-bg: #030f0e; --tag-color: #00D4C8;">Écologie</span>
-  </div>
-  <p>Transport, hébergement, activités — le vrai calcul complet. Avion vs train, solutions sans culpabilité. Données ADEME 2025.</p>
-  <div class="card-arrow">→</div>
-</a>
+      <div class="card-icon" style="--icon-bg: #030f0e;">✈️</div>
+      <div class="card-meta"><h3>Impact carbone de mon voyage</h3><span class="card-tag" style="--tag-bg: #030f0e; --tag-color: #00D4C8;">Écologie</span></div>
+      <p>Transport, hébergement, activités — le vrai calcul complet. Avion vs train, solutions sans culpabilité. Données ADEME 2025.</p>
+      <div class="card-arrow">→</div>
+    </a>
 
-<a class="card" href="bilan-voyageur.html" data-cat="ecologie" style="--accent-color: #7C6FFF">
-  <div class="card-icon" style="--icon-bg: #080610;">🌍</div>
-  <div class="card-meta">
-    <h3>Mon bilan voyageur</h3>
-    <span class="card-tag" style="--tag-bg: #080610; --tag-color: #7C6FFF;">Écologie</span>
-  </div>
-  <p>Toute ma vie de voyages en chiffres. Suis-je dans le 1% des plus gros émetteurs mondiaux ? Profil, boussole, simulateur.</p>
-  <div class="card-arrow">→</div>
-</a>
+    <a class="card" href="bilan-voyageur.html" data-cat="ecologie" style="--accent-color: #7C6FFF">
+      <div class="card-icon" style="--icon-bg: #080610;">🌍</div>
+      <div class="card-meta"><h3>Mon bilan voyageur</h3><span class="card-tag" style="--tag-bg: #080610; --tag-color: #7C6FFF;">Écologie</span></div>
+      <p>Toute ma vie de voyages en chiffres. Suis-je dans le 1% des plus gros émetteurs mondiaux ? Profil, boussole, simulateur.</p>
+      <div class="card-arrow">→</div>
+    </a>
 
     <a class="card" href="cout-enfant.html" data-cat="famille" style="--accent-color: #FF6B9D">
-  <div class="card-icon" style="--icon-bg: #2b0f1a;">👶</div>
-  <div class="card-meta">
-    <h3>Le vrai coût d'un enfant</h3>
-    <span class="card-tag" style="--tag-bg: #2b0f1a; --tag-color: #FF6B9D;">Famille</span>
-  </div>
-  <p>De 0 à 18 ans, tout compris : garde, alimentation, activités, scolarité. Avec les aides CAF 2025. Le chiffre final vous surprendra.</p>
-  <div class="card-arrow">→</div>
-</a>
+      <div class="card-icon" style="--icon-bg: #2b0f1a;">👶</div>
+      <div class="card-meta"><h3>Le vrai coût d'un enfant</h3><span class="card-tag" style="--tag-bg: #2b0f1a; --tag-color: #FF6B9D;">Famille</span></div>
+      <p>De 0 à 18 ans, tout compris : garde, alimentation, activités, scolarité. Avec les aides CAF 2025. Le chiffre final vous surprendra.</p>
+      <div class="card-arrow">→</div>
+    </a>
 
     <a class="card" href="test-politique-2.html" data-cat="societe" style="--accent-color: #6B7FFF">
-  <div class="card-icon" style="--icon-bg: #080912;">🗳️</div>
-  <div class="card-meta">
-    <h3>Test politique approfondi — 80 questions</h3>
-    <span class="card-tag" style="--tag-bg: #080912; --tag-color: #6B7FFF;">Société</span>
-  </div>
-  <p>5 axes, 20 thèmes, mises en situation concrètes, boussole en temps réel. Le test politique le plus complet en français.</p>
-  <div class="card-arrow">→</div>
-</a>
-    
+      <div class="card-icon" style="--icon-bg: #080912;">🗳️</div>
+      <div class="card-meta"><h3>Test politique approfondi — 80 questions</h3><span class="card-tag" style="--tag-bg: #080912; --tag-color: #6B7FFF;">Société</span></div>
+      <p>5 axes, 20 thèmes, mises en situation concrètes, boussole en temps réel. Le test politique le plus complet en français.</p>
+      <div class="card-arrow">→</div>
+    </a>
+
     <a class="card" href="test-politique.html" data-cat="societe" style="--accent-color: #818CF8">
-  <div class="card-icon" style="--icon-bg: #0d0e1a;">🗳️</div>
-  <div class="card-meta">
-    <h3>Suis-je de gauche ou de droite ?</h3>
-    <span class="card-tag" style="--tag-bg: #0d0e1a; --tag-color: #818CF8;">Société</span>
-  </div>
-  <p>Test en 3 dimensions basé sur la méthodologie CEVIPOF/Sciences Po. 30 questions, boussole politique, disclaimers complets.</p>
-  <div class="card-arrow">→</div>
-</a>
+      <div class="card-icon" style="--icon-bg: #0d0e1a;">🗳️</div>
+      <div class="card-meta"><h3>Suis-je de gauche ou de droite ?</h3><span class="card-tag" style="--tag-bg: #0d0e1a; --tag-color: #818CF8;">Société</span></div>
+      <p>Test en 3 dimensions basé sur la méthodologie CEVIPOF/Sciences Po. 30 questions, boussole politique, disclaimers complets.</p>
+      <div class="card-arrow">→</div>
+    </a>
 
     <a class="card" href="roi-formation.html" data-cat="argent" style="--accent-color: #00FFB2">
-  <div class="card-icon" style="--icon-bg: #051a14;">🎓</div>
-  <div class="card-meta">
-    <h3>ROI Formation — Bootcamp vs MOOC vs Master</h3>
-    <span class="card-tag" style="--tag-bg: #051a14; --tag-color: #00FFB2;">Éducation</span>
-  </div>
-  <p>Comparez 3 formations : coût réel, financement CPF/OPCO/PTP, gain salarial sur 10 ans. L'outil de décision le plus complet.</p>
-  <div class="card-arrow">→</div>
-</a>
+      <div class="card-icon" style="--icon-bg: #051a14;">🎓</div>
+      <div class="card-meta"><h3>ROI Formation — Bootcamp vs MOOC vs Master</h3><span class="card-tag" style="--tag-bg: #051a14; --tag-color: #00FFB2;">Éducation</span></div>
+      <p>Comparez 3 formations : coût réel, financement CPF/OPCO/PTP, gain salarial sur 10 ans. L'outil de décision le plus complet.</p>
+      <div class="card-arrow">→</div>
+    </a>
 
     <a class="card" href="perte-de-poids.html" data-cat="sante" style="--accent-color: #3BFF9E">
       <div class="card-icon" style="--icon-bg: #0d2b1e;">⚖️</div>
-      <div class="card-meta">
-        <h3>Perte de poids</h3>
-        <span class="card-tag" style="--tag-bg: #0d2b1e; --tag-color: #3BFF9E;">Santé</span>
-      </div>
+      <div class="card-meta"><h3>Perte de poids</h3><span class="card-tag" style="--tag-bg: #0d2b1e; --tag-color: #3BFF9E;">Santé</span></div>
       <p>Calcule ton déficit calorique, ton BMR et te dit en combien de semaines tu atteins ton objectif.</p>
       <div class="card-arrow">→</div>
     </a>
 
     <a class="card" href="e85-ethanol.html" data-cat="auto" style="--accent-color: #FF6B2B">
       <div class="card-icon" style="--icon-bg: #2b1a0d;">⛽</div>
-      <div class="card-meta">
-        <h3>E85 vs SP95 — Rentabilité</h3>
-        <span class="card-tag" style="--tag-bg: #2b1a0d; --tag-color: #FF6B2B;">Auto</span>
-      </div>
+      <div class="card-meta"><h3>E85 vs SP95 — Rentabilité</h3><span class="card-tag" style="--tag-bg: #2b1a0d; --tag-color: #FF6B2B;">Auto</span></div>
       <p>Est-ce que passer à l'éthanol E85 vaut vraiment le coup par rapport au SP95 ? La réponse en secondes.</p>
       <div class="card-arrow">→</div>
     </a>
 
     <a class="card" href="credit-conso.html" data-cat="argent" style="--accent-color: #FFAA3B">
-  <div class="card-icon" style="--icon-bg: #2b2010;">💸</div>
-  <div class="card-meta">
-    <h3>Crédit conso — Coût réel</h3>
-    <span class="card-tag" style="--tag-bg: #2b2010; --tag-color: #FFAA3B;">Argent</span>
-  </div>
-  <p>TAEG réel, comparateur d'offres, remboursement anticipé. Tout ce que votre banque ne vous montre pas.</p>
-  <div class="card-arrow">→</div>
-</a>
+      <div class="card-icon" style="--icon-bg: #2b2010;">💸</div>
+      <div class="card-meta"><h3>Crédit conso — Coût réel</h3><span class="card-tag" style="--tag-bg: #2b2010; --tag-color: #FFAA3B;">Argent</span></div>
+      <p>TAEG réel, comparateur d'offres, remboursement anticipé. Tout ce que votre banque ne vous montre pas.</p>
+      <div class="card-arrow">→</div>
+    </a>
 
     <a class="card" href="cout-chien.html" data-cat="animaux" style="--accent-color: #FFAA3B">
-  <div class="card-icon" style="--icon-bg: #1a1200;">🐶</div>
-  <div class="card-meta">
-    <h3>Le vrai coût d'un chien sur 15 ans</h3>
-    <span class="card-tag" style="--tag-bg: #1a1200; --tag-color: #FFAA3B;">Animaux</span>
-  </div>
-  <p>20 races préconfigurées. Nourriture, vétérinaire, assurance, garde, toilettage. Le calcul que les éleveurs ne font pas pour vous.</p>
-  <div class="card-arrow">→</div>
-</a>
+      <div class="card-icon" style="--icon-bg: #1a1200;">🐶</div>
+      <div class="card-meta"><h3>Le vrai coût d'un chien sur 15 ans</h3><span class="card-tag" style="--tag-bg: #1a1200; --tag-color: #FFAA3B;">Animaux</span></div>
+      <p>20 races préconfigurées. Nourriture, vétérinaire, assurance, garde, toilettage. Le calcul que les éleveurs ne font pas pour vous.</p>
+      <div class="card-arrow">→</div>
+    </a>
 
-<a class="card" href="cout-sommeil.html" data-cat="sante" style="--accent-color: #818CF8">
-  <div class="card-icon" style="--icon-bg: #0d0b1a;">😴</div>
-  <div class="card-meta">
-    <h3>Le vrai coût de vos nuits perdues</h3>
-    <span class="card-tag" style="--tag-bg: #0d0b1a; --tag-color: #818CF8;">Santé</span>
-  </div>
-  <p>Productivité gaspillée, risques santé chiffrés, années perdues. Le manque de sommeil vous coûte combien exactement ?</p>
-  <div class="card-arrow">→</div>
-</a>
+    <a class="card" href="cout-sommeil.html" data-cat="sante" style="--accent-color: #818CF8">
+      <div class="card-icon" style="--icon-bg: #0d0b1a;">😴</div>
+      <div class="card-meta"><h3>Le vrai coût de vos nuits perdues</h3><span class="card-tag" style="--tag-bg: #0d0b1a; --tag-color: #818CF8;">Santé</span></div>
+      <p>Productivité gaspillée, risques santé chiffrés, années perdues. Le manque de sommeil vous coûte combien exactement ?</p>
+      <div class="card-arrow">→</div>
+    </a>
 
-<a class="card" href="changer-telephone.html" data-cat="tech" style="--accent-color: #2DD4BF">
-  <div class="card-icon" style="--icon-bg: #061a18;">📱</div>
-  <div class="card-meta">
-    <h3>Devrais-je changer de téléphone ?</h3>
-    <span class="card-tag" style="--tag-bg: #061a18; --tag-color: #2DD4BF;">Tech</span>
-  </div>
-  <p>Test FOMO, 4 scénarios comparés, CO₂ calculé, verdict sans pitié. 88% changent alors que leur téléphone marche encore.</p>
-  <div class="card-arrow">→</div>
-</a>
+    <a class="card" href="changer-telephone.html" data-cat="tech" style="--accent-color: #2DD4BF">
+      <div class="card-icon" style="--icon-bg: #061a18;">📱</div>
+      <div class="card-meta"><h3>Devrais-je changer de téléphone ?</h3><span class="card-tag" style="--tag-bg: #061a18; --tag-color: #2DD4BF;">Tech</span></div>
+      <p>Test FOMO, 4 scénarios comparés, CO₂ calculé, verdict sans pitié. 88% changent alors que leur téléphone marche encore.</p>
+      <div class="card-arrow">→</div>
+    </a>
+
     <a class="card" href="voiture-electrique-vs-thermique.html" data-cat="auto" style="--accent-color: #3BFF9E">
-  <div class="card-icon" style="--icon-bg: #0d2b1e;">🔋</div>
-  <div class="card-meta">
-    <h3>Électrique vs Thermique</h3>
-    <span class="card-tag" style="--tag-bg: #0d2b1e; --tag-color: #3BFF9E;">Auto</span>
-  </div>
-  <p>TCO sur 10 ans, bilan carbone, score personnalisé. Tout pour décider si passer à l'électrique vaut le coup.</p>
-  <div class="card-arrow">→</div>
-</a>
+      <div class="card-icon" style="--icon-bg: #0d2b1e;">🔋</div>
+      <div class="card-meta"><h3>Électrique vs Thermique</h3><span class="card-tag" style="--tag-bg: #0d2b1e; --tag-color: #3BFF9E;">Auto</span></div>
+      <p>TCO sur 10 ans, bilan carbone, score personnalisé. Tout pour décider si passer à l'électrique vaut le coup.</p>
+      <div class="card-arrow">→</div>
+    </a>
 
     <a class="card" href="louer-vs-acheter.html" data-cat="argent" style="--accent-color: #3BB5FF">
-  <div class="card-icon" style="--icon-bg: #0d1a2b;">🏠</div>
-  <div class="card-meta">
-    <h3>Louer vs Acheter</h3>
-    <span class="card-tag" style="--tag-bg: #0d1a2b; --tag-color: #3BB5FF;">Immobilier</span>
-  </div>
-  <p>Le vrai calcul avec frais de notaire, coût d'opportunité de l'apport et point d'équilibre. Données Meilleurtaux 2025.</p>
-  <div class="card-arrow">→</div>
-</a>
-
-    <!-- Coming soon cards -->
+      <div class="card-icon" style="--icon-bg: #0d1a2b;">🏠</div>
+      <div class="card-meta"><h3>Louer vs Acheter</h3><span class="card-tag" style="--tag-bg: #0d1a2b; --tag-color: #3BB5FF;">Immobilier</span></div>
+      <p>Le vrai calcul avec frais de notaire, coût d'opportunité de l'apport et point d'équilibre. Données Meilleurtaux 2025.</p>
+      <div class="card-arrow">→</div>
+    </a>
 
     <div class="card soon" data-cat="quotidien">
       <span class="soon-badge">Bientôt</span>
       <div class="card-icon">☕</div>
-      <div class="card-meta">
-        <h3>Café capsules vs grain</h3>
-        <span class="card-tag">Quotidien</span>
-      </div>
+      <div class="card-meta"><h3>Café capsules vs grain</h3><span class="card-tag">Quotidien</span></div>
       <p>Le vrai coût de ton café au quotidien selon la machine que t'as chez toi.</p>
       <div class="card-arrow">→</div>
     </div>
@@ -1104,10 +928,7 @@ footer p {
     <div class="card soon" data-cat="sante">
       <span class="soon-badge">Bientôt</span>
       <div class="card-icon">😴</div>
-      <div class="card-meta">
-        <h3>Cycles de sommeil</h3>
-        <span class="card-tag">Santé</span>
-      </div>
+      <div class="card-meta"><h3>Cycles de sommeil</h3><span class="card-tag">Santé</span></div>
       <p>À quelle heure tu dois te coucher pour te réveiller frais selon l'heure à laquelle tu dois te lever.</p>
       <div class="card-arrow">→</div>
     </div>
@@ -1131,36 +952,127 @@ footer p {
   </div>
   <p>Fait avec curiosité — 2025</p>
 </footer>
-  
+
 <script>
-  // Search
-  const searchInput = document.getElementById('searchInput');
-  const cards = document.querySelectorAll('.card');
+// ── CURSEUR CUSTOM ──
+var cursor = document.getElementById('cursor');
+var ring = document.getElementById('cursorRing');
+var mx = 0, my = 0, rx = 0, ry = 0;
 
-  searchInput.addEventListener('input', () => {
-    const q = searchInput.value.toLowerCase();
-    cards.forEach(card => {
-      const text = card.textContent.toLowerCase();
-      card.style.display = text.includes(q) ? '' : 'none';
-    });
-  });
+document.addEventListener('mousemove', function(e){
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top  = my + 'px';
+});
 
-  // Filters
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const filter = btn.dataset.filter;
-      cards.forEach(card => {
-        if (filter === 'all' || card.dataset.cat === filter) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
+// Ring avec légère inertie
+(function animRing(){
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(animRing);
+})();
+
+// ── BARRE DE SCROLL ──
+var scrollBar = document.getElementById('scrollBar');
+window.addEventListener('scroll', function(){
+  var pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  scrollBar.style.width = Math.min(100, pct) + '%';
+});
+
+// ── COMPTEURS ANIMÉS ──
+function animateCounter(el, target, duration){
+  var start = 0;
+  var step = target / (duration / 16);
+  var timer = setInterval(function(){
+    start += step;
+    if(start >= target){
+      el.textContent = target;
+      clearInterval(timer);
+    } else {
+      el.textContent = Math.floor(start);
+    }
+  }, 16);
+}
+
+// Déclencher les compteurs quand la section stats est visible
+var statsObserver = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting){
+      var counters = document.querySelectorAll('[data-target]');
+      counters.forEach(function(el){
+        var target = parseInt(el.getAttribute('data-target'));
+        if(target > 0) animateCounter(el, target, 1200);
       });
+      statsObserver.disconnect();
+    }
+  });
+}, { threshold: 0.5 });
+
+var statsSection = document.querySelector('.stats');
+if(statsSection) statsObserver.observe(statsSection);
+
+// ── SCROLL REVEAL ──
+var revealObserver = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting){
+      // Délai en cascade selon la position dans la grille
+      var cards = Array.from(document.querySelectorAll('.card'));
+      var idx = cards.indexOf(entry.target);
+      var delay = (idx % 3) * 80; // décalage par colonne
+      setTimeout(function(){
+        entry.target.classList.add('visible');
+      }, delay);
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.card').forEach(function(card){
+  revealObserver.observe(card);
+});
+
+// ── CAROUSEL ──
+(function(){
+  var idx = 0, total = 3, timer;
+  function go(n){
+    idx = ((n % total) + total) % total;
+    var track = document.getElementById('carouselTrack');
+    if(track) track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+    document.querySelectorAll('.c-dot').forEach(function(d, i){
+      d.classList.toggle('active', i === idx);
+    });
+    clearInterval(timer);
+    timer = setInterval(function(){ go(idx + 1); }, 5000);
+  }
+  window.cGo   = go;
+  window.cNext = function(){ go(idx + 1); };
+  window.cPrev = function(){ go(idx - 1); };
+  timer = setInterval(function(){ go(idx + 1); }, 5000);
+})();
+
+// ── SEARCH ──
+var searchInput = document.getElementById('searchInput');
+var cards = document.querySelectorAll('.card');
+searchInput.addEventListener('input', function(){
+  var q = this.value.toLowerCase();
+  cards.forEach(function(card){
+    card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+
+// ── FILTERS ──
+document.querySelectorAll('.filter-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+    this.classList.add('active');
+    var filter = this.dataset.filter;
+    cards.forEach(function(card){
+      card.style.display = (filter === 'all' || card.dataset.cat === filter) ? '' : 'none';
     });
   });
+});
 </script>
 
 </body>
