@@ -1116,6 +1116,73 @@ document.querySelectorAll('.filter-btn').forEach(function(btn){
   });
 });
 </script>
+<!-- MASCOTTE -->
+<div id="mascotte" style="position:fixed;z-index:9990;width:80px;height:80px;cursor:pointer" title="Calculamatix !">
+  <img src="/Design_sans_titre.gif" style="width:100%;height:100%;object-fit:contain;image-rendering:pixelated;transition:transform .2s cubic-bezier(.34,1.56,.64,1)" id="mascotte-img" alt="Mascotte"/>
+  <div id="mascotte-bubble" style="position:absolute;bottom:90px;left:50%;transform:translateX(-50%);background:#FFD93D;color:#000;font-family:'Unbounded',sans-serif;font-size:9px;font-weight:700;padding:6px 10px;border-radius:10px;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.3)">
+    <span id="bubble-text">Je calcule tout !</span>
+    <div style="position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid #FFD93D"></div>
+  </div>
+</div>
 
+<script>
+(function(){
+  var el=document.getElementById('mascotte');
+  var img=document.getElementById('mascotte-img');
+  var bubble=document.getElementById('mascotte-bubble');
+  var bubbleText=document.getElementById('bubble-text');
+  if(!el) return;
+  var w=80,h=80;
+  var x=Math.random()*(window.innerWidth-w);
+  var y=Math.random()*(window.innerHeight-h);
+  var vx=2.2,vy=1.8,looking=false;
+  var phrases=['Je calcule tout !','Par Toutatis !','0 pub. 0 bullshit.','22 calculateurs !','Gratuit & sans pub 🎉','Klik klik klik...','Vive Calculamatix !'];
+
+  function bounce(){
+    x+=vx; y+=vy;
+    if(x<=0){x=0;vx=Math.abs(vx);}
+    if(x>=window.innerWidth-w){x=window.innerWidth-w;vx=-Math.abs(vx);}
+    if(y<=0){y=0;vy=Math.abs(vy);}
+    if(y>=window.innerHeight-h){y=window.innerHeight-h;vy=-Math.abs(vy);}
+    if(!looking) img.style.transform=vx>0?'scaleX(1)':'scaleX(-1)';
+    el.style.left=x+'px';
+    el.style.top=y+'px';
+    requestAnimationFrame(bounce);
+  }
+
+  document.addEventListener('mousemove',function(e){
+    if(!looking) return;
+    img.style.transform=e.clientX>x+w/2?'scaleX(1)':'scaleX(-1)';
+  });
+
+  el.addEventListener('click',function(){
+    bubbleText.textContent=phrases[Math.floor(Math.random()*phrases.length)];
+    bubble.style.opacity='1';
+    img.style.transform='scaleX('+(vx>0?1:-1)+') translateY(-12px) scale(1.2)';
+    setTimeout(function(){img.style.transform='scaleX('+(vx>0?1:-1)+')';bubble.style.opacity='0';},2000);
+  });
+
+  el.addEventListener('mouseenter',function(){
+    looking=true;
+    bubble.style.opacity='1';
+    bubbleText.textContent=phrases[Math.floor(Math.random()*phrases.length)];
+    vx*=0.3;vy*=0.3;
+  });
+
+  el.addEventListener('mouseleave',function(){
+    looking=false;
+    bubble.style.opacity='0';
+    vx=vx>=0?2.2:-2.2;
+    vy=vy>=0?1.8:-1.8;
+  });
+
+  window.addEventListener('resize',function(){
+    if(x>window.innerWidth-w)x=window.innerWidth-w;
+    if(y>window.innerHeight-h)y=window.innerHeight-h;
+  });
+
+  bounce();
+})();
+</script>
 </body>
 </html>
