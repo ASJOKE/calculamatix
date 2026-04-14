@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simulateur DPE 2026 — Estimez votre classe énergie, travaux, aides | Calculamatix</title>
+  <meta name="description" content="Estimez votre DPE gratuitement : classe A à G, facture énergétique, travaux nécessaires, aides MaPrimeRénov' 2026, impact sur la valeur de votre bien. Méthode 3CL officielle simplifiée."/>
+  <link rel="canonical" href="https://calculamatix.com/dpe"/>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#07100a;--bg2:#0d180f;--card:#101a12;--border:#1a2e1d;
+      --A:#00C853;--B:#64DD17;--C:#AEEA00;--D:#FFD600;--E:#FF6D00;--F:#DD2C00;--G:#B71C1C;
+      --green:#2ECC71;--blue:#3498DB;--amber:#F39C12;--red:#E74C3C;--purple:#9B59B6;
+      --text:#EFF7F0;--muted:#4A6B4D;--muted2:#1E2E20;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;padding-bottom:80px;font-size:15px;line-height:1.6}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(46,204,113,.06),transparent),
+                 radial-gradient(ellipse 30% 30% at 85% 85%,rgba(52,152,219,.03),transparent)}
+
+    nav{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--green)}
+    .back{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+    .back:hover{color:var(--text)}
+
+    /* HERO */
+    .hero{position:relative;z-index:10;max-width:1060px;margin:44px auto 0;padding:0 24px;text-align:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--green);background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.25);padding:7px 18px;border-radius:100px;margin-bottom:18px;font-family:'DM Mono',monospace}
+    h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(26px,5vw,50px);letter-spacing:-1.5px;line-height:1.1;margin-bottom:12px}
+    h1 em{color:var(--green);font-style:normal}
+    .hero-sub{font-size:16px;color:var(--muted);line-height:1.75;max-width:620px;margin:0 auto 12px}
+    .hero-note{font-size:12px;color:var(--muted2);font-family:'DM Mono',monospace;padding:9px 16px;background:rgba(46,204,113,.04);border:1px solid rgba(46,204,113,.1);border-radius:10px;display:inline-block}
+
+    /* DPE ÉTIQUETTE GRANDE */
+    .dpe-banner{position:relative;z-index:10;max-width:1060px;margin:24px auto 0;padding:0 24px}
+    .dpe-banner-inner{border-radius:20px;padding:24px 28px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;border:2px solid;transition:all .4s}
+    .dpe-etiquette{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:120px}
+    .dpe-lettre{font-family:'Syne',sans-serif;font-size:64px;font-weight:800;line-height:1;width:90px;height:90px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;transition:all .4s}
+    .dpe-kwh{font-family:'DM Mono',monospace;font-size:13px;font-weight:700;text-align:center}
+    .dpe-co2{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-align:center}
+    .dpe-stats{display:flex;flex-wrap:wrap;gap:14px;flex:1}
+    .dpe-stat{text-align:center;min-width:110px}
+    .dpe-stat-v{font-family:'Syne',sans-serif;font-size:16px;font-weight:700}
+    .dpe-stat-l{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4}
+    .dpe-alerte{font-size:13px;font-weight:700;padding:8px 16px;border-radius:10px;text-align:center;margin-top:8px}
+
+    /* ECHELLE DPE */
+    .dpe-scale{display:flex;flex-direction:column;gap:3px;min-width:140px}
+    .dpe-scale-item{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;transition:all .3s;opacity:.4}
+    .dpe-scale-item.current{opacity:1;transform:scaleX(1.05);transform-origin:left}
+
+    /* TABS */
+    .tabs-wrap{position:relative;z-index:10;max-width:1060px;margin:18px auto 0;padding:0 24px}
+    .tabs{display:flex;gap:4px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:5px;flex-wrap:wrap}
+    .tab{background:transparent;border:none;color:var(--muted);padding:9px 15px;border-radius:10px;font-size:13px;font-family:inherit;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+    .tab.on{background:var(--green);color:#051205;font-weight:700}
+    .panel{display:none}.panel.on{display:block}
+
+    .wrap{position:relative;z-index:10;max-width:1060px;margin:16px auto 0;padding:0 24px;display:flex;flex-direction:column;gap:14px}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px}
+    .ctitle{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:14px}
+
+    .f{margin-bottom:14px}.f:last-child{margin-bottom:0}
+    .f label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;color:var(--text);margin-bottom:7px;font-weight:500}
+    .fval{font-family:'DM Mono',monospace;color:var(--green);font-size:13px;font-weight:700}
+    .fhint{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.6;padding:7px 10px;background:rgba(255,255,255,.02);border-radius:8px;border-left:2px solid var(--border)}
+
+    input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:var(--muted2);border-radius:2px;outline:none;cursor:pointer;margin:3px 0}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--green);border-radius:50%;box-shadow:0 0 8px rgba(46,204,113,.4)}
+    select{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:11px 14px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s}
+    select:focus{border-color:var(--green)}
+    select option{background:var(--bg2)}
+
+    .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+    .kpi{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+    .kpi-emoji{font-size:22px;display:block;margin-bottom:6px}
+    .kpi-val{font-family:'Syne',sans-serif;font-size:clamp(15px,2.5vw,20px);font-weight:800;line-height:1;margin-bottom:4px}
+    .kpi-label{font-size:11px;color:var(--muted);line-height:1.4}
+    .kpi-sub{font-size:10px;color:var(--muted2);margin-top:3px;font-family:'DM Mono',monospace}
+
+    .barre{margin-bottom:10px}
+    .barre-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
+    .barre-label{color:var(--text)}
+    .barre-val{font-family:'DM Mono',monospace;font-weight:700}
+    .barre-track{height:9px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden}
+    .barre-fill{height:100%;border-radius:4px;transition:width .6s ease}
+
+    .table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
+    table{width:100%;border-collapse:collapse;font-size:12px}
+    th{background:var(--bg2);color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.8px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    td{padding:10px 14px;border-bottom:1px solid var(--muted2);color:var(--text);font-family:'DM Mono',monospace}
+    tr:last-child td{border-bottom:none;font-weight:700}
+    tr:hover td{background:rgba(46,204,113,.02)}
+    .td-green{color:var(--green)}.td-red{color:var(--red)}.td-amber{color:var(--amber)}.td-muted{color:var(--muted)}.td-blue{color:var(--blue)}
+
+    .info-box{background:rgba(46,204,113,.06);border:1px solid rgba(46,204,113,.2);border-radius:12px;padding:14px 16px;font-size:13px;color:var(--muted);line-height:1.75;margin-top:10px}
+    .info-box strong{color:var(--text)}
+    .warn-box{background:rgba(231,76,60,.05);border:1px solid rgba(231,76,60,.2);border-radius:12px;padding:14px 16px;font-size:13px;color:var(--muted);line-height:1.75;margin-top:10px}
+    .warn-box strong{color:var(--red)}
+    .alert-box{background:rgba(231,76,60,.1);border:2px solid rgba(231,76,60,.4);border-radius:12px;padding:16px 18px;font-size:14px;color:var(--text);line-height:1.75;margin-top:10px}
+    .disc-box{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:11px;color:var(--muted2);line-height:1.7;font-family:'DM Mono',monospace;margin-top:12px}
+
+    /* TRAVAUX CARDS */
+    .travaux-grid{display:flex;flex-direction:column;gap:10px}
+    .travail-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;gap:14px;align-items:flex-start;transition:border-color .2s}
+    .travail-card:hover{border-color:rgba(46,204,113,.3)}
+    .travail-emoji{font-size:26px;flex-shrink:0}
+    .travail-content{flex:1}
+    .travail-titre{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
+    .travail-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:6px}
+    .travail-chiffres{display:flex;gap:10px;flex-wrap:wrap}
+    .travail-chip{font-size:11px;font-family:'DM Mono',monospace;padding:3px 9px;border-radius:100px;font-weight:700}
+    .chip-cout{background:rgba(231,76,60,.1);color:var(--red);border:1px solid rgba(231,76,60,.2)}
+    .chip-gain{background:rgba(46,204,113,.1);color:var(--green);border:1px solid rgba(46,204,113,.2)}
+    .chip-aide{background:rgba(52,152,219,.1);color:var(--blue);border:1px solid rgba(52,152,219,.2)}
+    .chip-classe{font-size:12px;font-family:'Syne',sans-serif;font-weight:800;width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff}
+
+    /* AIDES */
+    .aide-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:8px}
+    .aide-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+    .aide-nom{font-size:14px;font-weight:700;color:var(--text)}
+    .aide-montant{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--green)}
+    .aide-desc{font-size:12px;color:var(--muted);line-height:1.6}
+
+    .cw{position:relative;width:100%;height:250px}
+    .sep{height:1px;background:var(--border);margin:6px 0}
+
+    @media(max-width:640px){
+      .g2,.g3,.kpi-grid{grid-template-columns:1fr}
+      .dpe-banner-inner{flex-direction:column}
+      .tab{font-size:12px;padding:7px 10px}
+      .dpe-scale{flex-direction:row;flex-wrap:wrap}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Retour</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">🏠 DPE · Méthode 3CL officielle · MaPrimeRénov' 2026</div>
+  <h1>Simulateur <em>DPE</em><br>& rénovation énergétique</h1>
+  <p class="hero-sub">Estimez votre classe énergie A→G, calculez votre facture réelle, découvrez quels travaux faire et combien vous recevrez d'aides. Ce que les diagnostiqueurs ne vous disent pas toujours.</p>
+  <div class="hero-note">⚠️ Estimation indicative — seul un diagnostiqueur certifié peut établir un DPE légal · Sources : ADEME · arrêté 31/03/2021 · maprimerenov.gouv.fr</div>
+
+  <!-- MODE SAISIE DIRECTE -->
+  <div id="mode-toggle" style="margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+    <button onclick="setMode('calcul')" id="btn-mode-calcul" style="background:var(--green);color:#051205;border:none;padding:8px 18px;border-radius:10px;font-family:Syne,sans-serif;font-weight:700;font-size:13px;cursor:pointer">🏠 Caractéristiques du logement</button>
+    <button onclick="setMode('facture')" id="btn-mode-facture" style="background:var(--bg2);color:var(--muted);border:1px solid var(--border);padding:8px 18px;border-radius:10px;font-family:Syne,sans-serif;font-weight:700;font-size:13px;cursor:pointer">📄 J'ai mes factures</button>
+  </div>
+</div>
+
+<!-- BANNER DPE -->
+<div class="dpe-banner">
+  <div class="dpe-banner-inner" id="dpe-banner-inner" style="border-color:rgba(255,214,0,.3);background:rgba(255,214,0,.04)">
+    <div class="dpe-etiquette">
+      <div class="dpe-lettre" id="dpe-lettre" style="background:var(--D)">D</div>
+      <div class="dpe-kwh" id="dpe-kwh" style="color:var(--D)">— kWh/m²/an</div>
+      <div class="dpe-co2" id="dpe-co2">— kg CO₂/m²/an</div>
+    </div>
+
+    <div class="dpe-scale" id="dpe-scale"></div>
+
+    <div class="dpe-stats">
+      <div class="dpe-stat"><div class="dpe-stat-v" id="bs-facture" style="color:var(--amber)">—</div><div class="dpe-stat-l">Facture énergétique/an</div></div>
+      <div class="dpe-stat"><div class="dpe-stat-v" id="bs-conso" style="color:var(--blue)">—</div><div class="dpe-stat-l">Consommation totale</div></div>
+      <div class="dpe-stat"><div class="dpe-stat-v" id="bs-location" style="color:var(--green)">—</div><div class="dpe-stat-l">Statut locatif</div></div>
+      <div class="dpe-stat"><div class="dpe-stat-v" id="bs-valeur" style="color:var(--purple)">—</div><div class="dpe-stat-l">Impact valeur estimé</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('logement',this)">🏠 Mon logement</button>
+    <button class="tab" onclick="showTab('isolation',this)">🧱 Isolation</button>
+    <button class="tab" onclick="showTab('chauffage',this)">🔥 Chauffage</button>
+    <button class="tab" onclick="showTab('resultats',this)">📊 Résultats</button>
+    <button class="tab" onclick="showTab('travaux',this)">🔨 Travaux & aides</button>
+  </div>
+</div>
+
+<!-- ══ LOGEMENT ══ -->
+<div class="panel on" id="p-logement"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🏠 Informations générales</div>
+      <div class="f">
+        <label>Type de logement</label>
+        <select id="i-type" onchange="recalc()">
+          <option value="maison" selected>🏠 Maison individuelle</option>
+          <option value="appart-mito">🏢 Appartement (mitoyen)</option>
+          <option value="appart-top">🏢 Appartement (dernier étage)</option>
+          <option value="maison-mito">🏠 Maison mitoyenne</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Surface habitable <span class="fval" id="v-surface">80 m²</span></label>
+        <input type="range" id="i-surface" min="20" max="400" step="5" value="80" oninput="recalc()"/>
+      </div>
+      <div class="f">
+        <label>Année de construction</label>
+        <select id="i-annee" onchange="recalc()">
+          <option value="avant1945">Avant 1945 (sans isolation d'origine)</option>
+          <option value="1945-1974" selected>1945-1974 (RT non appliquée)</option>
+          <option value="1975-1988">1975-1988 (RT 1974 — 1ère réglementation)</option>
+          <option value="1989-2000">1989-2000 (RT 1988)</option>
+          <option value="2001-2012">2001-2012 (RT 2000 / RT 2005)</option>
+          <option value="apres2012">Après 2012 (RT 2012 / RE 2020)</option>
+        </select>
+        <div class="fhint">L'année de construction est le facteur le plus déterminant pour le DPE. 78% des logements construits avant 1974 sont classés E, F ou G. Source : ADEME 2024.</div>
+      </div>
+      <div class="f">
+        <label>Zone climatique</label>
+        <select id="i-zone" onchange="recalc()">
+          <option value="H1" selected>❄️ H1 — Nord, Est, Massif Central, Alpes (froid)</option>
+          <option value="H2">🌤️ H2 — Ouest, Centre, Sud-Ouest (tempéré)</option>
+          <option value="H3">☀️ H3 — Méditerranée, Corse (doux)</option>
+        </select>
+        <div class="fhint">La zone H1 (Paris, Lyon, Strasbourg...) consomme 30 à 40% plus qu'en zone H3 (Nice, Marseille). Impact direct sur le DPE.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ctitle">📋 Usage du bien</div>
+      <div class="f">
+        <label>Usage</label>
+        <select id="i-usage" onchange="recalc()">
+          <option value="residence-principale" selected>🏠 Résidence principale</option>
+          <option value="location">🔑 Bien locatif</option>
+          <option value="vente">💰 En vue de la vente</option>
+          <option value="investissement">📈 Investissement</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Valeur estimée du bien <span class="fval" id="v-valeur">250 000 €</span></label>
+        <input type="range" id="i-valeur" min="50000" max="2000000" step="10000" value="250000" oninput="recalc()"/>
+        <div class="fhint">Un logement A/B vaut 3-15% de plus qu'un D équivalent. Un F/G peut perdre jusqu'à 20% de sa valeur. Source : Notaires de France 2024.</div>
+      </div>
+      <div class="f">
+        <label>Revenus du foyer (pour les aides)</label>
+        <select id="i-revenus" onchange="recalc()">
+          <option value="tres-modeste">💙 Très modestes (< 21 805€/an)</option>
+          <option value="modeste" selected>💛 Modestes (21 805 à 27 025€/an)</option>
+          <option value="intermediaire">🟠 Intermédiaires (27 025 à 37 066€/an)</option>
+          <option value="superieur">⚫ Supérieurs (> 37 066€/an)</option>
+        </select>
+        <div class="fhint">Barèmes MaPrimeRénov' 2026 — Île-de-France. Les seuils sont différents hors IDF. Source : ANAH 2026.</div>
+      </div>
+      <div id="usage-alerte"></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ══ SAISIE DIRECTE FACTURE ══ -->
+<div class="panel" id="p-facture"><div class="wrap">
+  <div class="card" style="background:rgba(46,204,113,.04);border-color:rgba(46,204,113,.25)">
+    <div class="ctitle" style="color:var(--green)">📄 Saisie directe depuis vos factures</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.7">Vous avez vos factures d'énergie ? C'est la méthode la plus précise. Renseignez votre consommation annuelle réelle et votre surface pour obtenir votre classe DPE estimée.</p>
+    <div class="g2">
+      <div>
+        <div class="f">
+          <label>Consommation annuelle totale <span class="fval" id="v-conso-directe">15 000 kWh</span></label>
+          <input type="range" id="i-conso-directe" min="1000" max="80000" step="500" value="15000" oninput="recalcDirecte()"/>
+          <div class="fhint">Regardez votre facture annuelle ou relevé de compteur. Additionnez toutes vos énergies (gaz + électricité si les deux).</div>
+        </div>
+        <div class="f">
+          <label>Surface habitable <span class="fval" id="v-surface-d">80 m²</span></label>
+          <input type="range" id="i-surface-d" min="20" max="400" step="5" value="80" oninput="recalcDirecte()"/>
+        </div>
+        <div class="f">
+          <label>Type d'énergie principale</label>
+          <select id="i-energie-d" onchange="recalcDirecte()">
+            <option value="gaz" selected>🔥 Gaz (énergie finale → EP ×1.0)</option>
+            <option value="electricite">⚡ Électricité (énergie finale → EP ×1.9)</option>
+            <option value="fioul">🛢️ Fioul (énergie finale → EP ×1.0)</option>
+            <option value="bois">🪵 Bois / granulés (énergie finale → EP ×1.0)</option>
+          </select>
+          <div class="fhint">Le DPE utilise l'énergie primaire. L'électricité est multipliée par 1,9 (coefficient 2026). Le gaz et le fioul restent à 1,0.</div>
+        </div>
+        <div class="f">
+          <label>Prix moyen de l'énergie</label>
+          <select id="i-prix-d" onchange="recalcDirecte()">
+            <option value="0.27">⚡ Électricité — 0,27€/kWh</option>
+            <option value="0.12" selected>🔥 Gaz — 0,12€/kWh</option>
+            <option value="0.14">🛢️ Fioul — 0,14€/kWh</option>
+            <option value="0.08">🪵 Bois granulés — 0,08€/kWh</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <div id="resultat-direct" style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center">
+          <div style="font-size:12px;color:var(--muted);font-family:DM Mono,monospace;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Classe DPE estimée</div>
+          <div id="direct-lettre" style="font-family:Syne,sans-serif;font-size:72px;font-weight:800;width:100px;height:100px;border-radius:16px;display:flex;align-items:center;justify-content:center;color:#fff;margin:0 auto 10px">D</div>
+          <div id="direct-kwh" style="font-family:DM Mono,monospace;font-size:14px;font-weight:700;color:var(--green)">— kWh/m²/an (énergie primaire)</div>
+          <div id="direct-co2" style="font-size:12px;color:var(--muted);margin-top:4px">CO₂ estimé : —</div>
+          <div style="margin-top:14px;padding:10px;background:rgba(255,255,255,.03);border-radius:8px">
+            <div id="direct-facture" style="font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:var(--amber)">—</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">Facture annuelle estimée</div>
+          </div>
+        </div>
+        <div class="info-box" style="margin-top:12px">
+          <strong>Astuce :</strong> Sur votre facture EDF ou GRDF, cherchez "Consommation annuelle" ou "Relevé index". En kWh. Si vous avez les deux (gaz + élec), additionnez les deux consommations en les convertissant en énergie primaire.
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ══ ISOLATION ══ -->
+<div class="panel" id="p-isolation"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🧱 Parois opaques</div>
+      <div class="f">
+        <label>Isolation des murs</label>
+        <select id="i-murs" onchange="recalc()">
+          <option value="aucune" selected>❌ Aucune isolation (mur simple)</option>
+          <option value="faible">🔸 Isolation faible (< 5 cm)</option>
+          <option value="moyenne">🔶 Isolation moyenne (6-10 cm)</option>
+          <option value="bonne">✅ Bonne isolation (10-14 cm)</option>
+          <option value="excellente">⭐ Excellente (> 15 cm)</option>
+        </select>
+        <div class="fhint">Les murs représentent 25-30% des déperditions thermiques. C'est le poste de travaux le plus impactant mais aussi le plus cher.</div>
+      </div>
+      <div class="f">
+        <label>Isolation de la toiture / combles</label>
+        <select id="i-toiture" onchange="recalc()">
+          <option value="aucune">❌ Combles non isolés</option>
+          <option value="faible">🔸 Isolation faible (< 10 cm)</option>
+          <option value="moyenne" selected>🔶 Isolation moyenne (10-20 cm)</option>
+          <option value="bonne">✅ Bonne (20-30 cm)</option>
+          <option value="excellente">⭐ Excellente (> 30 cm)</option>
+        </select>
+        <div class="fhint">La toiture représente 25-30% des déperditions. C'est le geste le plus rentable — isolation des combles perdus à partir de 20€/m².</div>
+      </div>
+      <div class="f">
+        <label>Isolation du plancher bas</label>
+        <select id="i-plancher" onchange="recalc()">
+          <option value="aucune" selected>❌ Pas d'isolation (dalle nue)</option>
+          <option value="moyenne">🔶 Isolation partielle</option>
+          <option value="bonne">✅ Bonne isolation</option>
+        </select>
+        <div class="fhint">Le plancher bas représente 7-10% des déperditions. Moins prioritaire que toiture et murs.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ctitle">🪟 Menuiseries & ventilation</div>
+      <div class="f">
+        <label>Type de vitrage</label>
+        <select id="i-vitrage" onchange="recalc()">
+          <option value="simple">❌ Simple vitrage (années 60-70)</option>
+          <option value="double-ancien">🔸 Double vitrage ancien (avant 2000)</option>
+          <option value="double" selected>🔶 Double vitrage récent</option>
+          <option value="triple">⭐ Triple vitrage</option>
+        </select>
+        <div class="fhint">Les fenêtres représentent 10-15% des déperditions. Le remplacement du simple vers double vitrage peut faire gagner 1 classe DPE.</div>
+      </div>
+      <div class="f">
+        <label>% de surface vitrée <span class="fval" id="v-vitrage-pct">15%</span></label>
+        <input type="range" id="i-vitrage-pct" min="5" max="50" step="5" value="15" oninput="recalc()"/>
+      </div>
+      <div class="f">
+        <label>Système de ventilation</label>
+        <select id="i-ventilation" onchange="recalc()">
+          <option value="naturelle" selected>🌬️ Naturelle (grilles, fenêtres)</option>
+          <option value="vmc-sf">🔄 VMC simple flux</option>
+          <option value="vmc-df">⭐ VMC double flux (récupération chaleur)</option>
+        </select>
+        <div class="fhint">La VMC double flux récupère 70-90% de la chaleur de l'air extrait. Elle peut faire gagner 0,5 à 1 classe DPE.</div>
+      </div>
+      <div class="f">
+        <label>Ponts thermiques</label>
+        <select id="i-ponts" onchange="recalc()">
+          <option value="forts" selected>❌ Nombreux (construction ancienne)</option>
+          <option value="moyens">🔶 Moyens (rénovation partielle)</option>
+          <option value="faibles">✅ Faibles (isolation par l'extérieur)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ══ CHAUFFAGE ══ -->
+<div class="panel" id="p-chauffage"><div class="wrap">
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🔥 Système de chauffage</div>
+      <div class="f">
+        <label>Type de chauffage principal</label>
+        <select id="i-chauffage" onchange="recalc()">
+          <option value="fioul">🛢️ Chaudière fioul (très polluant)</option>
+          <option value="gaz-ancien">🔥 Chaudière gaz ancienne (< 10 ans)</option>
+          <option value="gaz-condensation" selected>💧 Chaudière gaz à condensation</option>
+          <option value="electrique">⚡ Radiateurs électriques</option>
+          <option value="pac-air-eau">🌡️ Pompe à chaleur air-eau</option>
+          <option value="pac-geothermie">🌍 PAC géothermique</option>
+          <option value="bois-insert">🪵 Insert / poêle à bois</option>
+          <option value="bois-chaudiere">🪵 Chaudière bois à granulés</option>
+          <option value="reseau">🏙️ Réseau de chaleur urbain</option>
+        </select>
+        <div class="fhint" id="chauffage-hint"></div>
+      </div>
+      <div class="f">
+        <label>Âge du système de chauffage</label>
+        <select id="i-age-chauffage" onchange="recalc()">
+          <option value="neuf">Moins de 5 ans (rendement optimal)</option>
+          <option value="moyen" selected>5 à 15 ans (bon rendement)</option>
+          <option value="vieux">Plus de 15 ans (rendement dégradé)</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Régulation du chauffage</label>
+        <select id="i-regulation" onchange="recalc()">
+          <option value="aucune">❌ Aucune régulation</option>
+          <option value="thermostat" selected>🌡️ Thermostat simple</option>
+          <option value="programmable">📅 Thermostat programmable</option>
+          <option value="smart">📱 Thermostat intelligent (Nest, Tado...)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ctitle">💧 Eau chaude sanitaire & autres</div>
+      <div class="f">
+        <label>Production d'eau chaude sanitaire</label>
+        <select id="i-ecs" onchange="recalc()">
+          <option value="electrique" selected>⚡ Chauffe-eau électrique</option>
+          <option value="gaz">🔥 Chauffe-eau gaz</option>
+          <option value="combine">💧 Production combinée (chaudière)</option>
+          <option value="solaire">☀️ Chauffe-eau solaire</option>
+          <option value="thermodynamique">🌡️ Chauffe-eau thermodynamique</option>
+        </select>
+        <div class="fhint">L'ECS représente 10-15% de la consommation totale. Le chauffe-eau thermodynamique consomme 3x moins que l'électrique classique.</div>
+      </div>
+      <div class="f">
+        <label>Climatisation</label>
+        <select id="i-clim" onchange="recalc()">
+          <option value="non" selected>Non</option>
+          <option value="mobile">❄️ Climatisation mobile (inefficace)</option>
+          <option value="split">❄️ Split system (efficace)</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Prix moyen de l'énergie utilisée</label>
+        <select id="i-prix-energie" onchange="recalc()">
+          <option value="electricite">⚡ Électricité (~0,27€/kWh TTC 2026)</option>
+          <option value="gaz" selected>🔥 Gaz (~0,12€/kWh TTC 2026)</option>
+          <option value="fioul">🛢️ Fioul (~0,14€/kWh TTC 2026)</option>
+          <option value="bois">🪵 Bois granulés (~0,08€/kWh TTC 2026)</option>
+          <option value="reseau">🏙️ Réseau chaleur (~0,10€/kWh TTC 2026)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ══ RÉSULTATS ══ -->
+<div class="panel" id="p-resultats"><div class="wrap">
+  <div class="kpi-grid">
+    <div class="kpi"><span class="kpi-emoji">🏠</span><div class="kpi-val" id="k-kwh" style="color:var(--green)">—</div><div class="kpi-label">Consommation estimée</div><div class="kpi-sub">kWh énergie primaire/m²/an</div></div>
+    <div class="kpi"><span class="kpi-emoji">💨</span><div class="kpi-val" id="k-co2" style="color:var(--blue)">—</div><div class="kpi-label">Émissions CO₂</div><div class="kpi-sub">kg CO₂/m²/an</div></div>
+    <div class="kpi"><span class="kpi-emoji">💶</span><div class="kpi-val" id="k-facture" style="color:var(--amber)">—</div><div class="kpi-label">Facture annuelle estimée</div><div class="kpi-sub">Chauffage + ECS</div></div>
+    <div class="kpi"><span class="kpi-emoji">📉</span><div class="kpi-val" id="k-valeur-impact" style="color:var(--purple)">—</div><div class="kpi-label">Impact sur la valeur</div><div class="kpi-sub">vs logement classe C</div></div>
+    <div class="kpi"><span class="kpi-emoji">🌡️</span><div class="kpi-val" id="k-deperd" style="color:var(--red)">—</div><div class="kpi-label">Déperditions thermiques</div><div class="kpi-sub">W/K estimées</div></div>
+    <div class="kpi"><span class="kpi-emoji">📅</span><div class="kpi-val" id="k-validite" style="color:var(--muted)">10 ans</div><div class="kpi-label">Validité DPE</div><div class="kpi-sub">Sauf travaux majeurs</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">📊 Décomposition des consommations</div>
+      <div class="cw"><canvas id="chart-conso"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">🏷️ Votre position dans l'échelle DPE</div>
+      <div id="position-dpe"></div>
+      <div id="statut-location" style="margin-top:12px"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">📅 Calendrier des obligations légales</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Obligation</th><th>Classes concernées</th><th>Votre situation</th></tr></thead>
+        <tbody id="tableau-obligations"></tbody>
+      </table>
+    </div>
+    <div class="info-box" style="margin-top:10px">
+      <strong>Source :</strong> Loi Climat et Résilience (août 2021) · Décret décence énergétique · impots.gouv.fr · ADEME 2026. Les interdictions s'appliquent aux nouveaux baux et renouvellements. Les baux en cours peuvent continuer jusqu'à leur terme.
+    </div>
+  </div>
+
+  <div class="disc-box">
+    ⚠️ Ce simulateur applique une version simplifiée de la méthode 3CL-DPE (arrêté 31/03/2021). L'estimation peut varier de ±1 à 2 classes par rapport à un DPE certifié réalisé sur site. Les consommations réelles dépendent du comportement des occupants. Un DPE officiel est obligatoire pour toute vente ou location. Sources : ADEME · arrêté 31/03/2021 · loi Climat et Résilience 2021 · CSTB · RT 2012 / RE 2020.
+  </div>
+</div></div>
+
+<!-- ══ TRAVAUX & AIDES ══ -->
+<div class="panel" id="p-travaux"><div class="wrap">
+  <div class="card" style="background:rgba(46,204,113,.04);border-color:rgba(46,204,113,.25)">
+    <div class="ctitle" style="color:var(--green)">🎯 Plan de rénovation personnalisé</div>
+    <div id="plan-renov"></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🔨 Travaux recommandés par priorité</div>
+      <div id="travaux-liste" class="travaux-grid"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">💶 Aides financières disponibles</div>
+      <div id="aides-liste"></div>
+      <div class="info-box" style="margin-top:12px">
+        <strong>À savoir :</strong> MaPrimeRénov' a rouvert le 23/02/2026. Depuis le 1er janvier 2026, l'isolation des murs en parcours geste simple n'est plus financée (uniquement en rénovation d'ampleur). Tous les travaux doivent être réalisés par un professionnel RGE. Source : ANAH 2026.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">📊 Impact des travaux sur votre DPE</div>
+    <div class="cw"><canvas id="chart-travaux"></canvas></div>
+    <div id="travaux-legende" style="margin-top:10px;font-size:13px;color:var(--muted);line-height:1.6"></div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">💰 Synthèse financière des travaux</div>
+    <div class="table-wrap">
+      <table id="tableau-travaux"></table>
+    </div>
+  </div>
+
+  <div class="disc-box">
+    ⚠️ Les montants des travaux sont des fourchettes indicatives basées sur les données ADEME et Observatoire BBC 2025. Les aides sont estimées selon les barèmes MaPrimeRénov' 2026 (ANAH) et CEE. Votre situation réelle peut différer selon votre région, la complexité des travaux et les prestataires. Contactez un conseiller France Rénov' gratuit (0 808 800 700) pour un accompagnement personnalisé.
+  </div>
+</div></div>
+
+<script>
+Chart.defaults.color='#4A6B4D';
+Chart.defaults.font.family="'DM Sans',sans-serif";
+var charts={};
+var activeTab='logement';
+
+var CLASSES_DPE=[
+  {lettre:'A',couleur:'#00C853',max:70,maxCO2:6},
+  {lettre:'B',couleur:'#64DD17',max:110,maxCO2:11},
+  {lettre:'C',couleur:'#AEEA00',max:180,maxCO2:30},
+  {lettre:'D',couleur:'#FFD600',max:250,maxCO2:50},
+  {lettre:'E',couleur:'#FF6D00',max:330,maxCO2:70},
+  {lettre:'F',couleur:'#DD2C00',max:420,maxCO2:100},
+  {lettre:'G',couleur:'#B71C1C',max:999,maxCO2:999},
+];
+
+function getClasse(kwh,co2){
+  var classeKwh='G', classeCO2='G';
+  for(var i=0;i<CLASSES_DPE.length;i++){
+    if(kwh<=CLASSES_DPE[i].max){classeKwh=CLASSES_DPE[i].lettre;break;}
+  }
+  for(var j=0;j<CLASSES_DPE.length;j++){
+    if(co2<=CLASSES_DPE[j].maxCO2){classeCO2=CLASSES_DPE[j].lettre;break;}
+  }
+  // Retenir la pire
+  var ordre='ABCDEFG';
+  return ordre.indexOf(classeKwh)>ordre.indexOf(classeCO2)?classeKwh:classeCO2;
+}
+
+function getClasseInfo(lettre){
+  return CLASSES_DPE.find(function(c){return c.lettre===lettre;})||CLASSES_DPE[6];
+}
+
+function g(id){return document.getElementById(id);}
+function sv(id){var el=g(id);return el?+el.value:0;}
+function gv(id){var el=g(id);return el?el.value:'';}
+function se(id,t){var el=g(id);if(el)el.textContent=t;}
+function si(id,h){var el=g(id);if(el)el.innerHTML=h;}
+function fmt(n){return Math.round(n).toLocaleString('fr-FR');}
+function fmtE(n){return fmt(Math.round(n))+'€';}
+function destroyChart(k){if(charts[k]){try{charts[k].destroy();}catch(e){}}}
+
+function showTab(name,btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  g('p-'+name).classList.add('on');
+  btn.classList.add('on');
+  activeTab=name;
+  setTimeout(function(){
+    if(name==='resultats') renderResultats();
+    if(name==='travaux') renderTravaux();
+  },80);
+}
+
+// ── COEFFICIENTS 3CL SIMPLIFIÉS ──
+// ── BASES kWh THERMIQUES/m²/an (besoins chauffage sans équipements)
+// Calibrés sur données ADEME/CSTB — vérifiés sur cas réels
+var BASES_ANNEE={
+  'avant1945': 370,  // F/G sans isolation — murs pierres/briques
+  '1945-1974': 250,  // E/F — béton/parpaing sans isolation
+  '1975-1988': 170,  // D — RT1974 première réglementation
+  '1989-2000': 130,  // C/D — RT1988
+  '2001-2012': 110,  // B/C — RT2000/RT2005
+  'apres2012':  70,  // A/B — RT2012/RE2020
+};
+
+// Facteurs d'amélioration de l'isolation (multiplicateurs sur besoins)
+// 1.0 = pas isolé, 0.38 = excellente isolation
+var COEF_MURS={aucune:1.0,faible:0.85,moyenne:0.68,bonne:0.52,excellente:0.38};
+var COEF_TOITURE={aucune:1.0,faible:0.85,moyenne:0.66,bonne:0.48,excellente:0.32};
+var COEF_PLANCHER={aucune:1.0,moyenne:0.85,bonne:0.70};
+var COEF_VITRAGE={simple:1.0,'double-ancien':0.80,double:0.62,triple:0.44};
+var COEF_VENTILATION={naturelle:1.08,'vmc-sf':0.97,'vmc-df':0.80};
+var COEF_PONTS={forts:1.12,moyens:1.05,faibles:1.0};
+var COEF_TYPE={maison:1.15,'appart-mito':0.72,'appart-top':0.85,'maison-mito':0.90};
+var COEF_ZONE={H1:1.25,H2:1.0,H3:0.72};
+
+// Chauffage : [rendement, facteur énergie primaire, facteur CO2, label]
+var CHAUFFAGE={
+  fioul:            {rend:0.78, fpep:1.0,  fco2:0.324, label:'Chaudière fioul'},
+  'gaz-ancien':     {rend:0.82, fpep:1.0,  fco2:0.227, label:'Chaudière gaz ancienne'},
+  'gaz-condensation':{rend:1.05,fpep:1.0,  fco2:0.227, label:'Chaudière gaz condensation'},
+  electrique:       {rend:1.0,  fpep:1.9,  fco2:0.040, label:'Radiateurs électriques'}, // coeff 1.9 depuis 2026
+  'pac-air-eau':    {rend:3.0,  fpep:1.9,  fco2:0.040, label:'PAC air-eau'},
+  'pac-geothermie': {rend:4.0,  fpep:1.9,  fco2:0.040, label:'PAC géothermique'},
+  'bois-insert':    {rend:0.70, fpep:1.0,  fco2:0.030, label:'Insert/poêle bois'},
+  'bois-chaudiere': {rend:0.85, fpep:1.0,  fco2:0.030, label:'Chaudière bois granulés'},
+  reseau:           {rend:1.0,  fpep:0.46, fco2:0.080, label:'Réseau de chaleur'},
+};
+
+var ECS={
+  electrique:       {rend:0.95, fpep:1.9,  fco2:0.040},
+  gaz:              {rend:0.70, fpep:1.0,  fco2:0.227},
+  combine:          {rend:0.80, fpep:1.0,  fco2:0.227},
+  solaire:          {rend:2.5,  fpep:1.9,  fco2:0.040},
+  thermodynamique:  {rend:3.0,  fpep:1.9,  fco2:0.040},
+};
+
+var PRIX_ENERGIE={electricite:0.27,gaz:0.12,fioul:0.14,bois:0.08,reseau:0.10};
+
+function recalc(){
+  var surface=sv('i-surface')||80;
+  var annee=gv('i-annee')||'1945-1974';
+  var type=gv('i-type')||'maison';
+  var zone=gv('i-zone')||'H1';
+  var murs=gv('i-murs')||'aucune';
+  var toiture=gv('i-toiture')||'moyenne';
+  var plancher=gv('i-plancher')||'aucune';
+  var vitrage=gv('i-vitrage')||'double';
+  var vitrPct=sv('i-vitrage-pct')||15;
+  var ventil=gv('i-ventilation')||'naturelle';
+  var ponts=gv('i-ponts')||'forts';
+  var chauffage=gv('i-chauffage')||'gaz-condensation';
+  var ageChauff=gv('i-age-chauffage')||'moyen';
+  var regulation=gv('i-regulation')||'thermostat';
+  var ecs=gv('i-ecs')||'electrique';
+  var prixEnergie=PRIX_ENERGIE[gv('i-prix-energie')]||0.12;
+  var valeur=sv('i-valeur')||250000;
+  var revenus=gv('i-revenus')||'modeste';
+  var usage=gv('i-usage')||'residence-principale';
+
+  // Labels
+  if(g('v-surface')) g('v-surface').textContent=surface+' m²';
+  if(g('v-valeur')) g('v-valeur').textContent=fmtE(valeur);
+  if(g('v-vitrage-pct')) g('v-vitrage-pct').textContent=vitrPct+'%';
+
+  // ── CALCUL BESOIN DE CHAUFFAGE (kWh thermique) ──
+  // ── BASE kWh thermiques/m²/an selon période construction ──
+  var baseKwh=BASES_ANNEE[annee]||BASES_ANNEE['1945-1974'];
+
+  // ── FACTEUR ENVELOPPE (pondération des déperditions) ──
+  // Murs 35%, Toiture 35%, Plancher 10%, Vitrage 15%
+  var corrMurs=COEF_MURS[murs]||1;
+  var corrToiture=COEF_TOITURE[toiture]||1;
+  var corrPlancher=COEF_PLANCHER[plancher]||1;
+  var corrVitrage=COEF_VITRAGE[vitrage]||1;
+  var corrVentil=COEF_VENTILATION[ventil]||1;
+  var corrPonts=COEF_PONTS[ponts]||1;
+  var corrType=COEF_TYPE[type]||1;
+  var corrZone=COEF_ZONE[zone]||1;
+  // Correction légère pour surface vitrée (±15% autour de 15%)
+  var corrVitr=1+(vitrPct-15)/100*0.2;
+
+  var facteurEnveloppe=(corrMurs*0.35+corrToiture*0.35+corrPlancher*0.10+corrVitrage*0.15);
+  facteurEnveloppe*=corrPonts*corrVentil*corrVitr;
+
+  // Besoins de chauffage en kWh therm/m²/an
+  var corrRegul={aucune:1.10,thermostat:1.0,programmable:0.92,smart:0.85}[regulation]||1;
+  var besoinsChauf=baseKwh*facteurEnveloppe*corrType*corrZone*corrRegul;
+
+  // Correction âge chauffage (dégradation rendement)
+  var corrAge={neuf:0.95,moyen:1.0,vieux:1.14}[ageChauff]||1;
+
+  // ── SYSTÈME DE CHAUFFAGE → ÉNERGIE PRIMAIRE ──
+  var infoChauff=CHAUFFAGE[chauffage]||CHAUFFAGE['gaz-condensation'];
+  var rendChauff=infoChauff.rend*corrAge;
+  var kwhChaufEP=(besoinsChauf/rendChauff)*infoChauff.fpep;
+  var co2Chauff=(besoinsChauf/rendChauff)*infoChauff.fco2;
+
+  // ── ECS : 22 kWh therm/m²/an (constant, pas multiplié par surface) ──
+  var infoECS=ECS[ecs]||ECS.electrique;
+  var besoinsECS_m2=22; // kWh therm/m²/an
+  var kwhECSEP=(besoinsECS_m2/infoECS.rend)*infoECS.fpep; // kWh EP/m²/an
+  var co2ECS=(besoinsECS_m2/infoECS.rend)*infoECS.fco2;   // kg CO2/m²/an
+
+  // ── AUXILIAIRES/ÉCLAIRAGE : 5 kWh/m²/an électrique ──
+  var kwhAutres=5*1.9; // kWh EP/m²/an
+  var co2Autres=5*0.040;
+
+  // ── TOTAUX EN kWh EP/m²/an (pour l'étiquette DPE) ──
+  var kwhM2=Math.round(kwhChaufEP+kwhECSEP+kwhAutres);
+  var co2M2=Math.round(co2Chauff+co2ECS+co2Autres);
+  // Total annuel absolu (pour la facture et l'affichage)
+  var kwhTotal=kwhM2*surface;
+  var co2Total=co2M2*surface;
+
+  // Classe
+  var classe=getClasse(kwhM2,co2M2);
+  var classeInfo=getClasseInfo(classe);
+
+  // Facture
+  var besoinsFinaux=(besoinsChauf/rendChauff)+(besoinsECS/infoECS.rend);
+  // Facture = besoins/m²/an * surface * prix → total annuel
+  var facture=Math.round(besoinsFinaux*prixEnergie*surface);
+
+  // Déperditions W/K
+  // Déperditions thermiques en W/K (coefficient global de déperdition × surface)
+  var deperd=Math.round(surface*facteurEnveloppe*corrType*corrZone*0.65);
+
+  // Impact valeur
+  var impactValeur={A:0.10,B:0.05,C:0,D:-0.05,E:-0.10,F:-0.15,G:-0.20}[classe]||0;
+  var valeurImpact=Math.round(valeur*impactValeur);
+
+  // ── MISE À JOUR BANNER ──
+  var banner=g('dpe-banner-inner');
+  if(banner){
+    banner.style.borderColor=classeInfo.couleur+'44';
+    banner.style.background=classeInfo.couleur+'08';
+  }
+  var lettre=g('dpe-lettre');
+  if(lettre){lettre.textContent=classe;lettre.style.background=classeInfo.couleur;}
+  var kwhEl=g('dpe-kwh');
+  if(kwhEl){kwhEl.textContent=kwhM2+' kWh/m²/an';kwhEl.style.color=classeInfo.couleur;}
+  se('dpe-co2',co2M2+' kg CO₂/m²/an');
+
+  // Échelle
+  var scale=g('dpe-scale');
+  if(scale){
+    scale.innerHTML=CLASSES_DPE.map(function(c){
+      var isCurrent=c.lettre===classe;
+      return '<div class="dpe-scale-item'+(isCurrent?' current':'')+'" style="background:'+c.couleur+(isCurrent?'':'22')+';color:'+(isCurrent?'#fff':c.couleur)+';border:1px solid '+c.couleur+(isCurrent?'':'44')+'">'
+        +'<span style="font-family:Syne,sans-serif;font-size:13px;font-weight:800;width:16px">'+c.lettre+'</span>'
+        +'<span style="font-size:9px;opacity:.8">'+(isCurrent?'← Vous':'')+'</span></div>';
+    }).join('');
+  }
+
+  // Stats banner
+  se('bs-facture',fmtE(facture));
+  se('bs-conso',fmt(Math.round(kwhTotal))+' kWh/an');
+  var locationOk=!['F','G'].includes(classe);
+  if(g('bs-location')){g('bs-location').textContent=locationOk?'✅ Louable':'⚠️ Interdit';g('bs-location').style.color=locationOk?'var(--green)':'var(--red)';}
+  if(g('bs-valeur')){g('bs-valeur').textContent=(impactValeur>=0?'+':'')+fmtE(valeurImpact);g('bs-valeur').style.color=impactValeur>=0?'var(--green)':'var(--red)';}
+
+  // Usage alerte
+  var UA=g('usage-alerte');
+  if(UA){
+    if(usage==='location'&&['G'].includes(classe)){
+      UA.innerHTML='<div class="alert-box">🚨 <strong>ATTENTION :</strong> Votre logement classé '+classe+' est interdit à la location depuis le 1er janvier 2025. Vous ne pouvez plus signer de nouveau bail ni renouveler un bail existant. Des travaux sont obligatoires.</div>';
+    } else if(usage==='location'&&['F'].includes(classe)){
+      UA.innerHTML='<div class="warn-box">⚠️ <strong>Attention :</strong> Votre logement classé F sera interdit à la location à partir du 1er janvier 2028. Des travaux sont à planifier rapidement.</div>';
+    } else {
+      UA.innerHTML='';
+    }
+  }
+
+  // Chauffage hint
+  var hints={
+    fioul:'🚨 Le fioul est l\'énergie la plus émettrice de CO₂. Les chaudières fioul ne peuvent plus être installées depuis 2022. Impact DPE très défavorable sur l\'étiquette GES.',
+    'gaz-ancien':'Le gaz émet 0,227 kg CO₂/kWh. Une ancienne chaudière a un rendement de 80-85%. Remplacement recommandé par une PAC pour gagner 1-2 classes.',
+    'gaz-condensation':'La chaudière à condensation a un rendement de 105-110%. C\'est le meilleur système gaz. Mais le gaz reste une énergie fossile défavorable au DPE GES.',
+    electrique:'⚡ Depuis 2026, le coefficient de conversion de l\'électricité est de 1,9 (au lieu de 2,3). Impact DPE énergie amélioré. Mais attention au coût de la facture.',
+    'pac-air-eau':'🌟 La PAC air-eau est le système de référence. COP de 3 = 1 kWh électrique → 3 kWh de chaleur. Très favorable au DPE. Aide jusqu\'à 10 800€ selon revenus.',
+    'pac-geothermie':'⭐ La PAC géothermique a le meilleur COP (4+). Très favorable au DPE. Aide jusqu\'à 11 000€. Installation plus complexe et coûteuse.',
+    'bois-insert':'Le bois est quasiment neutre en CO₂. Favorable à l\'étiquette GES. Mais le confort peut être inégal selon la pièce.',
+    'bois-chaudiere':'🌟 Chaudière à granulés : excellent rendement, faible CO₂, favorable au DPE. Aide jusqu\'à 50% du coût selon revenus.',
+    reseau:'Le réseau de chaleur urbain a un facteur énergie primaire de 0,46 — très favorable au DPE énergie.',
+  };
+  si('chauffage-hint',hints[chauffage]||'');
+
+  // KPIs résultats
+  se('k-kwh',kwhM2+' kWh/m²/an');
+  if(g('k-kwh')) g('k-kwh').style.color=classeInfo.couleur;
+  se('k-co2',co2M2+' kg CO₂/m²/an');
+  se('k-facture',fmtE(facture)+'/an'); // Facture annuelle totale
+  if(g('k-valeur-impact')){g('k-valeur-impact').textContent=(impactValeur>=0?'+':'')+fmtE(valeurImpact);g('k-valeur-impact').style.color=impactValeur>=0?'var(--green)':'var(--red)';}
+  se('k-deperd',deperd+' W/K');
+
+  // Stocker
+  window._D={
+    surface,classe,classeInfo,kwhM2,co2M2,facture,valeur,valeurImpact,impactValeur,
+    kwhChaufEP,kwhECSEP,kwhAutres,kwhTotal,
+    co2Chauff,co2ECS,
+    chauffage,ecs,murs,toiture,plancher,vitrage,ventil,ponts,
+    revenus,usage,zone,annee,type,
+    besoinsChauf,besoinsFinaux,prixEnergie,
+    infoChauff,facteurEnveloppe,
+  };
+
+  if(activeTab==='resultats') renderResultats();
+  if(activeTab==='travaux') renderTravaux();
+}
+
+function renderResultats(){
+  if(!window._D) return;
+  var D=window._D;
+
+  // Chart conso
+  destroyChart('conso');
+  var cv=g('chart-conso'); if(!cv) return;
+  charts['conso']=new Chart(cv,{
+    type:'doughnut',
+    data:{
+      labels:['Chauffage','Eau chaude sanitaire','Auxiliaires & éclairage'],
+      datasets:[{
+        data:[Math.round(D.kwhChaufEP),Math.round(D.kwhECSEP),Math.round(D.kwhAutres)],
+        backgroundColor:['rgba(231,76,60,.75)','rgba(52,152,219,.75)','rgba(155,89,182,.75)'],
+        borderWidth:3,borderColor:'#101a12'
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#4A6B4D',font:{size:12}}},
+        tooltip:{callbacks:{label:function(c){return c.label+' : '+fmt(c.raw)+' kWh/an ('+Math.round(c.raw/D.kwhTotal*100)+'%)';}}}}}
+  });
+
+  // Position DPE
+  var PD=g('position-dpe');
+  if(PD){
+    PD.innerHTML=CLASSES_DPE.map(function(c){
+      var isCur=c.lettre===D.classe;
+      var pct=Math.min(100,Math.max(5,c.max===999?100:c.max/450*100));
+      return '<div class="barre" style="margin-bottom:6px">'
+        +'<div class="barre-top">'
+        +'<span class="barre-label" style="font-weight:'+(isCur?700:400)+';color:'+(isCur?c.couleur:'var(--muted)')+'">'+c.lettre+(isCur?' ← Vous':'')+' &nbsp;≤'+(c.max===999?'>420':c.max)+' kWh</span>'
+        +'<span class="barre-val" style="color:'+(isCur?c.couleur:'var(--muted2)')+'">'+D.kwhM2+(isCur?' kWh/m²':'')+''+'</span></div>'
+        +'<div class="barre-track"><div class="barre-fill" style="width:'+(isCur?Math.min(100,D.kwhM2/500*100):pct*0.7)+'%;background:'+(isCur?c.couleur:'rgba(255,255,255,.06)')+'"></div></div>'
+        +'</div>';
+    }).join('');
+  }
+
+  // Statut location
+  var SL=g('statut-location');
+  if(SL){
+    var msgs={
+      A:'✅ Classe A — Vous pouvez louer sans restriction. Le bien a une forte valeur locative.',
+      B:'✅ Classe B — Excellent DPE. Aucune restriction de location. Forte attractivité.',
+      C:'✅ Classe C — Bon DPE. Aucune restriction. Logement attractif sur le marché.',
+      D:'✅ Classe D — DPE correct. Aucune restriction de location actuelle.',
+      E:'⚠️ Classe E — Interdiction de location au 1er janvier 2034. Des travaux sont à planifier.',
+      F:'🚨 Classe F — Interdiction de location au 1er janvier 2028. Des travaux urgents s\'imposent.',
+      G:'🚨 Classe G — INTERDIT à la location depuis le 1er janvier 2025. Travaux obligatoires.',
+    };
+    var colors={A:'var(--green)',B:'var(--green)',C:'var(--green)',D:'var(--green)',E:'var(--amber)',F:'var(--red)',G:'var(--red)'};
+    SL.innerHTML='<div style="padding:12px 14px;background:'+D.classeInfo.couleur+'11;border:1px solid '+D.classeInfo.couleur+'33;border-radius:12px;font-size:13px;line-height:1.7;color:var(--muted)">'
+      +(msgs[D.classe]||'')+'</div>';
+  }
+
+  // Tableau obligations
+  var TO=g('tableau-obligations');
+  if(TO){
+    var oblig=[
+      {date:'Janv. 2023',action:'Gel des loyers',classes:'F, G',votre:['F','G'].includes(D.classe)},
+      {date:'Janv. 2023',action:'Interdiction location G+',classes:'G (>450 kWh)',votre:D.kwhM2>450},
+      {date:'Janv. 2025',action:'Interdiction location G',classes:'G (>420 kWh)',votre:D.classe==='G'},
+      {date:'Janv. 2028',action:'Interdiction location F',classes:'F',votre:D.classe==='F'},
+      {date:'Janv. 2034',action:'Interdiction location E',classes:'E',votre:D.classe==='E'},
+      {date:'Janv. 2034',action:'Audit énergétique obligatoire (vente)',classes:'F, G',votre:['F','G'].includes(D.classe)},
+    ];
+    TO.innerHTML=oblig.map(function(o){
+      return '<tr><td class="td-muted">'+o.date+'</td><td>'+o.action+'</td><td>'+o.classes+'</td>'
+        +'<td class="'+(o.votre?'td-red':'td-green')+'">'+(o.votre?'⚠️ Vous concerne':'✅ OK')+'</td></tr>';
+    }).join('');
+  }
+}
+
+function renderTravaux(){
+  if(!window._D) return;
+  var D=window._D;
+
+  // Travaux disponibles avec impact DPE
+  var tousLesGestes=[
+    {
+      id:'toiture',
+      emoji:'🏠',
+      titre:'Isolation des combles / toiture',
+      desc:'Le geste le plus rentable. Isolation des combles perdus par soufflage ou rouleaux. Impact immédiat sur le DPE.',
+      actuel:D.toiture,
+      mauvais:['aucune','faible'],
+      coutMin:20,coutMax:60,unite:'m²',
+      gainKwh:40,gainClasses:2,
+      aide:D.revenus==='tres-modeste'?5000:D.revenus==='modeste'?4000:D.revenus==='intermediaire'?3000:2000,
+      eligibleMPR:true,
+      rge:true,
+    },
+    {
+      id:'pac',
+      emoji:'🌡️',
+      titre:'Pompe à chaleur air-eau',
+      desc:'Remplace la chaudière fioul ou gaz. COP de 3 = 3x moins d\'énergie. Impact majeur sur le DPE.',
+      actuel:D.chauffage,
+      mauvais:['fioul','gaz-ancien','electrique'],
+      coutMin:8000,coutMax:18000,unite:'',
+      gainKwh:80,gainClasses:2,
+      aide:D.revenus==='tres-modeste'?10800:D.revenus==='modeste'?9000:D.revenus==='intermediaire'?7000:4000,
+      eligibleMPR:true,
+      rge:true,
+    },
+    {
+      id:'vitrage',
+      emoji:'🪟',
+      titre:'Remplacement du simple vitrage',
+      desc:'Passage en double vitrage récent. Gain thermique et acoustique. Réduction des condensations.',
+      actuel:D.vitrage,
+      mauvais:['simple','double-ancien'],
+      coutMin:400,coutMax:800,unite:'fenêtre',
+      gainKwh:20,gainClasses:1,
+      aide:D.revenus==='tres-modeste'?2500:D.revenus==='modeste'?2000:D.revenus==='intermediaire'?1500:1000,
+      eligibleMPR:false, // retiré en 2026
+      rge:true,
+    },
+    {
+      id:'murs',
+      emoji:'🧱',
+      titre:'Isolation des murs par l\'extérieur (ITE)',
+      desc:'Le chantier le plus impactant mais aussi le plus coûteux. Résout les ponts thermiques. Améliore le confort et l\'esthétique.',
+      actuel:D.murs,
+      mauvais:['aucune','faible'],
+      coutMin:150,coutMax:350,unite:'m²',
+      gainKwh:60,gainClasses:2,
+      aide:0, // retiré du parcours geste en 2026
+      eligibleMPR:false, // uniquement rénovation d'ampleur
+      rge:true,
+      note:'⚠️ Plus financé en parcours geste depuis janv. 2026. Éligible uniquement en rénovation d\'ampleur (+2 classes).',
+    },
+    {
+      id:'vmc',
+      emoji:'💨',
+      titre:'VMC double flux',
+      desc:'Récupère 70-90% de la chaleur de l\'air extrait. Réduit les besoins de chauffage tout en améliorant la qualité de l\'air.',
+      actuel:D.ventil,
+      mauvais:['naturelle','vmc-sf'],
+      coutMin:2500,coutMax:6000,unite:'',
+      gainKwh:15,gainClasses:1,
+      aide:D.revenus==='tres-modeste'?2500:D.revenus==='modeste'?2000:D.revenus==='intermediaire'?1500:1000,
+      eligibleMPR:true,
+      rge:true,
+    },
+    {
+      id:'ecs',
+      emoji:'🚿',
+      titre:'Chauffe-eau thermodynamique',
+      desc:'Consomme 3x moins que le chauffe-eau électrique classique. Utilise les calories de l\'air ambiant. COP ~3.',
+      actuel:D.ecs,
+      mauvais:['electrique'],
+      coutMin:1500,coutMax:3500,unite:'',
+      gainKwh:10,gainClasses:1,
+      aide:D.revenus==='tres-modeste'?2000:D.revenus==='modeste'?1500:D.revenus==='intermediaire'?1000:500,
+      eligibleMPR:true,
+      rge:true,
+    },
+  ];
+
+  // Filtrer les travaux pertinents
+  var travauxPertinents=tousLesGestes.filter(function(t){
+    return t.mauvais.includes(t.actuel);
+  });
+
+  // Plan rénov
+  var PR=g('plan-renov');
+  if(PR){
+    var ordre='ABCDEFG';
+    var classeIdx=ordre.indexOf(D.classe);
+    var classeViseIdx=Math.max(0,classeIdx-2);
+    var classeVisee=ordre[classeViseIdx];
+    PR.innerHTML='<div style="font-size:14px;color:var(--muted);line-height:1.75">'
+      +'Votre logement est actuellement classé <strong style="color:'+D.classeInfo.couleur+';font-family:Syne,sans-serif;font-size:18px">'+D.classe+'</strong>. '
+      +(travauxPertinents.length>0
+        ?'Avec les travaux recommandés ci-dessous, vous pourriez viser la classe <strong style="color:'+getClasseInfo(classeVisee).couleur+';font-family:Syne,sans-serif;font-size:18px">'+classeVisee+'</strong>. '
+          +'Cela représente une économie de facture estimée à <strong style="color:var(--green)">'+fmtE(D.facture*0.35)+'/an</strong> et une revalorisation du bien de <strong style="color:var(--green)">'+fmtE(Math.abs(D.valeurImpact)*0.6)+'</strong> environ.'
+        :'Votre logement est déjà bien isolé et équipé. Pour aller encore plus loin, vous pouvez envisager une PAC géothermique ou des panneaux solaires thermiques.')
+      +'</div>';
+  }
+
+  // Liste travaux
+  var TL=g('travaux-liste');
+  if(TL){
+    if(travauxPertinents.length===0){
+      TL.innerHTML='<div class="info-box"><strong>✅ Votre logement est bien configuré !</strong> Pas de travaux prioritaires détectés selon vos paramètres. Pour aller vers la classe A/B : PAC géothermique, VMC double flux, panneaux solaires thermiques.</div>';
+    } else {
+      TL.innerHTML=travauxPertinents.map(function(t,i){
+        var surfaceEst=t.unite==='m²'?D.surface:1;
+        var coutMoy=Math.round((t.coutMin+t.coutMax)/2*surfaceEst);
+        var netApresAides=Math.max(0,coutMoy-t.aide);
+        var classeApres=CLASSES_DPE[Math.max(0,CLASSES_DPE.findIndex(function(c){return c.lettre===D.classe;})-Math.min(2,t.gainClasses))];
+        return '<div class="travail-card">'
+          +'<div class="travail-emoji">'+t.emoji+'</div>'
+          +'<div class="travail-content">'
+          +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">'
+          +'<span class="travail-titre">'+t.titre+'</span>'
+          +'<span class="chip-classe" style="background:'+classeApres.couleur+'">'+classeApres.lettre+'</span>'
+          +'<span style="font-size:11px;color:var(--muted)">→</span>'
+          +'<span class="chip-classe" style="background:'+D.classeInfo.couleur+'">'+D.classe+'</span>'
+          +'</div>'
+          +'<div class="travail-desc">'+t.desc+'</div>'
+          +(t.note?'<div style="font-size:11px;color:var(--amber);margin-bottom:4px">'+t.note+'</div>':'')
+          +'<div class="travail-chiffres">'
+          +'<span class="travail-chip chip-cout">💶 '+fmtE(t.coutMin*surfaceEst)+' à '+fmtE(t.coutMax*surfaceEst)+'</span>'
+          +'<span class="travail-chip chip-aide">🏛️ Aide : '+fmtE(t.aide)+'</span>'
+          +'<span class="travail-chip chip-gain">📉 -'+t.gainKwh+' kWh/m²/an</span>'
+          +(t.rge?'<span class="travail-chip" style="background:rgba(155,89,182,.1);color:var(--purple);border:1px solid rgba(155,89,182,.2)">RGE requis</span>':'')
+          +'</div>'
+          +'</div></div>';
+      }).join('');
+    }
+  }
+
+  // Aides
+  var AL=g('aides-liste');
+  if(AL){
+    var totalAides=travauxPertinents.reduce(function(s,t){return s+t.aide;},0);
+    var aides=[
+      {nom:'MaPrimeRénov\' (ANAH)',montant:totalAides,desc:'Aide principale de l\'État selon revenus. Ouverte depuis le 23/02/2026. Travaux par professionnel RGE obligatoire.'},
+      {nom:'Prime CEE (Coup de pouce)',montant:D.chauffage==='fioul'?4000:2000,desc:'Prime des fournisseurs d\'énergie (EDF, Engie...). Cumulable avec MaPrimeRénov\'. Variable selon la zone climatique.'},
+      {nom:'Éco-PTZ (prêt à 0%)',montant:50000,desc:'Prêt sans intérêts jusqu\'à 50 000€ sur 20 ans pour financer le reste à charge. Cumulable avec MaPrimeRénov\'.'},
+      {nom:'TVA réduite à 5,5%',montant:0,desc:'TVA à 5,5% au lieu de 20% pour tous les travaux de rénovation énergétique. Applicable sur les matériaux et la main d\'œuvre.'},
+    ];
+    AL.innerHTML=aides.map(function(a){
+      return '<div class="aide-card">'
+        +'<div class="aide-header">'
+        +'<div class="aide-nom">'+a.nom+'</div>'
+        +(a.montant>0?'<div class="aide-montant">'+fmtE(a.montant)+'</div>':'<div class="aide-montant" style="font-size:13px;color:var(--green)">Applicable</div>')
+        +'</div>'
+        +'<div class="aide-desc">'+a.desc+'</div>'
+        +'</div>';
+    }).join('');
+  }
+
+  // Chart travaux
+  destroyChart('travaux');
+  var ctv=g('chart-travaux'); if(!ctv) return;
+  var labelsT=['Actuel'].concat(travauxPertinents.slice(0,5).map(function(t){return t.emoji+' '+t.titre.substring(0,15)+'...'}));
+  var dataT=[D.kwhM2];
+  var currentKwh=D.kwhM2;
+  travauxPertinents.slice(0,5).forEach(function(t){
+    currentKwh=Math.max(30,currentKwh-t.gainKwh);
+    dataT.push(currentKwh);
+  });
+  var colors=dataT.map(function(v){return getClasseInfo(getClasse(v,v/5)).couleur;});
+  charts['travaux']=new Chart(ctv,{
+    type:'bar',
+    data:{labels:labelsT,datasets:[{label:'kWh/m²/an',data:dataT,backgroundColor:colors.map(function(c){return c+'99';}),borderColor:colors,borderWidth:2,borderRadius:8}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.raw+' kWh/m²/an — Classe '+getClasse(c.raw,c.raw/5);}}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#4A6B4D',font:{size:10}},border:{color:'transparent'}},
+              y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4A6B4D',callback:function(v){return v+' kWh';}},border:{color:'transparent'}}}}
+  });
+
+  // Tableau travaux
+  var TT=g('tableau-travaux');
+  if(TT){
+    var totalCout=travauxPertinents.reduce(function(s,t){return s+(t.coutMin+t.coutMax)/2*(t.unite==='m²'?D.surface:1);},0);
+    var totalAide2=travauxPertinents.reduce(function(s,t){return s+t.aide;},0);
+    TT.innerHTML='<thead><tr><th>Travaux</th><th>Coût estimé</th><th>Aide MPR</th><th>Reste à charge</th><th>Gain kWh</th></tr></thead><tbody>'
+    +travauxPertinents.map(function(t){
+      var surf=t.unite==='m²'?D.surface:1;
+      var cout=Math.round((t.coutMin+t.coutMax)/2*surf);
+      var net=Math.max(0,cout-t.aide);
+      return '<tr><td>'+t.emoji+' '+t.titre+'</td><td class="td-amber">'+fmtE(cout)+'</td><td class="td-green">'+fmtE(t.aide)+'</td><td class="td-blue">'+fmtE(net)+'</td><td class="td-green">-'+t.gainKwh+' kWh</td></tr>';
+    }).join('')
+    +'<tr><td>TOTAL</td><td class="td-amber">'+fmtE(totalCout)+'</td><td class="td-green">'+fmtE(totalAide2)+'</td><td class="td-blue">'+fmtE(Math.max(0,totalCout-totalAide2))+'</td><td></td></tr>'
+    +'</tbody>';
+  }
+
+  var TL2=g('travaux-legende');
+  if(TL2) TL2.innerHTML='Chaque barre montre votre consommation estimée après chaque geste de rénovation, du plus prioritaire au moins prioritaire. La couleur indique la classe DPE correspondante.';
+}
+
+recalc();
+
+function setMode(mode){
+  var btnCalc=document.getElementById('btn-mode-calcul');
+  var btnFact=document.getElementById('btn-mode-facture');
+  var panelFact=document.getElementById('p-facture');
+  var panelLog=document.getElementById('p-logement');
+  if(mode==='facture'){
+    if(btnCalc){btnCalc.style.background='var(--bg2)';btnCalc.style.color='var(--muted)';btnCalc.style.border='1px solid var(--border)';}
+    if(btnFact){btnFact.style.background='var(--green)';btnFact.style.color='#051205';btnFact.style.border='none';}
+    if(panelLog) panelLog.classList.remove('on');
+    if(panelFact) panelFact.classList.add('on');
+    document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  } else {
+    if(btnCalc){btnCalc.style.background='var(--green)';btnCalc.style.color='#051205';btnCalc.style.border='none';}
+    if(btnFact){btnFact.style.background='var(--bg2)';btnFact.style.color='var(--muted)';btnFact.style.border='1px solid var(--border)';}
+    if(panelFact) panelFact.classList.remove('on');
+    if(panelLog) panelLog.classList.add('on');
+    document.querySelectorAll('.tab')[0].classList.add('on');
+  }
+}
+
+function recalcDirecte(){
+  var conso=+(document.getElementById('i-conso-directe')?document.getElementById('i-conso-directe').value:15000);
+  var surf=+(document.getElementById('i-surface-d')?document.getElementById('i-surface-d').value:80);
+  var energie=document.getElementById('i-energie-d')?document.getElementById('i-energie-d').value:'gaz';
+  var prix=+(document.getElementById('i-prix-d')?document.getElementById('i-prix-d').value:0.12);
+  
+  var fpep={gaz:1.0,electricite:1.9,fioul:1.0,bois:1.0}[energie]||1.0;
+  var fco2={gaz:0.227,electricite:0.040,fioul:0.324,bois:0.030}[energie]||0.227;
+  
+  var kwhEP_m2=Math.round(conso*fpep/surf);
+  var co2_m2=Math.round(conso*fco2/surf);
+  var facture=Math.round(conso*prix);
+  
+  // Labels
+  var vcd=document.getElementById('v-conso-directe');
+  if(vcd) vcd.textContent=fmt(conso)+' kWh';
+  var vsd=document.getElementById('v-surface-d');
+  if(vsd) vsd.textContent=surf+' m²';
+  
+  // Classe
+  var classes='ABCDEFG';
+  var seuils=[70,110,180,250,330,420,9999];
+  var seuilsCO2=[6,11,30,50,70,100,9999];
+  var ck=classes[seuils.findIndex(function(s){return kwhEP_m2<=s;})];
+  var cc=classes[seuilsCO2.findIndex(function(s){return co2_m2<=s;})];
+  var cl=classes.indexOf(ck)>classes.indexOf(cc)?ck:cc;
+  var ci=getClasseInfo(cl);
+  
+  var dl=document.getElementById('direct-lettre');
+  if(dl){dl.textContent=cl;dl.style.background=ci.couleur;}
+  var dk=document.getElementById('direct-kwh');
+  if(dk){dk.textContent=kwhEP_m2+' kWh/m²/an (énergie primaire)';dk.style.color=ci.couleur;}
+  var dc=document.getElementById('direct-co2');
+  if(dc) dc.textContent='CO₂ estimé : '+co2_m2+' kg CO₂/m²/an';
+  var df=document.getElementById('direct-facture');
+  if(df) df.textContent=fmtE(facture)+'/an';
+  
+  // Mettre à jour aussi la banner principale
+  document.getElementById('rb-emoji').textContent=cl==='G'?'⚠️':cl==='F'?'⚠️':'✅';
+  document.getElementById('rb-droits') && (document.getElementById('rb-droits').textContent=cl+' — '+kwhEP_m2+' kWh/m²/an');
+}
+
+</script>
+
+<script src="/suggestions.js"></script>
+<script>renderFooter('dpe')</script>
+</body>
+</html>
