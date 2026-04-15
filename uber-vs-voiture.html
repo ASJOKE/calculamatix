@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Uber vs voiture : lequel est moins cher ? Calculateur 2026 | Calculamatix</title>
+  <meta name="description" content="Uber ou voiture perso : lequel coûte vraiment moins cher ? Entrez vos données (assurance, crédit, parking, km) et découvrez votre point d'équilibre exact. Calcul gratuit et sourcé 2026."/>
+  <link rel="canonical" href="https://calculamatix.com/uber-vs-voiture"/>
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Uber vs voiture : lequel est moins cher ? Calculateur 2026"/>
+  <meta property="og:description" content="Découvrez le vrai coût de votre voiture vs Uber — tous les coûts cachés inclus. Calculez votre point d'équilibre en 2 minutes."/>
+  <meta property="og:url" content="https://calculamatix.com/uber-vs-voiture"/>
+  <meta property="og:site_name" content="Calculamatix"/>
+  <meta property="og:image" content="https://calculamatix.com/og-uber-voiture.png"/>
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Uber vs voiture : lequel est moins cher ?"/>
+  <meta name="twitter:description" content="Calculez le vrai coût de votre voiture vs Uber. Assurance, crédit, parking, entretien — tous les coûts cachés révélés."/>
+
+  <!-- Schema.org FAQ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Uber est-il moins cher qu'une voiture ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Cela dépend de votre usage. En ville avec moins de 500 km/mois, Uber est souvent moins cher quand on intègre tous les coûts réels d'une voiture : assurance (1 200-2 000€/an), crédit, parking (150-300€/mois à Paris), entretien, décote. Au-delà de 1 000-1 500 km/mois, la voiture devient généralement plus rentable."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quel est le vrai coût d'une voiture par mois ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Le coût réel d'une voiture dépasse souvent 600-900€/mois quand on additionne : carburant (~100-150€), assurance (~100€), crédit ou décote (~200-400€), parking (~80-200€ en ville), entretien (~65€), et divers. Beaucoup de propriétaires sous-estiment ce coût de 40 à 60%."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "À partir de combien de km Uber devient plus cher qu'une voiture ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "En général, le seuil se situe entre 600 et 1 500 km par mois selon votre ville et votre voiture. En dessous, les VTC sont souvent plus économiques car les coûts fixes de la voiture pèsent lourd. Au-dessus, le coût variable d'un VTC au kilomètre dépasse celui de la voiture. Utilisez notre calculateur pour trouver votre seuil exact."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Vaut-il mieux vendre sa voiture et prendre Uber ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Cela peut être très rentable si vous habitez Paris ou une grande ville, faites moins de 700 km/mois, et pouvez combiner VTC et transports en commun. L'économie peut dépasser 3 000 à 6 000€ par an. En revanche, si vous avez des enfants, habitez en zone rurale ou avez un usage professionnel, la voiture reste indispensable."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- Schema.org WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Calculateur Uber vs Voiture",
+    "url": "https://calculamatix.com/uber-vs-voiture",
+    "description": "Calculez le vrai coût de votre voiture vs Uber/VTC avec tous les coûts cachés.",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR"
+    }
+  }
+  </script>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0a0a0a;--bg2:#111;--card:#161616;--border:#222;
+      --uber:#1a1a1a;--voiture:#0f1a2e;
+      --jaune:#FFD93D;--bleu:#4A90E2;--rouge:#E74C3C;--vert:#2ECC71;--orange:#F39C12;
+      --text:#F5F5F5;--muted:#666;--muted2:#222;
+    }
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;padding-bottom:80px}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:radial-gradient(ellipse 50% 40% at 20% 50%,rgba(255,217,61,.04),transparent),
+                 radial-gradient(ellipse 50% 40% at 80% 50%,rgba(74,144,226,.04),transparent)}
+
+    nav{position:relative;z-index:10;max-width:1060px;margin:0 auto;padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;text-decoration:none;color:var(--text)}
+    .logo span{color:var(--jaune)}
+    .back{font-size:13px;color:var(--muted);text-decoration:none}
+    .back:hover{color:var(--text)}
+
+    .hero{position:relative;z-index:10;max-width:1060px;margin:44px auto 0;padding:0 24px;text-align:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--jaune);background:rgba(255,217,61,.1);border:1px solid rgba(255,217,61,.25);padding:7px 18px;border-radius:100px;margin-bottom:18px;font-family:'DM Mono',monospace}
+    h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(26px,5vw,50px);letter-spacing:-1.5px;line-height:1.1;margin-bottom:12px}
+    h1 em{color:var(--jaune);font-style:normal}
+    .hero-sub{font-size:16px;color:var(--muted);line-height:1.75;max-width:560px;margin:0 auto 12px}
+
+    /* VERDICT BANNER */
+    .verdict{position:relative;z-index:10;max-width:1060px;margin:28px auto 0;padding:0 24px}
+    .verdict-inner{border-radius:20px;padding:28px 32px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;border:2px solid;transition:all .4s}
+    .verdict-winner{display:flex;flex-direction:column;align-items:center;min-width:160px}
+    .verdict-emoji{font-size:52px;margin-bottom:6px}
+    .verdict-label{font-family:'Syne',sans-serif;font-size:22px;font-weight:800}
+    .verdict-sublabel{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px}
+    .verdict-sep{width:1px;height:60px;background:rgba(255,255,255,.08);flex-shrink:0}
+    .verdict-stats{display:flex;flex-wrap:wrap;gap:16px;flex:1}
+    .vstat{text-align:center;min-width:110px}
+    .vstat-v{font-family:'Syne',sans-serif;font-size:18px;font-weight:700}
+    .vstat-l{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4}
+
+    /* TABS */
+    .tabs-wrap{position:relative;z-index:10;max-width:1060px;margin:20px auto 0;padding:0 24px}
+    .tabs{display:flex;gap:4px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:5px;flex-wrap:wrap}
+    .tab{background:transparent;border:none;color:var(--muted);padding:9px 16px;border-radius:10px;font-size:13px;font-family:inherit;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+    .tab.on{background:var(--jaune);color:#000;font-weight:700}
+    .panel{display:none}.panel.on{display:block}
+
+    .wrap{position:relative;z-index:10;max-width:1060px;margin:16px auto 0;padding:0 24px;display:flex;flex-direction:column;gap:14px}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+
+    /* CARDS */
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px}
+    .card-uber{border-color:rgba(255,217,61,.2);background:rgba(255,217,61,.03)}
+    .card-voiture{border-color:rgba(74,144,226,.2);background:rgba(74,144,226,.03)}
+    .ctitle{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+    .f{margin-bottom:14px}.f:last-child{margin-bottom:0}
+    .f label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;color:var(--text);margin-bottom:7px;font-weight:500}
+    .fval{font-family:'DM Mono',monospace;color:var(--jaune);font-size:13px;font-weight:700}
+    .fhint{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.6}
+
+    input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:var(--muted2);border-radius:2px;outline:none;cursor:pointer;margin:3px 0}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:var(--jaune);border-radius:50%;box-shadow:0 0 8px rgba(255,217,61,.4)}
+    select,input[type=number]{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:11px 14px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s}
+    select:focus,input[type=number]:focus{border-color:var(--jaune)}
+    select option{background:var(--bg2)}
+
+    /* BARRE COMPARAISON */
+    .barre-comp{margin-bottom:10px}
+    .barre-comp-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+    .barre-comp-track{height:10px;background:var(--muted2);border-radius:5px;overflow:hidden;display:flex}
+    .barre-comp-left{height:100%;border-radius:5px 0 0 5px;transition:width .6s ease}
+    .barre-comp-right{height:100%;border-radius:0 5px 5px 0;transition:width .6s ease}
+
+    /* LIGNE COÛT */
+    .cout-ligne{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-radius:8px;margin-bottom:4px;background:rgba(255,255,255,.03);font-size:13px;transition:background .15s}
+    .cout-ligne:hover{background:rgba(255,255,255,.06)}
+    .cout-label{color:var(--muted)}
+    .cout-val{font-family:'DM Mono',monospace;font-weight:700}
+    .cout-total{background:rgba(255,217,61,.08);border:1px solid rgba(255,217,61,.2);border-radius:10px;padding:12px 14px;display:flex;justify-content:space-between;font-size:15px;font-weight:700;margin-top:8px}
+
+    .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+    .kpi{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+    .kpi-val{font-family:'Syne',sans-serif;font-size:clamp(16px,2.5vw,22px);font-weight:800;line-height:1;margin-bottom:4px}
+    .kpi-label{font-size:11px;color:var(--muted);line-height:1.4}
+
+    .cw{position:relative;width:100%;height:260px}
+    .info-box{background:rgba(255,217,61,.06);border:1px solid rgba(255,217,61,.2);border-radius:12px;padding:14px 16px;font-size:13px;color:var(--muted);line-height:1.75;margin-top:10px}
+    .info-box strong{color:var(--text)}
+    .warn-box{background:rgba(231,76,60,.05);border:1px solid rgba(231,76,60,.2);border-radius:12px;padding:14px 16px;font-size:13px;color:var(--muted);line-height:1.75;margin-top:10px}
+    .disc-box{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:11px;color:var(--muted);line-height:1.7;font-family:'DM Mono',monospace;margin-top:12px}
+
+    .seuil-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center;margin-top:10px}
+    .seuil-val{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--jaune)}
+    .seuil-label{font-size:13px;color:var(--muted);margin-top:4px}
+
+    @media(max-width:640px){
+      .g2,.g3,.kpi-grid{grid-template-columns:1fr}
+      .verdict-inner{flex-direction:column}.verdict-sep{display:none}
+      .tab{font-size:12px;padding:7px 10px}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">Calcula<span>matix</span></a>
+  <a class="back" href="index.html">← Retour</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">🚗 Coût réel · Tous frais inclus · 2026</div>
+  <h1>Uber vs <em>voiture</em><br>lequel est vraiment moins cher ?</h1>
+  <p class="hero-sub">Assurance, carburant, crédit, entretien, stationnement, décote... Le coût réel d'une voiture est souvent 2x ce qu'on croit. Découvrez à partir de quand Uber devient plus rentable.</p>
+</div>
+
+<!-- VERDICT -->
+<div class="verdict">
+  <div class="verdict-inner" id="verdict-inner" style="border-color:rgba(255,217,61,.3);background:rgba(255,217,61,.04)">
+    <div class="verdict-winner">
+      <div class="verdict-emoji" id="verdict-emoji">🏆</div>
+      <div class="verdict-label" id="verdict-label">—</div>
+      <div class="verdict-sublabel" id="verdict-sublabel">est moins cher</div>
+    </div>
+    <div class="verdict-sep"></div>
+    <div class="verdict-stats">
+      <div class="vstat"><div class="vstat-v" id="vs-voiture" style="color:var(--bleu)">—</div><div class="vstat-l">Coût voiture/mois</div></div>
+      <div class="vstat"><div class="vstat-v" id="vs-uber" style="color:var(--jaune)">—</div><div class="vstat-l">Coût Uber estimé/mois</div></div>
+      <div class="vstat"><div class="vstat-v" id="vs-diff" style="color:var(--vert)">—</div><div class="vstat-l">Économie/mois</div></div>
+      <div class="vstat"><div class="vstat-v" id="vs-annee" style="color:var(--orange)">—</div><div class="vstat-l">Économie/an</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- BOUTON PARTAGE -->
+<div style="position:relative;z-index:10;max-width:1060px;margin:14px auto 0;padding:0 24px;display:flex;gap:10px;flex-wrap:wrap">
+  <button onclick="partagerResultats()" id="btn-partage" style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:11px 20px;border-radius:11px;font-family:Syne,sans-serif;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .15s">
+    📤 Partager mes résultats
+  </button>
+  <button onclick="copierLien()" id="btn-lien" style="background:var(--card);border:1px solid var(--border);color:var(--muted);padding:11px 20px;border-radius:11px;font-family:Syne,sans-serif;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .15s">
+    🔗 Copier le lien
+  </button>
+  <div id="partage-toast" style="display:none;background:var(--vert);color:#fff;padding:11px 18px;border-radius:11px;font-size:13px;font-family:DM Mono,monospace;align-items:center;gap:6px">
+    ✅ Copié dans le presse-papier !
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('voiture',this)">🚗 Ma voiture</button>
+    <button class="tab" onclick="showTab('usage',this)">📍 Mon usage</button>
+    <button class="tab" onclick="showTab('resultats',this)">📊 Résultats détaillés</button>
+    <button class="tab" onclick="showTab('seuil',this)">⚖️ Point d'équilibre</button>
+  </div>
+</div>
+
+<!-- ══ VOITURE ══ -->
+<div class="panel on" id="p-voiture"><div class="wrap">
+  <div class="g2">
+    <div class="card card-voiture">
+      <div class="ctitle">🚗 Votre voiture</div>
+      <div class="f">
+        <label>Prix d'achat (ou valeur actuelle) <span class="fval" id="v-prix">20 000 €</span></label>
+        <input type="range" id="i-prix" min="5000" max="80000" step="1000" value="20000" oninput="recalc()"/>
+      </div>
+      <div class="f">
+        <label>Mode d'acquisition</label>
+        <select id="i-acquisition" onchange="recalc()">
+          <option value="comptant">💵 Comptant (déjà payée)</option>
+          <option value="credit" selected>🏦 Crédit auto</option>
+          <option value="loa">📋 LOA / leasing</option>
+        </select>
+      </div>
+      <div class="f" id="f-credit">
+        <label>Mensualité crédit / LOA <span class="fval" id="v-credit">350 €/mois</span></label>
+        <input type="range" id="i-credit" min="100" max="800" step="10" value="350" oninput="recalc()"/>
+      </div>
+      <div class="f">
+        <label>Âge du véhicule</label>
+        <select id="i-age" onchange="recalc()">
+          <option value="neuf">Neuf (0-2 ans)</option>
+          <option value="recent" selected>Récent (3-5 ans)</option>
+          <option value="moyen">Moyen (6-10 ans)</option>
+          <option value="vieux">Vieux (10+ ans)</option>
+        </select>
+        <div class="fhint">L'âge influence la décote annuelle et les frais d'entretien.</div>
+      </div>
+    </div>
+
+    <div class="card card-voiture">
+      <div class="ctitle">⛽ Carburant & énergie</div>
+      <div class="f">
+        <label>Type de motorisation</label>
+        <select id="i-moteur" onchange="recalc()">
+          <option value="essence" selected>⛽ Essence</option>
+          <option value="diesel">🛢️ Diesel</option>
+          <option value="hybride">🔋 Hybride rechargeable</option>
+          <option value="electrique">⚡ Électrique</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Consommation <span class="fval" id="v-conso">7 L/100km</span></label>
+        <input type="range" id="i-conso" min="3" max="20" step="0.5" value="7" oninput="recalc()"/>
+      </div>
+      <div class="f">
+        <label>Assurance annuelle <span class="fval" id="v-assurance">1 200 €/an</span></label>
+        <input type="range" id="i-assurance" min="400" max="3000" step="50" value="1200" oninput="recalc()"/>
+        <div class="fhint">Tous risques : ~1 200-2 000€/an · Au tiers : ~400-800€/an</div>
+      </div>
+      <div class="f">
+        <label>Stationnement mensuel <span class="fval" id="v-parking">80 €/mois</span></label>
+        <input type="range" id="i-parking" min="0" max="400" step="10" value="80" oninput="recalc()"/>
+        <div class="fhint">Paris : 150-300€ · Grande ville : 60-150€ · Petite ville : 0-50€</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">🔧 Entretien & divers</div>
+    <div class="g3">
+      <div class="f">
+        <label>Entretien annuel <span class="fval" id="v-entretien">800 €/an</span></label>
+        <input type="range" id="i-entretien" min="200" max="3000" step="50" value="800" oninput="recalc()"/>
+        <div class="fhint">Révision, pneus, freins, contrôle technique...</div>
+      </div>
+      <div class="f">
+        <label>Péages & autoroutes <span class="fval" id="v-peages">50 €/mois</span></label>
+        <input type="range" id="i-peages" min="0" max="300" step="10" value="50" oninput="recalc()"/>
+      </div>
+      <div class="f">
+        <label>Lavage, accessoires... <span class="fval" id="v-divers">30 €/mois</span></label>
+        <input type="range" id="i-divers" min="0" max="150" step="5" value="30" oninput="recalc()"/>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ══ USAGE ══ -->
+<div class="panel" id="p-usage"><div class="wrap">
+  <div class="g2">
+    <div class="card card-uber">
+      <div class="ctitle">📍 Vos trajets</div>
+      <div class="f">
+        <label>Kilomètres parcourus par mois <span class="fval" id="v-km">1 000 km</span></label>
+        <input type="range" id="i-km" min="100" max="5000" step="100" value="1000" oninput="recalc()"/>
+        <div class="fhint">Moyenne française : ~1 000 km/mois pour les actifs en zone urbaine. Source : ADEME 2024.</div>
+      </div>
+      <div class="f">
+        <label>Type de trajet principal</label>
+        <select id="i-trajet" onchange="recalc()">
+          <option value="urbain" selected>🏙️ Urbain (courtes distances, stop & go)</option>
+          <option value="mixte">🏘️ Mixte (ville + périphérie)</option>
+          <option value="route">🛣️ Route / périurbain</option>
+          <option value="autoroute">🚀 Autoroute (longues distances)</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Combien de trajets par mois en VTC ? <span class="fval" id="v-trajets-vtc">20 trajets</span></label>
+        <input type="range" id="i-trajets-vtc" min="2" max="100" step="2" value="20" oninput="recalc()"/>
+        <div class="fhint">Nombre de fois où tu prendrais un Uber si tu n'avais pas de voiture.</div>
+      </div>
+      <div class="f">
+        <label>Distance moyenne par trajet VTC <span class="fval" id="v-dist-vtc">5 km</span></label>
+        <input type="range" id="i-dist-vtc" min="1" max="30" step="1" value="5" oninput="recalc()"/>
+      </div>
+    </div>
+
+    <div class="card card-uber">
+      <div class="ctitle">🟡 Tarifs VTC</div>
+      <div class="f">
+        <label>Plateforme principale</label>
+        <select id="i-plateforme" onchange="recalc()">
+          <option value="uber" selected>🟡 Uber (standard)</option>
+          <option value="bolt">⚡ Bolt (moins cher)</option>
+          <option value="heetch">🌙 Heetch (nuit)</option>
+          <option value="taxi">🚕 Taxi classique</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Majoration horaire de pointe</label>
+        <select id="i-surge" onchange="recalc()">
+          <option value="jamais">Rarement (x1.0)</option>
+          <option value="parfois" selected>Parfois (x1.3 en moyenne)</option>
+          <option value="souvent">Souvent (x1.6 — heures de pointe)</option>
+          <option value="toujours">Quasi toujours (x2.0 — grande ville)</option>
+        </select>
+      </div>
+      <div class="f">
+        <label>Tu complètes avec... </label>
+        <select id="i-complement" onchange="recalc()">
+          <option value="rien">Rien — que des VTC</option>
+          <option value="transport" selected>🚇 Transports en commun (abonnement)</option>
+          <option value="velo">🚲 Vélo / trottinette</option>
+          <option value="covoiturage">🤝 Covoiturage</option>
+        </select>
+      </div>
+      <div class="f" id="f-abonnement">
+        <label>Abonnement transport mensuel <span class="fval" id="v-abonnement">90 €/mois</span></label>
+        <input type="range" id="i-abonnement" min="0" max="200" step="5" value="90" oninput="recalc()"/>
+        <div class="fhint">Navigo Paris : 90€ · Lyon TCL : 74€ · Bordeaux : 65€</div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- ══ RÉSULTATS ══ -->
+<div class="panel" id="p-resultats"><div class="wrap">
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-val" id="k-voiture" style="color:var(--bleu)">—</div><div class="kpi-label">Coût réel voiture/mois</div></div>
+    <div class="kpi"><div class="kpi-val" id="k-uber" style="color:var(--jaune)">—</div><div class="kpi-label">Coût VTC estimé/mois</div></div>
+    <div class="kpi"><div class="kpi-val" id="k-km" style="color:var(--orange)">—</div><div class="kpi-label">Coût voiture au km</div></div>
+    <div class="kpi"><div class="kpi-val" id="k-decote" style="color:var(--rouge)">—</div><div class="kpi-label">Décote annuelle</div></div>
+    <div class="kpi"><div class="kpi-val" id="k-economie-an" style="color:var(--vert)">—</div><div class="kpi-label">Économie annuelle possible</div></div>
+    <div class="kpi"><div class="kpi-val" id="k-cout-trajet" style="color:var(--muted)">—</div><div class="kpi-label">Coût réel par trajet voiture</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">🚗 Décomposition coût voiture</div>
+      <div id="detail-voiture"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">🟡 Décomposition coût VTC</div>
+      <div id="detail-uber"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">📊 Comparaison mensuelle</div>
+    <div class="cw"><canvas id="chart-comp"></canvas></div>
+  </div>
+
+  <div id="conseil-box"></div>
+
+  <div class="disc-box">
+    ⚠️ Simulation indicative. Les tarifs VTC varient selon la ville, l'heure et la demande. Décote calculée selon les courbes de dépréciation Argus/SRA 2025. Prix carburant : SP95 1,78€/L · Diesel 1,72€/L · Électricité 0,27€/kWh (tarif réglementé 2026). Sources : ADEME, UFC-Que Choisir, Argus de l'automobile, Uber France.
+  </div>
+</div></div>
+
+<!-- ══ SEUIL ══ -->
+<div class="panel" id="p-seuil"><div class="wrap">
+  <div class="card">
+    <div class="ctitle">⚖️ À partir de combien de km/mois la voiture est rentable ?</div>
+    <div class="seuil-box">
+      <div class="seuil-val" id="seuil-km">—</div>
+      <div class="seuil-label" id="seuil-label">km par mois</div>
+    </div>
+    <div class="cw" style="margin-top:16px"><canvas id="chart-seuil"></canvas></div>
+    <div class="info-box" style="margin-top:12px" id="seuil-info"></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">💡 Quand garder sa voiture ?</div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted)">
+        <div style="padding:11px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)">✅ <strong style="color:var(--text)">Tu habites en zone rurale ou périurbaine</strong> — les VTC sont rares et chers, les transports inexistants</div>
+        <div style="padding:11px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)">✅ <strong style="color:var(--text)">Tu fais +1 500 km/mois</strong> — le coût au km de ta voiture devient imbattable</div>
+        <div style="padding:11px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)">✅ <strong style="color:var(--text)">Tu as des enfants ou de lourds bagages</strong> — les VTC sont inadaptés au quotidien familial</div>
+        <div style="padding:11px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)">✅ <strong style="color:var(--text)">Ton travail nécessite une voiture</strong> — commerciaux, artisans, livraisons</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">🟡 Quand passer aux VTC ?</div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted)">
+        <div style="padding:11px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)">✅ <strong style="color:var(--text)">Tu habites Paris ou grande ville</strong> — parking 150-300€/mois + amendes + stress</div>
+        <div style="padding:11px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)">✅ <strong style="color:var(--text)">Tu fais moins de 500 km/mois</strong> — les coûts fixes de la voiture deviennent prohibitifs</div>
+        <div style="padding:11px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)">✅ <strong style="color:var(--text)">Tu as un crédit ou une LOA élevés</strong> — la mensualité seule peut financer beaucoup de VTC</div>
+        <div style="padding:11px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border)">✅ <strong style="color:var(--text)">Tu peux combiner VTC + transports</strong> — le duo est souvent imbattable en ville</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">🔄 Alternatives à considérer</div>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)">
+      <div style="padding:10px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);display:flex;justify-content:space-between"><span>🚗 Autopartage (Getaround, Citiz)</span><span style="font-family:DM Mono,monospace;color:var(--jaune)">~5-8€/h tout compris</span></div>
+      <div style="padding:10px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);display:flex;justify-content:space-between"><span>🤝 Covoiturage domicile-travail (BlaBlaCar Daily)</span><span style="font-family:DM Mono,monospace;color:var(--jaune)">~0,20€/km</span></div>
+      <div style="padding:10px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);display:flex;justify-content:space-between"><span>🚲 Vélo électrique + VTC occasionnel</span><span style="font-family:DM Mono,monospace;color:var(--jaune)">~80€/mois total</span></div>
+      <div style="padding:10px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);display:flex;justify-content:space-between"><span>🚌 Transport en commun illimité</span><span style="font-family:DM Mono,monospace;color:var(--jaune)">65-90€/mois</span></div>
+    </div>
+  </div>
+</div></div>
+
+<script>
+if(typeof Chart !== 'undefined'){
+  Chart.defaults.color='#666';
+  Chart.defaults.font.family="DM Sans,sans-serif";
+}
+var charts={};
+var activeTab='voiture';
+
+function g(id){return document.getElementById(id);}
+function sv(id){var el=g(id);return el?+el.value:0;}
+function gv(id){var el=g(id);return el?el.value:'';}
+function se(id,t){var el=g(id);if(el)el.textContent=t;}
+function si(id,h){var el=g(id);if(el)el.innerHTML=h;}
+function fmt(n){return Math.round(n).toLocaleString('fr-FR');}
+function fmtE(n){return fmt(Math.round(n))+'€';}
+function dc(k){if(charts[k]){try{charts[k].destroy();}catch(e){}}}
+
+function showTab(name,btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  g('p-'+name).classList.add('on');
+  btn.classList.add('on');
+  activeTab=name;
+  if(name==='resultats')setTimeout(renderResultats,80);
+  if(name==='seuil')setTimeout(renderSeuil,80);
+}
+
+// Prix carburant 2026
+var PRIX_CARBU={essence:1.78,diesel:1.72,hybride:1.40,electrique:0.027}; // electrique = €/km
+var CONSO_LABEL={essence:'L/100km',diesel:'L/100km',hybride:'L/100km',electrique:'kWh/100km'};
+
+// Décote par âge (% par an)
+var DECOTE={neuf:0.18,recent:0.14,moyen:0.10,vieux:0.06};
+
+// Tarif VTC base (€ par trajet + par km)
+var TARIF_VTC={
+  uber:{base:2.0,km:1.15},
+  bolt:{base:1.5,km:0.95},
+  heetch:{base:2.5,km:1.25},
+  taxi:{base:2.6,km:1.40}
+};
+var SURGE={jamais:1.0,parfois:1.15,souvent:1.35,toujours:1.7};
+
+function recalc(){
+  var prix=sv('i-prix')||20000;
+  var acquisition=gv('i-acquisition');
+  var credit=sv('i-credit')||350;
+  var age=gv('i-age')||'recent';
+  var moteur=gv('i-moteur')||'essence';
+  var conso=sv('i-conso')||7;
+  var assurance=sv('i-assurance')||1200;
+  var parking=sv('i-parking')||80;
+  var entretien=sv('i-entretien')||800;
+  var peages=sv('i-peages')||50;
+  var divers=sv('i-divers')||30;
+  var km=sv('i-km')||1000;
+  var trajetsVTC=sv('i-trajets-vtc')||20;
+  var distVTC=sv('i-dist-vtc')||5;
+  var plateforme=gv('i-plateforme')||'uber';
+  var surge=SURGE[gv('i-surge')]||1.15;
+  var complement=gv('i-complement');
+  var abonnement=complement==='transport'?sv('i-abonnement'):complement==='velo'?30:0;
+
+  // Labels
+  if(g('v-prix')) g('v-prix').textContent=fmtE(prix);
+  if(g('v-credit')) g('v-credit').textContent=fmtE(credit)+'/mois';
+  if(g('v-conso')) g('v-conso').textContent=conso+' '+CONSO_LABEL[moteur];
+  if(g('v-assurance')) g('v-assurance').textContent=fmtE(assurance)+'/an';
+  if(g('v-parking')) g('v-parking').textContent=fmtE(parking)+'/mois';
+  if(g('v-entretien')) g('v-entretien').textContent=fmtE(entretien)+'/an';
+  if(g('v-peages')) g('v-peages').textContent=fmtE(peages)+'/mois';
+  if(g('v-divers')) g('v-divers').textContent=fmtE(divers)+'/mois';
+  if(g('v-km')) g('v-km').textContent=fmt(km)+' km';
+  if(g('v-trajets-vtc')) g('v-trajets-vtc').textContent=trajetsVTC+' trajets';
+  if(g('v-dist-vtc')) g('v-dist-vtc').textContent=distVTC+' km';
+  if(g('v-abonnement')) g('v-abonnement').textContent=fmtE(abonnement)+'/mois';
+
+  // Toggle crédit
+  var fcredit=g('f-credit');
+  if(fcredit) fcredit.style.display=acquisition==='comptant'?'none':'block';
+  var fabonnement=g('f-abonnement');
+  if(fabonnement) fabonnement.style.display=complement==='transport'?'block':'none';
+
+  // ── COÛT VOITURE ──
+  // Carburant
+  var prixKm=0;
+  if(moteur==='electrique'){
+    prixKm=conso/100*0.27; // kWh/100km * prix kWh
+  } else {
+    prixKm=conso/100*PRIX_CARBU[moteur];
+  }
+  var carburantMois=prixKm*km;
+
+  // Crédit/LOA ou décote mensuelle si comptant
+  var creditMois=0;
+  if(acquisition==='comptant'){
+    // Coût d'opportunité = décote annuelle / 12
+    creditMois=(prix*DECOTE[age])/12;
+  } else {
+    creditMois=credit;
+  }
+
+  // Décote (perte de valeur)
+  var decoteAn=prix*DECOTE[age];
+  var decoteMois=decoteAn/12;
+
+  // Coûts mensuels
+  var assuranceMois=assurance/12;
+  var entretienMois=entretien/12;
+
+  var totalVoitureMois=carburantMois+creditMois+assuranceMois+parking+entretienMois+peages+divers;
+  var coutKm=totalVoitureMois/km;
+
+  // ── COÛT VTC ──
+  var tarif=TARIF_VTC[plateforme]||TARIF_VTC.uber;
+  var coutParTrajet=(tarif.base+tarif.km*distVTC)*surge;
+  var vtcMois=coutParTrajet*trajetsVTC+abonnement;
+
+  // Différence
+  var diff=totalVoitureMois-vtcMois;
+  var winner=diff>0?'VTC':'Voiture';
+
+  // ── VERDICT ──
+  var vi=g('verdict-inner');
+  if(vi){
+    var color=diff>0?'rgba(255,217,61,.3)':'rgba(74,144,226,.3)';
+    var bg=diff>0?'rgba(255,217,61,.04)':'rgba(74,144,226,.04)';
+    vi.style.borderColor=color;vi.style.background=bg;
+  }
+  se('verdict-emoji',diff>0?'🟡':'🚗');
+  se('verdict-label',diff>0?'VTC':'Voiture');
+  se('vs-voiture',fmtE(totalVoitureMois)+'/mois');
+  se('vs-uber',fmtE(vtcMois)+'/mois');
+  se('vs-diff',fmtE(Math.abs(diff))+'/mois');
+  se('vs-annee',fmtE(Math.abs(diff)*12)+'/an');
+
+  // ── KPIs ──
+  se('k-voiture',fmtE(totalVoitureMois));
+  se('k-uber',fmtE(vtcMois));
+  se('k-km',Math.round(coutKm*100)/100+'€/km');
+  se('k-decote',fmtE(decoteAn)+'/an');
+  se('k-economie-an',fmtE(Math.abs(diff)*12));
+  se('k-cout-trajet',fmtE(totalVoitureMois/Math.max(1,trajetsVTC)));
+
+  // Stocker
+  window._C={
+    totalVoitureMois,vtcMois,diff,km,carburantMois,creditMois,
+    assuranceMois,parking,entretienMois,peages,divers,decoteMois,
+    coutParTrajet,trajetsVTC,distVTC,abonnement,complement,
+    tarif,surge,coutKm,prix,DECOTE,age,decoteAn,
+    plateforme,moteur,acquisition
+  };
+
+  if(activeTab==='resultats')renderResultats();
+  if(activeTab==='seuil')renderSeuil();
+}
+
+function renderResultats(){
+  if(!window._C) return;
+  var C=window._C;
+
+  // Détail voiture
+  var lignesV=[
+    {l:'Carburant/énergie',v:C.carburantMois,c:'var(--orange)'},
+    {l:C.acquisition==='comptant'?'Décote mensuelle (coût réel)':'Crédit / LOA',v:C.creditMois,c:'var(--rouge)'},
+    {l:'Assurance',v:C.assuranceMois,c:''},
+    {l:'Stationnement',v:C.parking,c:''},
+    {l:'Entretien',v:C.entretienMois,c:''},
+    {l:'Péages',v:C.peages,c:''},
+    {l:'Divers',v:C.divers,c:''},
+  ].filter(function(l){return l.v>0;});
+
+  si('detail-voiture',lignesV.map(function(l){
+    return '<div class="cout-ligne"><span class="cout-label">'+l.l+'</span>'
+      +'<span class="cout-val" style="color:'+(l.c||'var(--text)')+'">'+fmtE(l.v)+'/mois</span></div>';
+  }).join('')
+  +'<div class="cout-total" style="color:var(--bleu)"><span>Total voiture/mois</span><span>'+fmtE(C.totalVoitureMois)+'</span></div>');
+
+  // Détail VTC
+  var lignesU=[
+    {l:'VTC ('+C.trajetsVTC+' trajets × '+fmtE(C.coutParTrajet)+')',v:C.coutParTrajet*C.trajetsVTC,c:'var(--jaune)'},
+  ];
+  if(C.abonnement>0) lignesU.push({l:'Transport en commun',v:C.abonnement,c:''});
+
+  si('detail-uber',lignesU.map(function(l){
+    return '<div class="cout-ligne"><span class="cout-label">'+l.l+'</span>'
+      +'<span class="cout-val" style="color:'+(l.c||'var(--text)')+'">'+fmtE(l.v)+'/mois</span></div>';
+  }).join('')
+  +'<div class="cout-total" style="color:var(--jaune)"><span>Total VTC/mois</span><span>'+fmtE(C.vtcMois)+'</span></div>'
+  +'<div class="info-box" style="margin-top:8px"><strong>Note :</strong> Si vous n\'avez pas de voiture, vous feriez probablement moins de trajets et utiliseriez plus les transports. Le vrai coût VTC pourrait être inférieur.</div>');
+
+  // Chart
+  dc('comp');
+  var cv=g('chart-comp');if(!cv)return;
+  charts['comp']=new Chart(cv,{
+    type:'bar',
+    data:{
+      labels:['Carburant','Crédit/Décote','Assurance','Parking','Entretien','Péages','Divers','Total VTC'],
+      datasets:[{
+        label:'Coût mensuel (€)',
+        data:[C.carburantMois,C.creditMois,C.assuranceMois,C.parking,C.entretienMois,C.peages,C.divers,C.vtcMois],
+        backgroundColor:['#F39C12','#E74C3C','#9B59B6','#3498DB','#1ABC9C','#95A5A6','#BDC3C7','rgba(255,217,61,.6)'],
+        borderWidth:0,borderRadius:6
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fmtE(c.raw)+'/mois';}}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#666',font:{size:11}},border:{color:'transparent'}},
+              y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#666',callback:function(v){return v+'€';}},border:{color:'transparent'}}}}
+  });
+
+  // Conseil
+  var cb=g('conseil-box');
+  if(cb){
+    if(C.diff>200){
+      cb.innerHTML='<div class="warn-box">💡 <strong>Économie importante possible :</strong> Votre voiture vous coûte '+fmtE(C.diff)+' de plus que des VTC chaque mois, soit '+fmtE(C.diff*12)+'/an. Si vous habitez en ville et faites peu de kilomètres, la vente de votre voiture pourrait être une excellente décision financière.</div>';
+    } else if(C.diff<-200){
+      cb.innerHTML='<div class="info-box">✅ <strong>Votre voiture est rentable :</strong> Elle vous coûte '+fmtE(Math.abs(C.diff))+' de moins que des VTC chaque mois. Votre usage important justifie clairement la possession d\'un véhicule.</div>';
+    } else {
+      cb.innerHTML='<div class="info-box">⚖️ <strong>C\'est serré :</strong> La différence est faible ('+fmtE(Math.abs(C.diff))+'/mois). Le choix dépend de facteurs non-financiers : confort, disponibilité, vie avec enfants, zone géographique.</div>';
+    }
+  }
+}
+
+function renderSeuil(){
+  if(!window._C) return;
+  var C=window._C;
+
+  // Trouver le seuil : km où voiture = VTC
+  // Coût fixe voiture (sans carburant)
+  var fixesMois=C.creditMois+C.assuranceMois+C.parking+C.entretienMois+C.peages+C.divers;
+  // Coût VTC par km = coutParTrajet / distVTC
+  var vtcParKm=C.coutParTrajet/Math.max(1,C.distVTC);
+  // Coût voiture = fixesMois + carburant/km * km
+  // Coût VTC = vtcParKm * km + abonnement
+  // Équilibre : fixesMois + prixKm*km = vtcParKm*km + abonnement
+  // fixesMois - abonnement = (vtcParKm - prixKm) * km
+  var prixKm=C.coutKm-(fixesMois/C.km); // coût variable par km
+  var seuilKm=0;
+  if(vtcParKm>prixKm){
+    seuilKm=Math.round((fixesMois-C.abonnement)/(vtcParKm-prixKm));
+  }
+
+  se('seuil-km',seuilKm>0?fmt(seuilKm):'∞');
+  se('seuil-label','km/mois = seuil de rentabilité de la voiture');
+
+  var si2=g('seuil-info');
+  if(si2){
+    if(seuilKm<=0){
+      si2.innerHTML='<strong>La voiture est rentable à tous les niveaux d\'usage</strong> dans votre configuration — vos coûts VTC dépassent toujours les coûts voiture.';
+    } else if(C.km<seuilKm){
+      si2.innerHTML='<strong>Vous faites '+fmt(C.km)+' km/mois</strong>, soit en-dessous du seuil de '+fmt(seuilKm)+' km. <strong>Les VTC sont plus économiques</strong> pour votre usage actuel.';
+    } else {
+      si2.innerHTML='<strong>Vous faites '+fmt(C.km)+' km/mois</strong>, soit au-dessus du seuil de '+fmt(seuilKm)+' km. <strong>Votre voiture est rentable</strong> pour votre usage actuel.';
+    }
+  }
+
+  // Chart seuil
+  dc('seuil');
+  var csv=g('chart-seuil');if(!csv)return;
+  var pts=[200,400,600,800,1000,1200,1500,2000,2500,3000];
+  var dataV=pts.map(function(k){return fixesMois+prixKm*k;});
+  var dataU=pts.map(function(k){return vtcParKm*k+C.abonnement;});
+  charts['seuil']=new Chart(csv,{
+    type:'line',
+    data:{
+      labels:pts.map(function(k){return k+' km';}),
+      datasets:[
+        {label:'Voiture',data:dataV,borderColor:'#4A90E2',backgroundColor:'rgba(74,144,226,.1)',fill:true,tension:0.3,borderWidth:2,pointRadius:3},
+        {label:'VTC',data:dataU,borderColor:'#FFD93D',backgroundColor:'rgba(255,217,61,.1)',fill:true,tension:0.3,borderWidth:2,pointRadius:3},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#666'}},
+        tooltip:{callbacks:{label:function(c){return c.dataset.label+' : '+fmtE(c.raw)+'/mois';}}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#666'},border:{color:'transparent'}},
+              y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#666',callback:function(v){return v+'€';}},border:{color:'transparent'}}}}
+  });
+}
+
+try{recalc();}catch(e){console.error('recalc error:',e);}
+
+function partagerResultats(){
+  if(!window._C) return;
+  var C=window._C;
+  var eco=Math.abs(C.diff);
+  var ligne1=C.diff>0?"VTC plus eco":"Voiture plus rentable";
+  var nl="\n";
+  var texte="Uber vs Voiture - Mon resultat :"+nl
+    +"Voiture : "+fmtE(C.totalVoitureMois)+"/mois"+nl
+    +"VTC : "+fmtE(C.vtcMois)+"/mois"+nl
+    +"Economie possible : "+fmtE(eco*12)+"/an"+nl
+    +"-> "+ligne1+nl+nl
+    +"Calculez le votre : calculamatix.com/uber-vs-voiture";
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(texte).then(function(){
+      showToast("Resultats copies dans le presse-papier !");
+    }).catch(function(){prompt("Copiez :",texte);});
+  } else {
+    prompt("Copiez :",texte);
+  }
+}
+
+function copierLien(){
+  var url='https://calculamatix.com/uber-vs-voiture';
+  try{
+    navigator.clipboard.writeText(url).then(function(){
+      showToast('Lien copie !');
+    }).catch(function(){prompt('Lien :',url);});
+  }catch(e){prompt('Lien :',url);}
+}
+
+function showToast(msg){
+  var t=document.getElementById('partage-toast');
+  if(!t) return;
+  t.textContent=msg;
+  t.style.display='flex';
+  setTimeout(function(){t.style.display='none';},2500);
+}
+</script>
+
+<script src="/suggestions.js"></script>
+<script>try{renderFooter('uber-vs-voiture');}catch(e){}</script>
+</body>
+</html>
