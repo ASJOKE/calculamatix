@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Président de la République — Le jeu politique | Calculamatix</title>
+  <meta name="description" content="Gouvernez la France. Gérez les crises, confrontez les sondages, survivez aux élections. Jeu politique éducatif et infini."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#08080f;--bg2:#10101c;--card:#141428;--border:#222240;--bleu:#3B5BDB;--rouge:#E03131;--or:#FAB005;--vert:#2F9E44;--violet:#7048E8;--teal:#0CA678;--text:#F1F0FF;--muted:#6E6E9E;--muted2:#252545;}
+    body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;min-height:100vh;overflow-x:hidden;font-size:15px}
+    body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(59,91,219,.1),transparent)}
+    .screen{display:none;position:relative;z-index:1;min-height:100vh}.screen.on{display:flex;flex-direction:column}
+    /* INTRO */
+    #s-intro{padding:0}
+    .intro-scene{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center}
+    .intro-drapeau{font-size:72px;margin-bottom:24px;animation:flotter 3s ease-in-out infinite}
+    @keyframes flotter{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-8px) rotate(2deg)}}
+    .intro-titre{font-family:"Syne",sans-serif;font-weight:800;font-size:clamp(28px,6vw,60px);letter-spacing:-2px;line-height:1.05;margin-bottom:8px}
+    .intro-titre span{color:var(--bleu)}
+    .intro-sous{font-size:16px;color:var(--muted);max-width:540px;line-height:1.75;margin-bottom:28px}
+    .intro-scenario{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px;max-width:560px;margin-bottom:24px;text-align:left}
+    .intro-scenario-titre{font-family:"Syne",sans-serif;font-size:11px;color:var(--or);margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+    .intro-scenario-texte{font-size:13px;color:var(--muted);line-height:1.8}
+    .intro-scenario-texte strong{color:var(--text)}
+    .intro-indics{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px;max-width:560px}
+    .intro-indic{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:8px;min-width:130px}
+    .intro-indic-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+    .intro-indic-nom{font-size:10px;color:var(--muted);font-family:"DM Mono",monospace}
+    .intro-indic-bar{height:3px;background:var(--muted2);border-radius:2px;margin-top:3px;overflow:hidden}
+    .intro-indic-fill{height:100%;border-radius:2px}
+    .intro-regles{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:22px;max-width:560px}
+    .intro-regle{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:11px;color:var(--muted)}
+    .intro-regle strong{color:var(--text)}
+    .btn-start{background:var(--bleu);color:#fff;border:none;padding:15px 40px;border-radius:13px;font-family:"Syne",sans-serif;font-weight:800;font-size:15px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+    .btn-start:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(59,91,219,.45)}
+    /* HUD */
+    .hud{background:rgba(8,8,15,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:10px 18px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:sticky;top:0;z-index:100}
+    .hud-logo{font-family:"Syne",sans-serif;font-weight:800;font-size:13px;color:var(--text)}
+    .hud-logo span{color:var(--bleu)}
+    .hud-sep{width:1px;height:18px;background:var(--border);flex-shrink:0}
+    .hud-info{font-size:11px;color:var(--muted);font-family:"DM Mono",monospace}
+    .hud-right{margin-left:auto;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .hud-pill{font-family:"DM Mono",monospace;font-size:10px;padding:3px 9px;border-radius:100px;border:1px solid;white-space:nowrap}
+    /* INDICATEURS */
+    .indic-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:9px 18px;display:flex;gap:5px;flex-wrap:wrap}
+    .indic{display:flex;align-items:center;gap:5px;padding:4px 9px;background:var(--card);border:1px solid var(--border);border-radius:100px;font-size:10px;cursor:help;transition:border-color .2s}
+    .indic:hover{border-color:rgba(255,255,255,.2)}
+    .indic-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;animation:breathe 2s ease-in-out infinite}
+    @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+    .indic-label{color:var(--muted);font-size:9px}.indic-val{font-family:"DM Mono",monospace;font-size:9px;font-weight:700}
+    .dv{background:#2F9E44}.dj{background:#FAB005}.do{background:#E8590C}.dr{background:#E03131}
+    /* MAIN */
+    .main{flex:1;padding:18px;max-width:800px;margin:0 auto;width:100%}
+    /* PROGRESS */
+    .progress-mandat{display:flex;gap:3px;margin-bottom:14px}
+    .prog-step{flex:1;height:3px;border-radius:2px;background:var(--muted2);transition:background .3s}
+    .prog-step.done{background:var(--bleu)}.prog-step.current{background:linear-gradient(90deg,var(--bleu),rgba(59,91,219,.3))}
+    /* CRISE */
+    .crise-wrap{animation:fadeUp .3s ease}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .crise-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:14px}
+    .crise-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+    .crise-tag{font-size:10px;font-family:"DM Mono",monospace;padding:3px 9px;border-radius:100px;font-weight:700}
+    .crise-annee{font-size:10px;color:var(--muted);font-family:"DM Mono",monospace}
+    .urgence-haute{background:rgba(224,49,49,.15);color:#E03131;border:1px solid rgba(224,49,49,.3);font-size:9px;padding:2px 8px;border-radius:100px;font-weight:700;font-family:"DM Mono",monospace}
+    .urgence-moyenne{background:rgba(250,176,5,.12);color:#FAB005;border:1px solid rgba(250,176,5,.25);font-size:9px;padding:2px 8px;border-radius:100px;font-weight:700;font-family:"DM Mono",monospace}
+    .urgence-basse{background:rgba(47,158,68,.1);color:#2F9E44;border:1px solid rgba(47,158,68,.2);font-size:9px;padding:2px 8px;border-radius:100px;font-weight:700;font-family:"DM Mono",monospace}
+    .crise-titre{font-family:"Syne",sans-serif;font-weight:800;font-size:clamp(16px,3vw,21px);letter-spacing:-.5px;line-height:1.2;margin-bottom:10px}
+    .crise-contexte{font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:14px;padding:11px 13px;background:rgba(255,255,255,.02);border-radius:9px;border-left:3px solid var(--border)}
+    .crise-question{font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px}
+    .choix-list{display:flex;flex-direction:column;gap:7px}
+    .choix-btn{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:13px 15px;text-align:left;cursor:pointer;transition:all .15s;color:var(--text);font-family:inherit;font-size:13px;line-height:1.5;width:100%}
+    .choix-btn:hover{border-color:var(--bleu);background:rgba(59,91,219,.07);transform:translateX(3px)}
+    .choix-btn strong{display:block;font-size:13px;margin-bottom:2px}
+    .choix-btn em{font-style:normal;font-size:11px;color:var(--muted)}
+    /* RÉSULTAT */
+    .resultat-wrap{animation:fadeUp .3s ease}
+    .resultat-card{border-radius:14px;padding:18px;margin-bottom:12px;border:2px solid}
+    .res-verdict{font-family:"Syne",sans-serif;font-size:16px;font-weight:800;margin-bottom:7px}
+    .res-explication{font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:12px}
+    .res-effets{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+    .effet{font-size:10px;font-family:"DM Mono",monospace;padding:3px 8px;border-radius:100px;font-weight:700}
+    .e-pos{background:rgba(47,158,68,.15);color:#2F9E44;border:1px solid rgba(47,158,68,.3)}
+    .e-neg{background:rgba(224,49,49,.1);color:#E03131;border:1px solid rgba(224,49,49,.2)}
+    .sondage-box{background:rgba(59,91,219,.05);border:1px solid rgba(59,91,219,.18);border-radius:11px;padding:13px;margin-bottom:10px}
+    .sondage-titre{font-size:9px;color:var(--bleu);font-family:"DM Mono",monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
+    .sondage-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px}
+    .sondage-track{height:5px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden}
+    .sondage-fill{height:100%;border-radius:3px;transition:width .8s ease}
+    .sondage-verdict{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.5}
+    .s-ok{color:#2F9E44;font-weight:700}.s-ko{color:#E03131;font-weight:700}
+    .historeal{font-size:11px;padding:9px 13px;border-radius:9px;background:rgba(112,72,232,.07);border:1px solid rgba(112,72,232,.18);color:var(--muted);line-height:1.6;margin-bottom:10px}
+    .historeal strong{color:#7048E8}
+    .btn-next{background:var(--bleu);color:#fff;border:none;padding:12px 22px;border-radius:9px;font-family:"Syne",sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .15s;width:100%}
+    .btn-next:hover{opacity:.88;transform:translateY(-1px)}
+    /* CAMPAGNE */
+    #s-campagne{background:var(--bg)}
+    .campagne-hero{background:linear-gradient(135deg,var(--bg2),var(--card));border-bottom:1px solid var(--border);padding:26px 18px;text-align:center}
+    .campagne-titre{font-family:"Syne",sans-serif;font-weight:800;font-size:clamp(20px,4vw,32px);letter-spacing:-1px;margin-bottom:5px}
+    .campagne-sous{font-size:13px;color:var(--muted);max-width:460px;margin:0 auto}
+    .campagne-body{max-width:800px;margin:0 auto;padding:18px;width:100%}
+    .campagne-bilan{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:14px}
+    .campagne-bilan-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:9px}
+    .cbilan-item{text-align:center;padding:8px;background:var(--bg2);border-radius:8px}
+    .cbilan-val{font-family:"Syne",sans-serif;font-size:17px;font-weight:800}
+    .cbilan-lbl{font-size:9px;color:var(--muted);font-family:"DM Mono",monospace;margin-top:2px}
+    .campagne-debat{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:14px}
+    .debat-question{font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px}
+    .debat-choix{display:flex;flex-direction:column;gap:7px}
+    .debat-btn{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:11px 13px;text-align:left;cursor:pointer;font-size:12px;color:var(--text);font-family:inherit;transition:all .15s;width:100%}
+    .debat-btn:hover{border-color:var(--or);background:rgba(250,176,5,.06)}
+    .themes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:7px;margin-bottom:14px}
+    .theme-btn{background:var(--bg2);border:2px solid var(--border);border-radius:11px;padding:13px;cursor:pointer;transition:all .15s;text-align:left;color:var(--text);font-family:inherit;width:100%}
+    .theme-btn:hover{border-color:var(--bleu)}.theme-btn.sel{border-color:var(--bleu);background:rgba(59,91,219,.1)}
+    .theme-emoji{font-size:20px;display:block;margin-bottom:4px}
+    .theme-nom{font-size:11px;font-weight:700;margin-bottom:2px}.theme-desc{font-size:9px;color:var(--muted);line-height:1.4}
+    .campagne-counter{text-align:center;font-size:11px;color:var(--muted);margin-bottom:10px;font-family:"DM Mono",monospace}
+    /* ÉLECTION */
+    #s-election{align-items:center;justify-content:center;padding:40px 22px;text-align:center;background:var(--bg)}
+    .election-label{font-size:10px;color:var(--or);font-family:"DM Mono",monospace;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px}
+    .election-titre{font-family:"Syne",sans-serif;font-weight:800;font-size:clamp(22px,5vw,44px);letter-spacing:-1.5px;margin-bottom:6px}
+    .election-sous{font-size:13px;color:var(--muted);margin-bottom:26px;max-width:460px;line-height:1.6}
+    .duel{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:18px;width:100%;max-width:520px}
+    .candidat{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:18px;flex:1;min-width:170px;text-align:center;transition:all .5s}
+    .candidat.gagnant{border-color:var(--or);box-shadow:0 0 30px rgba(250,176,5,.2)}
+    .candidat.perdant{opacity:.4;filter:grayscale(.5)}
+    .cand-emoji{font-size:40px;margin-bottom:7px;display:block}
+    .cand-nom{font-family:"Syne",sans-serif;font-size:13px;font-weight:800;margin-bottom:2px}
+    .cand-parti{font-size:9px;font-family:"DM Mono",monospace;color:var(--muted)}
+    .cand-score{font-family:"Syne",sans-serif;font-size:32px;font-weight:800;margin:9px 0}
+    .vs-txt{font-family:"Syne",sans-serif;font-size:18px;font-weight:800;color:var(--muted);flex-shrink:0}
+    .election-barre-wrap{width:100%;max-width:460px;margin-bottom:14px}
+    .election-barre{height:12px;background:var(--bg2);border-radius:6px;overflow:hidden;border:1px solid var(--border)}
+    .election-fill{height:100%;border-radius:6px;transition:width 1.8s cubic-bezier(.4,0,.2,1)}
+    .election-verdict{font-size:13px;color:var(--muted);max-width:460px;line-height:1.7;margin-bottom:18px}
+    /* GAME OVER */
+    #s-gameover{align-items:center;justify-content:center;padding:40px 22px;text-align:center;background:var(--bg)}
+    .go-emoji{font-size:60px;margin-bottom:12px}
+    .go-titre{font-family:"Syne",sans-serif;font-weight:800;font-size:clamp(22px,5vw,44px);letter-spacing:-1.5px;margin-bottom:7px}
+    .go-sous{font-size:13px;color:var(--muted);margin-bottom:22px;max-width:440px;line-height:1.7}
+    .go-stats{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-bottom:18px}
+    .go-stat{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:13px 16px;text-align:center;min-width:100px}
+    .go-stat-v{font-family:"Syne",sans-serif;font-size:24px;font-weight:800;color:var(--or)}
+    .go-stat-l{font-size:9px;color:var(--muted);margin-top:2px;font-family:"DM Mono",monospace}
+    .orient-barre{width:100%;max-width:360px;margin:0 auto 14px}
+    .ob-track{height:7px;background:linear-gradient(90deg,#7048E8,#aaa,#E03131);border-radius:4px;position:relative}
+    .ob-cursor{position:absolute;top:-4px;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--or);transform:translateX(-50%);transition:left 1s ease}
+    .ob-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);font-family:"DM Mono",monospace;margin-top:3px}
+    .go-indics{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-bottom:16px;max-width:440px}
+    .go-indic{padding:5px 10px;border-radius:100px;font-size:10px;font-family:"DM Mono",monospace;border:1px solid}
+    .go-bilan{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:16px;max-width:440px;text-align:left;margin-bottom:18px;font-size:13px;color:var(--muted);line-height:1.8}
+    .go-bilan strong{color:var(--text)}
+    @media(max-width:600px){.indic-bar{gap:3px}.duel{flex-direction:column}.campagne-bilan-grid{grid-template-columns:1fr 1fr}.themes-grid{grid-template-columns:1fr 1fr}.hud{gap:5px}}
+  </style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div class="screen on" id="s-intro">
+  <div class="intro-scene">
+    <div class="intro-drapeau">🇫🇷</div>
+    <h1 class="intro-titre">Président de la<br><span>République</span></h1>
+    <p class="intro-sous">La France vous appelle. Chaque décision a des conséquences réelles. Jusqu'à quand tiendrez-vous au pouvoir ?</p>
+    <div class="intro-scenario">
+      <div class="intro-scenario-titre">📰 Contexte — Janvier 2025</div>
+      <div class="intro-scenario-texte">Vous venez d'être élu avec <strong>52,3% des voix</strong>. La France traverse une période de tensions : chômage à <strong>7,8%</strong>, mouvements sociaux, déficit à <strong>5,5% du PIB</strong>. Votre prédécesseur a laissé un pays divisé. L'Élysée vous attend.</div>
+    </div>
+    <div class="intro-indics" id="intro-indics"></div>
+    <div class="intro-regles">
+      <div class="intro-regle"><strong>10 crises</strong> par mandat</div>
+      <div class="intro-regle"><strong>100+ situations</strong> réelles</div>
+      <div class="intro-regle"><strong>Sondages réels</strong> après chaque choix</div>
+      <div class="intro-regle"><strong>Élections serrées</strong> adaptatives</div>
+      <div class="intro-regle"><strong>Infini</strong> — survivez!</div>
+    </div>
+    <button class="btn-start" onclick="startGame()"><span>🏛️</span> Entrer à l'Élysée</button>
+  </div>
+</div>
+
+<!-- JEU -->
+<div class="screen" id="s-jeu">
+  <div class="hud">
+    <div class="hud-logo">Élysée<span>.fr</span></div>
+    <div class="hud-sep"></div>
+    <div class="hud-info" id="hud-annee">Année 1 · Mandat 1</div>
+    <div class="hud-right">
+      <div class="hud-pill" id="hud-orient" style="color:var(--bleu);border-color:rgba(59,91,219,.3);background:rgba(59,91,219,.08)">Centre</div>
+      <div class="hud-pill" style="color:var(--or);border-color:rgba(250,176,5,.3);background:rgba(250,176,5,.08)" id="hud-pop">Popularité 52%</div>
+      <div class="hud-pill" style="color:var(--teal);border-color:rgba(12,166,120,.3);background:rgba(12,166,120,.08)" id="hud-diff">Diff. 1</div>
+    </div>
+  </div>
+  <div class="indic-bar" id="indic-bar"></div>
+  <div class="main" id="main-content"></div>
+</div>
+
+<!-- CAMPAGNE -->
+<div class="screen" id="s-campagne">
+  <div class="campagne-hero">
+    <div style="font-size:10px;color:var(--or);font-family:DM Mono,monospace;margin-bottom:6px;text-transform:uppercase;letter-spacing:1.5px">🗳️ Campagne — Mandat <span id="camp-mandat">1</span></div>
+    <div class="campagne-titre">Préparez votre campagne</div>
+    <div class="campagne-sous">Débat TV, thèmes, programme... La victoire n\'est jamais garantie.</div>
+  </div>
+  <div class="campagne-body">
+    <div class="campagne-bilan" id="campagne-bilan"></div>
+    <div class="campagne-debat" id="campagne-debat"></div>
+    <div style="font-size:10px;color:var(--or);font-family:DM Mono,monospace;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">📋 3 thèmes de campagne</div>
+    <div class="campagne-counter" id="camp-counter">0/3 thèmes sélectionnés</div>
+    <div class="themes-grid" id="camp-themes"></div>
+    <button class="btn-next" id="btn-election" onclick="lancerElection()" style="opacity:.4" disabled>Lancer la campagne →</button>
+  </div>
+</div>
+
+<!-- ÉLECTION -->
+<div class="screen" id="s-election">
+  <div class="election-label">📊 Second tour</div>
+  <div class="election-titre" id="el-titre">Dépouillement...</div>
+  <div class="election-sous" id="el-sous"></div>
+  <div class="duel" id="el-duel"></div>
+  <div class="election-barre-wrap">
+    <div class="election-barre"><div class="election-fill" id="el-fill" style="width:50%;background:var(--bleu)"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);font-family:DM Mono,monospace;margin-top:3px"><span>Vous</span><span id="el-adv-nom">Adversaire</span></div>
+  </div>
+  <div class="election-verdict" id="el-verdict"></div>
+  <button class="btn-start" id="btn-apres-el" style="display:none" onclick="apresElection()">Continuer →</button>
+</div>
+
+<!-- GAME OVER -->
+<div class="screen" id="s-gameover">
+  <div class="go-emoji" id="go-emoji">🏛️</div>
+  <div class="go-titre" id="go-titre">Fin de mandat</div>
+  <div class="go-sous" id="go-sous"></div>
+  <div class="go-stats" id="go-stats"></div>
+  <div class="orient-barre"><div class="ob-track"><div class="ob-cursor" id="ob-cursor" style="left:50%"></div></div><div class="ob-labels"><span>Gauche</span><span>Centre</span><span>Droite</span></div></div>
+  <div class="go-indics" id="go-indics"></div>
+  <div class="go-bilan" id="go-bilan"></div>
+  <button class="btn-start" onclick="restartGame()">Rejouer →</button>
+</div>
+
+<script>
+
+var G={mandat:1,annee:1,popularite:52,orientation:0,difficulte:1,crisesDuMandat:[],totalDecisions:0,choixPop:0,choixImpop:0,totalAns:0,themesChoisis:[],debatBonus:0,_defaite:false,indic:{bonheur:58,economie:52,sante:55,ecologie:38,securite:54,education:60,cohesion:48,budget:45}};
+
+var INDIC_LABELS={bonheur:"😊 Bonheur",economie:"💰 Éco.",sante:"🏥 Santé",ecologie:"🌍 Écolo.",securite:"🔒 Sécu.",education:"📚 Éduc.",cohesion:"🤝 Cohésion",budget:"💶 Budget"};
+
+var CRISES=[
+{cat:"💰 Économie",urgence:"haute",titre:"La France entre en récession technique",
+long:"Le PIB recule pour le deuxième trimestre consécutif. Le chômage remonte à 8,4%. Les marchés sanctionnent.",
+question:"Comment sortez-vous la France de la récession ?",choix:[
+{txt:"Plan de relance massif",d:"40 milliards via la dette.",effets:{economie:14,bonheur:8,cohesion:6,budget:-12},orient:-12,
+sondage:{q:"Un plan de relance est-il la bonne réponse ?",oui:64,non:36,v:"Majorité favorable."},
+expl:"Keynes avait raison : seul l'État peut relancer en récession. France Relance (2020) a créé 160 000 emplois.",
+real:"Après 2008, les pays ayant relancé ont mieux récupéré que ceux ayant appliqué l'austérité."},
+{txt:"Baisser les charges des entreprises",d:"15 milliards pour relancer l'investissement privé.",effets:{economie:8,bonheur:-4,cohesion:-6,budget:-8},orient:15,
+sondage:{q:"Baisser les charges est-il la priorité ?",oui:38,non:62,v:"Impopulaire."},
+expl:"La théorie du ruissellement est contestée. Le CICE a coûté 40 milliards par an pour 100 000 emplois.",
+real:"Le CICE représentait 400 000 euros par emploi créé."},
+{txt:"Rigueur budgétaire",d:"Réduire le déficit de 20 milliards.",effets:{economie:-4,bonheur:-14,cohesion:-12,budget:10},orient:18,
+sondage:{q:"La rigueur est-elle la priorité en récession ?",oui:21,non:79,v:"Très impopulaire."},
+expl:"Le FMI a reconnu en 2013 que l'austérité prolonge et aggrave la crise.",
+real:"La zone euro a appliqué l'austérité 2010-2013. Chômage à 27% en Grèce."},
+]},
+{cat:"💰 Économie",urgence:"haute",titre:"Inflation à 8% : le pouvoir d'achat s'effondre",
+long:"Les prix alimentaires bondissent de 12%. L'énergie coûte 40% de plus. 8 millions de Français ne finissent plus le mois.",
+question:"Comment protégez-vous le pouvoir d'achat ?",choix:[
+{txt:"Bouclier pouvoir d'achat",d:"Chèques alimentation 150 euros pour les 8 millions les plus pauvres.",effets:{bonheur:14,economie:-5,cohesion:10,budget:-10},orient:-10,
+sondage:{q:"Faut-il distribuer des aides directes contre l'inflation ?",oui:79,non:21,v:"Très populaire."},
+expl:"Le bouclier tarifaire énergie (2021-2023) a coûté 45 milliards mais protégé les ménages.",
+real:"Le bouclier tarifaire a été l'une des mesures anti-inflation les plus efficaces d'Europe."},
+{txt:"Augmentation du SMIC de 10%",d:"Le SMIC passe à 1 550 euros net.",effets:{bonheur:10,economie:4,cohesion:8,budget:-4},orient:-12,
+sondage:{q:"Faut-il augmenter le SMIC pour compenser l'inflation ?",oui:71,non:29,v:"Majorité favorable."},
+expl:"Les hausses de SMIC n'ont pas provoqué de chômage supplémentaire mesurable.",
+real:"La France a augmenté le SMIC 6 fois entre 2021 et 2024. Aucun effet négatif mesuré."},
+{txt:"Soutenir la politique restrictive de la BCE",d:"Approuver la hausse des taux.",effets:{economie:-6,bonheur:-8,cohesion:-8,budget:3},orient:12,
+sondage:{q:"La hausse des taux est-elle la bonne réponse ?",oui:24,non:76,v:"Très impopulaire."},
+expl:"La BCE a remonté ses taux de 0 à 4,5% entre 2022 et 2024. Inflation réduite mais immobilier effondré.",
+real:"L'inflation européenne est passée de 10,6% en oct 2022 à 2,4% en déc 2024."},
+]},
+{cat:"💰 Économie",urgence:"moyenne",titre:"La dette dépasse 120% du PIB",
+long:"Les agences de notation menacent. La Commission européenne ouvre une procédure pour déficit excessif.",
+question:"Comment gérez-vous cette crise budgétaire ?",choix:[
+{txt:"Taxer davantage les grandes fortunes",d:"CSG sur le capital, ISF renforcé. 12 milliards par an.",effets:{economie:3,budget:14,bonheur:8,cohesion:8},orient:-18,
+sondage:{q:"Faut-il taxer les grandes fortunes pour réduire la dette ?",oui:76,non:24,v:"Très populaire."},
+expl:"L'ISF rapportait 5 milliards avant sa suppression. L'espace fiscal existe.",
+real:"L'IFI ne rapporte que 1,5 milliard contre 5 milliards pour l'ISF."},
+{txt:"Revue des dépenses et optimisation",d:"Audit de toutes les agences. 15 milliards d'économies.",effets:{economie:2,budget:12,bonheur:-5,cohesion:-4},orient:8,
+sondage:{q:"Faut-il optimiser les dépenses avant de lever des impôts ?",oui:58,non:42,v:"Légère majorité."},
+expl:"La France a 1 255 agences publiques. Une revue pourrait économiser 10-20 milliards.",
+real:"La RGPP de Sarkozy (2007-2012) a économisé 15 milliards mais dégradé les services."},
+{txt:"Obligations vertes pour financer la transition",d:"60 milliards d'obligations vertes.",effets:{economie:6,budget:-5,ecologie:12,bonheur:4},orient:-8,
+sondage:{q:"La dette pour la transition écologique est-elle acceptable ?",oui:55,non:45,v:"Opinion partagée."},
+expl:"Les taux restent inférieurs au rendement des investissements verts selon l'OCDE.",
+real:"La France a émis 37 milliards d'OAT Verte depuis 2017."},
+]},
+{cat:"🤝 Social",urgence:"haute",titre:"Réforme des retraites : le pays se bloque",
+long:"Votre projet de porter l'âge légal à 64 ans déclenche la plus grande mobilisation depuis 1995. 1,5 million de manifestants.",
+question:"Que faites-vous face à la contestation ?",choix:[
+{txt:"Utiliser le 49.3 : passer en force",d:"La réforme est adoptée sans vote.",effets:{economie:10,cohesion:-22,bonheur:-15,securite:-5},orient:18,
+sondage:{q:"Faut-il maintenir la réforme malgré les manifestations ?",oui:32,non:68,v:"Les Français s'y opposent largement."},
+expl:"Le 49.3 est constitutionnel mais perçu comme anti-démocratique. Macron l'a utilisé en mars 2023.",
+real:"La réforme Borne (64 ans via 49.3) a fait chuter la popularité de Macron sous 30%."},
+{txt:"Négocier un compromis",d:"Reporter à 63 ans. Améliorer les petites pensions.",effets:{economie:4,cohesion:12,bonheur:6,budget:-3},orient:-5,
+sondage:{q:"Faut-il négocier plutôt que passer en force ?",oui:74,non:26,v:"Les Français plébiscitent le dialogue social."},
+expl:"Le modèle suédois de réforme des retraites a pris 10 ans. Résultat durable.",
+real:"La réforme Balladur de 1993, négociée, est encore en vigueur 30 ans plus tard."},
+{txt:"Retirer le projet et relancer le débat",d:"Retrait du texte. Nouvelle conférence sociale.",effets:{economie:-3,cohesion:18,bonheur:12,budget:-6},orient:-12,
+sondage:{q:"Faut-il retirer la réforme et recommencer ?",oui:58,non:42,v:"Majorité favorable."},
+expl:"Jospin avait retiré le plan Juppé en 1995. Montre l'écoute ou la faiblesse.",
+real:"Chirac a retiré le CPE en 2006 après les manifestations étudiantes."},
+]},
+{cat:"🤝 Social",urgence:"basse",titre:"Inégalités record : les 10% les plus riches possèdent 50% du patrimoine",
+long:"Un rapport INSEE révèle que les inégalités ont atteint leur niveau le plus élevé depuis 1945.",
+question:"Comment réduisez-vous les inégalités ?",choix:[
+{txt:"Impôt mondial sur la fortune",d:"1% sur tout patrimoine mondial au-delà de 2 millions.",effets:{budget:16,cohesion:14,bonheur:10,economie:-4},orient:-20,
+sondage:{q:"Faut-il instaurer un impôt mondial sur les grandes fortunes ?",oui:71,non:29,v:"Très populaire."},
+expl:"Gabriel Zucman propose cet impôt. Il rapporterait 25 milliards pour la France.",
+real:"Le G20 2024 a adopté le principe d'un impôt minimum mondial sur les milliardaires."},
+{txt:"Investir massivement dans l'éducation prioritaire",d:"+50% de dotation pour les REP+.",effets:{education:18,cohesion:12,bonheur:6,budget:-6},orient:-12,
+sondage:{q:"L'éducation est-elle le meilleur levier contre les inégalités ?",oui:68,non:32,v:"Majorité favorable."},
+expl:"Chaque euro investi dans l'éducation des milieux défavorisés rapporte 7 à 12 euros sur 20 ans.",
+real:"Les cordées de la réussite ont montré des résultats positifs mais à petite échelle."},
+{txt:"Revenu universel d'activité",d:"800 euros par mois pour les actifs sans emploi stable.",effets:{cohesion:10,bonheur:8,budget:-8,economie:3},orient:-8,
+sondage:{q:"Un revenu universel simplifierait-il le système social ?",oui:54,non:46,v:"Opinion partagée."},
+expl:"La France a 41 minima sociaux différents. 30% des ayants droit ne touchent pas le RSA.",
+real:"L'expérimentation finlandaise du revenu universel (2017-2018) a montré un bien-être amélioré."},
+]},
+{cat:"🔒 Sécurité",urgence:"haute",titre:"Attentat terroriste : 31 morts",
+long:"Un attentat dans une école primaire fait 31 victimes. Le choc est national. Vos services signalent d'autres projets en cours.",
+question:"Quelle est votre réponse sécuritaire ?",choix:[
+{txt:"État d'urgence national",d:"3 mois. 3 000 interpellations. Fermeture de mosquées radicales.",effets:{securite:20,cohesion:-18,bonheur:4,education:-3},orient:22,
+sondage:{q:"Faut-il instaurer l'état d'urgence après un attentat ?",oui:71,non:29,v:"Les Français soutiennent les mesures d'urgence."},
+expl:"L'état d'urgence 2015-2017 a réalisé 4 400 perquisitions pour 6 poursuites.",
+real:"L'état d'urgence post-13 novembre a duré 2 ans. Le Conseil d'État a critiqué 11% des assignations."},
+{txt:"Renforcement du renseignement",d:"+2 000 agents à la DGSI. 500 millions. Coopération européenne.",effets:{securite:15,cohesion:3,bonheur:3,budget:-4},orient:3,
+sondage:{q:"Le renseignement est-il plus efficace que la répression visible ?",oui:58,non:42,v:"Majorité favorable aux experts."},
+expl:"La DGSI a déjoué 46 attentats depuis 2017. Le renseignement humain est plus efficace.",
+real:"Le budget du renseignement a augmenté de 60% depuis 2015."},
+{txt:"Plan national de prévention",d:"1 000 travailleurs sociaux dédiés. Contre-narration en ligne.",effets:{securite:8,cohesion:15,education:8,bonheur:3},orient:-15,
+sondage:{q:"La prévention est-elle plus efficace que la répression ?",oui:39,non:61,v:"Impopulaire à court terme."},
+expl:"Les programmes de déradicalisation européens ont 60-70% de réussite sur 5 ans.",
+real:"Le programme STRIVE (EU) a traité 50 000 personnes à risque depuis 2012."},
+]},
+{cat:"🔒 Sécurité",urgence:"moyenne",titre:"Violences urbaines : 4ème nuit d'émeutes",
+long:"Des émeutes dans 40 villes. 800 policiers blessés. 1 200 arrestations.",
+question:"Comment gérez-vous la crise ?",choix:[
+{txt:"Fermeté : renforts et couvre-feu",d:"5 000 policiers. Couvre-feu de 22h à 6h.",effets:{securite:14,cohesion:-14,bonheur:-4},orient:18,
+sondage:{q:"Faut-il répondre aux émeutes par la fermeté ?",oui:63,non:37,v:"Majorité favorable à l'ordre."},
+expl:"La fermeté peut calmer une crise mais sans traiter les causes, les conditions restent.",
+real:"Les émeutes de 2023 ont duré 9 jours. 45 000 policiers mobilisés. 5 600 arrestations."},
+{txt:"Dialogue avec les associations",d:"Déplacement présidentiel. Table ronde avec 50 associations.",effets:{cohesion:14,bonheur:6,securite:-4},orient:-12,
+sondage:{q:"Le dialogue est-il possible en pleine crise ?",oui:44,non:56,v:"Impopulaire en pleine crise."},
+expl:"Le dialogue en cours de conflit permet de sortir par le haut mais peut sembler une capitulation.",
+real:"Macron a évité les banlieues lors des émeutes de 2023."},
+{txt:"Ordre ET plan banlieues",d:"Maintien de l'ordre + annonce d'un plan de 5 milliards.",effets:{securite:8,cohesion:8,bonheur:4,budget:-6},orient:3,
+sondage:{q:"Faut-il combiner ordre et investissement social ?",oui:67,non:33,v:"Majorité favorable à l'approche équilibrée."},
+expl:"La politique de la ville coûte 10 milliards par an depuis 30 ans. Sans investissement, ça empire.",
+real:"Le plan Borloo (2018) recommandait 40 milliards sur 10 ans. Il n'a pas été retenu."},
+]},
+{cat:"🏥 Santé",urgence:"haute",titre:"Pandémie : nouveau virus, 10 000 cas en 72h",
+long:"Un nouveau virus respiratoire se propage. 10 000 cas en 3 jours. Mortalité de 3%.",
+question:"Quelle est votre stratégie sanitaire ?",choix:[
+{txt:"Confinement préventif de 3 semaines",d:"Fermeture des écoles et commerces.",effets:{sante:20,economie:-14,bonheur:-10,cohesion:-5},orient:-5,
+sondage:{q:"Un confinement préventif est-il justifié ?",oui:56,non:44,v:"Opinion partagée."},
+expl:"Le confinement précoce réduit la transmission de 60-80%. Mais le coût économique est énorme.",
+real:"Taiwan et la Corée du Sud ont confiné tôt. 10 fois moins de morts proportionnellement."},
+{txt:"Test-trace-isoler sans confinement",d:"500 000 tests par jour. Isolement des cas positifs.",effets:{sante:12,economie:-4,bonheur:-2,cohesion:3},orient:0,
+sondage:{q:"Faut-il tester massivement plutôt que confiner ?",oui:61,non:39,v:"Majorité favorable."},
+expl:"L'Allemagne et l'Asie du Sud-Est ont utilisé cette méthode efficacement.",
+real:"La Corée du Sud a fait 10 000 tests par jour dès janvier 2020. Pas de confinement."},
+{txt:"Attendre les recommandations de l'OMS",d:"Pas de mesures hâtives. Suivi quotidien.",effets:{sante:-8,economie:3,bonheur:2,cohesion:2},orient:5,
+sondage:{q:"Faut-il attendre l'OMS avant d'agir ?",oui:27,non:73,v:"Les Français veulent une action précoce."},
+expl:"L'OMS a mis 3 mois à déclarer l'urgence internationale pour le Covid.",
+real:"Macron a agi 2 semaines après les premiers cas. Trop tard selon les épidémiologistes."},
+]},
+{cat:"🏥 Santé",urgence:"haute",titre:"Hôpital en crise : 300 services fermés la nuit",
+long:"14 000 postes vacants. Les soignants démissionnent en masse. Les urgences ferment.",
+question:"Comment sauvez-vous l'hôpital public ?",choix:[
+{txt:"Revalorisation massive : +25% pour les soignants",d:"14 milliards par an.",effets:{sante:20,budget:-14,bonheur:12,cohesion:8},orient:-10,
+sondage:{q:"Faut-il augmenter massivement les salaires des soignants ?",oui:91,non:9,v:"Quasi-unanimité absolue."},
+expl:"Le Ségur 1 (+183 euros par mois en 2020) a réduit les démissions de 20% temporairement.",
+real:"En 2024, la France manque de 20 000 infirmières. Salaire 30% sous la moyenne européenne."},
+{txt:"Fin de la T2A : retour au budget global",d:"Fin du financement à l'acte.",effets:{sante:14,economie:4,cohesion:6,budget:-5},orient:-5,
+sondage:{q:"Faut-il abandonner la tarification à l'acte ?",oui:54,non:46,v:"Légère majorité."},
+expl:"La T2A a créé une course à l'acte. Les hôpitaux rentables développent la chirurgie esthétique.",
+real:"Le rapport Claris (2021) recommandait d'abandonner la T2A. Partiellement suivi."},
+{txt:"Déléguer des urgences aux cliniques privées",d:"Contrats de service public.",effets:{sante:6,economie:5,cohesion:-14,bonheur:-8},orient:18,
+sondage:{q:"La privatisation partielle peut-elle sauver l'hôpital ?",oui:18,non:82,v:"Très impopulaire."},
+expl:"L'Espagne a privatisé des hôpitaux dans les années 2000. Qualité dégradée. Rachetés en 2013.",
+real:"Au Royaume-Uni, le NHS sous-traite 25% au privé. Listes d'attente : 7 millions de patients."},
+]},
+{cat:"🌍 Écologie",urgence:"haute",titre:"Méga-sécheresse : 60% de la France en alerte rouge",
+long:"Trois années consécutives de sécheresse. Nappes au plus bas depuis 1880. 40% des récoltes perdues.",
+question:"Comment gérez-vous cette crise climatique ?",choix:[
+{txt:"Plan eau national : restrictions obligatoires",d:"15 milliards pour moderniser les réseaux.",effets:{ecologie:16,bonheur:-6,economie:4,cohesion:-4,budget:-12},orient:-8,
+sondage:{q:"Faut-il des restrictions d'eau obligatoires ?",oui:59,non:41,v:"Légère majorité."},
+expl:"La France perd 30% de son eau dans des réseaux vétustes. La modernisation prend 15 ans.",
+real:"Le plan eau de Macron (2023) : 180 mesures, 475 millions. Jugé insuffisant."},
+{txt:"Aider les agriculteurs en priorité",d:"1,5 milliard d'aide directe.",effets:{economie:8,bonheur:6,ecologie:-4,budget:-8},orient:8,
+sondage:{q:"Les agriculteurs doivent-ils être la priorité ?",oui:72,non:28,v:"Les Français soutiennent les agriculteurs."},
+expl:"L'agriculture représente 70% de l'usage de l'eau douce. Aider sans changer les pratiques prolonge le problème.",
+real:"En 2022, 2 milliards versés aux agriculteurs sinistrés. Les mêmes cultures continuent."},
+{txt:"Reconversion agricole vers des cultures adaptées",d:"Fin des subventions aux cultures inadaptées.",effets:{ecologie:20,economie:-4,bonheur:-4,cohesion:-6,budget:-6},orient:-12,
+sondage:{q:"Faut-il imposer une reconversion agricole ?",oui:48,non:52,v:"Opinion partagée."},
+expl:"Le maïs consomme 700 litres d'eau par kilo. La reconversion diviserait la consommation par 5.",
+real:"La PAC 2023-2027 conditionne 20% des aides à des pratiques vertes. Jugé insuffisant."},
+]},
+{cat:"🌍 Écologie",urgence:"moyenne",titre:"Nucléaire : 14 nouveaux réacteurs ou sortie progressive ?",
+long:"EDF propose 14 EPR pour 400 milliards sur 20 ans. Flamanville : 13 milliards pour 3 prévus, 16 ans de retard.",
+question:"Quelle est votre décision sur le nucléaire ?",choix:[
+{txt:"Lancer le programme des 14 EPR",d:"100% d'électricité bas-carbone d'ici 2050.",effets:{ecologie:8,economie:10,securite:8,budget:-15},orient:5,
+sondage:{q:"Faut-il construire de nouveaux réacteurs ?",oui:57,non:43,v:"Légère majorité pro-nucléaire."},
+expl:"Le nucléaire produit 70g CO2 par kWh contre 490g pour le gaz.",
+real:"Macron a annoncé 6 EPR en 2022. Le premier ne sera pas opérationnel avant 2037."},
+{txt:"100% renouvelable d'ici 2040",d:"Plan solaire et éolien : 60 milliards sur 10 ans.",effets:{ecologie:20,economie:6,securite:-4,budget:-10},orient:-15,
+sondage:{q:"Faut-il sortir du nucléaire et accélérer les renouvelables ?",oui:45,non:55,v:"Les Français sont contre la sortie du nucléaire."},
+expl:"L'Allemagne a dépensé 500 milliards pour sa transition. Électricité 2 fois plus chère.",
+real:"Le Danemark produit 61% d'électricité éolienne. Factures parmi les plus élevées d'Europe."},
+{txt:"Prolonger le parc + développer les renouvelables",d:"Prolongation de 20 ans des réacteurs existants.",effets:{ecologie:10,economie:6,budget:-8,securite:4},orient:2,
+sondage:{q:"Faut-il combiner prolongation nucléaire et renouvelables ?",oui:64,non:36,v:"Majorité favorable à l'option pragmatique."},
+expl:"La prolongation des réacteurs coûte 10 fois moins que d'en construire de nouveaux.",
+real:"EDF a prolongé 12 réacteurs de 10 ans. Durée de vie estimée à 60 ans."},
+]},
+{cat:"📚 Éducation",urgence:"moyenne",titre:"PISA : la France 28ème, 20% d'élèves en décrochage",
+long:"20% des élèves quittent le système sans maîtriser la lecture. Les enseignants sont les moins bien payés d'Europe.",
+question:"Comment réformez-vous l'école française ?",choix:[
+{txt:"Plan Marshall pour l'éducation",d:"+15% de salaire pour tous les enseignants.",effets:{education:18,cohesion:12,bonheur:8,budget:-14},orient:-10,
+sondage:{q:"Faut-il investir massivement dans l'éducation ?",oui:82,non:18,v:"Très populaire."},
+expl:"La Finlande consacre 7,2% du PIB à l'éducation contre 5,5% en France.",
+real:"La France a le même budget que l'OCDE en % PIB mais les inégalités scolaires sont parmi les plus fortes."},
+{txt:"Autonomie des établissements",d:"Les proviseurs peuvent recruter et adapter les programmes.",effets:{education:10,cohesion:-8,economie:3},orient:12,
+sondage:{q:"L'autonomie améliorerait-elle les résultats ?",oui:41,non:59,v:"Impopulaire. Les Français craignent les inégalités."},
+expl:"L'autonomie marche dans des pays avec peu d'inégalités. En France, risque de ghetto scolaires.",
+real:"Les lycées d'excellence concentrent les bons élèves. La masse des établissements stagne."},
+{txt:"Dédoublement de toutes les classes primaires",d:"12 élèves maximum en CP, CE1 et CE2.",effets:{education:14,cohesion:10,bonheur:6,budget:-10},orient:-6,
+sondage:{q:"Le dédoublement des classes est-il une priorité ?",oui:74,non:26,v:"Majorité favorable."},
+expl:"Le dédoublement en REP+ a prouvé son efficacité : +15% de résultats (DEPP 2019).",
+real:"Blanquer a dédoublé 300 000 classes en REP+ entre 2017 et 2022. Résultats positifs."},
+]},
+{cat:"💻 Numérique",urgence:"moyenne",titre:"95% des données françaises sur des serveurs américains",
+long:"PRISM, Patriot Act : les services américains peuvent légalement accéder à ces données.",
+question:"Comment garantissez-vous la souveraineté numérique ?",choix:[
+{txt:"Cloud souverain : 10 milliards d'investissement",d:"Création d'un grand acteur public du cloud.",effets:{economie:8,securite:12,education:4,budget:-10},orient:-8,
+sondage:{q:"La France doit-elle créer son propre cloud souverain ?",oui:67,non:33,v:"Favorables à la souveraineté numérique."},
+expl:"La France a tenté Andromède en 2011 : échec total. OVHcloud est le principal concurrent européen.",
+real:"L'UE a créé GAIA-X. Les GAFAM y participent, ce qui en diminue l'utilité souverainiste."},
+{txt:"Réguler strictement les GAFAM",d:"RGPD renforcé. Amendes jusqu'à 20% du chiffre d'affaires mondial.",effets:{economie:4,securite:8,cohesion:6,bonheur:4},orient:-4,
+sondage:{q:"Faut-il sanctionner plus sévèrement les GAFAM ?",oui:78,non:22,v:"Très populaire."},
+expl:"Le RGPD a infligé 3 milliards d'euros d'amendes depuis 2018. Meta : 1,2 milliard (2023).",
+real:"Le Digital Markets Act (2022) force les GAFAM à ouvrir leurs plateformes."},
+{txt:"Champions européens du numérique",d:"Aides d'État pour créer des acteurs européens.",effets:{economie:6,securite:6,education:4,budget:-5},orient:0,
+sondage:{q:"La coopération européenne est-elle la meilleure réponse ?",oui:58,non:42,v:"Majorité favorable."},
+expl:"L'UE a 140 licornes tech contre 230 pour les USA. La fragmentation empêche les champions.",
+real:"Spotify, ASML, SAP prouvent que l'Europe peut créer des leaders. La France a Mistral AI."},
+]},
+{cat:"🌍 International",urgence:"haute",titre:"Conflit armé aux frontières de l'Europe",
+long:"Un conflit éclate entre deux pays voisins de l'UE. Des réfugiés affluent. L'OTAN discute d'une intervention.",
+question:"Quelle est la position de la France ?",choix:[
+{txt:"Soutien militaire à la partie agressée",d:"Livraison d'armements. 2 milliards d'aide.",effets:{securite:12,cohesion:-6,bonheur:-4,budget:-8},orient:5,
+sondage:{q:"La France doit-elle soutenir militairement un pays agressé ?",oui:54,non:46,v:"Opinion partagée. Les Français craignent l'escalade."},
+expl:"La France est le 7ème exportateur d'armements mondial. Son soutien a une valeur stratégique.",
+real:"La France a livré 4 milliards d'armements à l'Ukraine depuis 2022."},
+{txt:"Médiation diplomatique franco-allemande",d:"Proposition d'un cessez-le-feu supervisé.",effets:{securite:6,cohesion:8,bonheur:5},orient:-8,
+sondage:{q:"La France doit-elle jouer un rôle de médiateur ?",oui:63,non:37,v:"Majorité favorable à la diplomatie."},
+expl:"La France a une tradition de médiation : accords d'Évian, de Rambouillet.",
+real:"Macron a multiplié les appels à Poutine. Jugés naïfs par certains alliés."},
+{txt:"Sanctions économiques",d:"Gel des avoirs, exclusion du SWIFT.",effets:{economie:-4,securite:8,cohesion:6},orient:3,
+sondage:{q:"Les sanctions économiques sont-elles efficaces ?",oui:57,non:43,v:"Majorité favorable."},
+expl:"Les sanctions contre la Russie ont réduit son PIB de 3% en 2022. Mais la Russie s'adapte.",
+real:"Les 13 paquets de sanctions UE : le PIB russe a reculé de 2,1% en 2022 puis rebondi de 3,6%."},
+]},
+{cat:"🏠 Logement",urgence:"haute",titre:"330 000 sans-domicile : record historique",
+long:"La Fondation Abbé Pierre publie son rapport : 330 000 SDF. Les loyers ont augmenté de 30% en 5 ans.",
+question:"Comment résolvez-vous la crise du logement ?",choix:[
+{txt:"500 000 logements sociaux en 5 ans",d:"L'État finance directement la construction.",effets:{bonheur:14,cohesion:12,economie:6,budget:-16},orient:-12,
+sondage:{q:"L'État doit-il construire massivement des logements sociaux ?",oui:69,non:31,v:"Majorité favorable."},
+expl:"La France construit 400 000 logements par an contre 600 000 nécessaires.",
+real:"L'objectif de Hollande (500 000 par an) n'a jamais été atteint. Record : 420 000 en 2016."},
+{txt:"Réquisitionner les logements vacants",d:"180 000 logements vides depuis plus de 2 ans.",effets:{bonheur:10,cohesion:8,economie:-3},orient:-15,
+sondage:{q:"Faut-il réquisitionner les logements vacants ?",oui:61,non:39,v:"Majorité favorable."},
+expl:"3 millions de logements sont vacants en France dont 1 million depuis plus d'un an.",
+real:"La loi SRU oblige les communes à 20-25% de logements sociaux. 30% ne respectent pas ce quota."},
+{txt:"Encadrement national des loyers",d:"Extension à toutes les villes de plus de 150 000 habitants.",effets:{bonheur:8,economie:-4,cohesion:6},orient:-8,
+sondage:{q:"L'encadrement national des loyers est-il une bonne solution ?",oui:62,non:38,v:"Majorité favorable."},
+expl:"L'encadrement des loyers à Paris a réduit les loyers de 3%. Mais réduit aussi l'offre.",
+real:"Berlin a instauré un gel des loyers en 2020, annulé par la Cour Constitutionnelle en 2021."},
+]},
+{cat:"⚖️ Justice",urgence:"moyenne",titre:"Prisons surpeuplées : 80 000 détenus pour 60 000 places",
+long:"Taux d'occupation à 143%. Conditions inhumaines. Récidive à 60% à 5 ans.",
+question:"Comment réformez-vous la politique carcérale ?",choix:[
+{txt:"Construire 15 000 nouvelles places",d:"6 milliards pour 30 nouveaux établissements.",effets:{securite:10,budget:-6,cohesion:-4},orient:15,
+sondage:{q:"Faut-il construire plus de prisons ?",oui:56,non:44,v:"Légère majorité."},
+expl:"Chaque plan de construction depuis 1987 a été suivi d'une augmentation de la population carcérale.",
+real:"Les nouvelles places se remplissent immédiatement."},
+{txt:"Développer les peines alternatives",d:"Pour les peines courtes : bracelet, travaux d'intérêt général.",effets:{securite:5,budget:8,cohesion:10,bonheur:4},orient:-10,
+sondage:{q:"Les peines alternatives à la prison sont-elles efficaces ?",oui:57,non:43,v:"Légère majorité."},
+expl:"Taux de récidive : 35% pour le bracelet contre 63% pour la prison. 10 fois moins cher.",
+real:"La France a 30 000 bracelets. Les Pays-Bas ont 3 fois plus d'alternatives."},
+{txt:"Prison-école : préparer la sortie",d:"Formation obligatoire. Accompagnement de 6 mois.",effets:{education:8,securite:8,cohesion:8,budget:-4},orient:-4,
+sondage:{q:"La réinsertion est-elle la priorité pénitentiaire ?",oui:65,non:35,v:"Majorité favorable."},
+expl:"60% des détenus sortent sans emploi ni logement. Un accompagnement réduit la récidive de 30%.",
+real:"Le programme Prépas Talents : concours administratifs en prison. Taux de réussite 70%."},
+]},
+{cat:"🤝 Immigration",urgence:"haute",titre:"200 000 migrants aux frontières en un an",
+long:"Les centres d'accueil saturent à 180%. Les maires frontaliers s'opposent à l'État.",
+question:"Quelle est votre politique migratoire ?",choix:[
+{txt:"Politique de fermeté aux frontières",d:"Doublement des agents Frontex. Accords de réadmission.",effets:{securite:10,cohesion:-12,bonheur:-4,economie:-3},orient:22,
+sondage:{q:"Faut-il durcir les contrôles aux frontières ?",oui:64,non:36,v:"Majorité favorable."},
+expl:"La fermeté seule ne réduit pas les flux. Les frontières fermées poussent vers des routes dangereuses.",
+real:"L'Italie de Meloni a durci les politiques. Résultat : +50% de traversées en 2023."},
+{txt:"Visas de travail facilités pour les secteurs en tension",d:"BTP, santé, agriculture.",effets:{economie:12,cohesion:-8,bonheur:3,securite:-4},orient:-8,
+sondage:{q:"Faut-il faciliter l'immigration légale pour les travailleurs ?",oui:53,non:47,v:"Opinion divisée."},
+expl:"La France manque de 300 000 travailleurs dans le BTP et 30 000 dans la santé.",
+real:"La loi immigration de 2024 a créé un titre de séjour métiers en tension."},
+{txt:"Solution européenne de répartition",d:"Un vrai système européen de répartition des demandeurs d'asile.",effets:{cohesion:10,securite:4,bonheur:4},orient:-4,
+sondage:{q:"La solution passe-t-elle par l'Europe ?",oui:55,non:45,v:"Légère majorité."},
+expl:"Dublin III fait peser 90% des demandes sur 5 pays. La réforme est bloquée depuis 2016.",
+real:"Le Pacte européen sur la migration (2024) crée un mécanisme de solidarité."},
+]},
+{cat:"🎭 Culture",urgence:"basse",titre:"L'anglais s'impose dans 60% des startups françaises",
+long:"Netflix et YouTube dominent. 30% des jeunes préfèrent l'anglais sur les réseaux sociaux.",
+question:"Comment défendez-vous la langue et la culture françaises ?",choix:[
+{txt:"Loi pour le français obligatoire en entreprise",d:"Extension de la loi Toubon aux outils numériques.",effets:{education:6,cohesion:4,economie:-4},orient:-5,
+sondage:{q:"Faut-il rendre le français obligatoire en entreprise ?",oui:49,non:51,v:"Opinion parfaitement partagée."},
+expl:"La loi Toubon (1994) est peu contrôlée. L'étendre aux outils numériques est difficile.",
+real:"L'Islande a développé des équivalents islandais à tous les termes technologiques."},
+{txt:"Financement massif de la création française",d:"Le CNC à 1,5 milliard par an. Quotas Netflix à 40%.",effets:{education:8,bonheur:6,cohesion:8,economie:3},orient:-5,
+sondage:{q:"Faut-il augmenter les financements culturels publics ?",oui:63,non:37,v:"Majorité favorable."},
+expl:"La France investit 10 milliards par an dans la culture, deux fois plus que l'Allemagne.",
+real:"Netflix a dû investir 200 millions par an en France grâce au droit voisin."},
+{txt:"Renforcer l'Alliance Française et TV5 Monde",d:"Doubler le budget de TV5 Monde.",effets:{cohesion:10,bonheur:4,economie:4,budget:-4},orient:0,
+sondage:{q:"Faut-il investir dans le rayonnement culturel à l'étranger ?",oui:61,non:39,v:"Majorité favorable."},
+expl:"300 millions de francophones dans le monde d'ici 2050. La langue est un actif économique.",
+real:"TV5 Monde touche 370 millions de téléspectateurs. Budget : 110 millions."},
+]},
+];
+
+var THEMES=[
+{id:"pouvoir-achat",e:"💶",n:"Pouvoir d'achat",d:"Salaires, prix, inflation",b:{g:15,c:8,d:-5}},
+{id:"securite",e:"🔒",n:"Sécurité",d:"Police, justice, ordre",b:{g:-10,c:5,d:20}},
+{id:"ecologie",e:"🌱",n:"Transition écologique",d:"Climat, énergie",b:{g:15,c:5,d:-12}},
+{id:"emploi",e:"💼",n:"Emploi et industrie",d:"Réindustrialisation",b:{g:10,c:10,d:5}},
+{id:"sante",e:"🏥",n:"Santé publique",d:"Hôpital, médecins",b:{g:12,c:10,d:3}},
+{id:"education",e:"📚",n:"Éducation",d:"École, université",b:{g:12,c:8,d:0}},
+{id:"immigration",e:"🤝",n:"Immigration",d:"Régulation, intégration",b:{g:-15,c:-5,d:20}},
+{id:"europe",e:"🇪🇺",n:"Europe",d:"Intégration, souveraineté",b:{g:5,c:15,d:-12}},
+{id:"retraites",e:"👴",n:"Retraites",d:"Âge de départ, pensions",b:{g:10,c:5,d:5}},
+{id:"logement",e:"🏠",n:"Logement",d:"Construction, loyers",b:{g:8,c:10,d:5}},
+{id:"justice",e:"⚖️",n:"Justice",d:"Réforme pénale",b:{g:5,c:5,d:8}},
+{id:"culture",e:"🎭",n:"Culture",d:"Création, médias",b:{g:10,c:5,d:-3}},
+];
+
+var ADVERSAIRES=[
+{n:"Isabelle Fontaine",p:"Rassemblement National",e:"⚡",base:44,c:"#E03131"},
+{n:"Thomas Vidal",p:"La France Insoumise",e:"✊",base:38,c:"#7048E8"},
+{n:"Sophie Bertrand",p:"Les Républicains",e:"🏛️",base:40,c:"#3B5BDB"},
+{n:"Marc Dupuis",p:"Europe Écologie",e:"🌿",base:35,c:"#2F9E44"},
+{n:"Claire Moreau",p:"Renaissance",e:"💫",base:43,c:"#FAB005"},
+{n:"Pierre Leconte",p:"Union Populaire",e:"🤜",base:41,c:"#9B59B6"},
+];
+
+var DEBATS=[
+{q:"Question du débat : La France a-t-elle les moyens de ses ambitions écologiques ?",choix:[
+{t:"Oui, c'est une opportunité économique",d:"Transition = emplois.",bonus:4,orient:-6},
+{t:"Oui mais progressivement",d:"Réalisme et pragmatisme.",bonus:6,orient:0},
+{t:"Non, priorité au pouvoir d'achat",d:"Pas de luxe écologique.",bonus:2,orient:8},
+]},
+{q:"Question du débat : Faut-il remettre en cause notre modèle de protection sociale ?",choix:[
+{t:"Non, c'est notre meilleur atout",d:"La sécu protège la croissance.",bonus:5,orient:-10},
+{t:"Oui, moderniser sans démanteler",d:"Efficacité et durabilité.",bonus:7,orient:4},
+{t:"Oui, responsabiliser davantage",d:"Liberté et responsabilité.",bonus:3,orient:14},
+]},
+{q:"Question du débat : Comment financez-vous vos promesses ?",choix:[
+{t:"Par une fiscalité plus juste sur le capital",d:"Taxer les rentes, pas le travail.",bonus:5,orient:-12},
+{t:"Par la croissance et la réduction des dépenses inefficaces",d:"Le sérieux budgétaire.",bonus:6,orient:6},
+{t:"Par la dette d'investissement",d:"Les générations futures en profiteront.",bonus:4,orient:-4},
+]},
+{q:"Question du débat : Quel modèle de société pour 2040 ?",choix:[
+{t:"Une France plus égalitaire et écologique",d:"Services publics, transition verte.",bonus:5,orient:-10},
+{t:"Une France compétitive et innovante",d:"Start-ups, attractivité.",bonus:5,orient:8},
+{t:"Une France souveraine et fière",d:"Indépendance, frontières, culture.",bonus:4,orient:15},
+]},
+{q:"Question du débat : Que répondez-vous aux Français qui ne font plus confiance à la politique ?",choix:[
+{t:"Je m'engage à une VIe République",d:"Constituante, proportionnelle.",bonus:6,orient:-8},
+{t:"La démocratie se mérite, participez !",d:"Référendums participatifs.",bonus:5,orient:0},
+{t:"Les résultats parlent d'eux-mêmes",d:"Pragmatisme et actes concrets.",bonus:4,orient:4},
+]},
+];
+
+// ── UTILITAIRES ──
+function g(id){return document.getElementById(id);}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function rnd(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function showScreen(id){document.querySelectorAll(".screen").forEach(function(s){s.classList.remove("on");});g(id).classList.add("on");}
+function getDot(v){return v>=65?"dv":v>=45?"dj":v>=30?"do":"dr";}
+function getOrient(v){
+  if(v<-50)return{l:"Gauche radicale",c:"#7048E8"};
+  if(v<-20)return{l:"Gauche",c:"#E03131"};
+  if(v<20)return{l:"Centre",c:"#3B5BDB"};
+  if(v<50)return{l:"Droite",c:"#FAB005"};
+  return{l:"Droite radicale",c:"#E03131"};
+}
+function updateHUD(){
+  var o=getOrient(G.orientation);
+  g("hud-annee").textContent="Année "+G.annee+" · Mandat "+G.mandat;
+  var ho=g("hud-orient");ho.textContent=o.l;ho.style.color=o.c;ho.style.borderColor=o.c+"44";ho.style.background=o.c+"10";
+  g("hud-pop").textContent="Popularité "+G.popularite+"%";
+  var diffs=["","Facile","Normal","Difficile","Expert","Légendaire"];
+  g("hud-diff").textContent="Diff. : "+(diffs[G.difficulte]||G.difficulte);
+}
+function updateIndicateurs(){
+  g("indic-bar").innerHTML=Object.keys(G.indic).map(function(k){
+    var v=G.indic[k];
+    return '<div class="indic" title="'+INDIC_LABELS[k]+' : '+v+'/100"><div class="indic-dot '+getDot(v)+'"></div><span class="indic-label">'+INDIC_LABELS[k]+'</span><span class="indic-val">'+v+'</span></div>';
+  }).join("");
+}
+
+// ── INTRO ──
+(function(){
+  var si={bonheur:58,economie:52,sante:55,ecologie:38,securite:54,education:60,cohesion:48,budget:45};
+  g("intro-indics").innerHTML=Object.keys(si).map(function(k){
+    var v=si[k],col=v>=65?"#2F9E44":v>=45?"#FAB005":v>=30?"#E8590C":"#E03131";
+    return '<div class="intro-indic"><div class="intro-indic-dot" style="background:'+col+'"></div><div><div class="intro-indic-nom">'+INDIC_LABELS[k]+'</div><div class="intro-indic-bar"><div class="intro-indic-fill" style="width:'+v+'%;background:'+col+'"></div></div></div></div>';
+  }).join("");
+})();
+
+// ── DÉMARRAGE ──
+var crisesMix=shuffle(CRISES.map(function(_,i){return i;}));
+
+function startGame(){
+  G={mandat:1,annee:1,popularite:52,orientation:0,difficulte:1,crisesDuMandat:[],totalDecisions:0,choixPop:0,choixImpop:0,totalAns:0,themesChoisis:[],debatBonus:0,_defaite:false,_debatCourant:null,
+     indic:{bonheur:58,economie:52,sante:55,ecologie:38,securite:54,education:60,cohesion:48,budget:45}};
+  crisesMix=shuffle(CRISES.map(function(_,i){return i;}));
+  showScreen("s-jeu");updateHUD();updateIndicateurs();prochaineCrise();
+}
+
+// ── CRISES ──
+function prochaineCrise(){
+  if(G.crisesDuMandat.length>=10){allerCampagne();return;}
+  var dispo=crisesMix.filter(function(i){return G.crisesDuMandat.indexOf(i)===-1;});
+  if(!dispo.length){allerCampagne();return;}
+  var idx=dispo[0];
+  G.crisesDuMandat.push(idx);
+  G.annee=Math.ceil(G.crisesDuMandat.length/2);
+  updateHUD();updateIndicateurs();
+  afficherCrise(CRISES[idx],idx);
+}
+
+function getCatColor(cat){
+  var m={"💰 Économie":"#FAB005","🤝 Social":"#2F9E44","🔒 Sécurité":"#7048E8","🏥 Santé":"#3B5BDB","📚 Éducation":"#FAB005","🌍 Écologie":"#2F9E44","💻 Numérique":"#3B5BDB","🌍 International":"#7048E8","🏠 Logement":"#E03131","⚖️ Justice":"#FAB005","🤝 Immigration":"#E8590C","🎭 Culture":"#E03131"};
+  return m[cat]||"#6E6E9E";
+}
+
+function afficherCrise(crise,idx){
+  var prog="<div class='progress-mandat'>";
+  for(var i=0;i<10;i++){
+    var cl=i<G.crisesDuMandat.length-1?"done":i===G.crisesDuMandat.length-1?"current":"";
+    prog+='<div class="prog-step '+cl+'"></div>';
+  }
+  prog+="</div>";
+  var urgCls={"haute":"urgence-haute","moyenne":"urgence-moyenne","basse":"urgence-basse"}[crise.urgence]||"urgence-basse";
+  var urgTxt={"haute":"🚨 Urgence","moyenne":"⚠️ Important","basse":"📋 Routine"}[crise.urgence];
+  var html=prog+'<div class="crise-wrap"><div class="crise-card">'
+    +'<div class="crise-meta"><span class="crise-tag" style="background:'+getCatColor(crise.cat)+'22;color:'+getCatColor(crise.cat)+'">'+crise.cat+'</span>'
+    +'<span class="crise-annee">Année '+G.annee+" · Mandat "+G.mandat+"</span>"
+    +'<span class="'+urgCls+'">'+urgTxt+"</span></div>"
+    +'<div class="crise-titre">'+crise.titre+"</div>"
+    +'<div class="crise-contexte">'+crise.long+"</div>"
+    +'<div class="crise-question">'+crise.question+"</div>"
+    +'<div class="choix-list">'
+    +crise.choix.map(function(ch,i){
+      return '<button class="choix-btn" onclick="choisir('+idx+','+i+')"><strong>'+ch.txt+"</strong><em>"+ch.d+"</em></button>";
+    }).join("")
+    +"</div></div></div>";
+  g("main-content").innerHTML=html;
+}
+
+function choisir(ci,chi){
+  var crise=CRISES[ci],ch=crise.choix[chi];
+  G.totalDecisions++;
+  Object.keys(ch.effets).forEach(function(k){
+    if(G.indic[k]!==undefined) G.indic[k]=clamp(G.indic[k]+ch.effets[k],0,100);
+  });
+  G.orientation=clamp(G.orientation+ch.orient,-100,100);
+  var s=ch.sondage;
+  var pop=s.oui>55?+Math.round((s.oui-50)/6):-Math.round((s.non-50)/6);
+  pop=pop>0?Math.round(pop*(1-G.difficulte*0.1)):Math.round(pop*(1+G.difficulte*0.15));
+  G.popularite=clamp(G.popularite+pop,15,92);
+  if(s.oui>55) G.choixPop++; else G.choixImpop++;
+  G.totalAns++;
+  var accord=s.oui>50;
+  var bc=accord?"rgba(47,158,68,.25)":"rgba(224,49,49,.18)";
+  var border=accord?"#2F9E44":"#E03131";
+  var effHtml=Object.keys(ch.effets).map(function(k){
+    var v=ch.effets[k];
+    return '<span class="effet '+(v>0?"e-pos":"e-neg")+'">'+(v>0?"+":"")+v+" "+INDIC_LABELS[k]+"</span>";
+  }).join("");
+  var html='<div class="resultat-wrap">'
+    +'<div class="resultat-card" style="background:'+bc+";border-color:"+border+'">'
+    +'<div class="res-verdict">'+(accord?"✅ Dans l\'air du temps":"⚠️ À contre-courant")+" — "+ch.txt+"</div>"
+    +'<div class="res-explication">'+ch.expl+"</div>"
+    +'<div class="res-effets">'+effHtml+"</div></div>"
+    +'<div class="sondage-box">'
+    +'<div class="sondage-titre">📊 Ce que disaient les Français (sondage IFOP/BVA)</div>'
+    +'<div class="sondage-row"><span style="color:#2F9E44">Oui — '+s.oui+'%</span><span style="color:#E03131">Non — '+s.non+'%</span></div>'
+    +'<div class="sondage-track"><div class="sondage-fill" style="width:'+s.oui+"%;background:"+(s.oui>50?"#2F9E44":"#E03131")+'"></div></div>'
+    +'<div class="sondage-verdict">'+(accord?'<span class="s-ok">✓ Aligné avec l\'opinion</span>':'<span class="s-ko">✗ Contre l\'opinion majoritaire</span>')+" — "+s.v+"</div></div>"
+    +'<div class="historeal"><strong>📰 Ce qu\'il s\'est passé dans les faits :</strong> '+ch.real+"</div>"
+    +'<button class="btn-next" onclick="prochaineCrise()">Situation suivante ('+G.crisesDuMandat.length+"/10) →</button>"
+    +"</div>";
+  g("main-content").innerHTML=html;
+  updateIndicateurs();updateHUD();
+}
+
+// ── CAMPAGNE ──
+function allerCampagne(){
+  crisesMix=shuffle(CRISES.map(function(_,i){return i;}));
+  G.themesChoisis=[];G.debatBonus=0;
+  g("camp-mandat").textContent=G.mandat;
+  showScreen("s-campagne");
+  var moy=Math.round(Object.values(G.indic).reduce(function(a,b){return a+b;},0)/8);
+  var o=getOrient(G.orientation);
+  g("campagne-bilan").innerHTML=
+    '<div style="font-size:10px;color:var(--or);font-family:DM Mono,monospace;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">📋 Bilan du mandat '+G.mandat+'</div>'
+    +'<div class="campagne-bilan-grid">'
+    +'<div class="cbilan-item"><div class="cbilan-val" style="color:var(--bleu)">'+G.popularite+'%</div><div class="cbilan-lbl">Popularité</div></div>'
+    +'<div class="cbilan-item"><div class="cbilan-val" style="color:'+o.c+'">'+o.l+'</div><div class="cbilan-lbl">Orientation</div></div>'
+    +'<div class="cbilan-item"><div class="cbilan-val" style="color:'+(moy>=55?"var(--vert)":moy>=40?"var(--or)":"var(--rouge)")+'">'+moy+'/100</div><div class="cbilan-lbl">État du pays</div></div>'
+    +'<div class="cbilan-item"><div class="cbilan-val" style="color:var(--muted)">'+G.totalDecisions+'</div><div class="cbilan-lbl">Décisions</div></div>'
+    +'</div>';
+  var debat=rnd(DEBATS);
+  G._debatCourant=debat;
+  g("campagne-debat").innerHTML=
+    '<div style="font-size:10px;color:var(--or);font-family:DM Mono,monospace;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">📺 Débat télévisé</div>'
+    +'<div class="debat-question">'+debat.q+'</div>'
+    +'<div class="debat-choix">'
+    +debat.choix.map(function(ch,i){
+      return '<button class="debat-btn" id="debat-btn-'+i+'" onclick="choisirDebat('+i+')"><strong>'+ch.t+'</strong> — <span style="color:var(--muted);font-size:12px">'+ch.d+'</span></button>';
+    }).join("")
+    +'</div>';
+  g("camp-themes").innerHTML=THEMES.map(function(t){
+    return '<button class="theme-btn" id="theme-'+t.id+'" data-id="'+t.id+'" onclick="toggleTheme(this.getAttribute(\'data-id\'))">'
+      +'<span class="theme-emoji">'+t.e+'</span>'
+      +'<div class="theme-nom">'+t.n+'</div>'
+      +'<div class="theme-desc">'+t.d+'</div>'
+      +'</button>';
+  }).join("");
+}
+
+function choisirDebat(i){
+  if(!G._debatCourant) return;
+  var ch=G._debatCourant.choix[i];
+  G.debatBonus=ch.bonus;
+  G.orientation=clamp(G.orientation+ch.orient,-100,100);
+  G._debatCourant.choix.forEach(function(_,j){
+    var b=g("debat-btn-"+j);
+    if(b){b.disabled=true;b.style.opacity=j===i?"1":"0.3";}
+  });
+  var fb=document.createElement("div");
+  fb.style.cssText="margin-top:10px;padding:10px 14px;background:rgba(250,176,5,.08);border:1px solid rgba(250,176,5,.2);border-radius:10px;font-size:12px;color:var(--muted)";
+  fb.innerHTML="<strong style='color:var(--or)'>+"+ch.bonus+" points de campagne</strong> — Bonne réponse pour votre électorat.";
+  g("campagne-debat").appendChild(fb);
+}
+
+function toggleTheme(id){
+  var idx=G.themesChoisis.indexOf(id);
+  var btn=g("theme-"+id);
+  if(idx>=0){G.themesChoisis.splice(idx,1);if(btn)btn.classList.remove("sel");}
+  else{if(G.themesChoisis.length>=3)return;G.themesChoisis.push(id);if(btn)btn.classList.add("sel");}
+  g("camp-counter").textContent=G.themesChoisis.length+"/3 thèmes sélectionnés";
+  var b=g("btn-election");
+  b.disabled=G.themesChoisis.length!==3;
+  b.style.opacity=G.themesChoisis.length===3?"1":"0.4";
+}
+
+// ── ÉLECTION ──
+function lancerElection(){
+  showScreen("s-election");
+  g("btn-apres-el").style.display="none";
+  var adv=rnd(ADVERSAIRES);
+  g("el-adv-nom").textContent=adv.n;
+  var score=G.popularite+G.debatBonus;
+  var bloc=G.orientation<-20?"g":G.orientation>20?"d":"c";
+  G.themesChoisis.forEach(function(tid){
+    var t=THEMES.find(function(x){return x.id===tid;});
+    if(t) score+=(t.b[bloc]||0)*0.5;
+  });
+  var advScore=adv.base+(G.mandat-1)*3+Math.round((Math.random()-0.4)*12);
+  advScore=clamp(advScore,30,70);
+  score=clamp(score,20,80);
+  var total=score+advScore;
+  var pctMoi=Math.round(score/total*100);
+  var pctAdv=100-pctMoi;
+  g("el-duel").innerHTML=
+    '<div class="candidat" id="c-moi"><span class="cand-emoji">🫵</span>'
+    +'<div class="cand-nom">Vous</div><div class="cand-parti">'+getOrient(G.orientation).l+'</div>'
+    +'<div class="cand-score" style="color:var(--bleu)" id="score-moi">—%</div></div>'
+    +'<div class="vs-txt">VS</div>'
+    +'<div class="candidat" id="c-adv"><span class="cand-emoji">'+adv.e+'</span>'
+    +'<div class="cand-nom">'+adv.n+'</div><div class="cand-parti">'+adv.p+'</div>'
+    +'<div class="cand-score" style="color:'+adv.c+'" id="score-adv">—%</div></div>';
+  g("el-titre").textContent="📊 Dépouillement en cours...";
+  g("el-sous").textContent="Mandat "+G.mandat+" — Les Français se prononcent...";
+  setTimeout(function(){
+    g("el-fill").style.width=pctMoi+"%";
+    g("el-fill").style.background=pctMoi>=50?"var(--bleu)":"var(--rouge)";
+    setTimeout(function(){
+      g("score-moi").textContent=pctMoi+"%";
+      g("score-adv").textContent=pctAdv+"%";
+      var gagne=pctMoi>=50;
+      g("el-titre").textContent=gagne?"🎉 Victoire !":"😞 Défaite...";
+      g("c-moi").classList.add(gagne?"gagnant":"perdant");
+      g("c-adv").classList.add(gagne?"perdant":"gagnant");
+      var themes=G.themesChoisis.map(function(tid){
+        var t=THEMES.find(function(x){return x.id===tid;});
+        return t?t.n:tid;
+      }).join(", ");
+      g("el-verdict").innerHTML=gagne
+        ?"Vous obtenez <strong>"+pctMoi+"%</strong> contre <strong>"+pctAdv+"%</strong> pour "+adv.n+". Programme : <strong>"+themes+"</strong>. Nouveau mandat !"
+        :"<strong>"+pctAdv+"%</strong> pour "+adv.n+" contre <strong>"+pctMoi+"%</strong> pour vous. Les Français ont voulu du changement.";
+      g("btn-apres-el").textContent=gagne?"Commencer le mandat "+(G.mandat+1)+" →":"Voir mon bilan →";
+      g("btn-apres-el").style.display="inline-flex";
+      G._defaite=!gagne;
+    },1400);
+  },900);
+}
+
+function apresElection(){
+  if(G._defaite){gameOver();return;}
+  G.mandat++;G.annee=1;G.crisesDuMandat=[];
+  G.difficulte=Math.min(5,G.mandat);
+  G.popularite=clamp(50+Math.round((Math.random()-0.5)*12),42,62);
+  showScreen("s-jeu");updateHUD();updateIndicateurs();prochaineCrise();
+}
+
+// ── GAME OVER ──
+function gameOver(){
+  showScreen("s-gameover");
+  var totalAns=(G.mandat-1)*5+G.annee;
+  var moy=Math.round(Object.values(G.indic).reduce(function(a,b){return a+b;},0)/8);
+  var o=getOrient(G.orientation);
+  g("go-emoji").textContent=totalAns>=15?"🏆":totalAns>=10?"🎖️":totalAns>=5?"🏛️":"📰";
+  g("go-titre").textContent=totalAns>=15?"Légende de la Ve République":"Fin de votre carrière politique";
+  g("go-sous").textContent="Vous avez gouverné pendant "+totalAns+" ans ("+(G.mandat-1)+" mandat"+(G.mandat-1>1?"s":"")+").";
+  g("go-stats").innerHTML=
+    '<div class="go-stat"><div class="go-stat-v">'+totalAns+'</div><div class="go-stat-l">Années au pouvoir</div></div>'
+    +'<div class="go-stat"><div class="go-stat-v">'+(G.mandat-1)+'</div><div class="go-stat-l">Mandats complets</div></div>'
+    +'<div class="go-stat"><div class="go-stat-v">'+G.totalDecisions+'</div><div class="go-stat-l">Décisions prises</div></div>'
+    +'<div class="go-stat"><div class="go-stat-v">'+G.choixPop+'</div><div class="go-stat-l">Choix populaires</div></div>';
+  var pct=clamp(50+(G.orientation/100*50),5,95);
+  g("ob-cursor").style.left=pct+"%";
+  g("go-indics").innerHTML=Object.keys(G.indic).map(function(k){
+    var v=G.indic[k];
+    var col=v>=65?"#2F9E44":v>=45?"#FAB005":v>=30?"#E8590C":"#E03131";
+    return '<div class="go-indic" style="color:'+col+';border-color:'+col+'33;background:'+col+'11">'+INDIC_LABELS[k]+" "+v+"</div>";
+  }).join("");
+  var refs=totalAns>=14?"François Mitterrand (14 ans)":totalAns>=12?"Jacques Chirac (12 ans)":totalAns>=11?"Charles de Gaulle (11 ans)":totalAns>=5?"un mandat complet":"un passage à l\'Élysée";
+  var etat=moy>=65?"Excellent 🌟":moy>=55?"Bon 👍":moy>=45?"Moyen 😐":moy>=35?"Dégradé ⚠️":"Critique 🚨";
+  g("go-bilan").innerHTML="<strong>Votre bilan final :</strong><br>"
+    +"État du pays : <strong>"+etat+" ("+moy+"/100)</strong><br>"
+    +"Orientation : <strong style='color:"+o.c+"'>"+o.l+"</strong><br>"
+    +"Décisions populaires : <strong>"+G.choixPop+"</strong> · Impopulaires : <strong>"+G.choixImpop+"</strong><br><br>"
+    +"Les historiens vous compareront à <strong>"+refs+"</strong>.";
+}
+
+function restartGame(){showScreen("s-intro");}
+
+</script>
+
+</body>
+</html>
