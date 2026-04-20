@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Mon enfant m'a coûté combien ? Calculateur fun 2026 | Calculamatix</title>
+<meta name="description" content="Calculez de façon fun et décalée combien votre enfant vous a coûté depuis sa naissance. Et ce que vous auriez pu acheter à la place (juste pour rire !)."/>
+<link rel="canonical" href="https://calculamatix.com/cout-total-enfant"/>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--card:#131313;--border:#1f1f1f;
+  --text:#fafafa;--muted:#666;--dim:#1a1a1a;
+  --y:#ffe566;--p:#ff6eb4;--g:#52ffa8;--b:#5ce1ff;--o:#ff8c42;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;min-height:100vh;overflow-x:hidden}
+
+/* GRAIN */
+body::after{content:"";position:fixed;inset:0;z-index:999;pointer-events:none;opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px}
+
+/* GLOW BG */
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 40% at 80% 20%,rgba(255,229,102,.07),transparent),
+             radial-gradient(ellipse 50% 50% at 10% 80%,rgba(255,110,180,.06),transparent),
+             radial-gradient(ellipse 40% 40% at 50% 50%,rgba(82,255,168,.04),transparent)}
+
+nav{position:relative;z-index:10;max-width:980px;margin:0 auto;padding:22px 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:"Unbounded",sans-serif;font-weight:900;font-size:16px;text-decoration:none;color:var(--text);letter-spacing:-1px}
+.logo em{font-style:normal;color:var(--y)}
+.back{font-size:12px;color:var(--muted);text-decoration:none}.back:hover{color:var(--text)}
+
+/* ═══════════════════════════════════
+   HERO
+═══════════════════════════════════ */
+.hero{position:relative;z-index:10;max-width:980px;margin:10px auto 0;padding:0 24px 50px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-family:"DM Mono",monospace;background:rgba(255,229,102,.1);border:1px solid rgba(255,229,102,.25);color:var(--y);padding:6px 16px;border-radius:100px;margin-bottom:20px;letter-spacing:1px}
+h1{font-family:"Unbounded",sans-serif;font-weight:900;font-size:clamp(24px,5.5vw,54px);letter-spacing:-2px;line-height:1.05;margin-bottom:16px}
+h1 .line2{color:var(--y)}
+.hero-sub{font-size:16px;color:var(--muted);line-height:1.8;max-width:560px;margin:0 auto 12px}
+.disclaimer-small{font-size:11px;font-family:"DM Mono",monospace;color:rgba(255,255,255,.25);margin-bottom:0}
+
+/* ═══════════════════════════════════
+   FORMULAIRE MULTI-STEPS
+═══════════════════════════════════ */
+.form-wrap{position:relative;z-index:10;max-width:760px;margin:0 auto;padding:0 24px 50px}
+
+/* Barre de progression */
+.progress-bar{display:flex;gap:6px;margin-bottom:32px;align-items:center}
+.pb-step{flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .3s}
+.pb-step.done{background:var(--y)}
+.pb-step.active{background:linear-gradient(90deg,var(--y),rgba(255,229,102,.3))}
+.pb-label{font-size:10px;font-family:"DM Mono",monospace;color:var(--muted);white-space:nowrap;margin-left:8px}
+
+/* Étapes */
+.step{display:none;animation:fadeUp .3s ease}
+.step.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.step-label{font-size:10px;font-family:"DM Mono",monospace;color:var(--y);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}
+.step-title{font-family:"Unbounded",sans-serif;font-size:clamp(18px,3.5vw,28px);font-weight:700;letter-spacing:-1px;line-height:1.2;margin-bottom:6px}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:28px}
+
+/* Grille de choix */
+.choices{display:grid;gap:10px}
+.choices.c2{grid-template-columns:1fr 1fr}
+.choices.c3{grid-template-columns:repeat(3,1fr)}
+.choices.c4{grid-template-columns:repeat(4,1fr)}
+
+.choice{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:16px 14px;cursor:pointer;transition:all .18s;text-align:center;position:relative}
+.choice:hover{border-color:rgba(255,229,102,.4);background:rgba(255,229,102,.03);transform:translateY(-2px)}
+.choice.sel{border-color:var(--y);background:rgba(255,229,102,.06);transform:translateY(-2px)}
+.choice-emoji{font-size:26px;margin-bottom:7px;display:block}
+.choice-label{font-size:13px;font-weight:600;margin-bottom:2px}
+.choice-sub{font-size:11px;color:var(--muted);line-height:1.4}
+.choice-check{position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:50%;background:var(--y);display:none;align-items:center;justify-content:center;font-size:10px;color:#000;font-weight:900}
+.choice.sel .choice-check{display:flex}
+
+/* Sliders */
+.slider-field{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:12px}
+.sf-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.sf-label{font-size:14px;font-weight:600}
+.sf-val{font-family:"Unbounded",sans-serif;font-size:18px;font-weight:700;color:var(--y)}
+input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:var(--border);border-radius:2px;cursor:pointer;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;background:var(--y);border-radius:50%;box-shadow:0 0 14px rgba(255,229,102,.5);border:3px solid var(--bg)}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+.sf-hint{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5}
+
+/* Checkboxes multi */
+.multi-checks{display:flex;flex-direction:column;gap:8px}
+.mcheck{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s}
+.mcheck:hover{border-color:rgba(255,229,102,.3)}
+.mcheck.sel{border-color:var(--y);background:rgba(255,229,102,.04)}
+.mcheck-box{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:12px;font-weight:900;color:#000}
+.mcheck.sel .mcheck-box{background:var(--y);border-color:var(--y)}
+.mcheck-emoji{font-size:20px;flex-shrink:0}
+.mcheck-text{flex:1}
+.mcheck-label{font-size:13px;font-weight:600;margin-bottom:1px}
+.mcheck-sub{font-size:11px;color:var(--muted)}
+.mcheck-price{font-family:"DM Mono",monospace;font-size:12px;color:var(--y);font-weight:600;flex-shrink:0}
+
+/* Navigation */
+.nav-btns{display:flex;gap:10px;margin-top:24px}
+.btn-back{background:transparent;border:1.5px solid var(--border);color:var(--muted);padding:13px 22px;border-radius:12px;font-size:14px;font-family:"DM Sans",sans-serif;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-back:hover{border-color:var(--muted);color:var(--text)}
+.btn-next{background:var(--y);color:#000;border:none;padding:13px 28px;border-radius:12px;font-family:"Unbounded",sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;flex:1;letter-spacing:-.5px}
+.btn-next:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,229,102,.35)}
+.btn-next:disabled{opacity:.35;cursor:not-allowed;transform:none}
+
+/* ═══════════════════════════════════
+   RÉSULTAT — LA CARTE
+═══════════════════════════════════ */
+#result{display:none;position:relative;z-index:10;max-width:980px;margin:0 auto;padding:0 24px 80px}
+#result.on{display:block;animation:fadeUp .5s ease}
+
+/* TOTAL CHOC */
+.total-choc{text-align:center;margin-bottom:40px;padding:50px 24px;position:relative;overflow:hidden;border-radius:28px;background:linear-gradient(135deg,#111 0%,#0a0a0a 100%);border:1px solid var(--border)}
+.total-choc::before{content:"";position:absolute;top:-80px;left:-80px;width:300px;height:300px;background:radial-gradient(circle,rgba(255,229,102,.15),transparent 70%);pointer-events:none}
+.total-choc::after{content:"";position:absolute;bottom:-60px;right:-60px;width:250px;height:250px;background:radial-gradient(circle,rgba(255,110,180,.1),transparent 70%);pointer-events:none}
+.tc-label{font-size:11px;font-family:"DM Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;position:relative;z-index:1}
+.tc-name{font-family:"Unbounded",sans-serif;font-size:clamp(16px,3vw,22px);font-weight:700;margin-bottom:16px;position:relative;z-index:1}
+.tc-name em{font-style:normal;color:var(--y)}
+.tc-amount{font-family:"Unbounded",sans-serif;font-size:clamp(52px,10vw,96px);font-weight:900;line-height:1;color:var(--y);position:relative;z-index:1;letter-spacing:-3px}
+.tc-sub{font-size:14px;color:var(--muted);margin-top:10px;position:relative;z-index:1;line-height:1.7}
+
+/* POSTES DE DÉPENSES */
+.postes-title{font-family:"Unbounded",sans-serif;font-size:18px;font-weight:700;letter-spacing:-1px;margin-bottom:16px}
+.postes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:40px}
+.poste{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 16px;position:relative;overflow:hidden;transition:transform .2s}
+.poste:hover{transform:translateY(-2px)}
+.poste::before{content:"";position:absolute;top:0;left:0;right:0;height:2px}
+.p0::before{background:var(--y)}.p1::before{background:var(--p)}.p2::before{background:var(--g)}.p3::before{background:var(--b)}.p4::before{background:var(--o)}.p5::before{background:#b57aff}.p6::before{background:#ff7a7a}.p7::before{background:#7affea}.p8::before{background:#ffb07a}.p9::before{background:#c8ff7a}.p10::before{background:#ff7ac8}
+.poste-emoji{font-size:22px;margin-bottom:8px;display:block}
+.poste-nom{font-size:11px;color:var(--muted);margin-bottom:4px;font-family:"DM Mono",monospace}
+.poste-montant{font-family:"Unbounded",sans-serif;font-size:18px;font-weight:700;letter-spacing:-.5px}
+.poste-detail{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.5}
+.poste-bar{height:2px;background:var(--border);border-radius:1px;margin-top:10px;overflow:hidden}
+.poste-bar-fill{height:100%;border-radius:1px;transition:width .8s ease}
+
+/* CE QU'ON AURAIT PU ACHETER */
+.versus{margin-bottom:40px}
+.versus-title{font-family:"Unbounded",sans-serif;font-size:18px;font-weight:700;letter-spacing:-1px;margin-bottom:6px}
+.versus-sub{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6}
+.versus-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.vitem{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;text-align:center;position:relative}
+.vitem-emoji{font-size:36px;margin-bottom:10px;display:block}
+.vitem-qty{font-family:"Unbounded",sans-serif;font-size:26px;font-weight:900;color:var(--p);letter-spacing:-1px;margin-bottom:2px}
+.vitem-label{font-size:12px;font-weight:600;margin-bottom:2px}
+.vitem-sub{font-size:10px;color:var(--muted);line-height:1.4}
+.vitem-badge{position:absolute;top:-6px;left:50%;transform:translateX(-50%);font-size:9px;font-family:"DM Mono",monospace;background:var(--p);color:#fff;padding:2px 10px;border-radius:100px;white-space:nowrap;font-weight:700}
+
+/* PHRASE FINALE */
+.finale{background:linear-gradient(135deg,rgba(255,110,180,.08),rgba(255,229,102,.05));border:1.5px solid rgba(255,229,102,.15);border-radius:20px;padding:28px;margin-bottom:28px;text-align:center}
+.finale-text{font-size:clamp(14px,2.5vw,17px);color:var(--text);line-height:1.9;font-weight:500}
+.finale-text em{font-style:normal;color:var(--y);font-weight:700}
+.finale-heart{font-size:40px;margin-top:14px}
+
+/* PARTAGE */
+.share-section{text-align:center;margin-bottom:20px}
+.share-label{font-size:12px;font-family:"DM Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:14px}
+.share-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.share-btn{display:flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;font-size:13px;font-family:"DM Sans",sans-serif;font-weight:700;cursor:pointer;border:none;transition:all .15s}
+.share-btn:hover{transform:translateY(-2px)}
+.sb-copy{background:var(--y);color:#000}
+.sb-x{background:#1a1a1a;border:1.5px solid #333;color:var(--text)}
+.sb-restart{background:transparent;border:1.5px solid var(--border);color:var(--muted)}
+.sb-restart:hover{color:var(--text);border-color:var(--muted)}
+
+@media(max-width:700px){
+  .choices.c3,.choices.c4,.postes-grid,.versus-grid{grid-template-columns:1fr 1fr}
+  .choices.c2{grid-template-columns:1fr}
+  .total-choc{padding:36px 20px}
+}
+@media(max-width:480px){
+  .postes-grid,.versus-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">Calcula<em>matix</em></a>
+  <a class="back" href="index.html">← Retour</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">💸 Le calculateur qui fait mal (et sourire)</div>
+  <h1>Mon enfant m'a<br><span class="line2">coûté combien ?</span></h1>
+  <p class="hero-sub">On calcule TOUT depuis sa naissance. Puis on regarde ce qu'on aurait pu acheter à la place. Juste pour rire.</p>
+  <p class="disclaimer-small">⚠️ Estimation approximative à des fins humoristiques — aucune donnée n'est collectée</p>
+</div>
+
+<!-- ═══════ FORMULAIRE ═══════ -->
+<div class="form-wrap">
+  <div class="progress-bar" id="progress-bar"></div>
+
+  <!-- ÉTAPE 1 : PRÉNOM & ÂGE -->
+  <div class="step on" id="step-0">
+    <div class="step-label">Étape 1 / 7</div>
+    <div class="step-title">C'est qui ce petit monstre ?</div>
+    <div class="step-desc">Son prénom et son âge actuel — on calcule tout depuis la naissance.</div>
+    <div class="slider-field">
+      <div class="sf-header"><span class="sf-label">Prénom de l'enfant</span></div>
+      <input type="text" id="i-prenom" placeholder="Ex : Léa, Thomas, Zoé..." maxlength="20"
+        style="width:100%;background:var(--dim);border:1.5px solid var(--border);border-radius:11px;color:var(--text);padding:13px 16px;font-size:16px;font-family:DM Sans,sans-serif;outline:none;"
+        oninput="checkStep0()"/>
+    </div>
+    <div class="slider-field">
+      <div class="sf-header"><span class="sf-label">Son âge aujourd'hui</span><span class="sf-val" id="v-age">3 ans</span></div>
+      <input type="range" id="i-age" min="1" max="25" value="3" oninput="updAge();checkStep0()"/>
+      <div class="sf-hint">De 1 à 25 ans — oui, passé 18 ans ils coûtent encore parfois 😅</div>
+    </div>
+    <div class="nav-btns"><button class="btn-next" id="btn-0" onclick="goStep(1)" disabled>Continuer →</button></div>
+  </div>
+
+  <!-- ÉTAPE 2 : RÉGION & LOGEMENT -->
+  <div class="step" id="step-1">
+    <div class="step-label">Étape 2 / 7</div>
+    <div class="step-title">Vous vivez où ?</div>
+    <div class="step-desc">Le coût de la vie varie du simple au triple selon la région.</div>
+    <div class="choices c2" id="zone-choices">
+      <div class="choice" data-val="paris" onclick="selChoice('zone',this)"><div class="choice-check">✓</div><span class="choice-emoji">🗼</span><div class="choice-label">Paris / IDF</div><div class="choice-sub">+30% sur tout</div></div>
+      <div class="choice" data-val="grande" onclick="selChoice('zone',this)"><div class="choice-check">✓</div><span class="choice-emoji">🏙️</span><div class="choice-label">Grande ville</div><div class="choice-sub">Lyon, Marseille, Bordeaux...</div></div>
+      <div class="choice" data-val="moyenne" onclick="selChoice('zone',this)"><div class="choice-check">✓</div><span class="choice-emoji">🏘️</span><div class="choice-label">Ville moyenne</div><div class="choice-sub">Tours, Angers, Perpignan...</div></div>
+      <div class="choice" data-val="rurale" onclick="selChoice('zone',this)"><div class="choice-check">✓</div><span class="choice-emoji">🌿</span><div class="choice-label">Zone rurale</div><div class="choice-sub">Campagne ou petite ville</div></div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn-back" onclick="goStep(0)">← Retour</button>
+      <button class="btn-next" id="btn-1" onclick="goStep(2)" disabled>Continuer →</button>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 3 : REVENUS -->
+  <div class="step" id="step-2">
+    <div class="step-label">Étape 3 / 7</div>
+    <div class="step-title">Vos revenus du foyer ?</div>
+    <div class="step-desc">Pour ajuster les aides CAF et le niveau de dépenses.</div>
+    <div class="choices c3" id="revenus-choices">
+      <div class="choice" data-val="modeste" onclick="selChoice('revenus',this)"><div class="choice-check">✓</div><span class="choice-emoji">💚</span><div class="choice-label">Modeste</div><div class="choice-sub">< 2 500€/mois nets</div></div>
+      <div class="choice" data-val="moyen" onclick="selChoice('revenus',this)"><div class="choice-check">✓</div><span class="choice-emoji">🔵</span><div class="choice-label">Moyen</div><div class="choice-sub">2 500 – 5 000€</div></div>
+      <div class="choice" data-val="aise" onclick="selChoice('revenus',this)"><div class="choice-check">✓</div><span class="choice-emoji">✨</span><div class="choice-label">Aisé</div><div class="choice-sub">> 5 000€/mois</div></div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn-back" onclick="goStep(1)">← Retour</button>
+      <button class="btn-next" id="btn-2" onclick="goStep(3)" disabled>Continuer →</button>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 4 : GARDE & ÉCOLE -->
+  <div class="step" id="step-3">
+    <div class="step-label">Étape 4 / 7</div>
+    <div class="step-title">La garde et l'école</div>
+    <div class="step-desc">Mode de garde bébé et type de scolarité.</div>
+    <div style="margin-bottom:16px">
+      <div style="font-size:12px;font-family:DM Mono,monospace;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Mode de garde bébé (0-3 ans)</div>
+      <div class="choices c2" id="garde-choices">
+        <div class="choice" data-val="creche" onclick="selChoice('garde',this)"><div class="choice-check">✓</div><span class="choice-emoji">🏢</span><div class="choice-label">Crèche</div><div class="choice-sub">Tarif CAF</div></div>
+        <div class="choice" data-val="nounou" onclick="selChoice('garde',this)"><div class="choice-check">✓</div><span class="choice-emoji">🤱</span><div class="choice-label">Assistante mat.</div><div class="choice-sub">+ CMG</div></div>
+        <div class="choice" data-val="domicile" onclick="selChoice('garde',this)"><div class="choice-check">✓</div><span class="choice-emoji">🏠</span><div class="choice-label">Garde à domicile</div><div class="choice-sub">Plus coûteux</div></div>
+        <div class="choice" data-val="parentale" onclick="selChoice('garde',this)"><div class="choice-check">✓</div><span class="choice-emoji">👨‍👩‍👧</span><div class="choice-label">Garde parentale</div><div class="choice-sub">Pas de frais de garde</div></div>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:12px;font-family:DM Mono,monospace;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Type de scolarité</div>
+      <div class="choices c3" id="ecole-choices">
+        <div class="choice" data-val="public" onclick="selChoice('ecole',this)"><div class="choice-check">✓</div><span class="choice-emoji">🏫</span><div class="choice-label">École publique</div><div class="choice-sub">Gratuite</div></div>
+        <div class="choice" data-val="prive" onclick="selChoice('ecole',this)"><div class="choice-check">✓</div><span class="choice-emoji">📚</span><div class="choice-label">Privé sous contrat</div><div class="choice-sub">~80€/mois</div></div>
+        <div class="choice" data-val="hors" onclick="selChoice('ecole',this)"><div class="choice-check">✓</div><span class="choice-emoji">🎓</span><div class="choice-label">Privé hors contrat</div><div class="choice-sub">400-1500€/mois</div></div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn-back" onclick="goStep(2)">← Retour</button>
+      <button class="btn-next" id="btn-3" onclick="goStep(4)" disabled>Continuer →</button>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 5 : ACTIVITÉS & VACANCES -->
+  <div class="step" id="step-4">
+    <div class="step-label">Étape 5 / 7</div>
+    <div class="step-title">Les activités et les vacances 🎯</div>
+    <div class="step-desc">Sélectionnez tout ce qui correspond à votre situation.</div>
+    <div class="multi-checks" id="activites-checks">
+      <div class="mcheck" data-val="sport" data-cost="1200" onclick="togCheck(this)">
+        <div class="mcheck-box">✓</div><span class="mcheck-emoji">⚽</span>
+        <div class="mcheck-text"><div class="mcheck-label">Sport en club</div><div class="mcheck-sub">Football, tennis, natation, judo...</div></div>
+        <div class="mcheck-price">~1 200€/an</div>
+      </div>
+      <div class="mcheck" data-val="musique" data-cost="1800" onclick="togCheck(this)">
+        <div class="mcheck-box">✓</div><span class="mcheck-emoji">🎹</span>
+        <div class="mcheck-text"><div class="mcheck-label">Musique / danse</div><div class="mcheck-sub">Conservatoire, cours privés, solfège</div></div>
+        <div class="mcheck-price">~1 800€/an</div>
+      </div>
+      <div class="mcheck" data-val="colonie" data-cost="900" onclick="togCheck(this)">
+        <div class="mcheck-box">✓</div><span class="mcheck-emoji">🏕️</span>
+        <div class="mcheck-text"><div class="mcheck-label">Colonies / séjours ados</div><div class="mcheck-sub">Colo, stages, échanges linguistiques</div></div>
+        <div class="mcheck-price">~900€/séjour</div>
+      </div>
+      <div class="mcheck" data-val="vacances-france" data-cost="1500" onclick="togCheck(this)">
+        <div class="mcheck-box">✓</div><span class="mcheck-emoji">🏖️</span>
+        <div class="mcheck-text"><div class="mcheck-label">Vacances en France chaque année</div><div class="mcheck-sub">Mer, montagne, camping, location</div></div>
+        <div class="mcheck-price">~1 500€/an</div>
+      </div>
+      <div class="mcheck" data-val="vacances-etranger" data-cost="2800" onclick="togCheck(this)">
+        <div class="mcheck-box">✓</div><span class="mcheck-emoji">✈️</span>
+        <div class="mcheck-text"><div class="mcheck-label">Voyages à l'étranger</div><div class="mcheck-sub">Avion, hôtel, activités à l'étranger</div></div>
+        <div class="mcheck-price">~2 800€/an</div>
+      </div>
+      <div class="mcheck" data-val="gaming" data-cost="400" onclick="togCheck(this)">
+        <div class="mcheck-box">✓</div><span class="mcheck-emoji">🎮</span>
+        <div class="mcheck-text"><div class="mcheck-label">Jeux vidéo / consoles</div><div class="mcheck-sub">Console, jeux, abonnements</div></div>
+        <div class="mcheck-price">~400€/an</div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn-back" onclick="goStep(3)">← Retour</button>
+      <button class="btn-next" onclick="goStep(5)">Continuer →</button>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 6 : SANTÉ & DIVERS -->
+  <div class="step" id="step-5">
+    <div class="step-label">Étape 6 / 7</div>
+    <div class="step-title">Santé, tech & petits extras 🩺</div>
+    <div class="step-desc">Ces trucs qu'on oublie toujours de compter.</div>
+    <div class="multi-checks" id="extras-checks">
+      <div class="mcheck" data-val="ortho" data-cost="2000" onclick="togCheck(this)">
+        <div class="mcheck-box">✓</div><span class="mcheck-emoji">🦷</span>
+        <div class="mcheck-text"><div class="mcheck-label">Orthodontiste / dentiste</div><div class="mcheck-sub">Appareil dentaire, soins non remboursés</div></div>
+        <div class="mcheck-price">~2 000€</div>
+      </div>
+      <div class="mcheck" data-val="lunettes" data-cost="600" onclick="togCheck(this)">
+        <div class="mcheck-box">✓</div><span class="mcheck-emoji">👓</span>
+        <div class="mcheck-text"><div class="mcheck-label">Lunettes / ophtalmo</div><div class="mcheck-sub">Montures, verres progressifs, lentilles</div></div>
+        <div class="mcheck-price">~600€</div>
+      </div>
+      <div class="mcheck" data-val="psy" data-cost="1500" onclick="togCheck(this)">
+        <div class="mcheck-box">✓</div><span class="mcheck-emoji">🧠</span>
+        <div class="mcheck-text"><div class="mcheck-label">Suivi psy / orthophoniste</div><div class="mcheck-sub">Séances de psy, ortho, bilan psycho</div></div>
+        <div class="mcheck-price">~1 500€</div>
+      </div>
+      <div class="mcheck" data-val="smartphone" data-cost="800" onclick="togCheck(this)">
+        <div class="mcheck-box">✓</div><span class="mcheck-emoji">📱</span>
+        <div class="mcheck-text"><div class="mcheck-label">Smartphone(s)</div><div class="mcheck-sub">Premier téléphone, upgrades, forfaits</div></div>
+        <div class="mcheck-price">~800€</div>
+      </div>
+      <div class="mcheck" data-val="ordi" data-cost="700" onclick="togCheck(this)">
+        <div class="mcheck-box">✓</div><span class="mcheck-emoji">💻</span>
+        <div class="mcheck-text"><div class="mcheck-label">Ordinateur / tablette</div><div class="mcheck-sub">Pour les devoirs (et Netflix)</div></div>
+        <div class="mcheck-price">~700€</div>
+      </div>
+      <div class="mcheck" data-val="permis" data-cost="1800" onclick="togCheck(this)">
+        <div class="mcheck-box">✓</div><span class="mcheck-emoji">🚗</span>
+        <div class="mcheck-text"><div class="mcheck-label">Permis de conduire</div><div class="mcheck-sub">Auto-école, code, heures de conduite</div></div>
+        <div class="mcheck-price">~1 800€</div>
+      </div>
+      <div class="mcheck" data-val="etudes" data-cost="5000" onclick="togCheck(this)">
+        <div class="mcheck-box">✓</div><span class="mcheck-emoji">🎓</span>
+        <div class="mcheck-text"><div class="mcheck-label">Études supérieures financées</div><div class="mcheck-sub">Loyer, frais de scolarité, apport vie étudiante</div></div>
+        <div class="mcheck-price">~5 000€/an</div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn-back" onclick="goStep(4)">← Retour</button>
+      <button class="btn-next" onclick="goStep(6)">Continuer →</button>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 7 : PRÉNOM ENFANT CONFIRM -->
+  <div class="step" id="step-6">
+    <div class="step-label">Étape 7 / 7</div>
+    <div class="step-title">La dernière question 😬</div>
+    <div class="step-desc">Soyons honnêtes. Globalement, niveau dépenses pour votre enfant vous diriez...</div>
+    <div class="choices c2" id="style-choices">
+      <div class="choice" data-val="econome" onclick="selChoice('style',this)"><div class="choice-check">✓</div><span class="choice-emoji">🤏</span><div class="choice-label">On fait attention</div><div class="choice-sub">Occasions, soldes, on réutilise tout</div></div>
+      <div class="choice" data-val="normal" onclick="selChoice('style',this)"><div class="choice-check">✓</div><span class="choice-emoji">🙂</span><div class="choice-label">Dans la moyenne</div><div class="choice-sub">On ne se prive pas mais on calcule</div></div>
+      <div class="choice" data-val="generos" onclick="selChoice('style',this)"><div class="choice-check">✓</div><span class="choice-emoji">🛍️</span><div class="choice-label">On est généreux</div><div class="choice-sub">On veut le meilleur pour lui/elle</div></div>
+      <div class="choice" data-val="folie" onclick="selChoice('style',this)"><div class="choice-check">✓</div><span class="choice-emoji">🤑</span><div class="choice-label">On ne compte pas</div><div class="choice-sub">Yolo, c'est notre trésor</div></div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn-back" onclick="goStep(5)">← Retour</button>
+      <button class="btn-next" id="btn-6" onclick="calcTotal()" disabled>
+        💸 Calculer le grand total !
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ RÉSULTAT ═══════ -->
+<div id="result">
+  <div class="total-choc">
+    <div class="tc-label">Depuis sa naissance jusqu'à aujourd'hui</div>
+    <div class="tc-name" id="tc-name">Votre enfant <em>Léa</em> vous a coûté...</div>
+    <div class="tc-amount" id="tc-amount">0 €</div>
+    <div class="tc-sub" id="tc-sub">soit <strong id="tc-mensuel">0€</strong>/mois en moyenne sur <strong id="tc-annees">0</strong> ans</div>
+  </div>
+
+  <div class="postes-title">💶 Le détail poste par poste</div>
+  <div class="postes-grid" id="postes-grid"></div>
+
+  <div class="versus">
+    <div class="versus-title">🤯 Avec cette somme, vous auriez pu acheter...</div>
+    <div class="versus-sub">100% informatif, 0% sérieux. Ne faites pas ça à votre enfant.</div>
+    <div class="versus-grid" id="versus-grid"></div>
+  </div>
+
+  <div class="finale">
+    <div class="finale-text" id="finale-text"></div>
+    <div class="finale-heart">❤️</div>
+  </div>
+
+  <div class="share-section">
+    <div class="share-label">Partager ces résultats</div>
+    <div class="share-btns">
+      <button class="share-btn sb-copy" onclick="copyResult()">📋 Copier le résumé</button>
+      <button class="share-btn sb-x" onclick="shareX()">🐦 Partager sur X</button>
+      <button class="share-btn sb-restart" onclick="restart()">🔄 Recommencer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ ÉTAT ══
+var D={prenom:"",age:3,zone:"",revenus:"",garde:"",ecole:"",style:"",activites:[],extras:[]};
+
+// ══ NAVIGATION ══
+var curStep=0;
+var totalSteps=7;
+
+function goStep(n){
+  document.getElementById("step-"+curStep).classList.remove("on");
+  curStep=n;
+  document.getElementById("step-"+n).classList.add("on");
+  updateProgress();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function updateProgress(){
+  var pb=document.getElementById("progress-bar");
+  pb.innerHTML="";
+  for(var i=0;i<totalSteps;i++){
+    var d=document.createElement("div");
+    d.className="pb-step"+(i<curStep?" done":i===curStep?" active":"");
+    pb.appendChild(d);
+  }
+  var lbl=document.createElement("div");
+  lbl.className="pb-label";
+  lbl.textContent=Math.round((curStep/totalSteps)*100)+"% complété";
+  pb.appendChild(lbl);
+}
+
+// ══ CHAMPS ══
+function updAge(){
+  var a=+document.getElementById("i-age").value;
+  D.age=a;
+  document.getElementById("v-age").textContent=a+(a>1?" ans":" an");
+}
+
+function checkStep0(){
+  D.prenom=document.getElementById("i-prenom").value.trim();
+  D.age=+document.getElementById("i-age").value;
+  document.getElementById("btn-0").disabled=D.prenom.length<2;
+}
+
+function selChoice(group,el){
+  var container=el.parentElement;
+  container.querySelectorAll(".choice").forEach(function(c){c.classList.remove("sel");});
+  el.classList.add("sel");
+  D[group]=el.dataset.val;
+  var btnMap={zone:1,revenus:2,garde:null,ecole:null,style:6};
+  if(btnMap[group]!==null&&btnMap[group]!==undefined){
+    var btn=document.getElementById("btn-"+btnMap[group]);
+    if(btn) btn.disabled=false;
+  }
+  // Étape 4 : deux choix requis
+  if(group==="garde"||group==="ecole"){
+    var ok=D.garde&&D.ecole;
+    document.getElementById("btn-3").disabled=!ok;
+  }
+  if(group==="style"){
+    document.getElementById("btn-6").disabled=false;
+  }
+}
+
+function togCheck(el){
+  el.classList.toggle("sel");
+  var val=el.dataset.val;
+  var cost=+el.dataset.cost;
+  var isAct=el.closest("#activites-checks")!==null;
+  var arr=isAct?D.activites:D.extras;
+  var idx=arr.indexOf(val);
+  if(idx>=0) arr.splice(idx,1);
+  else arr.push(val);
+}
+
+// ══ CALCUL ══
+var ZC={paris:1.30,grande:1.12,moyenne:1.0,rurale:0.87};
+var BASE_MENSUEL={modeste:490,moyen:720,aise:1050};
+var STYLE_MULT={econome:0.80,normal:1.0,generos:1.25,folie:1.55};
+var GARDE_COUT={creche:0,nounou:50,domicile:350,parentale:-120};
+var ECOLE_COUT={public:0,prive:80,hors:550};
+
+var ACTIVITES_COUT={sport:1200,musique:1800,colonie:900,"vacances-france":1500,"vacances-etranger":2800,gaming:400};
+var EXTRAS_COUT={ortho:2000,lunettes:600,psy:1500,smartphone:800,ordi:700,permis:1800,etudes:5000};
+
+function calcTotal(){
+  var zc=ZC[D.zone]||1.0;
+  var bm=BASE_MENSUEL[D.revenus]||720;
+  var sm=STYLE_MULT[D.style]||1.0;
+  var age=D.age;
+
+  // BASE : logement + alimentation + vêtements + hygiène + santé de base
+  var baseAnnuel=bm*12*zc*sm;
+
+  // Garde (3 premières années)
+  var annesGarde=Math.min(3,age);
+  var gardeAnnuel=(bm*0.65+GARDE_COUT[D.garde||"nounou"])*12*zc*sm;
+  var gardeTotal=gardeAnnuel*annesGarde;
+
+  // École (à partir de 3 ans)
+  var annesEcole=Math.max(0,Math.min(age,18)-3);
+  var ecoleAnnuel=(ECOLE_COUT[D.ecole||"public"]+120)*12/12*zc*sm;
+  var ecoleTotal=(ECOLE_COUT[D.ecole||"public"]*12+1440)*zc*sm*annesEcole/12*12;
+
+  // Activités & extras
+  var activTotal=0;
+  D.activites.forEach(function(v){activTotal+=(ACTIVITES_COUT[v]||0)*Math.max(1,age-3)*sm*zc;});
+  var extraTotal=0;
+  D.extras.forEach(function(v){extraTotal+=(EXTRAS_COUT[v]||0)*sm;});
+
+  // Alimentation seule
+  var alimBase={modeste:60,moyen:90,aise:135}[D.revenus]||90;
+  var alimTotal=alimBase*12*age*zc*sm;
+
+  // Vêtements
+  var vetoBase={modeste:28,moyen:48,aise:85}[D.revenus]||48;
+  var vetoTotal=vetoBase*12*age*zc*sm;
+
+  // Logement surcout
+  var logeTotal=baseAnnuel*0.28*age;
+
+  // Santé de base
+  var santeBase={modeste:25,moyen:38,aise:60}[D.revenus]||38;
+  var santeTotal=santeBase*12*age*zc*sm;
+
+  // Loisirs quotidiens (jouets, sorties, parcs...)
+  var loisirsBase={modeste:35,moyen:65,aise:120}[D.revenus]||65;
+  var loisirsTotal=loisirsBase*12*age*zc*sm;
+
+  // Rassembler les postes
+  var postes=[
+    {key:"garde",emoji:"🍼",nom:"Garde & crèche",montant:Math.round(gardeTotal),detail:"Mode : "+(D.garde==="creche"?"Crèche":D.garde==="nounou"?"Assistante mat.":D.garde==="domicile"?"Garde à domicile":"Garde parentale"),col:"p0"},
+    {key:"alim",emoji:"🍽️",nom:"Alimentation",montant:Math.round(alimTotal),detail:Math.round(alimBase*12)+"€/an en moyenne",col:"p1"},
+    {key:"ecole",emoji:"🏫",nom:"Scolarité",montant:Math.round(ecoleTotal),detail:D.ecole==="public"?"École publique":D.ecole==="prive"?"Privé sous contrat":"Privé hors contrat",col:"p2"},
+    {key:"veto",emoji:"👕",nom:"Vêtements",montant:Math.round(vetoTotal),detail:Math.round(vetoBase*12)+"€/an en moyenne",col:"p3"},
+    {key:"loge",emoji:"🏠",nom:"Logement (surcoût)",montant:Math.round(logeTotal),detail:"Chambre, espace supplémentaire...",col:"p4"},
+    {key:"sante",emoji:"🏥",nom:"Santé",montant:Math.round(santeTotal),detail:"Médecin, vaccins, pharmacie, mutuelle",col:"p5"},
+    {key:"loisirs",emoji:"🎡",nom:"Loisirs du quotidien",montant:Math.round(loisirsTotal),detail:"Jouets, parcs, cinéma, anniversaires...",col:"p6"},
+    {key:"activites",emoji:"⚽",nom:"Activités extra",montant:Math.round(activTotal),detail:D.activites.length>0?D.activites.length+" activité(s) sélectionnée(s)":"Aucune activité",col:"p7"},
+    {key:"extras",emoji:"✨",nom:"Santé & tech spécifiques",montant:Math.round(extraTotal),detail:D.extras.length>0?D.extras.length+" poste(s) sélectionné(s)":"Aucun extra",col:"p8"},
+    {key:"transport",emoji:"🚌",nom:"Transports enfant",montant:Math.round(age*280*sm*zc),detail:"Bus scolaire, tickets, accompagnements",col:"p9"},
+    {key:"divers",emoji:"🎁",nom:"Cadeaux & anniversaires",montant:Math.round(age*320*sm),detail:"Noël, fêtes, cadeaux copains...",col:"p10"},
+  ];
+
+  var total=postes.reduce(function(s,p){return s+p.montant;},0);
+  var mensuelMoyen=Math.round(total/(age*12));
+
+  // Afficher le total
+  var prenom=D.prenom||"votre enfant";
+  document.getElementById("tc-name").innerHTML="<em>"+prenom+"</em> vous a coûté...";
+  document.getElementById("tc-amount").textContent=fmtE(total);
+  document.getElementById("tc-mensuel").textContent=fmtE(mensuelMoyen);
+  document.getElementById("tc-annees").textContent=age;
+
+  // Postes
+  var maxPoste=Math.max.apply(null,postes.map(function(p){return p.montant;}));
+  var COLS=["#ffe566","#ff6eb4","#52ffa8","#5ce1ff","#ff8c42","#b57aff","#ff7a7a","#7affea","#ffb07a","#c8ff7a","#ff7ac8"];
+  document.getElementById("postes-grid").innerHTML=postes.map(function(p,i){
+    var col=COLS[i%COLS.length];
+    var pct=Math.round(p.montant/maxPoste*100);
+    return "<div class='poste "+p.col+"'>"
+      +"<span class='poste-emoji'>"+p.emoji+"</span>"
+      +"<div class='poste-nom'>"+p.nom+"</div>"
+      +"<div class='poste-montant' style='color:"+col+"'>"+fmtE(p.montant)+"</div>"
+      +"<div class='poste-detail'>"+p.detail+"</div>"
+      +"<div class='poste-bar'><div class='poste-bar-fill' style='width:"+pct+"%;background:"+col+"'></div></div>"
+      +"</div>";
+  }).join("");
+
+  // Versus
+  var VERSUS=[
+    {emoji:"🏠",label:"Apports immobiliers",unit:35000,suffix:"apports de 35k€",sub:"Pour acheter un studio cash dans certaines villes"},
+    {emoji:"🚗",label:"Voitures neuves",unit:25000,suffix:"voitures neuves",sub:"Citroën C3, Renault Clio, Peugeot 208..."},
+    {emoji:"✈️",label:"Voyages de rêve",unit:3500,suffix:"voyages 2 semaines",sub:"New York, Tokyo, Maldives tout inclus"},
+    {emoji:"☕",label:"Cafés au café",unit:3.5,suffix:"cafés au zinc",sub:"Ça fait beaucoup de matins"},
+    {emoji:"🍕",label:"Pizzas livrées",unit:16,suffix:"pizzas livrées",sub:"Mozzarella, jambon, champignons"},
+    {emoji:"💎",label:"Sacs Hermès Birkin",unit:8000,suffix:"sacs Birkin",sub:"Le luxe ultime"},
+  ];
+  document.getElementById("versus-grid").innerHTML=VERSUS.map(function(v,i){
+    var qty=Math.floor(total/v.unit);
+    return "<div class='vitem'>"
+      +(i===0?"<div class='vitem-badge'>🏆 Si vous aviez investi</div>":"")
+      +"<span class='vitem-emoji'>"+v.emoji+"</span>"
+      +"<div class='vitem-qty'>× "+qty.toLocaleString("fr-FR")+"</div>"
+      +"<div class='vitem-label'>"+v.label+"</div>"
+      +"<div class='vitem-sub'>"+v.sub+"</div>"
+      +"</div>";
+  }).join("");
+
+  // Phrase finale
+  var phrases={
+    econome:"Vous avez été des parents <em>économes et malins</em>. Occasions, soldes, débrouillardise — vous avez tout optimisé. Et pourtant, <em>"+prenom+"</em> a eu tout ce dont il/elle avait besoin.",
+    normal:"<em>"+prenom+"</em> a grandi dans un foyer équilibré, ni trop peu ni trop. Ni une île privée ni des chaussures trouées. La vraie vie, quoi.",
+    generos:"Vous avez voulu le meilleur pour <em>"+prenom+"</em>. Peut-être un peu de folie parfois, mais quel bonheur de voir ses yeux briller.",
+    folie:"Vous avez dépensé sans compter pour <em>"+prenom+"</em>. Est-ce que ça valait le coup ? Regardez-le/la et répondez franchement."
+  };
+  var base=phrases[D.style]||phrases.normal;
+  document.getElementById("finale-text").innerHTML=base+"<br><br>⚠️ <strong>Évidemment</strong>, aucun enfant ne se résume à une addition. Ces chiffres sont des estimations à des fins <em>purement humoristiques</em>. Votre plus grand investissement ne figure dans aucun bilan financier. 💛";
+
+  // Stocker pour le partage
+  window._result={total:total,prenom:prenom,age:age,mensuel:mensuelMoyen};
+
+  document.getElementById("result").style.display="block";
+  document.getElementById("result").classList.add("on");
+  document.querySelector(".form-wrap").style.display="none";
+  setTimeout(function(){document.getElementById("result").scrollIntoView({behavior:"smooth"});},100);
+}
+
+function fmtE(n){return Math.round(n).toLocaleString("fr-FR")+" €";}
+
+function copyResult(){
+  var r=window._result;
+  if(!r) return;
+  var txt=r.prenom+" m'a coûté "+fmtE(r.total)+" depuis sa naissance (soit "+fmtE(r.mensuel)+"/mois pendant "+r.age+" ans) 😅\n\nCalculez le vôtre → calculamatix.com/cout-total-enfant";
+  navigator.clipboard&&navigator.clipboard.writeText(txt).then(function(){alert("Résumé copié ! Collez-le où vous voulez 😄");}).catch(function(){prompt("Copiez :",txt);});
+}
+
+function shareX(){
+  var r=window._result;
+  if(!r) return;
+  var txt=encodeURIComponent(r.prenom+" m'a coûté "+fmtE(r.total)+" depuis sa naissance 😅 Calculez le vôtre → calculamatix.com/cout-total-enfant");
+  window.open("https://twitter.com/intent/tweet?text="+txt,"_blank");
+}
+
+function restart(){
+  window.location.reload();
+}
+
+// Init
+updateProgress();
+updAge();
+</script>
+
+<script src="/suggestions.js"></script>
+<script>try{renderFooter("cout-total-enfant");}catch(e){}</script>
+</body>
+</html>
