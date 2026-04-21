@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Calculer sa moyenne avec coefficients — Collège, Lycée, Bac, BTS, Fac 2026 | Calculamatix</title>
+<meta name="description" content="Calculez votre moyenne avec coefficients en 30 secondes. Collège, lycée, bac, brevet, BTS, IUT, licence, master. + Stratégie intelligente pour valider votre année."/>
+<link rel="canonical" href="https://calculamatix.com/calculer-moyenne"/>
+<meta property="og:title" content="Calculateur de moyenne avec coefficients 2026"/>
+<meta property="og:description" content="Calculez votre moyenne pondérée instantanément. Stratégie personnalisée pour valider votre année."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://calculamatix.com/calculer-moyenne"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Comment calculer sa moyenne avec des coefficients ?","acceptedAnswer":{"@type":"Answer","text":"Pour calculer une moyenne pondérée : multipliez chaque note par son coefficient, additionnez tous ces résultats, puis divisez par la somme des coefficients. Exemple : 14×3 + 12×2 + 16×1 = 42+24+16 = 82. Somme des coefs = 6. Moyenne = 82/6 = 13,67/20."}},{"@type":"Question","name":"Quelle est la moyenne pour avoir son bac ?","acceptedAnswer":{"@type":"Answer","text":"Pour obtenir le bac, il faut avoir une moyenne générale d'au moins 10/20. Entre 8 et 10, on passe devant le jury pour les rattrapages. Les épreuves du bac 2026 comptent pour 60% de la note finale, le contrôle continu pour 40%."}},{"@type":"Question","name":"Comment calculer la moyenne du brevet des collèges ?","acceptedAnswer":{"@type":"Answer","text":"Le brevet 2026 se calcule sur 800 points : 400 points de contrôle continu (bulletins de 3e) + 400 points d'épreuves (français 100pts, maths 100pts, histoire-géo/EMC 100pts, oral 100pts). La mention Assez Bien requiert 480/800, Bien 560/800, Très Bien 680/800."}},{"@type":"Question","name":"Comment calculer sa moyenne à la fac ?","acceptedAnswer":{"@type":"Answer","text":"À l'université, la moyenne se calcule par UE (Unité d'Enseignement) puis par semestre. Chaque UE a des crédits ECTS. La compensation permet souvent de valider le semestre même avec une UE sous la moyenne si la moyenne générale est ≥ 10/20."}},{"@type":"Question","name":"Quelle note faut-il avoir dans une matière pour rattraper une mauvaise note ?","acceptedAnswer":{"@type":"Answer","text":"Utilisez la formule : Note nécessaire = (Moyenne cible × Somme des coefs - Total actuel) / Coefficient de la matière restante. Notre calculateur effectue ce calcul automatiquement et vous indique la note exacte à obtenir dans chaque matière."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Calculateur de moyenne avec coefficients","url":"https://calculamatix.com/calculer-moyenne","description":"Calculez votre moyenne pondérée et obtenez une stratégie personnalisée pour valider votre année","applicationCategory":"EducationApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07090f;--bg2:#0e1018;--card:#12141e;--border:#1e2030;
+  --text:#f0f0fa;--muted:#5a5a7a;--dim:#1a1c28;
+  --blue:#4f8ef7;--green:#39d98a;--orange:#ff8c42;--red:#ff5555;--purple:#a78bfa;--yellow:#fcd34d;
+  --shadow:0 8px 40px rgba(0,0,0,.6);
+}
+body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;min-height:100vh;font-size:15px}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 40% at 70% 0%,rgba(79,142,247,.08),transparent),
+             radial-gradient(ellipse 50% 40% at 0% 80%,rgba(57,217,138,.06),transparent)}
+
+nav{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:"Syne",sans-serif;font-weight:800;font-size:18px;text-decoration:none;color:var(--text)}
+.logo em{font-style:normal;color:var(--blue)}
+.back{font-size:13px;color:var(--muted);text-decoration:none}.back:hover{color:var(--text)}
+
+/* HERO */
+.hero{position:relative;z-index:10;max-width:1200px;margin:10px auto 0;padding:0 24px 36px;text-align:center}
+.hero-eyebrow{font-size:11px;font-family:"DM Mono",monospace;color:var(--blue);text-transform:uppercase;letter-spacing:3px;margin-bottom:14px}
+h1{font-family:"Syne",sans-serif;font-weight:800;font-size:clamp(24px,5vw,52px);letter-spacing:-1.5px;line-height:1.08;margin-bottom:12px}
+h1 .hl{color:var(--blue)}
+.hero-desc{font-size:15px;color:var(--muted);line-height:1.8;max-width:620px;margin:0 auto 20px}
+.niveau-tabs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:0}
+.ntab{background:var(--card);border:1.5px solid var(--border);color:var(--muted);padding:8px 16px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:"DM Sans",sans-serif}
+.ntab:hover{border-color:var(--blue);color:var(--text)}
+.ntab.on{background:rgba(79,142,247,.12);border-color:var(--blue);color:var(--blue)}
+
+/* MAIN LAYOUT */
+.main{position:relative;z-index:10;max-width:1200px;margin:20px auto 0;padding:0 24px 60px;display:grid;grid-template-columns:1fr 380px;gap:20px;align-items:start}
+
+/* PANNEAU GAUCHE — MATIÈRES */
+.left-panel{display:flex;flex-direction:column;gap:14px}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.panel-title{font-size:11px;font-family:"DM Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:2px;display:flex;align-items:center;gap:8px}
+.panel-title::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--blue)}
+
+/* TABLEAU MATIÈRES */
+.matieres-table{width:100%;border-collapse:collapse}
+.matieres-table th{font-size:10px;font-family:"DM Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:0 8px 10px;text-align:left;border-bottom:1px solid var(--border)}
+.matieres-table th:nth-child(3),.matieres-table th:nth-child(4),.matieres-table th:nth-child(5){text-align:center}
+.mrow{animation:rowIn .2s ease}
+@keyframes rowIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.mrow td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:middle}
+.mrow:last-child td{border-bottom:none}
+
+/* Inputs dans le tableau */
+.td-input{background:var(--bg2);border:1.5px solid var(--border);border-radius:9px;color:var(--text);padding:8px 10px;font-size:13px;font-family:"DM Sans",sans-serif;outline:none;transition:border-color .15s;width:100%}
+.td-input:focus{border-color:var(--blue)}
+.td-input.note-input{width:70px;text-align:center}
+.td-input.coef-input{width:55px;text-align:center}
+.td-input.name-input{min-width:130px}
+.td-input::placeholder{color:var(--muted);font-size:12px}
+
+/* Difficulté ressenti */
+.diff-wrap{display:flex;align-items:center;gap:4px;justify-content:center}
+.diff-dot{width:8px;height:8px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .15s;flex-shrink:0}
+.diff-dot:hover{transform:scale(1.3)}
+
+/* Note visuelle */
+.note-badge{display:inline-flex;align-items:center;justify-content:center;width:36px;height:20px;border-radius:6px;font-size:11px;font-weight:700;font-family:"DM Mono",monospace}
+
+/* Bouton supprimer */
+.btn-del{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;border-radius:6px;font-size:14px;transition:all .15s;line-height:1}
+.btn-del:hover{color:var(--red);background:rgba(255,85,85,.1)}
+
+/* Bouton ajouter */
+.btn-add{background:rgba(79,142,247,.08);border:1.5px dashed rgba(79,142,247,.3);color:var(--blue);padding:11px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:600;width:100%;transition:all .15s;margin-top:10px;font-family:"DM Sans",sans-serif;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-add:hover{background:rgba(79,142,247,.14);border-color:var(--blue)}
+
+/* Boutons action */
+.action-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn-action{padding:9px 16px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;border:none;font-family:"DM Sans",sans-serif;display:flex;align-items:center;gap:6px}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+.btn-secondary{background:var(--dim);border:1px solid var(--border);color:var(--muted)}
+.btn-secondary:hover{color:var(--text);border-color:var(--muted)}
+
+/* ═══ PANNEAU DROITE — RÉSULTATS ═══ */
+.right-panel{position:sticky;top:20px;display:flex;flex-direction:column;gap:14px}
+
+/* MOYENNE PRINCIPALE */
+.moyenne-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;text-align:center;position:relative;overflow:hidden}
+.moyenne-card::before{content:"";position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(79,142,247,.15),transparent 70%);pointer-events:none}
+.moy-label{font-size:10px;font-family:"DM Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;position:relative;z-index:1}
+.moy-value{font-family:"Syne",sans-serif;font-size:72px;font-weight:800;line-height:1;letter-spacing:-3px;position:relative;z-index:1;transition:color .3s}
+.moy-sur{font-size:24px;color:var(--muted)}
+.moy-mention{font-size:13px;font-weight:700;margin-top:8px;padding:5px 14px;border-radius:100px;display:inline-block;position:relative;z-index:1}
+.mention-el{background:rgba(252,211,77,.15);color:var(--yellow);border:1px solid rgba(252,211,77,.3)}
+.mention-tb{background:rgba(57,217,138,.12);color:var(--green);border:1px solid rgba(57,217,138,.25)}
+.mention-b{background:rgba(79,142,247,.12);color:var(--blue);border:1px solid rgba(79,142,247,.25)}
+.mention-ab{background:rgba(167,139,250,.12);color:var(--purple);border:1px solid rgba(167,139,250,.25)}
+.mention-adm{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--border)}
+.mention-fail{background:rgba(255,85,85,.1);color:var(--red);border:1px solid rgba(255,85,85,.25)}
+.moy-detail{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap;position:relative;z-index:1}
+.moy-mini{background:var(--dim);border-radius:8px;padding:7px 12px;text-align:center}
+.moy-mini-v{font-family:"DM Mono",monospace;font-size:13px;font-weight:700}
+.moy-mini-l{font-size:10px;color:var(--muted);margin-top:1px}
+
+/* BARRE PROGRESSION */
+.progress-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px}
+.prog-title{font-size:10px;font-family:"DM Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px}
+.prog-track{height:12px;background:var(--dim);border-radius:6px;overflow:hidden;margin-bottom:8px;position:relative}
+.prog-fill{height:100%;border-radius:6px;transition:width .6s ease;position:relative}
+.prog-marker{position:absolute;top:-3px;bottom:-3px;width:2px;background:rgba(255,255,255,.2);border-radius:1px}
+.prog-labels{display:flex;justify-content:space-between;font-size:10px;font-family:"DM Mono",monospace;color:var(--muted)}
+.prog-mentions{display:flex;justify-content:space-between;font-size:9px;font-family:"DM Mono",monospace;margin-top:4px}
+
+/* STRATÉGIE */
+.strat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px}
+.strat-title{font-size:11px;font-family:"DM Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.strat-item{padding:11px 13px;border-radius:11px;margin-bottom:8px;font-size:12px;line-height:1.6;border:1px solid}
+.strat-item:last-child{margin-bottom:0}
+.si-danger{background:rgba(255,85,85,.06);border-color:rgba(255,85,85,.2);color:var(--text)}
+.si-warn{background:rgba(255,140,66,.06);border-color:rgba(255,140,66,.2);color:var(--text)}
+.si-ok{background:rgba(57,217,138,.05);border-color:rgba(57,217,138,.2);color:var(--text)}
+.si-info{background:rgba(79,142,247,.05);border-color:rgba(79,142,247,.2);color:var(--text)}
+.si-icon{font-size:14px;margin-right:4px}
+.strat-item strong{font-weight:700;display:block;margin-bottom:2px}
+
+/* OBJECTIF */
+.objectif-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px}
+.obj-title{font-size:10px;font-family:"DM Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px}
+.obj-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.obj-tab{padding:5px 12px;border-radius:100px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);color:var(--muted);background:transparent;font-family:"DM Sans",sans-serif;transition:all .15s}
+.obj-tab:hover{border-color:var(--blue);color:var(--blue)}
+.obj-tab.on{background:rgba(79,142,247,.12);border-color:var(--blue);color:var(--blue)}
+.obj-result{font-size:13px;color:var(--muted);line-height:1.8}
+.obj-result strong{color:var(--text)}
+.obj-rows{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.obj-row{background:var(--dim);border-radius:9px;padding:9px 12px;display:flex;justify-content:space-between;align-items:center;font-size:12px}
+.obj-mat{color:var(--muted)}.obj-note{font-family:"DM Mono",monospace;font-weight:700}
+.obj-note.impossible{color:var(--red)}.obj-note.facile{color:var(--green)}.obj-note.possible{color:var(--orange)}
+
+/* TEMPLATES */
+.tpl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tpl{background:var(--dim);border:1.5px solid var(--border);border-radius:11px;padding:10px;cursor:pointer;text-align:center;transition:all .15s}
+.tpl:hover{border-color:var(--blue);background:rgba(79,142,247,.06)}
+.tpl-emoji{font-size:20px;margin-bottom:4px}
+.tpl-name{font-size:11px;font-weight:700;margin-bottom:2px}
+.tpl-sub{font-size:10px;color:var(--muted)}
+
+/* FAQ SEO */
+.faq-section{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:0 24px 60px}
+.faq-h2{font-family:"Syne",sans-serif;font-size:26px;font-weight:800;letter-spacing:-1px;margin-bottom:20px}
+.faq-item{border-bottom:1px solid var(--border);padding:16px 0}
+.faq-q{font-size:14px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;gap:10px;user-select:none}
+.faq-q::after{content:"+";font-size:20px;color:var(--blue);flex-shrink:0;line-height:1;transition:transform .2s}
+.faq-q.open::after{transform:rotate(45deg)}
+.faq-a{font-size:13px;color:var(--muted);line-height:1.85;max-height:0;overflow:hidden;transition:max-height .35s ease}
+.faq-a.open{max-height:300px;padding-top:10px}
+.formula-box{background:var(--dim);border:1px solid var(--border);border-radius:12px;padding:16px;margin:12px 0;font-family:"DM Mono",monospace;font-size:13px;color:var(--text);line-height:1.8}
+.formula-box em{color:var(--blue);font-style:normal}
+
+/* TABLEAU MENTIONS */
+.mentions-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+.mentions-table th{text-align:left;font-size:10px;font-family:"DM Mono",monospace;color:var(--muted);text-transform:uppercase;padding:6px 10px;border-bottom:1px solid var(--border)}
+.mentions-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04)}
+
+@media(max-width:1000px){.main{grid-template-columns:1fr}.right-panel{position:static}}
+@media(max-width:700px){.tpl-grid{grid-template-columns:1fr 1fr}.moy-value{font-size:54px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">Calcula<em>matix</em></a>
+  <a class="back" href="index.html">← Retour</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">Calculateur 2026 · Collège · Lycée · Bac · BTS · Fac</div>
+  <h1>Calculer sa <span class="hl">moyenne</span><br>avec coefficients</h1>
+  <p class="hero-desc">Entrez vos notes et coefficients — obtenez votre moyenne exacte + une stratégie personnalisée pour valider votre année.</p>
+  <div class="niveau-tabs">
+    <button class="ntab on" onclick="chargerTemplate('college',this)">📚 Collège / Brevet</button>
+    <button class="ntab" onclick="chargerTemplate('lycee-gt',this)">🎓 Lycée général</button>
+    <button class="ntab" onclick="chargerTemplate('lycee-pro',this)">🔧 Lycée pro / BEP</button>
+    <button class="ntab" onclick="chargerTemplate('bac',this)">📜 Bac (nouveau)</button>
+    <button class="ntab" onclick="chargerTemplate('bts',this)">📋 BTS / BTC</button>
+    <button class="ntab" onclick="chargerTemplate('iut',this)">⚙️ IUT / BUT</button>
+    <button class="ntab" onclick="chargerTemplate('licence',this)">🏛️ Licence / Fac</button>
+    <button class="ntab" onclick="chargerTemplate('master',this)">🔬 Master</button>
+    <button class="ntab" onclick="chargerTemplate('vide',this)">✏️ Personnalisé</button>
+  </div>
+</div>
+
+<div class="main">
+  <!-- GAUCHE -->
+  <div class="left-panel">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title" id="panel-title-txt">Mes matières — Collège</div>
+        <div class="action-row">
+          <button class="btn-action btn-secondary" onclick="toutEffacer()">🗑️ Effacer</button>
+          <button class="btn-action btn-secondary" onclick="exporterResultat()">📤 Exporter</button>
+        </div>
+      </div>
+      <table class="matieres-table">
+        <thead>
+          <tr>
+            <th style="width:32%">Matière</th>
+            <th style="width:14%">Note /20</th>
+            <th style="width:12%">Coef</th>
+            <th style="width:18%">Ressenti 😰</th>
+            <th style="width:16%">Contrib.</th>
+            <th style="width:8%"></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <button class="btn-add" onclick="ajouterMatiere()">+ Ajouter une matière</button>
+    </div>
+
+    <!-- OBJECTIF CIBLE -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">🎯 Objectif à atteindre</div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <div style="flex:1">
+          <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">Moyenne visée</label>
+          <select id="obj-select" onchange="calcMoyenne()" style="background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;color:var(--text);padding:10px 14px;font-size:13px;font-family:DM Sans,sans-serif;outline:none;width:100%">
+            <option value="10">10/20 — Valider l'année</option>
+            <option value="12">12/20 — Mention Assez Bien</option>
+            <option value="14" selected>14/20 — Mention Bien</option>
+            <option value="16">16/20 — Mention Très Bien</option>
+            <option value="18">18/20 — Excellence</option>
+          </select>
+        </div>
+        <div style="flex:1">
+          <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">Matières restantes à passer</label>
+          <select id="semestre-select" onchange="calcMoyenne()" style="background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;color:var(--text);padding:10px 14px;font-size:13px;font-family:DM Sans,sans-serif;outline:none;width:100%">
+            <option value="0">Toutes les matières passées</option>
+            <option value="1">1 matière restante</option>
+            <option value="2">2 matières restantes</option>
+            <option value="3">3 matières restantes</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DROITE -->
+  <div class="right-panel">
+    <!-- Moyenne principale -->
+    <div class="moyenne-card">
+      <div class="moy-label">Votre moyenne générale</div>
+      <div class="moy-value" id="moy-val" style="color:var(--blue)">—</div>
+      <div class="moy-mention" id="moy-mention">Saisissez vos notes</div>
+      <div class="moy-detail">
+        <div class="moy-mini"><div class="moy-mini-v" id="m-best" style="color:var(--green)">—</div><div class="moy-mini-l">Meilleure mat.</div></div>
+        <div class="moy-mini"><div class="moy-mini-v" id="m-worst" style="color:var(--red)">—</div><div class="moy-mini-l">À améliorer</div></div>
+        <div class="moy-mini"><div class="moy-mini-v" id="m-total-coef" style="color:var(--muted)">—</div><div class="moy-mini-l">Total coefs</div></div>
+      </div>
+    </div>
+
+    <!-- Barre de progression -->
+    <div class="progress-card">
+      <div class="prog-title">Position par rapport aux mentions</div>
+      <div class="prog-track">
+        <div class="prog-fill" id="prog-fill" style="width:0%;background:var(--blue)"></div>
+        <div class="prog-marker" style="left:50%"></div>
+        <div class="prog-marker" style="left:60%"></div>
+        <div class="prog-marker" style="left:70%"></div>
+        <div class="prog-marker" style="left:80%"></div>
+      </div>
+      <div class="prog-labels"><span>0</span><span>10</span><span>14</span><span>16</span><span>20</span></div>
+      <div class="prog-mentions">
+        <span style="color:var(--muted)">Échec</span>
+        <span style="color:var(--purple)">AB</span>
+        <span style="color:var(--blue)">Bien</span>
+        <span style="color:var(--green)">TB</span>
+        <span style="color:var(--yellow)">Élite</span>
+      </div>
+    </div>
+
+    <!-- Stratégie -->
+    <div class="strat-card">
+      <div class="strat-title">💡 Stratégie personnalisée</div>
+      <div id="strat-content"><div style="font-size:12px;color:var(--muted);line-height:1.7">Saisissez au moins 2 matières pour obtenir votre stratégie personnalisée.</div></div>
+    </div>
+
+    <!-- Objectif notes restantes -->
+    <div class="objectif-card">
+      <div class="obj-title">🎯 Notes à avoir pour valider</div>
+      <div class="obj-tabs" id="obj-tabs"></div>
+      <div id="obj-content"><div style="font-size:12px;color:var(--muted)">Saisissez vos matières pour voir les notes nécessaires.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ SEO -->
+<section class="faq-section">
+  <h2 class="faq-h2">Tout savoir sur le calcul de moyenne</h2>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="tFaq(this)">Comment calculer sa moyenne avec des coefficients ?</div>
+    <div class="faq-a">
+      La moyenne pondérée se calcule en 3 étapes :
+      <div class="formula-box">
+        1. <em>Note × Coefficient</em> pour chaque matière<br>
+        2. Additionner tous ces résultats = <em>Total pondéré</em><br>
+        3. Diviser par la <em>somme des coefficients</em><br><br>
+        Exemple : 14×3 + 12×2 + 16×1 = 42+24+16 = <em>82</em><br>
+        Somme des coefs = 3+2+1 = <em>6</em><br>
+        Moyenne = 82 ÷ 6 = <em>13,67/20</em>
+      </div>
+      Notre calculateur effectue ce calcul automatiquement et affiche la contribution de chaque matière à votre moyenne.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="tFaq(this)">Quelles sont les mentions au bac en 2026 ?</div>
+    <div class="faq-a">
+      Les mentions au baccalauréat 2026 sont les suivantes :
+      <table class="mentions-table">
+        <thead><tr><th>Mention</th><th>Moyenne requise</th><th>Signification</th></tr></thead>
+        <tbody>
+          <tr><td>Admis sans mention</td><td>10/20 à 11,99/20</td><td>Bac obtenu</td></tr>
+          <tr><td style="color:var(--purple)">Assez Bien (AB)</td><td>12/20 à 13,99/20</td><td>Bon élève</td></tr>
+          <tr><td style="color:var(--blue)">Bien (B)</td><td>14/20 à 15,99/20</td><td>Très bon élève</td></tr>
+          <tr><td style="color:var(--green)">Très Bien (TB)</td><td>16/20 à 17,99/20</td><td>Excellence</td></tr>
+          <tr><td style="color:var(--yellow)">Félicitations du jury</td><td>18/20 et plus</td><td>Rare distinction</td></tr>
+        </tbody>
+      </table>
+      Les rattrapages sont possibles entre 8 et 9,99/20.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="tFaq(this)">Comment calculer la moyenne du brevet des collèges 2026 ?</div>
+    <div class="faq-a">
+      Le Diplôme National du Brevet (DNB) 2026 est calculé sur 800 points :
+      <div class="formula-box">
+        📋 <em>Contrôle continu (400 pts)</em> : bulletins de 3e × coefficients<br>
+        ✏️ <em>Épreuves finales (400 pts)</em> :<br>
+        • Français : 100 points<br>
+        • Mathématiques : 100 points<br>
+        • Histoire-Géo / EMC : 100 points<br>
+        • Oral (Grand Oral) : 100 points
+      </div>
+      Mentions : AB = 480/800 • Bien = 560/800 • Très Bien = 640/800
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="tFaq(this)">Comment calculer sa moyenne à la fac (licence, master) ?</div>
+    <div class="faq-a">
+      À l'université, la moyenne se calcule par UE (Unité d'Enseignement) puis par semestre. Le système de compensation permet généralement de valider un semestre si la moyenne générale est ≥ 10/20, même avec une UE sous la moyenne.
+      <div class="formula-box">
+        Moyenne UE = Σ(Note × ECTS de la matière) ÷ Σ(ECTS de l'UE)<br>
+        Moyenne semestre = Σ(Moyenne UE × ECTS de l'UE) ÷ Σ(ECTS du semestre)
+      </div>
+      La compensation fonctionne entre UEs au sein d'un même semestre dans la plupart des universités. Vérifiez le règlement de votre établissement.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="tFaq(this)">Quelle note dois-je avoir pour rattraper une mauvaise note ?</div>
+    <div class="faq-a">
+      Utilisez la formule suivante :
+      <div class="formula-box">
+        Note nécessaire = (<em>Moyenne visée × Σcoefs total</em> − <em>Total pondéré actuel</em>) ÷ <em>Coefficient matière restante</em>
+      </div>
+      Exemple : moyenne actuelle 11/20 sur 8 coefs, vous voulez 12/20 sur 10 coefs au total :<br>
+      (12 × 10 − 11 × 8) ÷ 2 = (120 − 88) ÷ 2 = 32 ÷ 2 = <strong>16/20</strong> à obtenir dans les matières restantes.
+      Notre calculateur effectue ce calcul automatiquement dans la section "Notes à avoir pour valider".
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="tFaq(this)">Comment calculer sa moyenne au BTS ?</div>
+    <div class="faq-a">
+      Le BTS se valide avec une moyenne générale ≥ 10/20 sur l'ensemble des épreuves. Certaines épreuves sont rédhibitoires (note éliminatoire si &lt; 8/20 selon les BTS). Les coefficients varient selon le BTS : en BTS Commerce International par exemple, les langues ont un coef 3, la culture générale un coef 1. Notre calculateur vous permet de paramétrer les coefficients exacts de votre BTS.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="tFaq(this)">C'est quoi le "ressenti de difficulté" dans ce calculateur ?</div>
+    <div class="faq-a">
+      Le ressenti de difficulté (de 1 à 5 étoiles) est une fonctionnalité unique de ce calculateur. Elle permet d'évaluer votre marge de progression dans chaque matière. Une matière où vous vous sentez à l'aise (5 étoiles) avec une bonne note a peu de potentiel d'amélioration. Une matière difficile (1 étoile) avec un fort coefficient est votre priorité absolue de révision. Notre algorithme croise coefficient × ressenti × note actuelle pour vous donner une stratégie de révision optimisée.
+    </div>
+  </div>
+</section>
+
+<script>
+// ══════════════════════════════════════════
+// DONNÉES
+// ══════════════════════════════════════════
+var TEMPLATES={
+  college:{titre:"Collège — Brevet",matieres:[
+    {n:"Français",note:"",coef:3,diff:3},
+    {n:"Mathématiques",note:"",coef:3,diff:3},
+    {n:"Histoire-Géographie / EMC",note:"",coef:2,diff:3},
+    {n:"Sciences (SVT + Physique)",note:"",coef:2,diff:3},
+    {n:"LV1 — Anglais",note:"",coef:2,diff:3},
+    {n:"LV2",note:"",coef:1,diff:3},
+    {n:"Arts plastiques / Musique",note:"",coef:1,diff:4},
+    {n:"EPS",note:"",coef:1,diff:4},
+    {n:"Technologie",note:"",coef:1,diff:3},
+  ]},
+  "lycee-gt":{titre:"Lycée général (Seconde)",matieres:[
+    {n:"Français",note:"",coef:5,diff:3},
+    {n:"Mathématiques",note:"",coef:5,diff:3},
+    {n:"Histoire-Géographie",note:"",coef:3,diff:3},
+    {n:"LV1 — Anglais",note:"",coef:3,diff:3},
+    {n:"LV2",note:"",coef:2,diff:3},
+    {n:"Sciences Économiques et Sociales",note:"",coef:3,diff:3},
+    {n:"SVT",note:"",coef:2,diff:3},
+    {n:"Physique-Chimie",note:"",coef:2,diff:3},
+    {n:"EPS",note:"",coef:2,diff:4},
+    {n:"Enseignement scientifique",note:"",coef:2,diff:3},
+  ]},
+  "lycee-pro":{titre:"Lycée professionnel / CAP",matieres:[
+    {n:"Enseignement professionnel",note:"",coef:7,diff:3},
+    {n:"Français / Communication",note:"",coef:3,diff:3},
+    {n:"Mathématiques / Sciences",note:"",coef:2,diff:3},
+    {n:"Histoire-Géographie",note:"",coef:2,diff:3},
+    {n:"LV1 — Anglais",note:"",coef:2,diff:3},
+    {n:"EPS",note:"",coef:1,diff:4},
+    {n:"Prévention Santé Environnement",note:"",coef:1,diff:3},
+  ]},
+  bac:{titre:"Baccalauréat général (nouveau)",matieres:[
+    {n:"Spécialité 1",note:"",coef:16,diff:3},
+    {n:"Spécialité 2",note:"",coef:16,diff:3},
+    {n:"Français (Première)",note:"",coef:10,diff:3},
+    {n:"Philosophie",note:"",coef:8,diff:3},
+    {n:"Grand Oral",note:"",coef:10,diff:3},
+    {n:"Histoire-Géographie",note:"",coef:3,diff:3},
+    {n:"LV1 + LV2",note:"",coef:6,diff:3},
+    {n:"Enseignement scientifique",note:"",coef:3,diff:3},
+    {n:"EPS",note:"",coef:6,diff:4},
+    {n:"Option (si applicable)",note:"",coef:2,diff:3},
+  ]},
+  bts:{titre:"BTS (1ère et 2ème année)",matieres:[
+    {n:"Culture Générale et Expression",note:"",coef:1,diff:3},
+    {n:"LV1 — Anglais",note:"",coef:3,diff:3},
+    {n:"LV2 (si applicable)",note:"",coef:2,diff:3},
+    {n:"Matière professionnelle 1",note:"",coef:4,diff:3},
+    {n:"Matière professionnelle 2",note:"",coef:4,diff:3},
+    {n:"Matière professionnelle 3",note:"",coef:3,diff:3},
+    {n:"Stage / Rapport",note:"",coef:3,diff:4},
+  ]},
+  iut:{titre:"IUT / BUT (Bachelor)",matieres:[
+    {n:"UE 1 — Fondamentaux",note:"",coef:4,diff:3},
+    {n:"UE 2 — Méthodes",note:"",coef:3,diff:3},
+    {n:"UE 3 — Professionnalisation",note:"",coef:3,diff:3},
+    {n:"UE 4 — Culture générale",note:"",coef:2,diff:3},
+    {n:"UE 5 — Projet tutoré",note:"",coef:4,diff:4},
+    {n:"LV — Anglais",note:"",coef:2,diff:3},
+  ]},
+  licence:{titre:"Licence (L1, L2, L3) — Fac",matieres:[
+    {n:"UE Fondamentale 1",note:"",coef:6,diff:3},
+    {n:"UE Fondamentale 2",note:"",coef:6,diff:3},
+    {n:"UE Fondamentale 3",note:"",coef:4,diff:3},
+    {n:"UE Complémentaire",note:"",coef:3,diff:3},
+    {n:"UE Découverte / Optionnelle",note:"",coef:3,diff:4},
+    {n:"UE Langues",note:"",coef:3,diff:3},
+    {n:"UE Prépro / Stage",note:"",coef:5,diff:4},
+  ]},
+  master:{titre:"Master (M1, M2)",matieres:[
+    {n:"UE Spécialisation 1",note:"",coef:6,diff:3},
+    {n:"UE Spécialisation 2",note:"",coef:6,diff:3},
+    {n:"UE Méthodologie",note:"",coef:4,diff:3},
+    {n:"UE Recherche / Mémoire",note:"",coef:8,diff:3},
+    {n:"UE Séminaire",note:"",coef:3,diff:4},
+    {n:"UE Langues",note:"",coef:2,diff:4},
+    {n:"Stage professionnel",note:"",coef:5,diff:4},
+  ]},
+  vide:{titre:"Personnalisé",matieres:[
+    {n:"",note:"",coef:1,diff:3},
+    {n:"",note:"",coef:1,diff:3},
+    {n:"",note:"",coef:1,diff:3},
+  ]},
+};
+
+var curTemplate="college";
+var matieres=[];
+var objTarget=14;
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+function g(id){return document.getElementById(id);}
+function fmt(n){return Math.round(n*100)/100;}
+
+function chargerTemplate(tpl,btn){
+  document.querySelectorAll(".ntab").forEach(function(t){t.classList.remove("on");});
+  if(btn) btn.classList.add("on");
+  curTemplate=tpl;
+  var t=TEMPLATES[tpl];
+  matieres=t.matieres.map(function(m){return{n:m.n,note:m.note,coef:m.coef,diff:m.diff};});
+  g("panel-title-txt").textContent="Mes matières — "+t.titre;
+  renderTable();
+  calcMoyenne();
+}
+
+// ══════════════════════════════════════════
+// RENDU TABLE
+// ══════════════════════════════════════════
+var DIFF_COLORS=["#ff5555","#ff8c42","#fcd34d","#4f8ef7","#39d98a"];
+var DIFF_LABELS=["Très difficile","Difficile","Moyen","Facile","Très facile"];
+
+function renderTable(){
+  var tb=g("tbody");
+  tb.innerHTML=matieres.map(function(m,i){
+    var hasNote=m.note!=="";
+    var noteNum=hasNote?parseFloat(m.note):null;
+    var noteColor=noteNum===null?"#5a5a7a":noteNum>=14?"#39d98a":noteNum>=10?"#4f8ef7":noteNum>=8?"#fcd34d":"#ff5555";
+
+    // Dots difficulté
+    var dots="";
+    for(var d=1;d<=5;d++){
+      var col=d<=m.diff?DIFF_COLORS[m.diff-1]:"#2a2a3a";
+      dots+='<span class="diff-dot" style="background:'+col+'" onclick="setDiff('+i+','+d+')" title="'+DIFF_LABELS[d-1]+'"></span>';
+    }
+
+    // Contribution
+    var contrib="—";
+    if(hasNote&&m.coef){
+      contrib=(noteNum*m.coef).toFixed(1);
+    }
+
+    return '<tr class="mrow" id="row-'+i+'">'
+      +'<td><input class="td-input name-input" type="text" placeholder="Nom de la matière" value="'+m.n+'" oninput="setNom('+i+',this.value)"/></td>'
+      +'<td><input class="td-input note-input" type="number" min="0" max="20" step="0.5" placeholder="—" value="'+m.note+'" oninput="setNote('+i+',this.value)"/></td>'
+      +'<td><input class="td-input coef-input" type="number" min="0.5" max="20" step="0.5" placeholder="1" value="'+m.coef+'" oninput="setCoef('+i+',this.value)"/></td>'
+      +'<td><div class="diff-wrap">'+dots+'</div></td>'
+      +'<td style="text-align:center"><span style="font-family:DM Mono,monospace;font-size:12px;font-weight:700;color:'+noteColor+'">'+contrib+'</span></td>'
+      +'<td><button class="btn-del" onclick="supprimerMatiere('+i+')" title="Supprimer">✕</button></td>'
+      +'</tr>';
+  }).join("");
+}
+
+function setNom(i,v){matieres[i].n=v;}
+function setNote(i,v){matieres[i].note=v;renderTable();calcMoyenne();}
+function setCoef(i,v){matieres[i].coef=parseFloat(v)||1;renderTable();calcMoyenne();}
+function setDiff(i,d){matieres[i].diff=d;renderTable();calcMoyenne();}
+
+function ajouterMatiere(){
+  matieres.push({n:"",note:"",coef:1,diff:3});
+  renderTable();
+  // Focus sur le dernier input nom
+  setTimeout(function(){
+    var inputs=g("tbody").querySelectorAll(".name-input");
+    if(inputs.length) inputs[inputs.length-1].focus();
+  },50);
+}
+
+function supprimerMatiere(i){
+  if(matieres.length<=1) return;
+  matieres.splice(i,1);
+  renderTable();
+  calcMoyenne();
+}
+
+function toutEffacer(){
+  matieres=matieres.map(function(m){return{n:m.n,note:"",coef:m.coef,diff:m.diff};});
+  renderTable();
+  calcMoyenne();
+}
+
+// ══════════════════════════════════════════
+// CALCUL MOYENNE
+// ══════════════════════════════════════════
+function calcMoyenne(){
+  objTarget=parseFloat(g("obj-select").value)||14;
+  var valides=matieres.filter(function(m){return m.note!==""&&!isNaN(parseFloat(m.note));});
+
+  if(valides.length===0){
+    g("moy-val").textContent="—";
+    g("moy-mention").textContent="Saisissez vos notes";
+    g("moy-mention").className="moy-mention mention-adm";
+    g("prog-fill").style.width="0%";
+    g("strat-content").innerHTML='<div style="font-size:12px;color:var(--muted);line-height:1.7">Saisissez au moins 2 matières pour obtenir votre stratégie.</div>';
+    return;
+  }
+
+  var sommeCoefNote=0;
+  var sommeCoef=0;
+  var best={note:-1,nom:""};
+  var worst={note:21,nom:""};
+
+  valides.forEach(function(m){
+    var n=parseFloat(m.note);
+    var c=parseFloat(m.coef)||1;
+    sommeCoefNote+=n*c;
+    sommeCoef+=c;
+    if(n>best.note){best={note:n,nom:m.n||"?"}}
+    if(n<worst.note){worst={note:n,nom:m.n||"?"}}
+  });
+
+  var moy=sommeCoefNote/sommeCoef;
+  var moyR=Math.round(moy*100)/100;
+
+  // Couleur selon la note
+  var couleur=moy>=16?"#fcd34d":moy>=14?"#39d98a":moy>=12?"#4f8ef7":moy>=10?"#a78bfa":moy>=8?"#ff8c42":"#ff5555";
+
+  // Afficher
+  g("moy-val").textContent=moyR.toFixed(2).replace(".",",");
+  g("moy-val").style.color=couleur;
+  g("m-best").textContent=best.note>0?best.note.toFixed(1)+"":"—";
+  g("m-worst").textContent=worst.note<21?worst.note.toFixed(1)+"":"—";
+  g("m-total-coef").textContent=sommeCoef;
+
+  // Mention
+  var mention="",mClass="";
+  if(moy>=18){mention="🏆 Félicitations du jury";mClass="mention-el";}
+  else if(moy>=16){mention="⭐ Très Bien";mClass="mention-tb";}
+  else if(moy>=14){mention="👍 Mention Bien";mClass="mention-b";}
+  else if(moy>=12){mention="✓ Mention Assez Bien";mClass="mention-ab";}
+  else if(moy>=10){mention="✓ Admis";mClass="mention-adm";}
+  else if(moy>=8){mention="⚠️ Rattrapage possible";mClass="mention-fail";}
+  else{mention="❌ En difficulté";mClass="mention-fail";}
+  g("moy-mention").textContent=mention;
+  g("moy-mention").className="moy-mention "+mClass;
+
+  // Barre progression
+  var pct=Math.min(100,(moy/20)*100);
+  g("prog-fill").style.width=pct+"%";
+  g("prog-fill").style.background=couleur;
+
+  // Stratégie
+  genererStrategie(moy,sommeCoef,sommeCoefNote,valides);
+  genererObjectif(moy,sommeCoef,sommeCoefNote);
+}
+
+// ══════════════════════════════════════════
+// STRATÉGIE INTELLIGENTE
+// ══════════════════════════════════════════
+function genererStrategie(moy,sumCoef,sumCoefNote,valides){
+  var strategies=[];
+
+  // 1. Matières à fort potentiel (diff faible + coef élevé)
+  var triees=valides.slice().sort(function(a,b){
+    // Score d'effort = coef × (5-diff) × (20-note)/20
+    var sa=a.coef*(6-a.diff)*((20-parseFloat(a.note))/20);
+    var sb=b.coef*(6-b.diff)*((20-parseFloat(b.note))/20);
+    return sb-sa;
+  });
+
+  // 2. Matière la plus "rentable" à améliorer
+  if(triees.length>0){
+    var top=triees[0];
+    var noteActuelle=parseFloat(top.note);
+    var gain=(top.coef*2)/sumCoef; // gain si +2 points dans cette matière
+    strategies.push({
+      type:"danger",
+      icon:"🎯",
+      titre:"Priorité absolue : "+( top.n||"Matière "+1),
+      texte:"Coef "+top.coef+" · Note actuelle : "+noteActuelle.toFixed(1)+"/20. "+
+            "Chaque point gagné ici rapporte <strong>"+((top.coef/sumCoef)*1).toFixed(2)+" point</strong> à votre moyenne. "+
+            "C'est votre meilleur investissement temps/résultat."
+    });
+  }
+
+  // 3. Matière la plus haute — risque de décrochage
+  if(triees.length>1){
+    var bon=valides.filter(function(m){return parseFloat(m.note)>=16;});
+    if(bon.length>0){
+      var bonne=bon[0];
+      strategies.push({
+        type:"ok",
+        icon:"✅",
+        titre:( bonne.n||"Matière")+" — Acquise",
+        texte:"Note de "+parseFloat(bonne.note).toFixed(1)+"/20. Coef "+bonne.coef+". "+
+              "Vous pouvez maintenir sans surtravailler cette matière — concentrez l'effort ailleurs."
+      });
+    }
+  }
+
+  // 4. Alerte si une matière tire très fort vers le bas
+  var mauvaises=valides.filter(function(m){return parseFloat(m.note)<8;});
+  mauvaises.forEach(function(m){
+    strategies.push({
+      type:"danger",
+      icon:"🚨",
+      titre:"Alerte : "+( m.n||"matière")+" sous 8",
+      texte:"Note de "+parseFloat(m.note).toFixed(1)+"/20. Avec un coef de "+m.coef+
+            ", cette matière plombe significativement votre moyenne. "+(m.coef>=3?"Priorité maximale de révision.":"Travaillez-y en parallèle de vos autres révisions.")
+    });
+  });
+
+  // 5. Conseil selon niveau global
+  if(moy<10){
+    strategies.push({type:"warn",icon:"⚠️",titre:"Objectif : passer la barre des 10",texte:"Votre priorité est d'atteindre 10/20. Concentrez-vous sur 2-3 matières à fort coefficient où vous avez encore une marge de progression. Consultez la section 'Notes à avoir' ci-dessous."});
+  } else if(moy>=14&&moy<16){
+    strategies.push({type:"info",icon:"💡",titre:"Presque la mention Très Bien",texte:"Il vous manque "+( 16-moy).toFixed(2)+" points pour atteindre Très Bien (16/20). Identifiez les matières où vous êtes à 14-15 — ce sont les plus faciles à faire basculer."});
+  } else if(moy>=16){
+    strategies.push({type:"ok",icon:"🏆",titre:"Excellente position",texte:"Vous êtes en mention Très Bien. Pour décrocher les Félicitations du jury (18+), il faut être irréprochable sur toutes les matières à fort coefficient."});
+  }
+
+  var html=strategies.map(function(s){
+    return "<div class='strat-item si-"+s.type+"'>"
+      +"<span class='si-icon'>"+s.icon+"</span>"
+      +"<strong>"+s.titre+"</strong>"
+      +"<span>"+s.texte+"</span>"
+      +"</div>";
+  }).join("");
+
+  g("strat-content").innerHTML=html||"<div style='font-size:12px;color:var(--muted)'>Ajoutez plus de matières pour affiner la stratégie.</div>";
+}
+
+// ══════════════════════════════════════════
+// OBJECTIF — NOTES NÉCESSAIRES
+// ══════════════════════════════════════════
+var curObjTarget=14;
+function genererObjectif(moyActuelle,sumCoef,sumCoefNote){
+  var targets=[10,12,14,16,18];
+  var labels=["10 — Valider","12 — AB","14 — Bien","16 — TB","18 — Elite"];
+
+  // Tabs
+  g("obj-tabs").innerHTML=targets.map(function(t,i){
+    return "<button class='obj-tab"+(t===curObjTarget?" on":"")+"' onclick='setObjTarget("+t+")'>"
+      +labels[i]+"</button>";
+  }).join("");
+
+  var totalCoefs=matieres.reduce(function(s,m){return s+(parseFloat(m.coef)||1);},0);
+  var notesRestantes=matieres.filter(function(m){return m.note===""||isNaN(parseFloat(m.note));});
+  var sumCoefRestant=notesRestantes.reduce(function(s,m){return s+(parseFloat(m.coef)||1);},0);
+
+  if(notesRestantes.length===0){
+    // Toutes les notes sont saisies
+    var html="<div style='font-size:12px;color:var(--muted);line-height:1.7'>Toutes vos notes sont saisies. "
+      +(moyActuelle>=curObjTarget
+        ?"<strong style='color:var(--green)'>✅ Objectif atteint !</strong> Votre moyenne de "+moyActuelle.toFixed(2)+"/20 dépasse votre cible de "+curObjTarget+"/20."
+        :"<strong style='color:var(--red)'>❌ Objectif non atteint.</strong> Votre moyenne de "+moyActuelle.toFixed(2)+"/20 est inférieure à "+curObjTarget+"/20. Il vous manquait "+(curObjTarget-moyActuelle).toFixed(2)+" points.")
+      +"</div>";
+    g("obj-content").innerHTML=html;
+    return;
+  }
+
+  // Calculer la note nécessaire dans chaque matière restante
+  var noteNecessaireGlobale=(curObjTarget*totalCoefs-sumCoefNote)/sumCoefRestant;
+
+  var html="<div style='font-size:12px;color:var(--muted);margin-bottom:10px'>Pour atteindre <strong style='color:var(--text)'>"+curObjTarget+"/20</strong>, "
+    +(noteNecessaireGlobale<=20
+      ?"vous devez faire en moyenne <strong style='color:var(--yellow)'>"+noteNecessaireGlobale.toFixed(1)+"/20</strong> dans vos matières restantes."
+      :"<strong style='color:var(--red)'>il est mathématiquement impossible d'atteindre cet objectif</strong> avec les notes actuelles.")
+    +"</div>"
+    +"<div class='obj-rows'>"
+    +notesRestantes.map(function(m){
+      var noteNec=(curObjTarget*totalCoefs-sumCoefNote)/(parseFloat(m.coef)||1);
+      var cls=noteNec>20?"impossible":noteNec<=12?"facile":"possible";
+      var emoji=noteNec>20?"❌":noteNec<=12?"✅":"⚡";
+      return "<div class='obj-row'>"
+        +"<span class='obj-mat'>"+emoji+" "+(m.n||"Matière")+" (coef "+m.coef+")</span>"
+        +"<span class='obj-note "+cls+"'>"+(noteNec>20?"Impossible":noteNec<=0?"Déjà acquis":noteNec.toFixed(1)+"/20")+"</span>"
+        +"</div>";
+    }).join("")
+    +"</div>";
+
+  g("obj-content").innerHTML=html;
+}
+
+function setObjTarget(t){
+  curObjTarget=t;
+  document.querySelectorAll(".obj-tab").forEach(function(tb){tb.classList.remove("on");});
+  document.querySelectorAll(".obj-tab").forEach(function(tb){
+    if(tb.textContent.startsWith(t.toString())) tb.classList.add("on");
+  });
+  calcMoyenne();
+}
+
+// ══════════════════════════════════════════
+// EXPORT
+// ══════════════════════════════════════════
+function exporterResultat(){
+  var valides=matieres.filter(function(m){return m.note!==""&&!isNaN(parseFloat(m.note));});
+  if(valides.length===0){alert("Saisissez d'abord vos notes.");return;}
+  var sommeCoefNote=valides.reduce(function(s,m){return s+parseFloat(m.note)*m.coef;},0);
+  var sommeCoef=valides.reduce(function(s,m){return s+m.coef;},0);
+  var moy=(sommeCoefNote/sommeCoef).toFixed(2);
+  var txt="📊 MES RÉSULTATS — Calculamatix\n\n";
+  valides.forEach(function(m){txt+="• "+( m.n||"Matière")+" : "+parseFloat(m.note).toFixed(1)+"/20 (coef "+m.coef+")\n";});
+  txt+="\nMoyenne générale : "+moy+"/20";
+  txt+="\nCalculé sur calculamatix.com/calculer-moyenne";
+  navigator.clipboard&&navigator.clipboard.writeText(txt).then(function(){alert("Résultats copiés ! Partagez-les où vous voulez.");}).catch(function(){prompt("Copiez vos résultats :",txt);});
+}
+
+function tFaq(el){el.classList.toggle("open");el.nextElementSibling.classList.toggle("open");}
+
+// Init
+chargerTemplate("college",null);
+document.querySelector(".ntab").classList.add("on");
+</script>
+<script src="/suggestions.js"></script>
+<script>try{renderFooter("calculer-moyenne");}catch(e){}</script>
+</body>
+</html>
