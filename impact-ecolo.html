@@ -700,7 +700,7 @@ function buildVerdict(){
 
   // Gestes classés par impact
   var gestes = [
-    {e:'✈️', t:'Réduire/arrêter l\'avion', kg:R.co2Avion*0.8, impact:'essentiel', note:'Votre avion actuel = '+(Math.round(R.co2Avion/1000*10)/10)+'t CO₂. C\'est probablement votre levier #1.'},
+    {e:'✈️', t:'Réduire/arrêter l\'avion', kg:R.co2Avion*0.8, impact:R.co2Avion>300?'essentiel':'inutile', note:R.co2Avion>0?'Votre avion actuel = '+(Math.round(R.co2Avion/1000*10)/10)+'t CO₂. C\'est probablement votre levier #1.':'Vous ne prenez pas l\'avion : aucun gain additionnel ici, concentrez-vous sur les autres postes.'},
     {e:'🥩', t:'Réduire la viande rouge', kg:R.co2Viande*0.7, impact:R.co2Viande>400?'essentiel':'moyen', note:'Passer d\'un repas bœuf à végétarien = −6,5 kg CO₂ à chaque fois.'},
     {e:'🚗', t:'Réduire la voiture', kg:R.co2Voiture*0.4, impact:R.co2Voiture>2000?'essentiel':'moyen', note:'Covoiturage, vélo, TGV — le plus simple selon votre situation géographique.'},
     {e:'🔥', t:'Rénover l\'isolation', kg:R.co2Chauffage*0.5, impact:R.co2Chauffage>1500?'essentiel':'moyen', note:'Passer DPE E à B = −1,5t/an. Le plus impactant pour le logement.'},
@@ -725,9 +725,11 @@ function buildVerdict(){
       +'</div>';
   }).join(''));
 
-  // Actions prioritaires
-  var top3 = gestes.filter(function(g2){ return g2.impact==='essentiel'; }).slice(0,3);
-  if(top3.length < 3) top3 = top3.concat(gestes.filter(function(g2){ return g2.impact==='moyen'; })).slice(0,3);
+  // Actions prioritaires (éviter les actions non pertinentes avec gain quasi nul)
+  var actionable = gestes.filter(function(g2){ return g2.kg >= 20 && g2.impact !== 'inutile'; });
+  if(actionable.length < 3) actionable = gestes.filter(function(g2){ return g2.kg >= 20; });
+  var top3 = actionable.slice(0,3);
+  if(top3.length === 0) top3 = gestes.slice(0,3);
   si('actions-list', top3.map(function(g2,i){
     return '<div style="padding:12px 14px;background:rgba(0,232,106,.04);border:1px solid rgba(0,232,106,.15);border-radius:10px;margin-bottom:8px">'
       +'<div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:3px">'+(i+1)+'. '+g2.e+' '+g2.t+'</div>'
