@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Configurateur PC 2026 — Le plus complet du web français | Calculamatix</title>
+<meta name="description" content="Configurez votre PC sur mesure en 2026 : 50+ composants, comparateur de prix LDLC/Materiel.net/Amazon/Topachat, détection d'incompatibilités, assistant intelligent, alertes pénurie DDR5/GPU."/>
+<link rel="canonical" href="https://calculamatix.com/pc-builder"/>
+<meta property="og:title" content="Configurateur PC 2026 — Le configurateur le plus puissant du web français"/>
+<meta property="og:description" content="Composez votre PC sur mesure avec comparateur de prix multi-marchands, détection d'incompatibilités et conseils pédagogiques sur chaque composant."/>
+<meta property="og:type" content="website"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Comment monter son PC en 2026 ?","acceptedAnswer":{"@type":"Answer","text":"En 2026, le montage PC nécessite de choisir 8 composants compatibles : CPU (processeur), GPU (carte graphique), carte mère, RAM, SSD, alimentation, boîtier, refroidissement. Notre configurateur détecte automatiquement les incompatibilités (socket CPU/CM, puissance alimentation, RAM/CM) et compare les prix sur les principaux revendeurs français."}},{"@type":"Question","name":"Pourquoi un CPU trop puissant pour un GPU faible ne sert à rien ?","acceptedAnswer":{"@type":"Answer","text":"Un CPU trop puissant pour le GPU crée un goulot d'étranglement (bottleneck) : le CPU calcule plus vite que le GPU n'affiche, donc le CPU 'attend'. À l'inverse, un GPU surdimensionné face à un CPU faible perd ses performances. Règle d'or 2026 : le prix du GPU doit être 1,5 à 2,5× celui du CPU pour le gaming. Notre configurateur détecte ces déséquilibres."}},{"@type":"Question","name":"Quels sont les meilleurs sites pour acheter ses pièces PC en France ?","acceptedAnswer":{"@type":"Answer","text":"En 2026, les 4 principaux revendeurs français sont : LDLC (livraison rapide, SAV excellent), Materiel.net (filiale LDLC, prix souvent identiques), Topachat (souvent les meilleurs prix), Amazon (large catalogue, livraison Prime). Cdiscount Pro propose aussi des prix compétitifs sur le matériel professionnel. Toujours comparer avant d'acheter — les écarts atteignent 50-80€ sur certains composants."}},{"@type":"Question","name":"Combien de watts pour mon alimentation PC ?","acceptedAnswer":{"@type":"Answer","text":"La règle 2026 : additionnez la consommation TGP du GPU + TDP du CPU + 100W pour les autres composants, puis ajoutez 30% de marge. Exemple : RTX 5090 (575W) + Ryzen 9 9950X3D (170W) + 100W = 845W → alim 1100W minimum. Sous-dimensionner l'alim provoque des plantages, des reboots aléatoires, et peut endommager les composants. Privilégier ATX 3.1 avec connecteur 12V-2x6 natif."}}]}</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06070d;--bg2:#0d0e16;--card:#10121d;--border:#1a1d2c;--cardh:#161827;
+  --text:#eef0f8;--muted:#5a5f78;--dim:#171a26;
+  --c1:#00d9ff;--c2:#9d4edd;--c3:#06ffa5;--c4:#ffbe0b;--c5:#ff006e;--c6:#fb5607;
+  --green:#06ffa5;--red:#ff3358;--orange:#ffbe0b;--yellow:#ffd60a;
+}
+body{background:var(--bg);color:var(--text);font-family:"Space Grotesk",sans-serif;min-height:100vh;font-size:15px}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 40% at 80% 0%,rgba(0,217,255,.07),transparent),
+             radial-gradient(ellipse 50% 50% at 0% 100%,rgba(157,78,221,.05),transparent),
+             radial-gradient(ellipse 40% 30% at 50% 50%,rgba(6,255,165,.03),transparent)}
+
+nav{position:relative;z-index:10;max-width:1400px;margin:0 auto;padding:18px 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:"Syne",sans-serif;font-weight:800;font-size:18px;text-decoration:none;color:var(--text)}
+.logo em{font-style:normal;color:var(--c1)}
+.back{font-size:13px;color:var(--muted);text-decoration:none}.back:hover{color:var(--text)}
+
+/* HERO */
+.hero{position:relative;z-index:10;max-width:1400px;margin:8px auto 0;padding:0 24px 24px;text-align:center}
+.eyebrow{font-size:11px;font-family:"DM Mono",monospace;color:var(--c1);text-transform:uppercase;letter-spacing:3px;margin-bottom:10px}
+h1{font-family:"Syne",sans-serif;font-weight:800;font-size:clamp(28px,5vw,52px);letter-spacing:-1.5px;line-height:1.05;margin-bottom:10px}
+h1 .hl{background:linear-gradient(135deg,var(--c1),var(--c2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-desc{font-size:15px;color:var(--muted);line-height:1.7;max-width:660px;margin:0 auto 14px}
+
+.alert-2026{background:linear-gradient(90deg,rgba(255,51,88,.1),rgba(255,190,11,.06));border:1.5px solid rgba(255,51,88,.25);border-radius:12px;padding:11px 18px;max-width:880px;margin:0 auto;display:flex;align-items:center;gap:12px;text-align:left}
+.alert-icon{font-size:22px;flex-shrink:0}
+.alert-text{font-size:12px;color:var(--text);line-height:1.55}
+.alert-text strong{color:var(--orange)}
+
+/* TABS MODES */
+.modes-bar{position:relative;z-index:10;max-width:1400px;margin:20px auto 0;padding:0 24px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.mode-tab{background:var(--card);border:1.5px solid var(--border);color:var(--muted);padding:10px 22px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:"Space Grotesk",sans-serif;display:flex;align-items:center;gap:8px}
+.mode-tab:hover{border-color:var(--c1);color:var(--text)}
+.mode-tab.on{background:linear-gradient(135deg,rgba(0,217,255,.15),rgba(157,78,221,.1));border-color:var(--c1);color:var(--c1)}
+.mode-tab-emoji{font-size:16px}
+
+/* SCREENS */
+.screen{display:none;position:relative;z-index:10}
+.screen.on{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* PROFILS RAPIDES */
+.profils-wrap{max-width:1400px;margin:24px auto 0;padding:0 24px}
+.profils-title{font-size:11px;font-family:"DM Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;text-align:center}
+.profils-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:24px}
+.profil-card{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:16px 12px;cursor:pointer;transition:all .2s;text-align:center;position:relative;overflow:hidden}
+.profil-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .2s}
+.profil-card:hover{transform:translateY(-3px);border-color:var(--c1)}
+.profil-card.on::before{opacity:1}
+.profil-card.on{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.pc1::before{background:var(--c4)}.pc1.on{border-color:var(--c4)}
+.pc2::before{background:var(--c1)}.pc2.on{border-color:var(--c1)}
+.pc3::before{background:var(--c5)}.pc3.on{border-color:var(--c5)}
+.pc4::before{background:var(--c2)}.pc4.on{border-color:var(--c2)}
+.pc5::before{background:var(--c3)}.pc5.on{border-color:var(--c3)}
+.pc6::before{background:var(--c6)}.pc6.on{border-color:var(--c6)}
+.profil-emoji{font-size:26px;margin-bottom:6px;display:block}
+.profil-name{font-size:13px;font-weight:700;margin-bottom:2px}
+.profil-budget{font-size:10px;color:var(--muted);font-family:"DM Mono",monospace}
+
+/* MAIN LAYOUT */
+.main{max-width:1400px;margin:0 auto;padding:0 24px 60px;display:grid;grid-template-columns:1fr 380px;gap:22px;align-items:start}
+
+.left-col{display:flex;flex-direction:column;gap:12px}
+
+.config-bar{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.cb-info{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.cb-tag{font-size:11px;font-family:"DM Mono",monospace;color:var(--text);background:linear-gradient(135deg,rgba(0,217,255,.1),rgba(157,78,221,.1));border:1px solid rgba(0,217,255,.2);padding:5px 12px;border-radius:100px;font-weight:600}
+.cb-stats{display:flex;gap:14px;font-size:12px;flex-wrap:wrap}
+.cb-stat-l{color:var(--muted);font-size:11px}
+.cb-stat-v{color:var(--text);font-family:"DM Mono",monospace;font-weight:700;margin-left:5px}
+.cb-actions{display:flex;gap:6px}
+.cb-btn{background:var(--dim);border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:8px;font-size:11px;cursor:pointer;font-family:"Space Grotesk",sans-serif;transition:all .15s}
+.cb-btn:hover{color:var(--text);border-color:var(--c1)}
+
+/* COMPATIBILITY ALERTS */
+.compat-alerts{display:flex;flex-direction:column;gap:8px}
+.compat-alert{padding:11px 14px;border-radius:11px;font-size:12px;display:flex;align-items:flex-start;gap:10px;line-height:1.55;border:1px solid}
+.ca-error{background:rgba(255,51,88,.07);border-color:rgba(255,51,88,.3);color:var(--text)}
+.ca-warn{background:rgba(255,190,11,.06);border-color:rgba(255,190,11,.25);color:var(--text)}
+.ca-info{background:rgba(0,217,255,.05);border-color:rgba(0,217,255,.2);color:var(--text)}
+.ca-icon{font-size:16px;flex-shrink:0}
+.ca-text strong{color:var(--text)}
+
+/* COMPO LIST */
+.compo-list{display:flex;flex-direction:column;gap:10px}
+
+.compo{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;transition:border-color .15s}
+.compo:hover{border-color:rgba(0,217,255,.25)}
+.compo-head{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center}
+.compo-icon{font-size:28px;width:50px;height:50px;background:var(--dim);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.compo-body{min-width:0}
+.compo-cat-row{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.compo-cat{font-size:10px;font-family:"DM Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px}
+.compo-help-btn{font-size:11px;color:var(--c1);cursor:pointer;background:none;border:none;font-family:"DM Mono",monospace;padding:0;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
+.compo-help-btn:hover{color:var(--text)}
+.compo-name{font-size:14px;font-weight:600;margin-bottom:5px;line-height:1.3}
+.compo-meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.compo-pill{font-size:10px;font-family:"DM Mono",monospace;padding:2px 8px;border-radius:100px;font-weight:600}
+.pill-up{background:rgba(255,51,88,.12);color:var(--red);border:1px solid rgba(255,51,88,.25)}
+.pill-down{background:rgba(6,255,165,.12);color:var(--green);border:1px solid rgba(6,255,165,.25)}
+.pill-stable{background:rgba(255,190,11,.1);color:var(--orange);border:1px solid rgba(255,190,11,.2)}
+.pill-occasion{background:rgba(157,78,221,.12);color:var(--c2);border:1px solid rgba(157,78,221,.25)}
+.pill-attendre{background:rgba(255,190,11,.1);color:var(--orange);border:1px solid rgba(255,190,11,.2)}
+.pill-acheter{background:rgba(6,255,165,.12);color:var(--green);border:1px solid rgba(6,255,165,.25)}
+.compo-prix{text-align:right;flex-shrink:0}
+.prix-now{font-family:"Syne",sans-serif;font-size:22px;font-weight:800;line-height:1;color:var(--c1)}
+.prix-was{font-size:11px;color:var(--muted);text-decoration:line-through;margin-top:2px;font-family:"DM Mono",monospace}
+
+.compo-actions{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);flex-wrap:wrap}
+.compo-change-btn{background:var(--dim);border:1px solid var(--border);color:var(--text);padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:"Space Grotesk",sans-serif;font-weight:600;display:flex;align-items:center;gap:6px;transition:all .15s}
+.compo-change-btn:hover{background:rgba(0,217,255,.08);border-color:var(--c1);color:var(--c1)}
+.compo-shop-btn{background:linear-gradient(135deg,rgba(0,217,255,.1),rgba(157,78,221,.1));border:1px solid rgba(0,217,255,.3);color:var(--c1);padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:6px;transition:all .15s;font-family:"Space Grotesk",sans-serif}
+.compo-shop-btn:hover{background:rgba(0,217,255,.15)}
+
+.compo-detail{margin-top:10px;padding:12px;background:var(--bg2);border-radius:10px;font-size:12px;color:var(--muted);line-height:1.7;display:none}
+.compo-detail.open{display:block}
+.compo-detail strong{color:var(--text)}
+
+.compo-shops{margin-top:10px;padding:12px;background:var(--bg2);border-radius:10px;display:none}
+.compo-shops.open{display:block}
+.shops-title{font-size:10px;font-family:"DM Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px}
+.shops-list{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.shop-link{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:var(--text);font-size:12px;transition:all .15s}
+.shop-link:hover{border-color:var(--c1);background:var(--cardh);transform:translateX(2px)}
+.shop-name{font-weight:600;display:flex;align-items:center;gap:7px}
+.shop-emoji{font-size:14px}
+.shop-prix{font-family:"DM Mono",monospace;font-weight:700;color:var(--c1)}
+.shop-best{font-size:9px;background:var(--green);color:#000;padding:1px 6px;border-radius:100px;margin-left:4px;font-weight:800}
+.shops-disclaimer{font-size:10px;color:var(--muted);margin-top:10px;font-style:italic;line-height:1.5}
+
+/* MODAL CHANGE COMPONENT */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s}
+.modal-overlay.on{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:18px;max-width:700px;width:100%;max-height:85vh;display:flex;flex-direction:column;overflow:hidden}
+.modal-header{padding:20px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:"Syne",sans-serif;font-weight:800;font-size:18px}
+.modal-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:var(--dim);color:var(--text)}
+.modal-body{flex:1;overflow-y:auto;padding:18px 22px}
+.modal-options{display:flex;flex-direction:column;gap:8px}
+.modal-option{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;transition:all .15s}
+.modal-option:hover{border-color:var(--c1);background:var(--cardh)}
+.modal-option.selected{border-color:var(--green);background:rgba(6,255,165,.05)}
+.mo-name{font-size:14px;font-weight:600;margin-bottom:3px}
+.mo-detail{font-size:11px;color:var(--muted);line-height:1.5}
+.mo-prix{text-align:right}
+.mo-prix-now{font-family:"Syne",sans-serif;font-size:18px;font-weight:800;color:var(--c1)}
+.mo-trend{font-size:10px;font-family:"DM Mono",monospace;margin-top:2px}
+
+/* RIGHT PANEL */
+.right-col{position:sticky;top:14px;display:flex;flex-direction:column;gap:12px}
+
+.total-card{background:linear-gradient(135deg,#0e1428,#0a0c18);border:1px solid var(--border);border-radius:18px;padding:22px;position:relative;overflow:hidden}
+.total-card::before{content:"";position:absolute;top:-50px;right:-50px;width:200px;height:200px;background:radial-gradient(circle,rgba(0,217,255,.15),transparent 70%);pointer-events:none}
+.total-label{font-size:10px;font-family:"DM Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;position:relative;z-index:1}
+.total-value{font-family:"Syne",sans-serif;font-size:46px;font-weight:800;line-height:1;letter-spacing:-2px;position:relative;z-index:1;background:linear-gradient(135deg,var(--c1),var(--c2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.total-detail{display:flex;justify-content:space-between;margin-top:13px;padding-top:13px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);position:relative;z-index:1}
+.total-detail-v{font-family:"DM Mono",monospace;color:var(--text);font-weight:700}
+
+.recommandation{border-radius:14px;padding:16px;border:1.5px solid}
+.reco-attendre{background:rgba(255,190,11,.06);border-color:rgba(255,190,11,.3)}
+.reco-acheter{background:rgba(6,255,165,.04);border-color:rgba(6,255,165,.25)}
+.reco-mixte{background:rgba(157,78,221,.05);border-color:rgba(157,78,221,.25)}
+.reco-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.reco-emoji{font-size:20px}
+.reco-title{font-size:13px;font-weight:700}
+.reco-text{font-size:12px;color:var(--muted);line-height:1.65}
+.reco-text strong{color:var(--text)}
+
+.perf-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+.perf-title{font-size:10px;font-family:"DM Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:13px}
+.perf-row{margin-bottom:10px}
+.perf-row:last-child{margin-bottom:0}
+.perf-header{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.perf-l{color:var(--muted)}
+.perf-v{font-family:"DM Mono",monospace;font-weight:700}
+.perf-bar{height:6px;background:var(--dim);border-radius:3px;overflow:hidden}
+.perf-fill{height:100%;border-radius:3px;transition:width .8s ease}
+
+.export-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px}
+.export-btns{display:flex;flex-direction:column;gap:6px}
+.export-btn{background:var(--dim);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:"Space Grotesk",sans-serif;display:flex;align-items:center;gap:8px;transition:all .15s}
+.export-btn:hover{background:rgba(0,217,255,.06);border-color:var(--c1)}
+
+/* ASSISTANT */
+.assistant-wrap{max-width:760px;margin:24px auto 0;padding:0 24px 50px}
+.assistant-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:32px;position:relative;overflow:hidden}
+.assistant-progress{display:flex;gap:5px;margin-bottom:24px;align-items:center}
+.aprog{flex:1;height:3px;border-radius:2px;background:var(--dim)}
+.aprog.done{background:var(--c3)}
+.aprog.cur{background:linear-gradient(90deg,var(--c1),rgba(0,217,255,.3))}
+.aprog-num{font-size:11px;font-family:"DM Mono",monospace;color:var(--muted);margin-left:8px}
+
+.aq-step{display:none;animation:fadeIn .25s}
+.aq-step.on{display:block}
+.aq-label{font-size:11px;font-family:"DM Mono",monospace;color:var(--c1);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+.aq-question{font-family:"Syne",sans-serif;font-size:24px;font-weight:800;letter-spacing:-1px;line-height:1.15;margin-bottom:8px}
+.aq-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px}
+.aq-options{display:grid;gap:10px}
+.aq-opt2{grid-template-columns:1fr 1fr}
+.aq-opt3{grid-template-columns:repeat(3,1fr)}
+.aq-opt4{grid-template-columns:repeat(2,1fr)}
+.aq-option{background:var(--bg2);border:2px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all .15s;text-align:center}
+.aq-option:hover{border-color:var(--c1);transform:translateY(-2px)}
+.aq-option.sel{border-color:var(--c3);background:rgba(6,255,165,.04)}
+.aq-emoji{font-size:24px;margin-bottom:6px;display:block}
+.aq-opt-title{font-size:13px;font-weight:700;margin-bottom:3px}
+.aq-opt-sub{font-size:11px;color:var(--muted);line-height:1.5}
+
+.aq-budget-slider{margin-top:16px}
+.aq-budget-display{font-family:"Syne",sans-serif;font-size:36px;font-weight:800;text-align:center;margin-bottom:12px;background:linear-gradient(135deg,var(--c1),var(--c2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+input[type=range]{width:100%;-webkit-appearance:none;height:5px;background:var(--dim);border-radius:3px;cursor:pointer;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;background:var(--c1);border-radius:50%;box-shadow:0 0 12px rgba(0,217,255,.5);border:3px solid var(--bg2);cursor:pointer}
+.aq-budget-marks{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:7px;font-family:"DM Mono",monospace}
+
+.aq-nav{display:flex;gap:10px;margin-top:24px}
+.aq-btn{padding:12px 20px;border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:"Space Grotesk",sans-serif;transition:all .15s}
+.aq-btn-back{background:var(--dim);color:var(--muted);border:1px solid var(--border)}
+.aq-btn-back:hover{color:var(--text)}
+.aq-btn-next{background:linear-gradient(135deg,var(--c1),var(--c2));color:#000;flex:1;letter-spacing:-.3px}
+.aq-btn-next:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,217,255,.3)}
+.aq-btn-next:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* COMPATIBILITY EDUCATION */
+.education-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:16px;border-left:3px solid var(--c1)}
+.edu-title{font-size:11px;font-family:"DM Mono",monospace;color:var(--c1);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.edu-text{font-size:12px;color:var(--muted);line-height:1.7}
+.edu-text strong{color:var(--text)}
+
+/* FAQ */
+.faq-section{position:relative;z-index:10;max-width:1100px;margin:0 auto;padding:0 24px 60px}
+.faq-h2{font-family:"Syne",sans-serif;font-size:26px;font-weight:800;letter-spacing:-1px;margin-bottom:18px}
+.fitem{border-bottom:1px solid var(--border);padding:16px 0}
+.fq{font-size:14px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;gap:10px}
+.fq::after{content:"+";font-size:20px;color:var(--c1);flex-shrink:0;line-height:1}
+.fq.open::after{content:"−"}
+.fa{font-size:13px;color:var(--muted);line-height:1.85;max-height:0;overflow:hidden;transition:max-height .35s}
+.fa.open{max-height:400px;padding-top:10px}
+
+.affil-disclaimer{position:relative;z-index:10;max-width:1100px;margin:0 auto;padding:0 24px 30px;text-align:center;font-size:11px;color:var(--muted);font-style:italic;line-height:1.6}
+
+@media(max-width:1100px){
+  .main{grid-template-columns:1fr}
+  .right-col{position:static}
+  .profils-grid{grid-template-columns:1fr 1fr 1fr}
+}
+@media(max-width:600px){
+  .profils-grid{grid-template-columns:1fr 1fr}
+  .compo-head{grid-template-columns:auto 1fr;grid-template-rows:auto auto}
+  .compo-prix{grid-column:1/-1;display:flex;align-items:baseline;gap:10px}
+  .shops-list{grid-template-columns:1fr}
+  .aq-options.aq-opt3{grid-template-columns:1fr}
+  .aq-question{font-size:20px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">Calcula<em>matix</em></a>
+  <a class="back" href="index.html">← Retour</a>
+</nav>
+
+<div class="hero">
+  <div class="eyebrow">Configurateur PC · Avril 2026 · Comparateur de prix intégré</div>
+  <h1>Le configurateur <span class="hl">PC</span> le plus complet de France</h1>
+  <p class="hero-desc">Composez votre PC sur mesure avec 50+ composants, comparateur de prix multi-marchands, détection d'incompatibilités et conseils pédagogiques.</p>
+  <div class="alert-2026">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-text"><strong>Marché PC en avril 2026 :</strong> Pénurie DDR5 (kit 32 Go ×4 vs 2024), RTX 5090 à 3500€+, GPU haut de gamme en hausse. Le configurateur intègre ces tensions dans ses recommandations.</div>
+  </div>
+</div>
+
+<div class="modes-bar">
+  <button class="mode-tab on" data-mode="rapide" onclick="setMode('rapide',this)">
+    <span class="mode-tab-emoji">⚡</span> Profils rapides
+  </button>
+  <button class="mode-tab" data-mode="custom" onclick="setMode('custom',this)">
+    <span class="mode-tab-emoji">🎛️</span> Personnalisé
+  </button>
+  <button class="mode-tab" data-mode="assistant" onclick="setMode('assistant',this)">
+    <span class="mode-tab-emoji">🤖</span> Assistant intelligent
+  </button>
+</div>
+
+<!-- ═══════ MODE RAPIDE / PERSONNALISÉ ═══════ -->
+<div class="screen on" id="screen-config">
+  <div class="profils-wrap" id="profils-wrap">
+    <div class="profils-title">Choisissez votre profil de départ</div>
+    <div class="profils-grid">
+      <div class="profil-card pc1 on" data-profil="economique" onclick="selProfil('economique',this)">
+        <span class="profil-emoji">💚</span><div class="profil-name">Économique</div><div class="profil-budget">~700€</div>
+      </div>
+      <div class="profil-card pc2" data-profil="bureautique" onclick="selProfil('bureautique',this)">
+        <span class="profil-emoji">💼</span><div class="profil-name">Bureautique</div><div class="profil-budget">~900€</div>
+      </div>
+      <div class="profil-card pc3" data-profil="gamer-1080" onclick="selProfil('gamer-1080',this)">
+        <span class="profil-emoji">🎮</span><div class="profil-name">Gaming 1080p</div><div class="profil-budget">~1300€</div>
+      </div>
+      <div class="profil-card pc4" data-profil="gamer-1440" onclick="selProfil('gamer-1440',this)">
+        <span class="profil-emoji">🚀</span><div class="profil-name">Gaming 1440p</div><div class="profil-budget">~1900€</div>
+      </div>
+      <div class="profil-card pc5" data-profil="gamer-4k" onclick="selProfil('gamer-4k',this)">
+        <span class="profil-emoji">👑</span><div class="profil-name">Gaming 4K</div><div class="profil-budget">~3500€</div>
+      </div>
+      <div class="profil-card pc6" data-profil="ia-creation" onclick="selProfil('ia-creation',this)">
+        <span class="profil-emoji">🤖</span><div class="profil-name">IA / Création</div><div class="profil-budget">~2800€</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="left-col">
+      <div class="config-bar">
+        <div class="cb-info">
+          <span class="cb-tag" id="cb-profil-name">💚 Économique</span>
+          <div class="cb-stats">
+            <div><span class="cb-stat-l">Composants:</span><span class="cb-stat-v" id="cb-nb">8</span></div>
+            <div><span class="cb-stat-l">Conso:</span><span class="cb-stat-v" id="cb-conso">—</span></div>
+          </div>
+        </div>
+        <div class="cb-actions">
+          <button class="cb-btn" onclick="resetConfig()">↻ Réinitialiser</button>
+        </div>
+      </div>
+      <div class="compat-alerts" id="compat-alerts"></div>
+      <div class="compo-list" id="compo-list"></div>
+    </div>
+
+    <div class="right-col">
+      <div class="total-card">
+        <div class="total-label">Total estimé · Avril 2026</div>
+        <div class="total-value" id="total-prix">—</div>
+        <div class="total-detail"><div>Prix conseillé (avant pénurie)</div><div class="total-detail-v" id="prix-conseille">—</div></div>
+        <div class="total-detail"><div>Optimisé occasion</div><div class="total-detail-v" id="prix-occasion" style="color:var(--c2)">—</div></div>
+        <div class="total-detail"><div>Si on attend fin 2026</div><div class="total-detail-v" id="prix-attente" style="color:var(--green)">—</div></div>
+      </div>
+      <div class="recommandation" id="recommandation"></div>
+      <div class="perf-card">
+        <div class="perf-title">📊 Performances attendues</div>
+        <div id="perf-list"></div>
+      </div>
+      <div class="export-card">
+        <div class="perf-title">📤 Partager / exporter</div>
+        <div class="export-btns">
+          <button class="export-btn" onclick="copyConfig()">📋 Copier ma config</button>
+          <button class="export-btn" onclick="shareConfig()">🔗 Partager le lien</button>
+          <button class="export-btn" onclick="printConfig()">🖨️ Imprimer la liste</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ MODE ASSISTANT ═══════ -->
+<div class="screen" id="screen-assistant">
+  <div class="assistant-wrap">
+    <div class="assistant-card">
+      <div class="assistant-progress" id="assist-progress"></div>
+      <div id="assist-content"></div>
+      <div class="aq-nav" id="assist-nav"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ MODAL CHANGER COMPOSANT ═══════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalIfBg(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Choisir un composant</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-options" id="modal-options"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq-section">
+  <h2 class="faq-h2">Comprendre les composants PC en 2026</h2>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Pourquoi les composants doivent-ils être compatibles entre eux ?</div><div class="fa">Un PC fonctionne en chaîne — chaque composant communique avec les autres via la <strong>carte mère</strong>. Trois compatibilités critiques : (1) <strong>Socket CPU/CM</strong> : un Ryzen 9000 ne fonctionne QUE sur socket AM5 (B650, B850, X670E, X870E). Un Intel Core 14000 sur LGA1700, un Core Ultra 200 sur LGA1851. (2) <strong>RAM</strong> : DDR4 ou DDR5 selon la carte mère, jamais les deux. (3) <strong>Alimentation</strong> : doit fournir assez de watts pour CPU + GPU + 30% de marge. Notre configurateur détecte automatiquement ces 3 incompatibilités et vous alerte en rouge.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Qu'est-ce qu'un goulot d'étranglement (bottleneck) ?</div><div class="fa">C'est quand un composant limite les performances d'un autre. Exemple : RTX 5090 à 2500€ avec un Ryzen 5 5600 à 130€ — le CPU est trop faible, il n'arrive pas à "alimenter" le GPU en données. Résultat : tu paies 2500€ une carte qui tourne à 60% de ses capacités. À l'inverse : Ryzen 9 9950X3D avec une RTX 5060 — le CPU s'ennuie, le GPU est saturé. <strong>Règle d'or 2026</strong> : pour le gaming, le prix du GPU doit être 1,5 à 2,5× celui du CPU. Notre configurateur détecte ces déséquilibres et te prévient.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">À quoi sert chaque composant d'un PC ?</div><div class="fa"><strong>CPU (processeur)</strong> : le cerveau, calcule tout. Le X3D AMD est imbattable en gaming. <strong>GPU (carte graphique)</strong> : affiche les pixels, le composant n°1 pour le gaming. <strong>RAM</strong> : mémoire vive temporaire — 32 Go DDR5 6000 MHz CL30 = sweet spot 2026. <strong>SSD NVMe</strong> : stockage rapide, charge OS et jeux. <strong>Carte mère</strong> : connecte tout. <strong>Alimentation (PSU)</strong> : fournit l'électricité — JAMAIS d'occasion. <strong>Boîtier</strong> : héberge tout, gère le refroidissement par airflow. <strong>Refroidissement</strong> : ventirad ou AIO (watercooling tout-en-un) pour le CPU.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Où acheter ses composants en France en 2026 ?</div><div class="fa">Les 4 grands revendeurs sérieux : <strong>LDLC</strong> (livraison rapide, SAV au top, parfois plus cher), <strong>Materiel.net</strong> (filiale LDLC, mêmes garanties), <strong>Topachat</strong> (souvent les meilleurs prix, livraison correcte), <strong>Amazon</strong> (large catalogue, livraison Prime, attention aux vendeurs tiers). <strong>Rue du Commerce</strong> et <strong>Cdiscount Pro</strong> proposent aussi du bon matos. Notre comparateur vous montre les 4 prix en parallèle pour chaque composant — utile car les écarts atteignent souvent 50-80€.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Quelle alimentation choisir et combien de watts ?</div><div class="fa">Calcul simple : <strong>TGP du GPU + TDP du CPU + 100W</strong> pour les autres composants, puis ajoutez <strong>30% de marge</strong>. Exemples : RTX 5060 + Ryzen 5 7600 = 145+65+100 = 310W → alim 500W suffit. RTX 5080 + Ryzen 7 9800X3D = 360+120+100 = 580W → alim 850W. RTX 5090 + Ryzen 9 9950X3D = 575+170+100 = 845W → alim 1000-1100W. Privilégiez les certifications <strong>80 Plus Gold/Platinum</strong>, normes <strong>ATX 3.1</strong> avec connecteur <strong>12V-2x6 natif</strong> (évite les adaptateurs qui ont brûlé sur certaines RTX 4090). Marques fiables : be quiet!, Corsair, Seasonic, Thermaltake.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">DDR4 ou DDR5 en 2026 — vu la pénurie ?</div><div class="fa">Cas n°1 : <strong>nouveau PC</strong> → DDR5 obligatoire (les CPU Ryzen 9000 et Intel Core Ultra 200 ne supportent QUE la DDR5). Sweet spot : 32 Go 6000 MHz CL30 EXPO/XMP, ~310€. Cas n°2 : <strong>vous avez déjà DDR4</strong> → gardez-la ! Un kit DDR4 32 Go reste à 150€ vs 310€ DDR5. Vous pouvez choisir une plateforme legacy (AM4 Ryzen 5000 ou Intel LGA1700 DDR4). Cas n°3 : <strong>budget serré, neuf</strong> → 16 Go DDR5 5600 (~160€) maintenant, upgrade plus tard. Évitez les fréquences > 6400 MHz qui forcent les CPU AMD en mode dégradé.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Quels composants acheter d'occasion sans risque ?</div><div class="fa"><strong>OUI</strong> : Boîtier (aucun risque, économies réelles), GPU si vendeur fiable et garantie restante (RTX 4070/4080 à -30%), Ventirad air, Carte mère (vérifier socket et BIOS). <strong>NON</strong> : CPU (peu d'écart neuf/occasion, garantie perdue), RAM (durée de vie limitée, prix très volatils), SSD (usure flash NAND), Alimentation (JAMAIS — risque incendie ou destruction des composants). En 2026, le meilleur deal occasion c'est le <strong>GPU</strong> : une RTX 4080 d'occasion vérifiée à 680€ au lieu de 1200€ neuve.</div></div>
+</div>
+
+<div class="affil-disclaimer">
+  ⓘ Liens vers les revendeurs partenaires. Les prix peuvent varier. Calculamatix peut percevoir une commission sur certains achats sans surcoût pour vous.
+</div>
+<script>
+// ══════════════════════════════════════════════════
+// COMPOSANTS PC 2026 — Prix avril 2026 (LDLC, Materiel.net, Topachat, Amazon)
+// ══════════════════════════════════════════════════
+var COMPOSANTS={
+  cpu:{
+    "ryzen5-7600":{n:"AMD Ryzen 5 7600",p:179,was:189,trend:"stable",perf:65,conso:65,socket:"AM5",ramType:"DDR5",detail:"6 cœurs / 12 threads à 5,1 GHz boost. Excellent rapport qualité/prix. <strong>Plateforme AM5 supportée jusqu'en 2027</strong>, donc upgrade futur sans changer de carte mère.",ldlc:"https://www.ldlc.com/recherche/Ryzen+5+7600/",materiel:"https://www.materiel.net/recherche/?q=ryzen+7600",topachat:"https://www.topachat.com/recherche/?q=ryzen+7600",amazon:"https://www.amazon.fr/s?k=ryzen+5+7600"},
+    "ryzen7-7700":{n:"AMD Ryzen 7 7700",p:289,was:319,trend:"down",perf:78,conso:65,socket:"AM5",ramType:"DDR5",detail:"8 cœurs / 16 threads. Polyvalent gaming + création. Sweet spot AM5 pour la productivité sans aller jusqu'au X3D.",ldlc:"https://www.ldlc.com/recherche/Ryzen+7+7700/",materiel:"https://www.materiel.net/recherche/?q=ryzen+7700",topachat:"https://www.topachat.com/recherche/?q=ryzen+7700",amazon:"https://www.amazon.fr/s?k=ryzen+7+7700"},
+    "ryzen7-7800x3d":{n:"AMD Ryzen 7 7800X3D",p:279,was:429,trend:"down",perf:90,conso:120,socket:"AM5",ramType:"DDR5",detail:"<strong>⭐ Le meilleur deal 2026.</strong> 8 cœurs avec 3D V-Cache (96 Mo). Offre 95% des perfs du 9800X3D pour 200€ de moins. Imbattable en gaming.",ldlc:"https://www.ldlc.com/recherche/Ryzen+7+7800X3D/",materiel:"https://www.materiel.net/recherche/?q=ryzen+7800x3d",topachat:"https://www.topachat.com/recherche/?q=ryzen+7800x3d",amazon:"https://www.amazon.fr/s?k=ryzen+7+7800x3d"},
+    "ryzen7-9800x3d":{n:"AMD Ryzen 7 9800X3D",p:459,was:479,trend:"down",perf:100,conso:120,socket:"AM5",ramType:"DDR5",detail:"<strong>LE meilleur CPU gaming 2026.</strong> Bat le Core Ultra 9 285K de 38% en gaming pur. AM5 jusqu'en 2027. V-Cache 2e gen sous les cœurs.",ldlc:"https://www.ldlc.com/recherche/Ryzen+7+9800X3D/",materiel:"https://www.materiel.net/recherche/?q=ryzen+9800x3d",topachat:"https://www.topachat.com/recherche/?q=ryzen+9800x3d",amazon:"https://www.amazon.fr/s?k=ryzen+7+9800x3d"},
+    "ryzen9-9950x3d":{n:"AMD Ryzen 9 9950X3D",p:695,was:749,trend:"stable",perf:108,conso:170,socket:"AM5",ramType:"DDR5",detail:"16 cœurs / 32 threads avec V-Cache double CCD. Le top absolu pour <strong>gaming + création</strong> (montage 4K, rendu 3D, IA locale).",ldlc:"https://www.ldlc.com/recherche/9950X3D/",materiel:"https://www.materiel.net/recherche/?q=9950x3d",topachat:"https://www.topachat.com/recherche/?q=9950x3d",amazon:"https://www.amazon.fr/s?k=ryzen+9+9950x3d"},
+    "i5-14600k":{n:"Intel Core i5-14600K",p:297,was:265,trend:"up",perf:75,conso:181,socket:"LGA1700",ramType:"DDR4/DDR5",detail:"14 cœurs (6P+8E) / 20 threads. Bon en gaming, polyvalent. <strong>Plateforme LGA1700 en fin de vie</strong> — pas d'upgrade futur.",ldlc:"https://www.ldlc.com/recherche/14600K/",materiel:"https://www.materiel.net/recherche/?q=14600k",topachat:"https://www.topachat.com/recherche/?q=14600k",amazon:"https://www.amazon.fr/s?k=i5+14600k"},
+    "ultra9-285k":{n:"Intel Core Ultra 9 285K",p:579,was:560,trend:"up",perf:88,conso:250,socket:"LGA1851",ramType:"DDR5",detail:"24 cœurs Arrow Lake. Bon pour création (24 cœurs vs 8 chez Ryzen 7), <strong>en retrait en gaming</strong> vs AMD X3D (-38%).",ldlc:"https://www.ldlc.com/recherche/Ultra+9+285K/",materiel:"https://www.materiel.net/recherche/?q=ultra+9+285k",topachat:"https://www.topachat.com/recherche/?q=ultra+285k",amazon:"https://www.amazon.fr/s?k=core+ultra+9+285k"}
+  },
+  gpu:{
+    "no-gpu":{n:"Pas de carte graphique dédiée",p:0,was:0,trend:"stable",perf:5,conso:0,detail:"Utilise le GPU intégré du CPU. Suffit pour bureautique, web, vidéo HD. Pas de jeux modernes.",ldlc:"#",materiel:"#",topachat:"#",amazon:"#"},
+    "rtx5060":{n:"NVIDIA RTX 5060 8 Go",p:299,was:329,trend:"down",perf:55,conso:145,detail:"Entrée de gamme 1080p. <strong>8 Go limitant en 2026</strong> pour les jeux récents. Considérer la 5060 Ti 16 Go.",ldlc:"https://www.ldlc.com/recherche/RTX+5060/",materiel:"https://www.materiel.net/recherche/?q=rtx+5060",topachat:"https://www.topachat.com/recherche/?q=rtx+5060",amazon:"https://www.amazon.fr/s?k=rtx+5060"},
+    "rtx5060ti":{n:"NVIDIA RTX 5060 Ti 16 Go",p:547,was:548,trend:"stable",perf:68,conso:180,detail:"<strong>Sweet spot 1080p / 1440p moyen.</strong> 16 Go futur-proof. DLSS 4 Multi Frame Generation inclus.",ldlc:"https://www.ldlc.com/recherche/RTX+5060+Ti/",materiel:"https://www.materiel.net/recherche/?q=rtx+5060+ti",topachat:"https://www.topachat.com/recherche/?q=rtx+5060+ti",amazon:"https://www.amazon.fr/s?k=rtx+5060+ti+16gb"},
+    "rtx5070":{n:"NVIDIA RTX 5070 12 Go",p:571,was:599,trend:"down",perf:75,conso:250,detail:"1440p haut. 12 Go correct mais limite pour 4K. DLSS 4 Multi Frame Generation.",ldlc:"https://www.ldlc.com/recherche/RTX+5070/",materiel:"https://www.materiel.net/recherche/?q=rtx+5070",topachat:"https://www.topachat.com/recherche/?q=rtx+5070",amazon:"https://www.amazon.fr/s?k=rtx+5070"},
+    "rtx5070ti":{n:"NVIDIA RTX 5070 Ti 16 Go",p:949,was:949,trend:"stable",perf:88,conso:300,detail:"<strong>4K entrée / 1440p ultra.</strong> 16 Go GDDR7. Sweet spot haut de gamme 2026.",ldlc:"https://www.ldlc.com/recherche/RTX+5070+Ti/",materiel:"https://www.materiel.net/recherche/?q=rtx+5070+ti",topachat:"https://www.topachat.com/recherche/?q=rtx+5070+ti",amazon:"https://www.amazon.fr/s?k=rtx+5070+ti"},
+    "rtx5080":{n:"NVIDIA RTX 5080 16 Go",p:1269,was:1249,trend:"up",perf:100,conso:360,detail:"<strong>4K confortable.</strong> 16 Go GDDR7. Le sweet spot 4K en 2026, alternative rationnelle à la 5090.",ldlc:"https://www.ldlc.com/recherche/RTX+5080/",materiel:"https://www.materiel.net/recherche/?q=rtx+5080",topachat:"https://www.topachat.com/recherche/?q=rtx+5080",amazon:"https://www.amazon.fr/s?k=rtx+5080"},
+    "rtx5090":{n:"NVIDIA RTX 5090 32 Go",p:3499,was:3349,trend:"up",perf:140,conso:575,detail:"<strong>⚠️ Prix délirant en 2026 (×2 vs MSRP).</strong> 4K 240Hz, Path Tracing, IA locale (Stable Diffusion XL, LLM). À éviter sauf vraie nécessité.",ldlc:"https://www.ldlc.com/recherche/RTX+5090/",materiel:"https://www.materiel.net/recherche/?q=rtx+5090",topachat:"https://www.topachat.com/recherche/?q=rtx+5090",amazon:"https://www.amazon.fr/s?k=rtx+5090"},
+    "rx9070xt":{n:"AMD Radeon RX 9070 XT",p:649,was:679,trend:"down",perf:78,conso:265,detail:"1440p haut. Excellent rapport perf/prix vs NVIDIA. FSR 4 IA. <strong>Bon plan 2026</strong> pour échapper à la hausse NVIDIA.",ldlc:"https://www.ldlc.com/recherche/RX+9070+XT/",materiel:"https://www.materiel.net/recherche/?q=rx+9070+xt",topachat:"https://www.topachat.com/recherche/?q=rx+9070+xt",amazon:"https://www.amazon.fr/s?k=rx+9070+xt"},
+    "rx9080xt":{n:"AMD Radeon RX 9080 XT 24 Go",p:1049,was:1099,trend:"down",perf:95,conso:340,detail:"4K. <strong>24 Go GDDR7</strong> (idéal IA locale). Excellent en rastérisation, en retrait en ray tracing extreme.",ldlc:"https://www.ldlc.com/recherche/RX+9080/",materiel:"https://www.materiel.net/recherche/?q=rx+9080",topachat:"https://www.topachat.com/recherche/?q=rx+9080",amazon:"https://www.amazon.fr/s?k=rx+9080+xt"},
+    "rtx4070-occ":{n:"RTX 4070 (occasion vérifiée)",p:340,was:599,trend:"stable",perf:70,conso:200,detail:"<strong>💎 LA bonne affaire 2026.</strong> -40% vs neuf. Vérifiez la garantie restante et l'usage minage. Sites recommandés : Backmarket, Vinted (vendeur pro), eBay vendeurs vérifiés.",ldlc:"#",materiel:"#",topachat:"#",amazon:"https://www.amazon.fr/s?k=rtx+4070+reconditionn%C3%A9"},
+    "rtx4080-occ":{n:"RTX 4080 (occasion vérifiée)",p:680,was:1199,trend:"stable",perf:92,conso:320,detail:"<strong>💎 -45%</strong>. 16 Go, excellente en 4K. Vérifier l'usage minage (logiciel HWiNFO).",ldlc:"#",materiel:"#",topachat:"#",amazon:"https://www.amazon.fr/s?k=rtx+4080+reconditionn%C3%A9"}
+  },
+  ram:{
+    "ddr5-32-6000":{n:"DDR5 32 Go (2×16) 6000 MHz CL30",p:309,was:80,trend:"up",perf:100,conso:0,type:"DDR5",detail:"⚠️ <strong>PÉNURIE ACTIVE</strong> : prix multiplié par 4 vs 2024 ! Sweet spot AM5. Sur Ryzen, ne pas dépasser 6400 MHz.",ldlc:"https://www.ldlc.com/recherche/DDR5+32GB+6000+CL30/",materiel:"https://www.materiel.net/recherche/?q=ddr5+32gb+6000",topachat:"https://www.topachat.com/recherche/?q=ddr5+32gb+6000",amazon:"https://www.amazon.fr/s?k=ddr5+32gb+6000+cl30"},
+    "ddr5-64-6000":{n:"DDR5 64 Go (2×32) 6000 MHz CL30",p:618,was:160,trend:"up",perf:120,conso:0,type:"DDR5",detail:"Pour création, IA locale, virtualisation. ⚠️ Pénurie majeure — considérer 32 Go + upgrade plus tard.",ldlc:"https://www.ldlc.com/recherche/DDR5+64GB+6000/",materiel:"https://www.materiel.net/recherche/?q=ddr5+64gb",topachat:"https://www.topachat.com/recherche/?q=ddr5+64gb",amazon:"https://www.amazon.fr/s?k=ddr5+64gb+6000"},
+    "ddr5-16-5600":{n:"DDR5 16 Go (2×8) 5600 MHz CL40",p:159,was:50,trend:"up",perf:75,conso:0,type:"DDR5",detail:"<strong>Bureautique uniquement.</strong> Insuffisant pour gaming moderne (32 Go = standard 2026).",ldlc:"https://www.ldlc.com/recherche/DDR5+16GB+5600/",materiel:"https://www.materiel.net/recherche/?q=ddr5+16gb",topachat:"https://www.topachat.com/recherche/?q=ddr5+16gb",amazon:"https://www.amazon.fr/s?k=ddr5+16gb"},
+    "ddr5-32-6400":{n:"DDR5 32 Go (2×16) 6400 MHz CL32 premium",p:399,was:120,trend:"up",perf:108,conso:0,type:"DDR5",detail:"Premium gaming. Ne pas dépasser 6400 MHz sur AMD (mode 1:2 dégradé).",ldlc:"https://www.ldlc.com/recherche/DDR5+32GB+6400/",materiel:"https://www.materiel.net/recherche/?q=ddr5+32gb+6400",topachat:"https://www.topachat.com/recherche/?q=ddr5+32gb+6400",amazon:"https://www.amazon.fr/s?k=ddr5+32gb+6400"},
+    "ddr4-32-3600":{n:"DDR4 32 Go (2×16) 3600 MHz CL18",p:149,was:90,trend:"up",perf:85,conso:0,type:"DDR4",detail:"<strong>⭐ Astuce 2026</strong> : si vous gardez une plateforme DDR4 (AM4 ou LGA1700 DDR4), économisez 150€ vs DDR5.",ldlc:"https://www.ldlc.com/recherche/DDR4+32GB+3600/",materiel:"https://www.materiel.net/recherche/?q=ddr4+32gb+3600",topachat:"https://www.topachat.com/recherche/?q=ddr4+32gb+3600",amazon:"https://www.amazon.fr/s?k=ddr4+32gb+3600"}
+  },
+  storage:{
+    "ssd-512-gen4":{n:"SSD NVMe 512 Go Gen4",p:59,was:75,trend:"down",perf:80,conso:7,detail:"Budget tight. OS + 2-3 jeux. <strong>Insuffisant à long terme</strong> avec les jeux modernes (50-150 Go chacun).",ldlc:"https://www.ldlc.com/recherche/SSD+NVMe+512+Gen4/",materiel:"https://www.materiel.net/recherche/?q=ssd+nvme+500gb",topachat:"https://www.topachat.com/recherche/?q=ssd+nvme+500gb",amazon:"https://www.amazon.fr/s?k=ssd+nvme+500gb+gen4"},
+    "ssd-1to-gen4":{n:"SSD NVMe 1 To Gen4",p:99,was:119,trend:"down",perf:85,conso:8,detail:"<strong>⭐ Sweet spot 2026.</strong> 7000 Mo/s. Suffit pour 95% des usages (Samsung 990 Pro, WD SN850X, Crucial T500).",ldlc:"https://www.ldlc.com/recherche/SSD+1To+Gen4/",materiel:"https://www.materiel.net/recherche/?q=ssd+1tb+gen4",topachat:"https://www.topachat.com/recherche/?q=ssd+1tb+gen4",amazon:"https://www.amazon.fr/s?k=ssd+nvme+1tb+gen4"},
+    "ssd-2to-gen4":{n:"SSD NVMe 2 To Gen4",p:159,was:189,trend:"down",perf:85,conso:8,detail:"Pour gaming + créatif. <strong>Excellent rapport prix/capacité</strong> — la bibliothèque Steam moyenne fait 800 Go.",ldlc:"https://www.ldlc.com/recherche/SSD+2To+Gen4/",materiel:"https://www.materiel.net/recherche/?q=ssd+2tb+gen4",topachat:"https://www.topachat.com/recherche/?q=ssd+2tb+gen4",amazon:"https://www.amazon.fr/s?k=ssd+nvme+2tb+gen4"},
+    "ssd-4to-gen4":{n:"SSD NVMe 4 To Gen4",p:329,was:399,trend:"down",perf:88,conso:9,detail:"Gros stockage rapide pour streamer / créateur de contenu / bibliothèque jeux conséquente.",ldlc:"https://www.ldlc.com/recherche/SSD+4To+Gen4/",materiel:"https://www.materiel.net/recherche/?q=ssd+4tb+gen4",topachat:"https://www.topachat.com/recherche/?q=ssd+4tb+gen4",amazon:"https://www.amazon.fr/s?k=ssd+nvme+4tb+gen4"},
+    "ssd-1to-gen5":{n:"SSD NVMe 1 To Gen5 (Crucial T705)",p:189,was:229,trend:"stable",perf:100,conso:14,detail:"12-14 Go/s. Utile uniquement pour création vidéo intensive ou DirectStorage. <strong>Dissipateur OBLIGATOIRE</strong>.",ldlc:"https://www.ldlc.com/recherche/SSD+Gen5/",materiel:"https://www.materiel.net/recherche/?q=ssd+gen5",topachat:"https://www.topachat.com/recherche/?q=ssd+gen5",amazon:"https://www.amazon.fr/s?k=ssd+nvme+gen5"}
+  },
+  motherboard:{
+    "b650":{n:"AMD B650 (entry AM5)",p:139,was:169,trend:"down",perf:70,conso:0,socket:"AM5",ramType:"DDR5",detail:"Économique AM5. <strong>Compatible Ryzen 7000/8000/9000</strong>. Pas de PCIe 5.0 SSD sur la plupart des modèles.",ldlc:"https://www.ldlc.com/recherche/B650/",materiel:"https://www.materiel.net/recherche/?q=b650",topachat:"https://www.topachat.com/recherche/?q=b650",amazon:"https://www.amazon.fr/s?k=b650+motherboard"},
+    "b850":{n:"AMD B850 (sweet spot)",p:229,was:249,trend:"stable",perf:80,conso:0,socket:"AM5",ramType:"DDR5",detail:"<strong>⭐ Sweet spot AM5 2026.</strong> PCIe 5.0 SSD obligatoire, USB4, Wi-Fi 7. MSI Tomahawk, ASUS ROG Strix B850-F.",ldlc:"https://www.ldlc.com/recherche/B850/",materiel:"https://www.materiel.net/recherche/?q=b850",topachat:"https://www.topachat.com/recherche/?q=b850",amazon:"https://www.amazon.fr/s?k=b850+motherboard"},
+    "x870e":{n:"AMD X870E (premium)",p:399,was:429,trend:"stable",perf:95,conso:0,socket:"AM5",ramType:"DDR5",detail:"<strong>Premium AM5.</strong> PCIe 5.0 partout, USB4 natif, OC extrême. Pour 9950X3D ou besoin SSD Gen5 multiples.",ldlc:"https://www.ldlc.com/recherche/X870E/",materiel:"https://www.materiel.net/recherche/?q=x870e",topachat:"https://www.topachat.com/recherche/?q=x870e",amazon:"https://www.amazon.fr/s?k=x870e+motherboard"},
+    "b860":{n:"Intel B860 LGA1851",p:189,was:209,trend:"stable",perf:75,conso:0,socket:"LGA1851",ramType:"DDR5",detail:"Sweet spot LGA1851 pour Core Ultra. <strong>Plateforme courte durée de vie</strong>.",ldlc:"https://www.ldlc.com/recherche/B860/",materiel:"https://www.materiel.net/recherche/?q=b860",topachat:"https://www.topachat.com/recherche/?q=b860",amazon:"https://www.amazon.fr/s?k=b860+motherboard"},
+    "z790-ddr4":{n:"Intel Z790 DDR4 (legacy bonne affaire)",p:159,was:179,trend:"down",perf:72,conso:0,socket:"LGA1700",ramType:"DDR4",detail:"<strong>⭐ Astuce 2026 :</strong> permet de garder ou d'acheter de la DDR4 (économies massives sur la RAM).",ldlc:"https://www.ldlc.com/recherche/Z790+DDR4/",materiel:"https://www.materiel.net/recherche/?q=z790+ddr4",topachat:"https://www.topachat.com/recherche/?q=z790+ddr4",amazon:"https://www.amazon.fr/s?k=z790+ddr4"}
+  },
+  psu:{
+    "psu-550-bronze":{n:"Alim 550W Bronze",p:59,was:69,trend:"stable",perf:65,watts:550,conso:0,detail:"Pour PC bureautique sans GPU dédié. <strong>JAMAIS d'occasion</strong> — risque incendie.",ldlc:"https://www.ldlc.com/recherche/alim+550W+Bronze/",materiel:"https://www.materiel.net/recherche/?q=alim+550w",topachat:"https://www.topachat.com/recherche/?q=alim+550w",amazon:"https://www.amazon.fr/s?k=alim+pc+550w"},
+    "psu-650-bronze":{n:"Alim 650W Bronze",p:79,was:89,trend:"stable",perf:70,watts:650,conso:0,detail:"Économique. Pour GPU jusqu'à 200W (RTX 5060).",ldlc:"https://www.ldlc.com/recherche/alim+650W/",materiel:"https://www.materiel.net/recherche/?q=alim+650w",topachat:"https://www.topachat.com/recherche/?q=alim+650w",amazon:"https://www.amazon.fr/s?k=alim+pc+650w"},
+    "psu-750-gold":{n:"Alim 750W Gold ATX 3.1 (be quiet!)",p:119,was:129,trend:"stable",perf:80,watts:750,conso:0,detail:"<strong>Idéal RTX 5070 Ti / 9070 XT.</strong> Connecteur 12V-2x6 natif (évite les adaptateurs).",ldlc:"https://www.ldlc.com/recherche/alim+750W+Gold+ATX+3.1/",materiel:"https://www.materiel.net/recherche/?q=alim+750w+gold",topachat:"https://www.topachat.com/recherche/?q=alim+750w",amazon:"https://www.amazon.fr/s?k=alim+pc+750w+gold"},
+    "psu-850-gold":{n:"Alim 850W Gold ATX 3.1",p:149,was:169,trend:"stable",perf:85,watts:850,conso:0,detail:"<strong>Idéal RTX 5080.</strong> 80 Plus Gold, marges confortables. Corsair RM850x, be quiet! Straight Power 12.",ldlc:"https://www.ldlc.com/recherche/alim+850W+Gold/",materiel:"https://www.materiel.net/recherche/?q=alim+850w+gold",topachat:"https://www.topachat.com/recherche/?q=alim+850w",amazon:"https://www.amazon.fr/s?k=alim+pc+850w+gold"},
+    "psu-1000-gold":{n:"Alim 1000W Gold ATX 3.1",p:199,was:229,trend:"stable",perf:90,watts:1000,conso:0,detail:"<strong>Obligatoire RTX 5090</strong> (TGP 575W). Modulaire, 10 ans garantie.",ldlc:"https://www.ldlc.com/recherche/alim+1000W+Gold/",materiel:"https://www.materiel.net/recherche/?q=alim+1000w",topachat:"https://www.topachat.com/recherche/?q=alim+1000w",amazon:"https://www.amazon.fr/s?k=alim+pc+1000w+gold"}
+  },
+  "case":{
+    "case-budget":{n:"Boîtier ATX budget (NZXT H5 Flow)",p:79,was:89,trend:"stable",perf:75,conso:0,detail:"Budget mais bon airflow. <strong>Largement suffisant pour 95% des configs</strong>.",ldlc:"https://www.ldlc.com/recherche/NZXT+H5/",materiel:"https://www.materiel.net/recherche/?q=nzxt+h5",topachat:"https://www.topachat.com/recherche/?q=boitier+atx",amazon:"https://www.amazon.fr/s?k=nzxt+h5+flow"},
+    "case-airflow":{n:"Boîtier airflow (Phanteks G500A)",p:99,was:109,trend:"stable",perf:85,conso:0,detail:"Excellent airflow, mesh frontal, support 360mm AIO. <strong>Occasion = excellent plan</strong>.",ldlc:"https://www.ldlc.com/recherche/Phanteks+G500A/",materiel:"https://www.materiel.net/recherche/?q=phanteks+g500",topachat:"https://www.topachat.com/recherche/?q=phanteks+g500",amazon:"https://www.amazon.fr/s?k=phanteks+g500a"},
+    "case-quiet":{n:"Boîtier silencieux (Fractal North)",p:139,was:149,trend:"stable",perf:80,conso:0,detail:"Esthétique premium en bois, silencieux, très populaire en 2026.",ldlc:"https://www.ldlc.com/recherche/Fractal+North/",materiel:"https://www.materiel.net/recherche/?q=fractal+north",topachat:"https://www.topachat.com/recherche/?q=fractal+north",amazon:"https://www.amazon.fr/s?k=fractal+north"},
+    "case-premium":{n:"Boîtier premium (Lian Li O11D EVO XL)",p:269,was:299,trend:"stable",perf:95,conso:0,detail:"Premium, dual chamber, support custom watercooling. <strong>Pour configs ultimes</strong>.",ldlc:"https://www.ldlc.com/recherche/Lian+Li+O11/",materiel:"https://www.materiel.net/recherche/?q=lian+li+o11",topachat:"https://www.topachat.com/recherche/?q=lian+li+o11",amazon:"https://www.amazon.fr/s?k=lian+li+o11d+evo+xl"}
+  },
+  cooler:{
+    "stock":{n:"Ventirad stock AMD",p:0,was:0,trend:"stable",perf:50,conso:0,detail:"Inclus avec certains CPU AMD non-X. <strong>Suffit pour Ryzen 5 7600 uniquement</strong>.",ldlc:"#",materiel:"#",topachat:"#",amazon:"#"},
+    "air-mid":{n:"Ventirad air (Thermalright Peerless Assassin)",p:39,was:45,trend:"stable",perf:80,conso:0,detail:"<strong>⭐ Le meilleur rapport perf/prix 2026.</strong> Suffit pour Ryzen 7 9800X3D. Concurrence des AIO 240mm à 90€.",ldlc:"https://www.ldlc.com/recherche/Peerless+Assassin/",materiel:"https://www.materiel.net/recherche/?q=peerless+assassin",topachat:"https://www.topachat.com/recherche/?q=peerless+assassin",amazon:"https://www.amazon.fr/s?k=peerless+assassin+120"},
+    "air-high":{n:"Ventirad haut de gamme (Noctua NH-D15 G2)",p:139,was:149,trend:"stable",perf:95,conso:0,detail:"<strong>Le top du refroidissement air.</strong> Quasi-inaudible. Pour Ryzen 9 9950X3D.",ldlc:"https://www.ldlc.com/recherche/Noctua+NH-D15/",materiel:"https://www.materiel.net/recherche/?q=noctua+nh-d15",topachat:"https://www.topachat.com/recherche/?q=noctua+d15",amazon:"https://www.amazon.fr/s?k=noctua+nh-d15+g2"},
+    "aio-240":{n:"AIO 240mm (Arctic Liquid Freezer III)",p:89,was:99,trend:"stable",perf:88,conso:0,detail:"Bon AIO budget. <strong>Suffit pour Ryzen 9 9950X3D</strong>.",ldlc:"https://www.ldlc.com/recherche/Liquid+Freezer+III+240/",materiel:"https://www.materiel.net/recherche/?q=liquid+freezer+240",topachat:"https://www.topachat.com/recherche/?q=aio+240mm",amazon:"https://www.amazon.fr/s?k=arctic+liquid+freezer+iii+240"},
+    "aio-360":{n:"AIO 360mm (NZXT Kraken Elite)",p:189,was:209,trend:"stable",perf:100,conso:0,detail:"Premium. <strong>Obligatoire pour Core Ultra 9 285K</strong> ou OC extrême.",ldlc:"https://www.ldlc.com/recherche/NZXT+Kraken+360/",materiel:"https://www.materiel.net/recherche/?q=kraken+360",topachat:"https://www.topachat.com/recherche/?q=aio+360mm",amazon:"https://www.amazon.fr/s?k=nzxt+kraken+elite+360"}
+  }
+};
+
+// Profils par défaut
+var PROFILS={
+  "economique":{n:"💚 Économique",cpu:"ryzen5-7600",gpu:"no-gpu",ram:"ddr5-16-5600",storage:"ssd-512-gen4",motherboard:"b650",psu:"psu-550-bronze","case":"case-budget",cooler:"stock"},
+  "bureautique":{n:"💼 Bureautique avancée",cpu:"ryzen7-7700",gpu:"no-gpu",ram:"ddr5-32-6000",storage:"ssd-1to-gen4",motherboard:"b650",psu:"psu-650-bronze","case":"case-budget",cooler:"air-mid"},
+  "gamer-1080":{n:"🎮 Gaming 1080p",cpu:"ryzen7-7800x3d",gpu:"rtx5060ti",ram:"ddr5-32-6000",storage:"ssd-1to-gen4",motherboard:"b850",psu:"psu-750-gold","case":"case-airflow",cooler:"air-mid"},
+  "gamer-1440":{n:"🚀 Gaming 1440p",cpu:"ryzen7-9800x3d",gpu:"rtx5070ti",ram:"ddr5-32-6000",storage:"ssd-2to-gen4",motherboard:"b850",psu:"psu-850-gold","case":"case-airflow",cooler:"air-high"},
+  "gamer-4k":{n:"👑 Gaming 4K Ultime",cpu:"ryzen9-9950x3d",gpu:"rtx5090",ram:"ddr5-32-6400",storage:"ssd-2to-gen4",motherboard:"x870e",psu:"psu-1000-gold","case":"case-premium",cooler:"aio-360"},
+  "ia-creation":{n:"🤖 IA / Création",cpu:"ryzen9-9950x3d",gpu:"rtx5080",ram:"ddr5-64-6000",storage:"ssd-4to-gen4",motherboard:"x870e",psu:"psu-1000-gold","case":"case-premium",cooler:"aio-360"}
+};
+
+var ICONS={cpu:"🧠",gpu:"🎮",ram:"💾",storage:"💿",motherboard:"⚙️",psu:"🔌","case":"📦",cooler:"❄️"};
+var LABELS={cpu:"Processeur (CPU)",gpu:"Carte graphique (GPU)",ram:"Mémoire RAM",storage:"Stockage SSD",motherboard:"Carte mère",psu:"Alimentation",case:"Boîtier",cooler:"Refroidissement"};
+
+// Boutiques
+var SHOPS={
+  ldlc:{n:"LDLC",e:"🇫🇷"},
+  materiel:{n:"Materiel.net",e:"🇫🇷"},
+  topachat:{n:"Topachat",e:"💰"},
+  amazon:{n:"Amazon",e:"📦"}
+};
+var SHOP_VARIATION={ldlc:1.02,materiel:1.0,topachat:0.97,amazon:0.99};
+
+// État global
+var curMode="rapide";
+var curConfig={cpu:"ryzen5-7600",gpu:"no-gpu",ram:"ddr5-16-5600",storage:"ssd-512-gen4",motherboard:"b650",psu:"psu-550-bronze","case":"case-budget",cooler:"stock"};
+var curCategoryToChange=null;
+
+function g(id){return document.getElementById(id);}
+function fmt(n){return Math.round(n).toLocaleString("fr-FR");}
+function fE(n){return fmt(n)+"€";}
+
+// ══════════════════════════════════════════════════
+// MODE SWITCHING
+// ══════════════════════════════════════════════════
+function setMode(mode,el){
+  curMode=mode;
+  document.querySelectorAll(".mode-tab").forEach(function(t){t.classList.remove("on");});
+  if(el) el.classList.add("on");
+  if(mode==="rapide"||mode==="custom"){
+    g("screen-config").classList.add("on");
+    g("screen-assistant").classList.remove("on");
+    if(mode==="custom"){
+      g("profils-wrap").style.display="none";
+    }else{
+      g("profils-wrap").style.display="block";
+    }
+  }else{
+    g("screen-config").classList.remove("on");
+    g("screen-assistant").classList.add("on");
+    initAssistant();
+  }
+}
+
+function selProfil(id,el){
+  document.querySelectorAll(".profil-card").forEach(function(p){p.classList.remove("on");});
+  if(el) el.classList.add("on");
+  curConfig=Object.assign({},PROFILS[id]);
+  delete curConfig.n;
+  g("cb-profil-name").textContent=PROFILS[id].n;
+  render();
+}
+
+function resetConfig(){
+  curConfig=Object.assign({},PROFILS["economique"]);
+  delete curConfig.n;
+  document.querySelectorAll(".profil-card").forEach(function(p){p.classList.remove("on");});
+  document.querySelector(".profil-card").classList.add("on");
+  g("cb-profil-name").textContent=PROFILS["economique"].n;
+  render();
+}
+
+// ══════════════════════════════════════════════════
+// COMPATIBILITY DETECTION
+// ══════════════════════════════════════════════════
+function detectCompatibilities(){
+  var alerts=[];
+  var cpu=COMPOSANTS.cpu[curConfig.cpu];
+  var gpu=COMPOSANTS.gpu[curConfig.gpu];
+  var ram=COMPOSANTS.ram[curConfig.ram];
+  var mb=COMPOSANTS.motherboard[curConfig.motherboard];
+  var psu=COMPOSANTS.psu[curConfig.psu];
+
+  // 1. Socket CPU/CM
+  if(cpu&&mb&&cpu.socket!==mb.socket){
+    alerts.push({type:"error",icon:"🚨",text:"<strong>Incompatibilité socket :</strong> Le "+cpu.n+" est en socket "+cpu.socket+" mais la carte mère "+mb.n+" est en "+mb.socket+". Choisissez une carte mère "+cpu.socket+"."});
+  }
+
+  // 2. RAM/CM
+  if(ram&&mb){
+    var ramT=ram.type;
+    var mbT=mb.ramType;
+    if(mbT&&!mbT.includes(ramT)){
+      alerts.push({type:"error",icon:"🚨",text:"<strong>Incompatibilité RAM :</strong> "+ram.n+" est de la "+ramT+" mais la carte mère "+mb.n+" supporte "+mbT+". Changez la RAM ou la carte mère."});
+    }
+  }
+
+  // 3. Alimentation suffisante
+  if(psu&&cpu&&gpu){
+    var totalConso=(cpu.conso||0)+(gpu.conso||0)+100;
+    var marge=Math.round((psu.watts/totalConso-1)*100);
+    if(psu.watts<totalConso){
+      alerts.push({type:"error",icon:"⚡",text:"<strong>Alimentation insuffisante :</strong> Vous avez "+psu.watts+"W mais besoin de "+totalConso+"W minimum. Risque de plantages, reboots aléatoires, et endommagement des composants."});
+    }else if(marge<25){
+      alerts.push({type:"warn",icon:"⚠️",text:"<strong>Marge alimentation faible</strong> ("+marge+"%). Recommandé : 30%+. Une marge plus large prolonge la durée de vie de l'alim."});
+    }
+  }
+
+  // 4. Bottleneck CPU/GPU
+  if(cpu&&gpu&&gpu.p>0){
+    var ratio=gpu.p/cpu.p;
+    if(ratio>3){
+      alerts.push({type:"warn",icon:"⚖️",text:"<strong>Goulot d'étranglement CPU :</strong> Le GPU coûte "+ratio.toFixed(1)+"× le CPU. Le CPU pourrait limiter les performances du GPU. Considérez un CPU plus puissant."});
+    }else if(ratio<0.4&&gpu.p>0){
+      alerts.push({type:"warn",icon:"⚖️",text:"<strong>CPU surdimensionné :</strong> Le CPU coûte plus que le GPU. Soit upgrader le GPU, soit prendre un CPU moins cher."});
+    }
+  }
+
+  // 5. Refroidissement insuffisant
+  var cooler=COMPOSANTS.cooler[curConfig.cooler];
+  if(cpu&&cooler){
+    if(cpu.conso>=170&&cooler.perf<88){
+      alerts.push({type:"warn",icon:"❄️",text:"<strong>Refroidissement faible :</strong> Le "+cpu.n+" ("+cpu.conso+"W TDP) nécessite au moins un AIO 240mm ou un Noctua NH-D15. Le ventirad actuel pourrait causer du throttling thermique."});
+    }
+  }
+
+  // 6. Conseil DDR5 pénurie
+  if(ram&&ram.trend==="up"&&ram.type==="DDR5"){
+    alerts.push({type:"info",icon:"💡",text:"<strong>Pénurie DDR5 active :</strong> Les prix DDR5 ont quadruplé depuis 2024. Si vous n'êtes pas pressé, attendez le S2 2026 pour une stabilisation. Sinon, considérez une plateforme DDR4 (ex : Z790 + Ryzen 5000)."});
+  }
+
+  return alerts;
+}
+
+// ══════════════════════════════════════════════════
+// PERFORMANCE CALCULATION
+// ══════════════════════════════════════════════════
+function calcPerf(){
+  var cpu=COMPOSANTS.cpu[curConfig.cpu];
+  var gpu=COMPOSANTS.gpu[curConfig.gpu];
+  var ram=COMPOSANTS.ram[curConfig.ram];
+  var cpuP=cpu?cpu.perf:50;
+  var gpuP=gpu?gpu.perf:0;
+  var ramP=ram?ram.perf:50;
+
+  // Bottleneck factor
+  var balance=Math.min(cpuP/Math.max(gpuP,1)*1.5,gpuP/Math.max(cpuP,1)*1.5,1);
+
+  return {
+    gaming_1080:Math.min(100,Math.round((cpuP*0.4+gpuP*0.6)*balance*0.85)),
+    gaming_4k:Math.min(100,Math.round((gpuP*0.85+cpuP*0.15)*balance*0.65)),
+    creation:Math.min(100,Math.round(cpuP*0.5+gpuP*0.3+ramP*0.2)),
+    ia:Math.min(100,Math.round(gpuP*0.7+ramP*0.2+cpuP*0.1))
+  };
+}
+
+// ══════════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════════
+var SHOPS_LIST=["ldlc","materiel","topachat","amazon"];
+
+function render(){
+  var categs=["cpu","gpu","motherboard","ram","storage","psu","cooler","case"];
+  var totalPrix=0,totalConseille=0,totalOccasion=0,totalConso=0,nbCompo=0;
+
+  // Compatibilités
+  var alerts=detectCompatibilities();
+  g("compat-alerts").innerHTML=alerts.map(function(a){
+    return "<div class='compat-alert ca-"+a.type+"'><span class='ca-icon'>"+a.icon+"</span><div class='ca-text'>"+a.text+"</div></div>";
+  }).join("");
+
+  // Composants
+  g("compo-list").innerHTML=categs.map(function(cat){
+    var key=curConfig[cat];
+    var cpt=COMPOSANTS[cat]&&COMPOSANTS[cat][key];
+    if(!cpt) return "";
+    nbCompo++;
+    totalPrix+=cpt.p;
+    totalConso+=cpt.conso||0;
+    totalConseille+=cpt.was||cpt.p;
+    var occRatio=cat==="gpu"?0.65:cat==="cpu"?0.85:cat==="case"||cat==="cooler"?0.55:cat==="psu"?1.0:cat==="motherboard"?0.70:0.95;
+    totalOccasion+=cpt.p*occRatio;
+
+    var trendPill=cpt.trend==="up"?"<span class='compo-pill pill-up'>↗ En hausse</span>":cpt.trend==="down"?"<span class='compo-pill pill-down'>↘ En baisse</span>":"<span class='compo-pill pill-stable'>→ Stable</span>";
+    var recoBadge="";
+    if(cpt.trend==="up"&&cpt.p>500) recoBadge="<span class='compo-pill pill-attendre'>⏳ Attendre</span>";
+    else if(cat==="ram"&&cpt.trend==="up") recoBadge="<span class='compo-pill pill-attendre'>⏳ Pénurie</span>";
+    else if(cpt.trend==="down") recoBadge="<span class='compo-pill pill-acheter'>✅ Bon moment</span>";
+    else if(cat==="gpu"&&cpt.p>1500) recoBadge="<span class='compo-pill pill-occasion'>💡 -40% occasion</span>";
+
+    // Shops
+    var shopsHtml=cpt.p>0?SHOPS_LIST.map(function(s){
+      var url=cpt[s];
+      if(!url||url==="#") return "";
+      var prix=Math.round(cpt.p*SHOP_VARIATION[s]);
+      var isBest=SHOPS_LIST.every(function(s2){return s2===s||Math.round(cpt.p*SHOP_VARIATION[s2])>=prix;});
+      return "<a class='shop-link' href='"+url+"' target='_blank' rel='noopener nofollow sponsored'>"
+        +"<span class='shop-name'><span class='shop-emoji'>"+SHOPS[s].e+"</span>"+SHOPS[s].n+(isBest?"<span class='shop-best'>Meilleur prix</span>":"")+"</span>"
+        +"<span class='shop-prix'>"+fE(prix)+"</span>"
+        +"</a>";
+    }).join(""):'';
+
+    return "<div class='compo' id='compo-"+cat+"'>"
+      +"<div class='compo-head'>"
+        +"<div class='compo-icon'>"+ICONS[cat]+"</div>"
+        +"<div class='compo-body'>"
+          +"<div class='compo-cat-row'>"
+            +"<span class='compo-cat'>"+LABELS[cat]+"</span>"
+            +"<button class='compo-help-btn' onclick='toggleDetail(\""+cat+"\")'>Pourquoi ?</button>"
+          +"</div>"
+          +"<div class='compo-name'>"+cpt.n+"</div>"
+          +"<div class='compo-meta'>"+trendPill+recoBadge+"</div>"
+        +"</div>"
+        +"<div class='compo-prix'>"
+          +"<div class='prix-now'>"+(cpt.p>0?fE(cpt.p):"Inclus")+"</div>"
+          +(cpt.was&&cpt.was!==cpt.p&&cpt.p>0?"<div class='prix-was'>"+fE(cpt.was)+"</div>":"")
+        +"</div>"
+      +"</div>"
+      +"<div class='compo-actions'>"
+        +"<button class='compo-change-btn' onclick='openModal(\""+cat+"\")'>🔄 Changer ce composant</button>"
+        +(cpt.p>0?"<button class='compo-shop-btn' onclick='toggleShops(\""+cat+"\")'>🛒 Voir les prix chez 4 marchands</button>":"")
+      +"</div>"
+      +"<div class='compo-detail' id='detail-"+cat+"'>"+cpt.detail+"</div>"
+      +(cpt.p>0?"<div class='compo-shops' id='shops-"+cat+"'>"
+        +"<div class='shops-title'>💰 Comparateur de prix · Avril 2026</div>"
+        +"<div class='shops-list'>"+shopsHtml+"</div>"
+        +"<div class='shops-disclaimer'>Liens vers les revendeurs partenaires. Prix indicatifs avril 2026 — vérifiez sur place. Calculamatix peut percevoir une commission sans surcoût pour vous.</div>"
+        +"</div>":"")
+      +"</div>";
+  }).join("");
+
+  g("cb-nb").textContent=nbCompo;
+  g("cb-conso").textContent=totalConso+"W";
+  g("total-prix").textContent=fE(totalPrix);
+  g("prix-conseille").textContent=fE(totalConseille);
+  g("prix-occasion").textContent=fE(totalOccasion);
+  g("prix-attente").textContent=fE(totalPrix*0.85)+" (~-15%)";
+
+  // Recommandation
+  var hausses=0,baisses=0;
+  categs.forEach(function(c){
+    var cpt=COMPOSANTS[c][curConfig[c]];
+    if(!cpt) return;
+    if(cpt.trend==="up") hausses++;
+    if(cpt.trend==="down") baisses++;
+  });
+  var reco=g("recommandation");
+  if(hausses>=3){
+    reco.className="recommandation reco-attendre";
+    reco.innerHTML='<div class="reco-header"><span class="reco-emoji">⏳</span><div class="reco-title">Notre conseil : ATTENDRE</div></div><div class="reco-text">Plus de la moitié des composants sont en hausse (DDR5 + GPU haut de gamme). Si vous avez un PC fonctionnel, <strong>attendez le S2 2026</strong>. Si urgent : optez pour de l\'occasion (GPU surtout).</div>';
+  }else if(baisses>=3){
+    reco.className="recommandation reco-acheter";
+    reco.innerHTML='<div class="reco-header"><span class="reco-emoji">✅</span><div class="reco-title">Bon moment pour acheter</div></div><div class="reco-text">La majorité des composants sont stables ou en baisse. <strong>Vous pouvez monter votre PC sereinement</strong>.</div>';
+  }else{
+    reco.className="recommandation reco-mixte";
+    reco.innerHTML='<div class="reco-header"><span class="reco-emoji">⚖️</span><div class="reco-title">Marché mixte</div></div><div class="reco-text">Certains composants sont stables, d\'autres en hausse. <strong>Stratégie hybride :</strong> achetez maintenant CPU/SSD/boîtier, attendez les promos sur RAM/GPU.</div>';
+  }
+
+  // Performance
+  var perfs=calcPerf();
+  var perfData=[
+    {l:"Gaming 1080p",v:perfs.gaming_1080,c:"#06ffa5"},
+    {l:"Gaming 4K",v:perfs.gaming_4k,c:"#00d9ff"},
+    {l:"Création / Montage",v:perfs.creation,c:"#9d4edd"},
+    {l:"IA locale (LLM, SD)",v:perfs.ia,c:"#ffbe0b"}
+  ];
+  g("perf-list").innerHTML=perfData.map(function(p){
+    return "<div class='perf-row'>"
+      +"<div class='perf-header'><span class='perf-l'>"+p.l+"</span><span class='perf-v' style='color:"+p.c+"'>"+p.v+"/100</span></div>"
+      +"<div class='perf-bar'><div class='perf-fill' style='width:"+p.v+"%;background:"+p.c+"'></div></div>"
+      +"</div>";
+  }).join("");
+}
+
+function toggleDetail(cat){
+  g("detail-"+cat).classList.toggle("open");
+}
+function toggleShops(cat){
+  g("shops-"+cat).classList.toggle("open");
+}
+
+// ══════════════════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════════════════
+function openModal(cat){
+  curCategoryToChange=cat;
+  g("modal-title").textContent="Choisir un "+LABELS[cat].toLowerCase();
+  var options=Object.keys(COMPOSANTS[cat]).map(function(key){
+    var cpt=COMPOSANTS[cat][key];
+    var isSel=curConfig[cat]===key;
+    var trend=cpt.trend==="up"?'<span style="color:var(--red)">↗ En hausse</span>':cpt.trend==="down"?'<span style="color:var(--green)">↘ En baisse</span>':'<span style="color:var(--orange)">→ Stable</span>';
+    return "<div class='modal-option"+(isSel?" selected":"")+"' onclick='selectOption(\""+key+"\")'>"
+      +"<div><div class='mo-name'>"+cpt.n+"</div><div class='mo-detail'>"+(cpt.detail||"").replace(/<[^>]*>/g,"").substring(0,140)+"...</div></div>"
+      +"<div class='mo-prix'><div class='mo-prix-now'>"+(cpt.p>0?fE(cpt.p):"Inclus")+"</div><div class='mo-trend'>"+trend+"</div></div>"
+      +"</div>";
+  }).join("");
+  g("modal-options").innerHTML=options;
+  g("modal-overlay").classList.add("on");
+}
+
+function closeModal(){
+  g("modal-overlay").classList.remove("on");
+}
+
+function closeModalIfBg(e){
+  if(e.target.id==="modal-overlay") closeModal();
+}
+
+function selectOption(key){
+  curConfig[curCategoryToChange]=key;
+  closeModal();
+  g("cb-profil-name").textContent="🎛️ Configuration personnalisée";
+  document.querySelectorAll(".profil-card").forEach(function(p){p.classList.remove("on");});
+  render();
+}
+
+// ══════════════════════════════════════════════════
+// EXPORT
+// ══════════════════════════════════════════════════
+function copyConfig(){
+  var categs=["cpu","gpu","motherboard","ram","storage","psu","cooler","case"];
+  var total=0;
+  var lines=["🖥️ MA CONFIG PC — Calculamatix",""];
+  categs.forEach(function(c){
+    var cpt=COMPOSANTS[c][curConfig[c]];
+    if(!cpt) return;
+    total+=cpt.p;
+    lines.push("• "+LABELS[c]+" : "+cpt.n+" — "+(cpt.p>0?fE(cpt.p):"Inclus"));
+  });
+  lines.push("");
+  lines.push("💰 Total : "+fE(total));
+  lines.push("");
+  lines.push("Configurez la vôtre → calculamatix.com/pc-builder");
+  var txt=lines.join("\n");
+  if(navigator.clipboard) navigator.clipboard.writeText(txt).then(function(){alert("Configuration copiée !");}).catch(function(){prompt("Copiez :",txt);});
+  else prompt("Copiez :",txt);
+}
+
+function shareConfig(){
+  var url=window.location.origin+window.location.pathname+"?config="+btoa(JSON.stringify(curConfig));
+  if(navigator.clipboard) navigator.clipboard.writeText(url).then(function(){alert("Lien copié ! Partagez-le où vous voulez.");}).catch(function(){prompt("Copiez le lien :",url);});
+  else prompt("Copiez le lien :",url);
+}
+
+function printConfig(){window.print();}
+
+// ══════════════════════════════════════════════════
+// ASSISTANT
+// ══════════════════════════════════════════════════
+var ASSIST_QUESTIONS=[
+  {label:"Étape 1/5",q:"Quel est votre budget maximum ?",desc:"On adaptera la config à votre enveloppe — sans dépasser.",type:"budget",key:"budget",min:600,max:6000,defaultV:1500},
+  {label:"Étape 2/5",q:"Que voulez-vous faire avec ce PC ?",desc:"Plusieurs choix possibles si vous combinez les usages.",type:"multi",key:"usages",options:[
+    {v:"bureautique",e:"💼",t:"Bureautique",s:"Web, vidéo, Office"},
+    {v:"gaming",e:"🎮",t:"Gaming",s:"Jouer aux jeux récents"},
+    {v:"streaming",e:"📺",t:"Streaming",s:"Twitch, YouTube"},
+    {v:"creation",e:"🎬",t:"Création vidéo",s:"Premiere, DaVinci, 3D"},
+    {v:"ia",e:"🤖",t:"IA locale",s:"Stable Diffusion, LLM"},
+    {v:"dev",e:"💻",t:"Dev / compilation",s:"Code, VMs, Docker"}
+  ]},
+  {label:"Étape 3/5",q:"Quelle résolution d'écran principal ?",desc:"Détermine la puissance GPU nécessaire.",type:"single",key:"resolution",options:[
+    {v:"1080",e:"📺",t:"1080p Full HD",s:"GPU milieu de gamme suffit"},
+    {v:"1440",e:"🖥️",t:"1440p QHD",s:"Sweet spot performances/prix"},
+    {v:"4k",e:"🎯",t:"4K UHD",s:"Demande un GPU haut de gamme"}
+  ]},
+  {label:"Étape 4/5",q:"Vos jeux préférés ?",desc:"Si vous ne jouez pas, sélectionnez 'Pas de jeux'.",type:"single",key:"jeux",options:[
+    {v:"none",e:"❌",t:"Pas de jeux",s:"Bureautique uniquement"},
+    {v:"esport",e:"⚡",t:"Esport / FPS",s:"CS2, Valorant, Fortnite — 240+ FPS"},
+    {v:"aaa",e:"🎮",t:"Jeux AAA récents",s:"Cyberpunk, Black Myth, GTA VI"},
+    {v:"simulation",e:"✈️",t:"Simulation / RPG",s:"Flight Sim, Cities, Stellaris"}
+  ]},
+  {label:"Étape 5/5",q:"Êtes-vous prêt à acheter d'occasion ?",desc:"En 2026 avec la pénurie, l'occasion peut faire économiser 20-40%.",type:"single",key:"occasion",options:[
+    {v:"non",e:"🆕",t:"Tout neuf uniquement",s:"Garantie maximale"},
+    {v:"gpu",e:"🎮",t:"GPU d'occasion OK",s:"Le meilleur compromis 2026"},
+    {v:"oui",e:"🔄",t:"Tout en occasion",s:"Économies max, plus de risque"}
+  ]}
+];
+
+var assistStep=0;
+var assistData={budget:1500,usages:[],resolution:"1440",jeux:"aaa",occasion:"gpu"};
+
+function initAssistant(){
+  assistStep=0;
+  renderAssistant();
+}
+
+function renderAssistant(){
+  var nbSteps=ASSIST_QUESTIONS.length;
+  // Progress
+  var progHtml="";
+  for(var i=0;i<nbSteps;i++){
+    progHtml+="<div class='aprog "+(i<assistStep?"done":i===assistStep?"cur":"")+"'></div>";
+  }
+  progHtml+="<span class='aprog-num'>"+(assistStep+1)+"/"+nbSteps+"</span>";
+  g("assist-progress").innerHTML=progHtml;
+
+  if(assistStep>=nbSteps){
+    finishAssistant();
+    return;
+  }
+
+  var q=ASSIST_QUESTIONS[assistStep];
+  var html='<div class="aq-step on"><div class="aq-label">'+q.label+'</div>'
+    +'<div class="aq-question">'+q.q+'</div>'
+    +'<div class="aq-desc">'+q.desc+'</div>';
+
+  if(q.type==="budget"){
+    html+='<div class="aq-budget-slider">'
+      +'<div class="aq-budget-display" id="aq-bud-disp">'+fE(assistData.budget)+'</div>'
+      +'<input type="range" id="aq-bud-input" min="'+q.min+'" max="'+q.max+'" step="100" value="'+assistData.budget+'" oninput="updateBudget(this.value)"/>'
+      +'<div class="aq-budget-marks"><span>'+fE(q.min)+'</span><span>'+fE(Math.round((q.min+q.max)/2))+'</span><span>'+fE(q.max)+'</span></div>'
+      +'</div>';
+  }else if(q.type==="single"){
+    var clsGrid=q.options.length>=4?"aq-opt4":q.options.length===3?"aq-opt3":"aq-opt2";
+    html+='<div class="aq-options '+clsGrid+'">'+q.options.map(function(o){
+      var sel=assistData[q.key]===o.v?"sel":"";
+      return '<div class="aq-option '+sel+'" onclick="selectAssistOpt(\''+q.key+'\',\''+o.v+'\',this)">'
+        +'<span class="aq-emoji">'+o.e+'</span>'
+        +'<div class="aq-opt-title">'+o.t+'</div>'
+        +'<div class="aq-opt-sub">'+o.s+'</div>'
+        +'</div>';
+    }).join("")+'</div>';
+  }else if(q.type==="multi"){
+    var clsGrid=q.options.length>=4?"aq-opt4":q.options.length===3?"aq-opt3":"aq-opt2";
+    html+='<div class="aq-options '+clsGrid+'">'+q.options.map(function(o){
+      var sel=(assistData[q.key]||[]).indexOf(o.v)>=0?"sel":"";
+      return '<div class="aq-option '+sel+'" onclick="toggleAssistMulti(\''+q.key+'\',\''+o.v+'\',this)">'
+        +'<span class="aq-emoji">'+o.e+'</span>'
+        +'<div class="aq-opt-title">'+o.t+'</div>'
+        +'<div class="aq-opt-sub">'+o.s+'</div>'
+        +'</div>';
+    }).join("")+'</div>';
+  }
+
+  html+='</div>';
+  g("assist-content").innerHTML=html;
+
+  var navHtml="";
+  if(assistStep>0) navHtml+='<button class="aq-btn aq-btn-back" onclick="prevAssistStep()">← Retour</button>';
+  navHtml+='<button class="aq-btn aq-btn-next" onclick="nextAssistStep()" id="aq-next">';
+  navHtml+=assistStep===nbSteps-1?"🚀 Générer ma config":"Continuer →";
+  navHtml+='</button>';
+  g("assist-nav").innerHTML=navHtml;
+}
+
+function updateBudget(v){
+  assistData.budget=+v;
+  g("aq-bud-disp").textContent=fE(v);
+}
+
+function selectAssistOpt(key,v,el){
+  assistData[key]=v;
+  el.parentElement.querySelectorAll(".aq-option").forEach(function(o){o.classList.remove("sel");});
+  el.classList.add("sel");
+}
+
+function toggleAssistMulti(key,v,el){
+  if(!assistData[key]) assistData[key]=[];
+  var idx=assistData[key].indexOf(v);
+  if(idx>=0){assistData[key].splice(idx,1);el.classList.remove("sel");}
+  else{assistData[key].push(v);el.classList.add("sel");}
+}
+
+function nextAssistStep(){
+  assistStep++;
+  renderAssistant();
+}
+
+function prevAssistStep(){
+  assistStep--;
+  renderAssistant();
+}
+
+function finishAssistant(){
+  // Generate config based on answers
+  var b=assistData.budget;
+  var resolution=assistData.resolution;
+  var jeux=assistData.jeux;
+  var usages=assistData.usages||[];
+  var occ=assistData.occasion;
+
+  var cfg={};
+
+  // CPU
+  if(usages.indexOf("ia")>=0||usages.indexOf("creation")>=0||usages.indexOf("dev")>=0){
+    cfg.cpu=b>=2500?"ryzen9-9950x3d":b>=1500?"ryzen7-9800x3d":"ryzen7-7700";
+  }else if(jeux==="esport"||jeux==="aaa"||jeux==="simulation"){
+    cfg.cpu=b>=2200?"ryzen7-9800x3d":b>=1200?"ryzen7-7800x3d":"ryzen5-7600";
+  }else{
+    cfg.cpu=b>=1000?"ryzen7-7700":"ryzen5-7600";
+  }
+
+  // GPU
+  if(jeux==="none"&&usages.indexOf("ia")<0){
+    cfg.gpu="no-gpu";
+  }else if(usages.indexOf("ia")>=0){
+    cfg.gpu=b>=4000?"rtx5090":b>=2000?"rtx5080":"rtx5070ti";
+  }else if(resolution==="4k"){
+    cfg.gpu=b>=4500?"rtx5090":b>=2500?"rtx5080":(occ==="gpu"||occ==="oui")?"rtx4080-occ":"rtx5070ti";
+  }else if(resolution==="1440"){
+    cfg.gpu=b>=2000?"rtx5070ti":b>=1500?"rx9070xt":(occ==="gpu"||occ==="oui")?"rtx4070-occ":"rtx5070";
+  }else{
+    cfg.gpu=b>=1500?"rtx5070":"rtx5060ti";
+  }
+
+  // RAM
+  if(usages.indexOf("ia")>=0||usages.indexOf("creation")>=0){
+    cfg.ram=b>=2500?"ddr5-64-6000":"ddr5-32-6000";
+  }else if(jeux==="none"&&usages.indexOf("dev")<0){
+    cfg.ram="ddr5-16-5600";
+  }else{
+    cfg.ram="ddr5-32-6000";
+  }
+
+  // Storage
+  cfg.storage=b>=2500?"ssd-2to-gen4":b>=1500?"ssd-1to-gen4":"ssd-512-gen4";
+
+  // Motherboard
+  cfg.motherboard=b>=2500?"x870e":b>=1200?"b850":"b650";
+
+  // PSU based on GPU
+  var gpuConso=COMPOSANTS.gpu[cfg.gpu].conso||0;
+  var cpuConso=COMPOSANTS.cpu[cfg.cpu].conso||100;
+  var needed=gpuConso+cpuConso+100;
+  if(needed>800) cfg.psu="psu-1000-gold";
+  else if(needed>600) cfg.psu="psu-850-gold";
+  else if(needed>400) cfg.psu="psu-750-gold";
+  else if(needed>250) cfg.psu="psu-650-bronze";
+  else cfg.psu="psu-550-bronze";
+
+  // Cooler
+  if(cpuConso>=170) cfg.cooler="aio-360";
+  else if(cpuConso>=120) cfg.cooler="air-high";
+  else cfg.cooler="air-mid";
+
+  // Case
+  cfg.case=b>=2500?"case-premium":b>=1500?"case-airflow":"case-budget";
+
+  curConfig=cfg;
+
+  // Switch back to config view
+  setMode("custom",document.querySelector('[data-mode="custom"]'));
+  g("cb-profil-name").textContent="🤖 Config générée par l'assistant";
+  setTimeout(render,100);
+}
+
+// ══════════════════════════════════════════════════
+// FAQ
+// ══════════════════════════════════════════════════
+function tFaq(el){el.classList.toggle("open");el.nextElementSibling.classList.toggle("open");}
+
+// ══════════════════════════════════════════════════
+// CHARGE CONFIG FROM URL
+// ══════════════════════════════════════════════════
+(function(){
+  try{
+    var params=new URLSearchParams(window.location.search);
+    var c=params.get("config");
+    if(c){
+      var loaded=JSON.parse(atob(c));
+      curConfig=loaded;
+      g("cb-profil-name").textContent="🔗 Config partagée";
+    }
+  }catch(e){}
+})();
+
+// Init
+render();
+</script>
+<script src="/suggestions.js"></script>
+<script>try{renderFooter("pc-builder");}catch(e){}</script>
+</body>
+</html>
