@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Le vrai prix d'une requête IA — Enquête 2026 | Calculamatix</title>
+<meta name="description" content="Combien coûte vraiment une requête ChatGPT ou Claude ? Enquête sourcée 2026 + calculateur personnalisé. Électricité, eau, infrastructure, et le paradoxe des 14 milliards de pertes d'OpenAI."/>
+<link rel="canonical" href="https://calculamatix.com/vrai-prix-ia"/>
+<meta property="og:title" content="Le vrai prix d'une requête IA — Enquête 2026"/>
+<meta property="og:description" content="Pourquoi votre abonnement ChatGPT à 20€/mois coûte en réalité 60€ à OpenAI. Enquête sourcée + calculateur personnalisé."/>
+<meta property="og:type" content="article"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"Le vrai prix d'une requête IA — Pourquoi le tarif actuel ne reflète pas la valeur réelle","datePublished":"2026-04-28","author":{"@type":"Organization","name":"Calculamatix"},"description":"Enquête sur le coût réel des requêtes IA en 2026 : électricité, eau, infrastructure, pertes financières des géants de l'IA. Avec calculateur personnalisé."}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Combien coûte vraiment une requête ChatGPT en 2026 ?","acceptedAnswer":{"@type":"Answer","text":"Selon Sam Altman (juin 2025), une requête ChatGPT consomme environ 0,34 Wh d'électricité et 1/15ème de cuillère à café d'eau. Mais le coût réel pour OpenAI dépasse largement le prix facturé : OpenAI prévoit 14 milliards de dollars de pertes en 2026 selon des documents internes révélés par The Information. Le prix utilisateur est massivement subventionné par les investisseurs."}},{"@type":"Question","name":"Pourquoi le prix des tokens IA pourrait augmenter en 2026 ?","acceptedAnswer":{"@type":"Answer","text":"Trois forces pèsent sur les prix : (1) La pression financière — OpenAI brûle 14 milliards par an, Anthropic 2,5 milliards rien qu'en compute. (2) L'infrastructure : Sam Altman parle de 1,4 trillion de dollars d'investissements nécessaires. (3) La pénurie DDR5 et GPU. Schneider Electric prévoit que l'IA consommera 347 TWh en 2030, soit 23× plus qu'en 2025."}},{"@type":"Question","name":"GPT-5.2 Pro est 8 fois plus cher en sortie qu'en entrée — pourquoi ?","acceptedAnswer":{"@type":"Answer","text":"Le ratio output/input est partout de 3 à 8× sur les LLM. Génération autoregressive plus coûteuse que lecture, alignement, sampling de température, beam search — chaque token de sortie consomme bien plus de calcul GPU qu'un token d'entrée. GPT-5.2 Pro affiche 21$/M input et 168$/M output. Claude Opus 4.6 : 15$/75$. La règle 2026 : ce qui coûte cher, c'est ce que l'IA produit, pas ce que vous lui envoyez."}},{"@type":"Question","name":"Comment réduire le coût de mes requêtes IA ?","acceptedAnswer":{"@type":"Answer","text":"Quatre leviers concrets : (1) Cache prompts : -90% sur les tokens d'entrée répétés (DeepSeek, Claude, GPT). (2) Batching : -50% via les API batch d'OpenAI/Anthropic. (3) Bon modèle pour la tâche : routage intelligent (90% Gemini Flash + 10% Claude Sonnet = -86% vs Sonnet pur). (4) Conversations courtes : chaque message rejoue toute la conversation (no memory), donc un long fil = milliers de tokens à chaque échange."}}]}</script>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fdfcf8;--bg-dark:#1a1a1a;--paper:#ffffff;--ink:#1a1a1a;
+  --muted:#6b6b6b;--light:#a3a3a3;--border:#e8e6df;--bord-dark:#3a3a3a;
+  --accent:#d4480f;--accent2:#1a4d8f;--green:#2d7a4f;--red:#b8312f;
+  --highlight:#fff5b8;
+}
+body{background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif;font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
+
+nav{max-width:1100px;margin:0 auto;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.logo{font-family:"Fraunces",serif;font-weight:900;font-size:20px;text-decoration:none;color:var(--ink);letter-spacing:-1px}
+.logo em{font-style:normal;color:var(--accent)}
+.back{font-size:13px;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--ink)}
+
+/* ARTICLE */
+.article{max-width:760px;margin:0 auto;padding:0 24px}
+
+.article-meta{padding:50px 0 30px;text-align:center;border-bottom:1px solid var(--border)}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:3px;margin-bottom:18px}
+h1.title{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(34px,5.2vw,56px);line-height:1.04;letter-spacing:-2px;margin-bottom:22px;color:var(--ink)}
+.subtitle{font-family:"Fraunces",serif;font-weight:400;font-size:clamp(18px,2.6vw,22px);line-height:1.4;color:var(--muted);max-width:620px;margin:0 auto 26px;font-style:italic}
+.byline{font-size:13px;color:var(--light);font-family:"JetBrains Mono",monospace}
+.byline strong{color:var(--ink);font-family:"Inter",sans-serif;font-weight:600}
+
+/* INTRO */
+.lede{padding:36px 0;font-family:"Fraunces",serif;font-size:21px;line-height:1.55;color:var(--ink);font-weight:400}
+.lede::first-letter{font-size:60px;font-weight:900;float:left;line-height:0.85;padding:6px 10px 0 0;color:var(--accent);font-family:"Fraunces",serif}
+
+p{margin-bottom:20px;font-size:17px;line-height:1.75}
+
+/* SECTIONS */
+h2.section{font-family:"Fraunces",serif;font-weight:900;font-size:30px;line-height:1.15;letter-spacing:-1px;margin:50px 0 18px;padding-top:28px;border-top:2px solid var(--ink);color:var(--ink)}
+h3.subsection{font-family:"Fraunces",serif;font-weight:700;font-size:22px;letter-spacing:-.5px;margin:36px 0 14px;color:var(--ink)}
+
+/* CHIFFRES CHOC */
+.stat-box{background:var(--bg-dark);color:#fff;border-radius:0;padding:36px 28px;margin:30px 0;text-align:center}
+.stat-num{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(48px,8vw,84px);line-height:1;letter-spacing:-3px;color:var(--accent);display:block;margin-bottom:8px}
+.stat-label{font-family:"JetBrains Mono",monospace;font-size:12px;color:#aaa;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
+.stat-explain{font-size:14px;color:#ccc;margin-top:12px;line-height:1.6}
+
+/* CITATIONS */
+blockquote{border-left:4px solid var(--accent);padding:6px 0 6px 24px;margin:30px 0;font-family:"Fraunces",serif;font-style:italic;font-size:21px;line-height:1.45;color:var(--ink)}
+blockquote cite{display:block;margin-top:10px;font-size:13px;font-style:normal;color:var(--muted);font-family:"Inter",sans-serif}
+
+/* TABLEAU PRIX */
+.price-table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px;background:var(--paper);border:1px solid var(--border)}
+.price-table th{background:var(--bg-dark);color:#fff;padding:12px 14px;text-align:left;font-family:"JetBrains Mono",monospace;font-size:11px;text-transform:uppercase;letter-spacing:1px}
+.price-table th:not(:first-child){text-align:right}
+.price-table td{padding:11px 14px;border-bottom:1px solid var(--border)}
+.price-table td:not(:first-child){text-align:right;font-family:"JetBrains Mono",monospace;font-weight:500}
+.price-table tr:last-child td{border-bottom:none}
+.price-table tr:hover{background:#fafaf5}
+.tier-cheap{color:var(--green)}
+.tier-mid{color:var(--accent2)}
+.tier-pro{color:var(--accent)}
+.tier-ext{color:var(--red);font-weight:700}
+
+/* HIGHLIGHTS */
+.highlight{background:var(--highlight);padding:1px 5px;border-radius:2px}
+strong.key{color:var(--accent);font-weight:700}
+
+/* DROPCAPS NUMBERED */
+.numbered-section{display:flex;gap:16px;margin:28px 0;padding:20px;background:#f5f3eb;border-radius:4px}
+.num-circle{font-family:"Fraunces",serif;font-weight:900;font-size:36px;color:var(--accent);line-height:1;flex-shrink:0;width:50px}
+.num-content{flex:1}
+.num-content h4{font-family:"Fraunces",serif;font-weight:700;font-size:18px;margin-bottom:8px}
+.num-content p{font-size:15px;margin-bottom:0}
+
+/* SOURCES */
+.sources-cite{font-size:12px;color:var(--muted);font-style:italic;border-left:2px solid var(--border);padding-left:14px;margin:20px 0}
+
+/* ═══════════════════════════════════════
+   CALCULATEUR INTÉGRÉ
+═══════════════════════════════════════ */
+.calc-section{background:var(--bg-dark);color:#fff;margin:60px -24px 0;padding:60px 24px}
+.calc-inner{max-width:760px;margin:0 auto}
+.calc-eyebrow{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:3px;margin-bottom:14px;text-align:center}
+.calc-title{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(28px,4.5vw,42px);line-height:1.1;letter-spacing:-1px;text-align:center;margin-bottom:14px}
+.calc-title em{color:var(--accent);font-style:normal}
+.calc-desc{font-family:"Fraunces",serif;font-style:italic;font-size:17px;color:#aaa;text-align:center;margin-bottom:38px;max-width:560px;margin-left:auto;margin-right:auto;line-height:1.5}
+
+.calc-questions{display:flex;flex-direction:column;gap:18px;margin-bottom:34px}
+.q-block{background:#252525;border:1px solid var(--bord-dark);border-radius:4px;padding:20px}
+.q-label{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}
+.q-title{font-family:"Fraunces",serif;font-weight:700;font-size:19px;line-height:1.3;margin-bottom:14px;color:#fff}
+
+/* SLIDERS DARK */
+.slider-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:14px}
+.sl-label{color:#bbb}
+.sl-val{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:18px;color:var(--accent)}
+input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:#3a3a3a;border-radius:2px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:var(--accent);border-radius:50%;border:3px solid var(--bg-dark);cursor:pointer}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+
+/* SELECT DARK */
+.select-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.select-grid.three{grid-template-columns:repeat(3,1fr)}
+.select-opt{background:#1a1a1a;border:1.5px solid #3a3a3a;border-radius:4px;padding:11px;cursor:pointer;text-align:center;transition:all .15s;font-family:"Inter",sans-serif;color:#fff;font-size:13px;font-weight:500}
+.select-opt:hover{border-color:var(--accent);background:#2a2a2a}
+.select-opt.on{border-color:var(--accent);background:#2a2a2a;color:var(--accent)}
+.select-opt-sub{display:block;font-size:11px;color:#888;margin-top:2px;font-weight:400}
+
+/* RÉSULTATS */
+.results-block{background:var(--accent);color:#fff;border-radius:4px;padding:36px 28px;margin:30px 0;text-align:center;position:relative}
+.r-label{font-family:"JetBrains Mono",monospace;font-size:11px;text-transform:uppercase;letter-spacing:2px;opacity:.85;margin-bottom:8px}
+.r-num{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(54px,9vw,88px);line-height:1;letter-spacing:-3px;margin-bottom:6px}
+.r-sub{font-size:14px;opacity:.9;line-height:1.55}
+
+/* GRILLE MÉTRIQUES */
+.metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0}
+.metric{background:#252525;border:1px solid var(--bord-dark);border-radius:4px;padding:18px 14px;text-align:center}
+.m-emoji{font-size:24px;margin-bottom:8px;display:block}
+.m-val{font-family:"Fraunces",serif;font-weight:900;font-size:24px;line-height:1;color:var(--accent);margin-bottom:4px}
+.m-label{font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:1px;font-family:"JetBrains Mono",monospace}
+.m-sub{font-size:11px;color:#999;margin-top:4px}
+
+/* COMPARAISON SUBVENTION */
+.subsidy-block{background:#252525;border-left:4px solid var(--accent);padding:24px;margin:24px 0;border-radius:0 4px 4px 0}
+.sub-title{font-family:"Fraunces",serif;font-weight:700;font-size:18px;margin-bottom:10px;color:#fff}
+.sub-rows{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid #3a3a3a}
+.sub-rows:last-child{border-bottom:none}
+.sub-l{font-size:14px;color:#bbb}
+.sub-v{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:16px;color:#fff}
+.sub-v.warn{color:var(--accent)}
+
+/* SCÉNARIOS */
+.scenarios{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:24px 0}
+.scenario{background:#252525;border:1px solid var(--bord-dark);border-radius:4px;padding:18px 14px}
+.sc-up{border-top:3px solid var(--red)}
+.sc-stable{border-top:3px solid #888}
+.sc-down{border-top:3px solid var(--green)}
+.sc-emoji{font-size:22px;margin-bottom:6px}
+.sc-title{font-family:"Fraunces",serif;font-weight:700;font-size:14px;margin-bottom:6px;color:#fff}
+.sc-prob{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--accent);margin-bottom:8px}
+.sc-text{font-size:12px;color:#aaa;line-height:1.55}
+
+/* PARTAGE */
+.share-row{display:flex;gap:8px;justify-content:center;margin-top:30px;flex-wrap:wrap}
+.share-btn{background:transparent;border:1.5px solid var(--bord-dark);color:#fff;padding:11px 22px;border-radius:4px;font-size:13px;font-weight:600;cursor:pointer;font-family:"Inter",sans-serif;transition:all .15s}
+.share-btn:hover{border-color:var(--accent);color:var(--accent)}
+.share-btn.primary{background:var(--accent);border-color:var(--accent)}
+.share-btn.primary:hover{background:#b83a08;border-color:#b83a08;color:#fff}
+
+/* CONCLUSION */
+.conclusion{padding:40px 0 30px;border-top:2px solid var(--ink);margin-top:40px}
+.conclusion h2{margin-top:0;border-top:none;padding-top:0}
+.conclusion p{font-family:"Fraunces",serif;font-size:18px;line-height:1.65}
+
+/* SOURCES SECTION */
+.sources-section{background:#f5f3eb;padding:36px 24px;margin:60px -24px 0}
+.sources-inner{max-width:760px;margin:0 auto}
+.sources-title{font-family:"JetBrains Mono",monospace;font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:14px}
+.source-list{font-size:13px;color:var(--muted);line-height:1.85}
+.source-list li{margin-bottom:6px;list-style:none;padding-left:14px;position:relative}
+.source-list li::before{content:"→";position:absolute;left:0;color:var(--accent)}
+.source-list li strong{color:var(--ink);font-weight:600}
+
+/* FAQ */
+.faq-section{max-width:760px;margin:0 auto;padding:50px 24px}
+.faq-h2{font-family:"Fraunces",serif;font-weight:900;font-size:30px;letter-spacing:-1px;margin-bottom:20px;padding-top:28px;border-top:2px solid var(--ink)}
+.fitem{border-bottom:1px solid var(--border);padding:18px 0}
+.fq{font-family:"Fraunces",serif;font-weight:700;font-size:18px;cursor:pointer;display:flex;justify-content:space-between;gap:12px;line-height:1.3}
+.fq::after{content:"+";font-family:"Inter",sans-serif;font-size:24px;color:var(--accent);flex-shrink:0;line-height:1;font-weight:300}
+.fq.open::after{content:"−"}
+.fa{font-size:15px;color:var(--muted);line-height:1.85;max-height:0;overflow:hidden;transition:max-height .35s}
+.fa.open{max-height:600px;padding-top:12px}
+
+@media(max-width:600px){
+  .select-grid,.select-grid.three{grid-template-columns:1fr}
+  .metrics-grid{grid-template-columns:1fr 1fr}
+  .scenarios{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">Calcula<em>matix</em></a>
+  <a class="back" href="index.html">← Retour</a>
+</nav>
+
+<article class="article">
+  <div class="article-meta">
+    <div class="kicker">Enquête · 28 avril 2026 · Lecture 9 min</div>
+    <h1 class="title">Le vrai prix d'une<br>requête IA</h1>
+    <p class="subtitle">Pourquoi les 20€ que vous payez chaque mois pour ChatGPT ne reflètent pas la valeur réelle de ce que vous consommez. Et pourquoi ça pourrait changer brutalement.</p>
+    <div class="byline">PAR <strong>CALCULAMATIX</strong> · DERNIÈRE MISE À JOUR LE 28/04/2026</div>
+  </div>
+
+  <p class="lede">Un matin, en écrivant à ChatGPT pour reformuler un email, vous avez consommé l'équivalent énergétique de deux minutes d'ampoule basse consommation et un quinzième de cuillère à café d'eau. C'est ce qu'affirme Sam Altman, patron d'OpenAI, dans un billet de blog publié en juin 2025. Anodin. Sauf que ChatGPT traite désormais 2,5 milliards de requêtes par jour. Et qu'OpenAI prévoit 14 milliards de dollars de pertes en 2026.</p>
+
+  <p>Le paradoxe est saisissant. À l'échelle individuelle, l'intelligence artificielle générative semble presque gratuite — 0,34 watt-heure par requête selon le PDG d'OpenAI lui-même. À l'échelle d'une économie entière, elle représente déjà 15 térawattheures de consommation annuelle en 2025, et pourrait atteindre <strong class="key">347 TWh en 2030</strong> selon le Schneider Electric Sustainability Research Institute. Soit l'équivalent de la production annuelle de 44 réacteurs nucléaires.</p>
+
+  <p>Comment expliquer cet écart entre votre facture personnelle et celle des géants de l'IA ? Et surtout : combien coûte <em>vraiment</em> chacune de vos requêtes — pas en watts ou en gouttes d'eau, mais en argent réel, celui qui est aujourd'hui massivement subventionné par les investisseurs ?</p>
+
+  <h2 class="section">Le premier paradoxe : votre requête coûte moins qu'une recherche Google</h2>
+
+  <p>Pendant longtemps, l'idée dominante voulait qu'une requête ChatGPT consomme dix fois plus qu'une recherche Google. Le chiffre venait d'une étude de l'Université de Californie Riverside publiée en 2023, qui estimait à <strong>2,9 wattheures</strong> la consommation d'une requête. Avec 500 ml d'eau pour le refroidissement.</p>
+
+  <p>Mais les chiffres ont chuté. Vite. En juin 2025, Sam Altman publie une donnée beaucoup plus modeste : <strong class="key">0,34 Wh par requête</strong>, soit ce qu'un four utiliserait en une seconde. Côté eau, il évoque « <em>environ un quinzième de cuillère à café</em> ». Cette efficacité s'explique par des puces spécialisées (Nvidia H100, TPU Google), des optimisations algorithmiques, et le batching massif des requêtes.</p>
+
+  <div class="stat-box">
+    <span class="stat-label">Consommation par requête ChatGPT en 2026</span>
+    <span class="stat-num">0,34 Wh</span>
+    <p class="stat-explain">Soit moins qu'une recherche Google moderne (~0,3 Wh). L'efficacité unitaire de l'IA s'est massivement améliorée depuis 2023.</p>
+  </div>
+
+  <p>À l'unité, c'est dérisoire. Charger un smartphone consomme 15 fois plus d'énergie qu'obtenir une réponse complexe d'une IA. Mais ce calcul individuel masque la réalité agrégée : avec 2,5 milliards de requêtes quotidiennes, ChatGPT consomme 850 mégawattheures par jour, soit <strong>310 GWh par an</strong>. C'est l'énergie nécessaire pour alimenter 29 000 foyers américains pendant un an.</p>
+
+  <p class="sources-cite">Sources : Sam Altman, blog officiel (juin 2025) ; SambaNova Systems (janvier 2025) ; Université de Riverside ; Schneider Electric Sustainability Research Institute (2025).</p>
+
+  <h2 class="section">Le deuxième paradoxe : plus c'est gros, plus c'est cher (à l'inverse de tout)</h2>
+
+  <p>Si l'efficacité unitaire s'améliore, le prix unitaire des tokens, lui, suit une courbe très différente selon le segment. Voici les tarifs officiels d'avril 2026, pour 1 million de tokens (l'unité de facturation des API) :</p>
+
+  <table class="price-table">
+    <thead>
+      <tr><th>Modèle</th><th>Input</th><th>Output</th><th>Ratio</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="tier-cheap"><strong>Gemini Flash-Lite</strong> (low-cost)</td><td>$0.075</td><td>$0.30</td><td>4×</td></tr>
+      <tr><td class="tier-cheap"><strong>Grok 4.1 Fast</strong> (xAI, agressif)</td><td>$0.20</td><td>$0.50</td><td>2.5×</td></tr>
+      <tr><td class="tier-cheap"><strong>DeepSeek V3.2</strong> (Chine)</td><td>$0.28</td><td>$0.42</td><td>1.5×</td></tr>
+      <tr><td class="tier-mid"><strong>Gemini 3 Flash</strong></td><td>$0.50</td><td>$3.00</td><td>6×</td></tr>
+      <tr><td class="tier-mid"><strong>GPT-5.2</strong></td><td>$1.75</td><td>$14</td><td>8×</td></tr>
+      <tr><td class="tier-mid"><strong>Gemini 3.1 Pro</strong></td><td>$2.00</td><td>$12</td><td>6×</td></tr>
+      <tr><td class="tier-pro"><strong>Claude Sonnet 4.6</strong></td><td>$3.00</td><td>$15</td><td>5×</td></tr>
+      <tr><td class="tier-pro"><strong>Claude Opus 4.6</strong></td><td>$15</td><td>$75</td><td>5×</td></tr>
+      <tr><td class="tier-ext"><strong>GPT-5.2 Pro</strong> (premium)</td><td>$21</td><td>$168</td><td>8×</td></tr>
+    </tbody>
+  </table>
+
+  <p>Une asymétrie saute aux yeux : <strong class="key">les tokens de sortie coûtent en moyenne 4 à 8 fois plus chers que ceux d'entrée</strong>. C'est le coût économique de la génération autoregressive : produire chaque mot demande au modèle de relire tout ce qu'il a déjà écrit, alors que lire votre prompt ne se fait qu'une fois.</p>
+
+  <p>Autre vertige : entre Mistral Nemo ($0.02/M, deux centimes) et GPT-5.2 Pro ($168/M output), il y a un facteur 8 400. Si vous routez 99 % de vos requêtes vers Gemini Flash-Lite et 1 % vers le top, vous économisez 98 % par rapport à un usage tout-premium. Et le résultat reste tout à fait acceptable pour la plupart des tâches.</p>
+
+  <blockquote>
+    « Il y a deux ans, faire tourner un LLM phare coûtait 10 dollars par million de tokens d'entrée. Aujourd'hui on a un meilleur modèle pour le quart de ce prix — et un parfaitement adéquat pour le centième. »
+    <cite>— TLDL, "LLM API Pricing 2026", février 2026</cite>
+  </blockquote>
+
+  <h2 class="section">Le vrai paradoxe : ce que vous payez ne couvre pas le coût</h2>
+
+  <p>Voici l'élément central de cette enquête. Tous les tarifs publics que vous voyez — votre abonnement ChatGPT à 20€/mois, Claude Pro à 18€, Gemini à 19€ — sont <strong class="key">massivement subventionnés</strong>. Pas par OpenAI ou Anthropic eux-mêmes : par leurs investisseurs.</p>
+
+  <p>Selon des documents internes révélés par <em>The Information</em> en octobre 2024, OpenAI prévoit <strong>14 milliards de dollars de pertes en 2026</strong>. Microsoft a inscrit 4,1 milliards de dollars de pertes au troisième trimestre 2026 lié à sa participation de 32,5 % dans OpenAI. Anthropic, plus petit, brûle 2,5 milliards de dollars rien qu'en infrastructure de calcul. Pour 30 milliards de revenus annualisés en mars 2026 — mais avec des dépenses qui suivent.</p>
+
+  <div class="numbered-section">
+    <div class="num-circle">1</div>
+    <div class="num-content">
+      <h4>Les coûts d'infrastructure dépassent les revenus</h4>
+      <p>OpenAI loue ses serveurs Microsoft pour environ 4 milliards de dollars par an, à 1,30 $ l'heure par puce Nvidia A100. C'est une charge fixe colossale qui n'évolue pas avec le prix de votre abonnement.</p>
+    </div>
+  </div>
+
+  <div class="numbered-section">
+    <div class="num-circle">2</div>
+    <div class="num-content">
+      <h4>L'entraînement seul coûte des milliards</h4>
+      <p>Entraîner GPT-3 a coûté 12 millions de dollars. GPT-4, probablement entre 100 et 200 millions. Les modèles 2026 (GPT-5.4, Claude Opus 4.6) franchissent vraisemblablement le milliard. Ces coûts sont amortis sur des milliards de requêtes — mais à perte.</p>
+    </div>
+  </div>
+
+  <div class="numbered-section">
+    <div class="num-circle">3</div>
+    <div class="num-content">
+      <h4>Project Stargate : 500 milliards d'engagements</h4>
+      <p>Annoncé en janvier 2025 par Donald Trump, le projet Stargate engage OpenAI, Softbank et Oracle pour 500 milliards de dollars d'infrastructure IA. Sam Altman parle même de 1,4 trillion d'investissements nécessaires d'ici 2030, avec 30 GW de capacité datacenter.</p>
+    </div>
+  </div>
+
+  <p>Cette équation ne tient que parce que les marchés financiers acceptent de financer des pertes massives en pariant sur une rentabilité future. OpenAI ne prévoit pas de bénéfices avant <strong>2029</strong>. Anthropic, plus tôt mais sans certitude. Tant que cette manne dure, votre abonnement reste subventionné. Le jour où elle se tarit — bulle, crise, désillusion sur les revenus IA — les prix devront refléter la réalité économique.</p>
+
+  <blockquote>
+    « OpenAI est en train de s'effondrer en temps réel malgré sa valorisation de 500 milliards de dollars. Aucune start-up dans l'histoire n'a jamais fonctionné avec de telles pertes. »
+    <cite>— George Noble, investisseur chevronné, cité par Bloomberg (octobre 2025)</cite>
+  </blockquote>
+  <h2 class="section">Pourquoi les prix vont (probablement) augmenter</h2>
+
+  <p>Trois forces convergent vers une hausse possible des tarifs IA dans les 18 prochains mois :</p>
+
+  <h3 class="subsection">1. La pression financière des actionnaires</h3>
+  <p>Quand OpenAI prépare son IPO pour le quatrième trimestre 2026 à une valorisation cible de 1 000 milliards, les marchés exigeront des marges. Anthropic, avec 380 milliards de valorisation, suit la même logique. Le moyen le plus rapide d'améliorer la rentabilité ? Augmenter les prix sur les modèles premium tout en gardant les modèles d'appel attractifs. C'est exactement ce qu'on observe : <strong>GPT-5.2 Pro à 168 $/M output</strong> est huit fois plus cher que GPT-5.2 standard, alors qu'il était impensable il y a deux ans de facturer un modèle 168 dollars le million de tokens.</p>
+
+  <h3 class="subsection">2. La pénurie de mémoire DDR5 et HBM</h3>
+  <p>Samsung, SK Hynix et Micron — qui contrôlent 95 % de la production mondiale de DRAM — ont massivement réorienté leurs lignes vers la mémoire HBM (utilisée dans les GPU IA), bien plus rentable. Résultat : la DDR5 grand public a quadruplé de prix depuis fin 2025, et Micron annonce être « <em>sold out pour 2026</em> ». Cette pénurie touche directement le coût de fabrication des cartes graphiques utilisées dans les datacenters d'inférence IA.</p>
+
+  <h3 class="subsection">3. La règle cachée des 200 000 tokens chez Claude</h3>
+  <p>Anthropic applique depuis 2026 une règle peu médiatisée : <strong>au-delà de 200 000 tokens d'entrée, le tarif double</strong>. Sonnet 4.6 passe de 3 $ à 6 $/M input, et de 15 $ à 22,50 $/M output. Une astuce de tarification qui permet d'augmenter discrètement les revenus sans afficher une hausse globale. OpenAI applique aussi un surcoût de 10 % sur le routage régional (data residency).</p>
+
+  <h2 class="section">Trois scénarios pour 2026-2027</h2>
+  <p>L'avenir des prix IA n'est pas linéaire. Trois forces s'opposent : la pression financière (hausse), la concurrence DeepSeek/Grok (baisse), et l'optimisation algorithmique (baisse). Voici les scénarios crédibles :</p>
+
+  <div class="scenarios">
+    <div class="scenario sc-up">
+      <div class="sc-emoji">📈</div>
+      <div class="sc-title">Hausse</div>
+      <div class="sc-prob">~ 35 % de probabilité</div>
+      <div class="sc-text">Bulle IA tient, exigences IPO, pénurie DRAM continue, modèles plus gros (1M+ tokens). Prix tier premium ×1,5 à ×3.</div>
+    </div>
+    <div class="scenario sc-stable">
+      <div class="sc-emoji">📊</div>
+      <div class="sc-title">Stabilisation</div>
+      <div class="sc-prob">~ 40 % de probabilité</div>
+      <div class="sc-text">Concurrence DeepSeek/Grok contient les hausses sur le mid-tier. Premium s'envole, low-cost reste agressif. Bipolarisation forte.</div>
+    </div>
+    <div class="scenario sc-down">
+      <div class="sc-emoji">📉</div>
+      <div class="sc-title">Baisse</div>
+      <div class="sc-prob">~ 25 % de probabilité</div>
+      <div class="sc-text">Algorithmes plus efficaces (TurboQuant Google), open-source mature (Llama 4, Mistral), si la bulle éclate. Prix divisés par 2 à 5.</div>
+    </div>
+  </div>
+
+</article>
+
+<!-- ═══════ CALCULATEUR ═══════ -->
+<section class="calc-section" id="calculator">
+  <div class="calc-inner">
+    <div class="calc-eyebrow">CALCULATEUR PERSONNALISÉ</div>
+    <h2 class="calc-title">Combien coûtez-vous <em>réellement</em><br>à OpenAI / Anthropic / Google ?</h2>
+    <p class="calc-desc">Renseignez votre usage et découvrez le coût réel de vos requêtes — celui que vous payez, mais aussi celui que vous devriez payer si l'IA n'était pas subventionnée.</p>
+
+    <div class="calc-questions">
+      <div class="q-block">
+        <div class="q-label">Question 1</div>
+        <div class="q-title">Combien de fois utilisez-vous l'IA par semaine ?</div>
+        <div class="slider-row">
+          <span class="sl-label">Requêtes par semaine</span>
+          <span class="sl-val" id="v-freq">35</span>
+        </div>
+        <input type="range" id="i-freq" min="1" max="500" value="35" oninput="calc()"/>
+      </div>
+
+      <div class="q-block">
+        <div class="q-label">Question 2</div>
+        <div class="q-title">Quel modèle utilisez-vous principalement ?</div>
+        <div class="select-grid three">
+          <div class="select-opt on" data-model="claude-sonnet" onclick="setModel('claude-sonnet',this)">Claude Sonnet 4.6<span class="select-opt-sub">3$ / 15$ par M tokens</span></div>
+          <div class="select-opt" data-model="gpt-5" onclick="setModel('gpt-5',this)">GPT-5.2<span class="select-opt-sub">1.75$ / 14$</span></div>
+          <div class="select-opt" data-model="gemini-pro" onclick="setModel('gemini-pro',this)">Gemini 3.1 Pro<span class="select-opt-sub">2$ / 12$</span></div>
+          <div class="select-opt" data-model="claude-opus" onclick="setModel('claude-opus',this)">Claude Opus 4.6<span class="select-opt-sub">15$ / 75$</span></div>
+          <div class="select-opt" data-model="gpt5-pro" onclick="setModel('gpt5-pro',this)">GPT-5.2 Pro<span class="select-opt-sub">21$ / 168$</span></div>
+          <div class="select-opt" data-model="gemini-flash" onclick="setModel('gemini-flash',this)">Gemini Flash-Lite<span class="select-opt-sub">0.075$ / 0.30$</span></div>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-label">Question 3</div>
+        <div class="q-title">Quel type de requêtes faites-vous principalement ?</div>
+        <div class="select-grid">
+          <div class="select-opt" data-type="quick" onclick="setType('quick',this)">Questions courtes<span class="select-opt-sub">~ 200 tokens entrée / 300 sortie</span></div>
+          <div class="select-opt on" data-type="chat" onclick="setType('chat',this)">Conversations / brainstorm<span class="select-opt-sub">~ 800 / 1500</span></div>
+          <div class="select-opt" data-type="long" onclick="setType('long',this)">Analyse de documents longs<span class="select-opt-sub">~ 5000 / 2500</span></div>
+          <div class="select-opt" data-type="code" onclick="setType('code',this)">Code / programmation<span class="select-opt-sub">~ 1500 / 3000</span></div>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-label">Question 4</div>
+        <div class="q-title">Vos conversations durent en moyenne...</div>
+        <div class="slider-row">
+          <span class="sl-label">Messages par conversation</span>
+          <span class="sl-val" id="v-msg">5</span>
+        </div>
+        <input type="range" id="i-msg" min="1" max="30" value="5" oninput="calc()"/>
+      </div>
+    </div>
+
+    <div class="results-block">
+      <div class="r-label">Coût mensuel réel de votre usage IA</div>
+      <div class="r-num" id="r-cost">— $</div>
+      <div class="r-sub" id="r-sub">Configurez vos paramètres pour voir le résultat</div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric"><span class="m-emoji">⚡</span><div class="m-val" id="m-elec">— Wh</div><div class="m-label">Électricité / mois</div><div class="m-sub" id="m-elec-sub">—</div></div>
+      <div class="metric"><span class="m-emoji">💧</span><div class="m-val" id="m-eau">— mL</div><div class="m-label">Eau / mois</div><div class="m-sub" id="m-eau-sub">—</div></div>
+      <div class="metric"><span class="m-emoji">🌍</span><div class="m-val" id="m-co2">— g</div><div class="m-label">CO₂ / mois</div><div class="m-sub" id="m-co2-sub">—</div></div>
+    </div>
+
+    <div class="subsidy-block">
+      <div class="sub-title">📊 Le vrai coût pour OpenAI / Anthropic</div>
+      <div class="sub-rows"><span class="sub-l">Ce que vous payez (abonnement)</span><span class="sub-v" id="s-paid">~ 20 $ / mois</span></div>
+      <div class="sub-rows"><span class="sub-l">Coût direct API estimé</span><span class="sub-v" id="s-api">— $ / mois</span></div>
+      <div class="sub-rows"><span class="sub-l">Coût réel non-subventionné (×3)</span><span class="sub-v warn" id="s-real">— $ / mois</span></div>
+      <div class="sub-rows" style="margin-top:8px;padding-top:14px;border-top:1px dashed #444"><span class="sub-l"><em>Subvention par les investisseurs</em></span><span class="sub-v warn" id="s-diff">— $ / mois</span></div>
+    </div>
+
+    <div class="share-row">
+      <button class="share-btn primary" onclick="copyResult()">📋 Copier mes résultats</button>
+      <button class="share-btn" onclick="shareX()">𝕏 Partager sur X</button>
+    </div>
+  </div>
+</section>
+
+<article class="article">
+  <div class="conclusion">
+    <h2 class="section">Conclusion : profitez du moment, mais préparez-vous</h2>
+
+    <p>L'IA générative en 2026 vit un moment unique de l'histoire technologique : une période où le prix utilisateur ne reflète absolument pas le coût économique réel. Comme Uber a subventionné les courses pendant des années, comme Netflix a perdu de l'argent sur chaque abonné pendant une décennie, OpenAI et Anthropic <strong class="key">font le pari que la croissance d'usage compensera plus tard les pertes massives d'aujourd'hui</strong>.</p>
+
+    <p>La question n'est plus de savoir <em>si</em> les prix vont s'ajuster, mais <em>comment</em>. Bipolarisation entre un mid-tier toujours abordable (poussé par DeepSeek, Grok, Mistral) et un premium qui s'envole (GPT-5.2 Pro déjà à 168 $/M output). Hausses cachées via la règle des 200 000 tokens chez Claude. Surcoût régional. Accès prioritaire pour les entreprises qui paient plus cher.</p>
+
+    <p>Quatre conseils concrets pour optimiser dès maintenant : <strong>activer le cache prompt</strong> (-90 % sur les tokens d'entrée répétés), <strong>utiliser le batching</strong> quand c'est possible (-50 %), <strong>choisir le bon modèle pour la bonne tâche</strong> (90 % en Gemini Flash + 10 % en Claude Sonnet = -86 % vs tout-Sonnet), et <strong>raccourcir les conversations</strong> (chaque message rejoue toute l'historique). Une petite équipe de 6 développeurs, Branch8, a divisé sa facture Claude Code par 3,5 — passant de 2 400 $ à 680 $ par mois — uniquement avec ces optimisations.</p>
+
+    <p>Et surtout : profitez de l'instant. C'est probablement la dernière fois de votre vie où vous pourrez accéder à une intelligence artificielle aussi puissante pour 20 € par mois.</p>
+  </div>
+</article>
+
+<!-- SOURCES -->
+<section class="sources-section">
+  <div class="sources-inner">
+    <div class="sources-title">📚 Sources et références</div>
+    <ul class="source-list">
+      <li><strong>Sam Altman</strong>, billet de blog officiel OpenAI sur la consommation par requête (juin 2025)</li>
+      <li><strong>The Information</strong>, documents internes OpenAI sur les pertes de 14 milliards prévues en 2026 (octobre 2024)</li>
+      <li><strong>Schneider Electric Sustainability Research Institute</strong>, projection 347 TWh IA d'ici 2030 (2025)</li>
+      <li><strong>Université de Riverside</strong>, étude Shaolei Ren sur consommation électricité/eau ChatGPT (2023)</li>
+      <li><strong>SambaNova Systems</strong>, rapport sur la consommation énergétique de l'IA en entreprise (janvier 2025)</li>
+      <li><strong>TLDL.io</strong>, "LLM API Pricing 2026 — Compare GPT-5, Claude 4, Gemini 2.5, DeepSeek" (février 2026)</li>
+      <li><strong>Silicon Data</strong>, "Understanding LLM Cost Per Token: A 2026 Practical Guide"</li>
+      <li><strong>IntuitionLabs</strong>, "AI API Pricing Comparison 2026" et "Token Optimization for ChatGPT & Claude"</li>
+      <li><strong>Clubic</strong>, Anthropic dépasse OpenAI en revenus annualisés (mars 2026)</li>
+      <li><strong>Cafétech / Microsoft Q3 2026</strong>, perte de 4,1 milliards déclarée sur la participation OpenAI</li>
+      <li><strong>Next.ink</strong>, analyse du coût en eau d'une requête ChatGPT (octobre 2025)</li>
+      <li><strong>ScienceEtonnante / David Louapre</strong>, calcul détaillé d'inférence LLM</li>
+      <li><strong>Anthropic / OpenAI / Google</strong>, pages de tarification officielles (avril 2026)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <h2 class="faq-h2">Questions fréquentes</h2>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Combien coûte vraiment une requête ChatGPT en 2026 ?</div><div class="fa">Selon Sam Altman (juin 2025), une requête ChatGPT consomme environ 0,34 Wh d'électricité et 1/15ème de cuillère à café d'eau. Mais le coût réel pour OpenAI dépasse largement le prix facturé à l'utilisateur : OpenAI prévoit 14 milliards de dollars de pertes en 2026 selon des documents internes révélés par The Information. Le prix utilisateur est massivement subventionné par les investisseurs.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Pourquoi le prix des tokens IA pourrait augmenter en 2026 ?</div><div class="fa">Trois forces pèsent sur les prix : (1) La pression financière — OpenAI brûle 14 milliards par an, Anthropic 2,5 milliards rien qu'en compute. (2) L'infrastructure : Sam Altman parle de 1,4 trillion de dollars d'investissements nécessaires d'ici 2030. (3) La pénurie DDR5 et HBM. Schneider Electric prévoit que l'IA consommera 347 TWh en 2030, soit 23× plus qu'en 2025.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">GPT-5.2 Pro est 8 fois plus cher en sortie qu'en entrée — pourquoi ?</div><div class="fa">Le ratio output/input est partout de 3 à 8× sur les LLM. La génération autoregressive est plus coûteuse que la lecture : alignement, sampling de température, beam search — chaque token de sortie consomme bien plus de calcul GPU qu'un token d'entrée. GPT-5.2 Pro affiche 21$/M input et 168$/M output. Claude Opus 4.6 : 15$/75$. La règle 2026 : ce qui coûte cher, c'est ce que l'IA produit, pas ce que vous lui envoyez.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Comment réduire le coût de mes requêtes IA ?</div><div class="fa">Quatre leviers concrets : (1) Cache prompts : -90% sur les tokens d'entrée répétés (DeepSeek, Claude, GPT). (2) Batching : -50% via les API batch d'OpenAI et Anthropic. (3) Bon modèle pour la tâche : routage intelligent (90% Gemini Flash + 10% Claude Sonnet = -86% vs Sonnet pur). (4) Conversations courtes : chaque message rejoue toute la conversation (no memory), donc un long fil = des milliers de tokens à chaque échange.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">L'IA va-t-elle vraiment consommer autant d'électricité que 44 réacteurs nucléaires ?</div><div class="fa">C'est la projection du Schneider Electric Sustainability Research Institute pour 2030 : 347 TWh par an pour l'IA générative seule, vs 15 TWh en 2025. Soit une multiplication par 23 en cinq ans. Cette projection suppose que l'usage continue de croître au rythme actuel et que les optimisations algorithmiques ne compensent pas suffisamment l'effet rebond (paradoxe de Jevons). Si une nouvelle technologie comme TurboQuant de Google (compression KV cache, -6× la mémoire) se généralise, ces chiffres pourraient être revus à la baisse.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Pourquoi OpenAI perd autant d'argent en 2026 ?</div><div class="fa">OpenAI dépense environ 4 milliards de dollars par an juste pour louer ses serveurs Microsoft (1,30 $ l'heure par puce Nvidia A100). L'entraînement de modèles comme GPT-5.4 dépasse probablement le milliard. Les coûts de personnel sont passés de 700 millions en 2024 à 2 milliards en 2025. Pour un revenu annualisé de 24 milliards, les pertes restent massives. Microsoft a inscrit 4,1 milliards de pertes sur sa participation au Q3 2026. Le seuil de rentabilité n'est pas attendu avant 2029-2030.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Quel modèle IA choisir pour optimiser le rapport qualité/prix en 2026 ?</div><div class="fa">Pour les tâches simples (classification, extraction) : Gemini Flash-Lite à 0,075 $ / 0,30 $ par million de tokens. Pour le mid-tier polyvalent : DeepSeek V3.2 (0,28 $ / 0,42 $) ou Gemini 3 Flash (0,50 $ / 3 $). Pour la qualité maximale sans tomber dans le tier extrême : GPT-5.2 (1,75 $ / 14 $) ou Claude Sonnet 4.6 (3 $ / 15 $). Évitez GPT-5.2 Pro (21 $ / 168 $) sauf besoin spécifique de raisonnement profond — le rapport qualité/prix se dégrade massivement.</div></div>
+</section>
+
+<script>
+// ═══════════════════════════════════
+// CALCULATEUR
+// ═══════════════════════════════════
+var MODELS={
+  "gemini-flash":{n:"Gemini Flash-Lite",inP:0.075,outP:0.30},
+  "claude-sonnet":{n:"Claude Sonnet 4.6",inP:3,outP:15},
+  "gpt-5":{n:"GPT-5.2",inP:1.75,outP:14},
+  "gemini-pro":{n:"Gemini 3.1 Pro",inP:2,outP:12},
+  "claude-opus":{n:"Claude Opus 4.6",inP:15,outP:75},
+  "gpt5-pro":{n:"GPT-5.2 Pro",inP:21,outP:168}
+};
+
+var TYPES={
+  "quick":{inT:200,outT:300,n:"questions courtes"},
+  "chat":{inT:800,outT:1500,n:"conversations"},
+  "long":{inT:5000,outT:2500,n:"documents longs"},
+  "code":{inT:1500,outT:3000,n:"code / programmation"}
+};
+
+var curModel="claude-sonnet";
+var curType="chat";
+
+function g(id){return document.getElementById(id);}
+
+function setModel(m,el){
+  curModel=m;
+  document.querySelectorAll("[data-model]").forEach(function(o){o.classList.remove("on");});
+  if(el) el.classList.add("on");
+  calc();
+}
+
+function setType(t,el){
+  curType=t;
+  document.querySelectorAll("[data-type]").forEach(function(o){o.classList.remove("on");});
+  if(el) el.classList.add("on");
+  calc();
+}
+
+function calc(){
+  var freq=+g("i-freq").value;
+  var msg=+g("i-msg").value;
+  g("v-freq").textContent=freq;
+  g("v-msg").textContent=msg;
+
+  var model=MODELS[curModel];
+  var type=TYPES[curType];
+
+  // Pour chaque conversation : N messages, où chaque message rejoue tous les précédents (no-memory)
+  // Tokens cumulés in: inT × (1 + 2 + ... + msg) = inT × msg(msg+1)/2
+  // Tokens cumulés out: outT × msg
+  // Sans cache, chaque message recharge toute l'histoire
+  var conversationsParSemaine=freq/msg; // approximation : freq=requêtes, msg=longueur
+  var inTokens=type.inT*msg*(msg+1)/2; // tokens d'entrée cumulés sur la conversation
+  var outTokens=type.outT*msg;
+
+  // Coût par conversation
+  var costParConvUSD=(inTokens/1000000*model.inP)+(outTokens/1000000*model.outP);
+
+  // Sur un mois (4.33 semaines)
+  var costMois=costParConvUSD*conversationsParSemaine*4.33;
+
+  // Système prompt fixe (~5000 tokens facturés à chaque message)
+  var systemPrompt=5000;
+  var sysCostMois=(systemPrompt*msg*conversationsParSemaine*4.33/1000000)*model.inP;
+
+  var totalCostUSD=costMois+sysCostMois;
+
+  // Affichage principal
+  g("r-cost").textContent=totalCostUSD.toFixed(2)+" $";
+  var nbReqMois=Math.round(freq*4.33);
+  g("r-sub").textContent="Sur ~"+nbReqMois+" requêtes par mois en utilisant "+model.n+" pour des "+type.n;
+
+  // Métriques environnementales
+  // 0.34 Wh par requête (Sam Altman, juin 2025)
+  var totalReq=freq*4.33;
+  var elecWh=totalReq*0.34;
+  var elecAffichage=elecWh<1000?elecWh.toFixed(0)+" Wh":(elecWh/1000).toFixed(2)+" kWh";
+  g("m-elec").textContent=elecAffichage;
+  g("m-elec-sub").textContent="≈ "+(elecWh/4).toFixed(0)+" min de four";
+
+  // Eau : ~10 mL par requête (estimation médiane Riverside/Microsoft)
+  var eauML=totalReq*10;
+  var eauAff=eauML<1000?eauML.toFixed(0)+" mL":(eauML/1000).toFixed(1)+" L";
+  g("m-eau").textContent=eauAff;
+  g("m-eau-sub").textContent="≈ "+(eauML/250).toFixed(1)+" verres";
+
+  // CO2 : ~0.4g par Wh (mix électrique mondial)
+  var co2g=elecWh*0.4;
+  var co2Aff=co2g<1000?co2g.toFixed(0)+" g":(co2g/1000).toFixed(2)+" kg";
+  g("m-co2").textContent=co2Aff;
+  g("m-co2-sub").textContent="≈ "+(co2g/120).toFixed(1)+" km en voiture";
+
+  // Subvention
+  var paid=20; // abonnement standard estimé
+  var subRatio=3; // les pertes des géants suggèrent un coût réel ~3× le prix actuel
+  var costApi=totalCostUSD;
+  var costReel=totalCostUSD*subRatio;
+  var diff=costReel-Math.min(paid,costApi);
+
+  g("s-api").textContent=costApi.toFixed(2)+" $ / mois";
+  g("s-real").textContent=costReel.toFixed(2)+" $ / mois";
+
+  // Si l'API coûte moins que l'abonnement, vous êtes "rentable" pour OpenAI sur ce calcul brut
+  // Sinon, vous êtes subventionné
+  if(costApi>paid){
+    g("s-paid").textContent="~ 20 $ / mois (abonnement)";
+    g("s-diff").textContent="+ "+diff.toFixed(2)+" $ subventionnés";
+    g("s-diff").style.color="#ff7a3a";
+  } else {
+    g("s-paid").textContent="~ 20 $ / mois (abonnement)";
+    var marge=paid-costApi;
+    g("s-diff").textContent="+ "+(costReel-paid).toFixed(2)+" $ non couverts";
+    g("s-diff").style.color="#ff7a3a";
+  }
+
+  // Stocker pour partage
+  window._lastResult={
+    cost:totalCostUSD.toFixed(2),
+    model:model.n,
+    req:nbReqMois,
+    elec:elecAffichage,
+    eau:eauAff,
+    co2:co2Aff,
+    real:costReel.toFixed(2)
+  };
+}
+
+function copyResult(){
+  var r=window._lastResult;
+  if(!r) return;
+  var txt="🤖 MON USAGE IA — Calculamatix\n\n";
+  txt+="• "+r.req+" requêtes/mois sur "+r.model+"\n";
+  txt+="• Coût direct API : "+r.cost+" $\n";
+  txt+="• Coût réel non-subventionné : "+r.real+" $\n";
+  txt+="• Électricité : "+r.elec+"\n";
+  txt+="• Eau : "+r.eau+"\n";
+  txt+="• CO₂ : "+r.co2+"\n\n";
+  txt+="Calculez votre vrai coût IA → calculamatix.com/vrai-prix-ia";
+  if(navigator.clipboard) navigator.clipboard.writeText(txt).then(function(){alert("Résultats copiés !");}).catch(function(){prompt("Copiez :",txt);});
+  else prompt("Copiez :",txt);
+}
+
+function shareX(){
+  var r=window._lastResult;
+  if(!r) return;
+  var txt=encodeURIComponent("Mon usage IA me coûte "+r.cost+"$/mois mais sa vraie valeur est "+r.real+"$ — découvrez le coût caché de l'IA → calculamatix.com/vrai-prix-ia");
+  window.open("https://twitter.com/intent/tweet?text="+txt,"_blank");
+}
+
+function tFaq(el){el.classList.toggle("open");el.nextElementSibling.classList.toggle("open");}
+
+// Init
+calc();
+</script>
+<script src="/suggestions.js"></script>
+<script>try{renderFooter("vrai-prix-ia");}catch(e){}</script>
+</body>
+</html>
