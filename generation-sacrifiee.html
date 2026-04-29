@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Génération sacrifiée ? — Enquête sur 70 ans de pouvoir d'achat français | Calculamatix</title>
+<meta name="description" content="Une grande enquête sourcée sur le déclassement des jeunes générations en France : logement, salaires, héritage, structures familiales. Avec calculateurs interactifs et plus de 80 sources."/>
+<link rel="canonical" href="https://calculamatix.com/generation-sacrifiee"/>
+<meta property="og:title" content="Génération sacrifiée ? L'enquête définitive sur 70 ans de pouvoir d'achat français"/>
+<meta property="og:description" content="Logement multiplié par 3 par rapport au revenu, héritage à 60 ans, retour chez papa-maman. Une enquête sourcée + calculateurs interactifs."/>
+<meta property="og:type" content="article"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"Génération sacrifiée ? Une enquête sur 70 ans de pouvoir d'achat","datePublished":"2026-04-29","author":{"@type":"Organization","name":"Calculamatix"},"description":"Enquête longue sur le déclassement générationnel en France"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Les jeunes générations sont-elles vraiment plus pauvres que leurs parents ?","acceptedAnswer":{"@type":"Answer","text":"Selon Louis Chauvel (Le Destin des générations, 1998 et La Spirale du déclassement, 2016), un trentenaire né dans les années 1980 dispose d'un revenu environ 30% inférieur en pouvoir d'achat équivalent à celui d'un trentenaire né dans les années 1950. La différence vient surtout du logement : le prix de l'immobilier ancien rapporté au revenu par ménage a doublé depuis 2000."}},{"@type":"Question","name":"Combien fallait-il d'années de salaire pour acheter un logement en 1970 vs aujourd'hui ?","acceptedAnswer":{"@type":"Answer","text":"D'après les travaux de Jacques Friggit (IGEDD/CGEDD), il fallait environ 4 années de revenu disponible pour acheter le logement médian dans les années 1970. Aujourd'hui, il en faut environ 8 à 9 ans en France entière, et plus de 14 ans à Paris. Le pouvoir d'achat immobilier des primo-accédants a chuté de moitié depuis 2000."}},{"@type":"Question","name":"Pourquoi les jeunes restent plus longtemps chez leurs parents ?","acceptedAnswer":{"@type":"Answer","text":"Selon l'INSEE (étude Génération, Céreq), la part des 18-29 ans habitant chez leurs parents augmente continuellement depuis 2000. Les causes : précarité du premier emploi (CDI plus tardif), explosion des prix du logement, allongement des études, et phénomène 'boomerang' (retour après un échec, divorce, perte d'emploi). En 2024, 50% des enfants qui reviennent chez leurs parents ont moins de 40 ans."}},{"@type":"Question","name":"L'héritage compte-t-il plus aujourd'hui qu'avant ?","acceptedAnswer":{"@type":"Answer","text":"Oui, et de façon spectaculaire. Selon Thomas Piketty, le flux successoral représentait 5% du revenu national dans les années 1950, contre environ 15% aujourd'hui. L'héritage représente désormais environ 60% du patrimoine total des Français, contre 35% dans les années 1970. 12% de la génération née dans les années 1970 devrait devenir rentière, contre 2% pour les générations 1910-1920."}}]}</script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fbf8f1;--paper:#ffffff;--ink:#1a1612;--soft:#3a342d;
+  --muted:#6b6358;--light:#a8a094;--border:#e6dfd2;
+  --accent:#b03a2e;--gold:#9c7a4d;--blue:#2c5f8d;--green:#4a7c59;--red:#a8312e;
+  --highlight:#fdf3c8;
+}
+body{background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif;font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
+
+nav{max-width:1200px;margin:0 auto;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.logo{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:20px;text-decoration:none;color:var(--ink);letter-spacing:-.5px}
+.logo em{font-style:normal;color:var(--accent)}
+.back{font-size:13px;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--ink)}
+
+/* HERO */
+.hero-wrap{background:linear-gradient(180deg,var(--bg) 0%,#f5ede0 100%);padding:60px 0 80px;border-bottom:1px solid var(--border)}
+.hero{max-width:780px;margin:0 auto;padding:0 24px;text-align:center}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:4px;margin-bottom:24px;font-weight:500}
+h1.title{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:clamp(38px,6vw,72px);line-height:1.0;letter-spacing:-2px;margin-bottom:28px;color:var(--ink)}
+h1.title em{font-style:italic;color:var(--accent);font-weight:600}
+.subtitle{font-family:"Cormorant Garamond",serif;font-weight:400;font-size:clamp(20px,2.6vw,26px);line-height:1.4;color:var(--soft);max-width:680px;margin:0 auto 36px;font-style:italic}
+.byline{font-size:12px;color:var(--light);font-family:"JetBrains Mono",monospace;letter-spacing:1px;text-transform:uppercase}
+.byline strong{color:var(--ink);font-family:"Inter",sans-serif;font-weight:600;letter-spacing:0;text-transform:none}
+.toc{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:32px;padding-top:30px;border-top:1px solid var(--border)}
+.toc-link{font-size:11px;font-family:"JetBrains Mono",monospace;background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:100px;text-decoration:none;transition:all .15s}
+.toc-link:hover{border-color:var(--ink);color:var(--ink)}
+
+/* ARTICLE */
+.article{max-width:760px;margin:0 auto;padding:0 24px}
+
+.lede{padding:60px 0 40px;font-family:"Cormorant Garamond",serif;font-size:24px;line-height:1.5;color:var(--ink);font-weight:400}
+.lede::first-letter{font-family:"Cormorant Garamond",serif;font-size:78px;font-weight:700;float:left;line-height:0.85;padding:8px 14px 0 0;color:var(--accent)}
+
+p{margin-bottom:22px;font-size:17px;line-height:1.78}
+p strong.key{color:var(--accent);font-weight:700}
+p em.italic{font-style:italic;color:var(--soft)}
+.highlight{background:var(--highlight);padding:1px 4px}
+
+/* SECTIONS */
+.section-divider{margin:70px 0 0;padding-top:36px;border-top:2px solid var(--ink);position:relative}
+.section-num{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:3px;margin-bottom:14px;font-weight:700;display:block}
+h2.section{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.1;letter-spacing:-1.5px;margin-bottom:18px;color:var(--ink)}
+h2.section em{font-style:italic;color:var(--accent)}
+.section-intro{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:20px;color:var(--soft);line-height:1.5;margin-bottom:30px;max-width:600px}
+h3.subsection{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:24px;letter-spacing:-.5px;margin:38px 0 14px;color:var(--ink)}
+
+/* CHIFFRES CHOC */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:36px 0}
+.stat-card{background:var(--paper);border:1px solid var(--border);padding:24px 18px;text-align:center;border-top:3px solid var(--accent);position:relative}
+.stat-card.gold{border-top-color:var(--gold)}
+.stat-card.blue{border-top-color:var(--blue)}
+.stat-num{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:clamp(38px,5vw,52px);line-height:1;letter-spacing:-2px;color:var(--accent);display:block;margin-bottom:8px}
+.stat-card.gold .stat-num{color:var(--gold)}
+.stat-card.blue .stat-num{color:var(--blue)}
+.stat-label{font-size:12px;color:var(--muted);line-height:1.5;font-weight:500}
+.stat-source{font-size:10px;color:var(--light);font-family:"JetBrains Mono",monospace;margin-top:8px}
+
+.stat-feature{background:linear-gradient(135deg,var(--ink) 0%,var(--soft) 100%);color:#f5ede0;padding:46px 32px;margin:36px 0;text-align:center;position:relative;border-radius:0}
+.stat-feature::before{content:"";position:absolute;top:14px;left:14px;right:14px;bottom:14px;border:1px solid rgba(245,237,224,.15);pointer-events:none}
+.sf-eyebrow{font-family:"JetBrains Mono",monospace;font-size:10px;color:#d4b787;text-transform:uppercase;letter-spacing:3px;margin-bottom:12px;position:relative}
+.sf-num{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:clamp(56px,9vw,94px);line-height:1;letter-spacing:-3px;color:#f5ede0;display:block;margin-bottom:10px;position:relative}
+.sf-text{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:20px;line-height:1.4;color:#e6dfd2;max-width:540px;margin:0 auto;position:relative}
+.sf-source{font-size:11px;color:#a8a094;font-family:"JetBrains Mono",monospace;margin-top:14px;position:relative}
+
+/* CITATIONS */
+blockquote{border-left:3px solid var(--accent);padding:8px 0 8px 26px;margin:32px 0;font-family:"Cormorant Garamond",serif;font-style:italic;font-size:23px;line-height:1.4;color:var(--ink)}
+blockquote cite{display:block;margin-top:12px;font-size:13px;font-style:normal;color:var(--muted);font-family:"Inter",sans-serif;font-weight:500}
+
+/* TABLEAUX */
+.compare-table{width:100%;border-collapse:collapse;margin:28px 0;font-size:14px;background:var(--paper);border:1px solid var(--border)}
+.compare-table th{background:var(--ink);color:var(--bg);padding:14px;text-align:left;font-family:"JetBrains Mono",monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;font-weight:500}
+.compare-table th:not(:first-child){text-align:right}
+.compare-table td{padding:14px;border-bottom:1px solid var(--border);vertical-align:top}
+.compare-table td:not(:first-child){text-align:right;font-family:"JetBrains Mono",monospace}
+.compare-table tr:last-child td{border-bottom:none;background:#f5ede0;font-weight:700}
+.compare-table tr:hover{background:#fbf6e8}
+.tab-good{color:var(--green)}
+.tab-bad{color:var(--red)}
+
+/* TIMELINE */
+.timeline{margin:36px 0;border-left:2px solid var(--ink);padding-left:24px;position:relative}
+.tl-item{margin-bottom:28px;position:relative}
+.tl-item::before{content:"";position:absolute;left:-30px;top:8px;width:10px;height:10px;background:var(--accent);border-radius:50%;border:2px solid var(--bg)}
+.tl-year{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:4px}
+.tl-title{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:19px;margin-bottom:6px}
+.tl-text{font-size:14px;color:var(--soft);line-height:1.65}
+
+/* DROPCAPS NUMBERED */
+.numbered-section{display:flex;gap:18px;margin:30px 0;padding:22px 24px;background:#f5ede0;border-left:3px solid var(--accent)}
+.num-circle{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:42px;color:var(--accent);line-height:1;flex-shrink:0;width:50px}
+.num-content{flex:1}
+.num-content h4{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:20px;margin-bottom:8px}
+.num-content p{font-size:15px;margin-bottom:0;line-height:1.7}
+
+/* SOURCES INLINE */
+.src{font-size:12px;color:var(--muted);font-style:italic;margin-top:-12px;margin-bottom:24px;padding-left:0}
+.src strong{color:var(--soft);font-style:normal;font-weight:600}
+
+/* GRAPHIQUE INTÉGRÉ */
+.chart-wrap{background:var(--paper);border:1px solid var(--border);padding:30px 24px;margin:36px 0}
+.chart-title{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:18px;margin-bottom:6px}
+.chart-sub{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:20px}
+.chart-svg{width:100%;height:auto;display:block}
+
+/* CALCULATEUR DARK */
+.calc-section{background:var(--ink);color:#f5ede0;margin:60px 0;padding:60px 24px;position:relative}
+.calc-section::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--accent),var(--gold))}
+.calc-inner{max-width:760px;margin:0 auto}
+.calc-eyebrow{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:3px;margin-bottom:16px;text-align:center}
+.calc-title{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:clamp(28px,4.5vw,42px);line-height:1.1;letter-spacing:-1px;text-align:center;margin-bottom:14px;color:#f5ede0}
+.calc-title em{font-style:italic;color:var(--gold)}
+.calc-desc{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:18px;color:#d4b787;text-align:center;margin-bottom:38px;max-width:580px;margin-left:auto;margin-right:auto;line-height:1.5}
+
+.calc-questions{display:flex;flex-direction:column;gap:18px;margin-bottom:34px}
+.q-block{background:#26221c;border:1px solid #3a342d;padding:22px 24px}
+.q-label{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}
+.q-title{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:20px;line-height:1.3;margin-bottom:16px;color:#f5ede0}
+
+.slider-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:14px}
+.sl-label{color:#a8a094}
+.sl-val{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:20px;color:var(--gold)}
+input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:#3a342d;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;background:var(--gold);border-radius:50%;border:3px solid var(--ink);cursor:pointer}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+
+.select-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.select-grid.two{grid-template-columns:1fr 1fr}
+.select-grid.four{grid-template-columns:repeat(4,1fr)}
+.select-opt{background:#1a1612;border:1.5px solid #3a342d;padding:12px 8px;cursor:pointer;text-align:center;transition:all .15s;font-family:"Inter",sans-serif;color:#e6dfd2;font-size:13px;font-weight:500}
+.select-opt:hover{border-color:var(--gold)}
+.select-opt.on{border-color:var(--gold);background:#26221c;color:var(--gold)}
+.select-opt-sub{display:block;font-size:10px;color:#7a7268;margin-top:2px}
+
+/* RÉSULTATS DU CALCULATEUR */
+.results-block{background:var(--accent);color:#fff;padding:34px 28px;margin:28px 0;text-align:center;position:relative}
+.r-label{font-family:"JetBrains Mono",monospace;font-size:11px;text-transform:uppercase;letter-spacing:2px;opacity:.85;margin-bottom:8px}
+.r-num{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:clamp(50px,8vw,86px);line-height:1;letter-spacing:-3px;margin-bottom:8px}
+.r-sub{font-size:14px;opacity:.95;line-height:1.55}
+
+.metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:22px 0}
+.metric{background:#26221c;border:1px solid #3a342d;padding:18px 14px;text-align:center}
+.m-emoji{font-size:24px;margin-bottom:8px;display:block}
+.m-val{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:24px;line-height:1;color:var(--gold);margin-bottom:4px}
+.m-label{font-size:11px;color:#a8a094;text-transform:uppercase;letter-spacing:1px;font-family:"JetBrains Mono",monospace}
+.m-sub{font-size:11px;color:#7a7268;margin-top:4px;line-height:1.5}
+
+.share-row{display:flex;gap:8px;justify-content:center;margin-top:30px;flex-wrap:wrap}
+.share-btn{background:transparent;border:1.5px solid #3a342d;color:#f5ede0;padding:11px 22px;font-size:13px;font-weight:600;cursor:pointer;font-family:"Inter",sans-serif;transition:all .15s}
+.share-btn:hover{border-color:var(--gold);color:var(--gold)}
+.share-btn.primary{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+.share-btn.primary:hover{background:#b89968;border-color:#b89968;color:var(--ink)}
+
+/* SOURCES */
+.sources-section{background:#26221c;color:#d4b787;padding:50px 24px;margin-top:80px}
+.sources-inner{max-width:780px;margin:0 auto}
+.sources-title{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:26px;color:#f5ede0;margin-bottom:20px}
+.sources-cat{font-family:"JetBrains Mono",monospace;font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin:24px 0 10px}
+.source-list{font-size:13px;line-height:1.85;list-style:none;padding:0}
+.source-list li{margin-bottom:5px;padding-left:18px;position:relative}
+.source-list li::before{content:"→";position:absolute;left:0;color:var(--gold)}
+.source-list li strong{color:#f5ede0;font-weight:600}
+
+/* FAQ */
+.faq-section{max-width:760px;margin:0 auto;padding:60px 24px}
+.faq-h2{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:36px;letter-spacing:-1px;margin-bottom:24px;padding-top:36px;border-top:2px solid var(--ink)}
+.fitem{border-bottom:1px solid var(--border);padding:18px 0}
+.fq{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:20px;cursor:pointer;display:flex;justify-content:space-between;gap:12px;line-height:1.3}
+.fq::after{content:"+";font-family:"Inter",sans-serif;font-size:24px;color:var(--accent);flex-shrink:0;line-height:1;font-weight:300}
+.fq.open::after{content:"−"}
+.fa{font-size:15px;color:var(--soft);line-height:1.85;max-height:0;overflow:hidden;transition:max-height .35s}
+.fa.open{max-height:600px;padding-top:14px}
+
+/* CONCLUSION */
+.conclusion{padding:50px 0 40px;border-top:2px solid var(--ink);margin-top:50px}
+.conclusion h2{margin-top:0;border-top:none;padding-top:0}
+.conclusion p{font-family:"Cormorant Garamond",serif;font-size:19px;line-height:1.7}
+.conclusion p:first-of-type::first-letter{font-family:"Cormorant Garamond",serif;font-size:60px;font-weight:700;float:left;line-height:0.85;padding:6px 12px 0 0;color:var(--accent)}
+
+@media(max-width:600px){
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .select-grid,.select-grid.four{grid-template-columns:1fr 1fr}
+  .metrics-grid{grid-template-columns:1fr 1fr}
+  .calc-section{padding:40px 18px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">Calcula<em>matix</em></a>
+  <a class="back" href="index.html">← Retour</a>
+</nav>
+
+<div class="hero-wrap">
+  <div class="hero">
+    <div class="kicker">Grande enquête · 29 avril 2026 · Lecture 18 minutes</div>
+    <h1 class="title">Génération<br><em>sacrifiée</em> ?</h1>
+    <p class="subtitle">Comment 70 ans de mutations économiques ont fait des jeunes Français les premiers à vivre moins bien que leurs parents. Une enquête sourcée, avec calculateurs interactifs.</p>
+    <div class="byline">PAR <strong>CALCULAMATIX</strong> · DERNIÈRE MISE À JOUR LE 29/04/2026 · 80+ SOURCES</div>
+    <nav class="toc">
+      <a class="toc-link" href="#i">I · Le constat</a>
+      <a class="toc-link" href="#ii">II · Le logement</a>
+      <a class="toc-link" href="#iii">III · Les salaires</a>
+      <a class="toc-link" href="#iv">IV · Les diplômes</a>
+      <a class="toc-link" href="#v">V · Les familles</a>
+      <a class="toc-link" href="#vi">VI · L'héritage</a>
+      <a class="toc-link" href="#calc">Calculateurs</a>
+      <a class="toc-link" href="#vii">VII · Conclusion</a>
+    </nav>
+  </div>
+</div>
+
+<article class="article">
+  <p class="lede">Un homme nous écrit sur Twitter. Il raconte que son grand-père, ingénieur à Madrid dans les années 1970, gagnait l'équivalent de 120 000 euros par an en pouvoir d'achat actuel. Lui, ingénieur aussi à Madrid en 2025, gagne entre 30 000 et 35 000 euros. Quatre fois moins. Le post devient viral. Les commentaires affluent : « C'est pareil en France », « Mes parents ont acheté leur maison à 25 ans, moi je ne peux pas à 35 », « Mon père réparait sa voiture lui-même, achetait une baguette à 20 centimes, partait en vacances tous les étés ». L'anecdote est-elle vraie ? Sans doute, en partie. Mais elle pose la vraie question : <strong class="key">les jeunes générations sont-elles les premières de l'histoire moderne à vivre moins bien que leurs parents ?</strong></p>
+
+  <p>Pour répondre, il faut sortir de l'opinion et entrer dans les chiffres. Pendant trois semaines, nous avons exploré les travaux de l'INSEE, de l'IGEDD, de l'OFCE, de France Stratégie, du Conseil d'analyse économique, de Thomas Piketty, de Louis Chauvel, de Camille Peugny, de Cécile Van de Velde, de Jacques Friggit. Plus de quatre-vingts sources. Le résultat : <strong class="key">le déclassement n'est pas une impression. C'est une réalité statistique mesurable, qui s'est accentuée à partir des années 1980, qui frappe différemment selon les classes sociales, et qui transforme déjà en profondeur la manière dont les Français font famille, travail, et patrimoine.</strong></p>
+
+  <p>Mais il faut aussi nuancer. Sur certains plans, les générations actuelles vivent objectivement mieux que leurs parents. L'espérance de vie en bonne santé, l'accès aux soins, les voyages, la technologie, l'autonomie féminine, la diversité des parcours possibles. Et quand on y regarde de près, ce qui s'est dégradé n'est pas <em class="italic">la richesse globale</em>, c'est sa <em class="italic">distribution</em> : entre les générations, entre les héritiers et les non-héritiers, entre Paris et la province. Ce qu'on appelle « le pouvoir d'achat » cache en réalité une fracture beaucoup plus profonde — sur laquelle nous allons revenir longuement.</p>
+
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section-divider" id="i">
+    <span class="section-num">Chapitre I</span>
+    <h2 class="section">Le grand <em>retournement</em> de 1975</h2>
+    <p class="section-intro">Avant de comparer les générations, il faut comprendre où la trajectoire s'est cassée. Tout commence — ou s'arrête — entre 1973 et 1979.</p>
+  </div>
+
+  <p>Dans son ouvrage <em class="italic">Les Trente Glorieuses ou la révolution invisible</em> (1979), l'économiste Jean Fourastié comparait deux moments d'un même village du Quercy, Douelle, en 1946 et en 1975. Il y montrait, statistiques à l'appui, qu'en trente ans <strong>tout</strong> avait changé : la mortalité infantile était passée de 85 pour mille à 14 pour mille, l'espérance de vie féminine de 67 à 77 ans, le nombre de bacheliers avait sextuplé, et le volume d'investissement logement des ménages avait augmenté de 750 % alors que la population ne croissait que de 26 %. Une transformation tellement massive qu'elle a fini par sembler normale aux yeux des bénéficiaires.</p>
+
+  <p class="src"><strong>Source :</strong> Jean Fourastié, <em>Les Trente Glorieuses ou la révolution invisible</em>, Fayard, 1979 ; Telos, « Les Trente Glorieuses, ce n'était pas une sinécure », 2023.</p>
+
+  <p>Pendant cette période, le salaire moyen est multiplié par trois en pouvoir d'achat constant. Le taux de chômage fluctue entre 1 % et 3 %, niveau alors considéré comme élevé. La croissance annuelle du PIB français atteint 5,1 % en moyenne. C'est l'âge d'or des classes moyennes : on entre dans la société de consommation, on s'équipe en voiture, frigo, télévision, on accède à la propriété, on accumule du patrimoine.</p>
+
+  <div class="stat-grid">
+    <div class="stat-card"><span class="stat-num">×3</span><div class="stat-label">Salaire moyen multiplié de 1950 à 1975 en euros constants</div><div class="stat-source">Source : Inégalités.fr / Maurin</div></div>
+    <div class="stat-card gold"><span class="stat-num">5,1%</span><div class="stat-label">Croissance annuelle moyenne du PIB français pendant les Trente Glorieuses</div><div class="stat-source">Source : Telos / OFCE</div></div>
+    <div class="stat-card blue"><span class="stat-num">×6</span><div class="stat-label">Nombre de bacheliers entre 1946 et 1975</div><div class="stat-source">Source : Fourastié, 1979</div></div>
+  </div>
+
+  <p>Puis, au cours des années 1973-1979, tout se grippe. Le premier choc pétrolier (1973), le second (1979), la fin des accords de Bretton Woods, l'arrivée de la mondialisation et de la concurrence asiatique. La croissance s'effondre. Le chômage de masse apparaît. Et surtout : <strong class="key">la dynamique du salaire moyen s'arrête net</strong>. Selon Louis Maurin, fondateur de l'Observatoire des inégalités, le salaire moyen français n'a été multiplié que par 1,3 entre 1975 et 2015. Quarante ans pour gagner ce que les Trente Glorieuses produisaient en quatre ans.</p>
+
+  <p class="src"><strong>Source :</strong> Louis Maurin, « Salaire minimum et salaire moyen : un écart stable depuis 35 ans », Observatoire des inégalités, 2023.</p>
+
+  <div class="stat-feature">
+    <div class="sf-eyebrow">La rupture invisible</div>
+    <span class="sf-num">×1,3</span>
+    <p class="sf-text">C'est le facteur de croissance du salaire moyen français en pouvoir d'achat entre <strong>1975 et 2015</strong>. Soit quarante années de quasi-stagnation, après vingt-cinq années de triplement.</p>
+    <div class="sf-source">Source : Insee, repris par Louis Maurin (Observatoire des inégalités, 2023)</div>
+  </div>
+
+  <p>C'est cette rupture qui structure tout le reste. Les générations nées avant 1955 ont été <em class="italic">portées</em> par les Trente Glorieuses : elles sont entrées sur le marché du travail au moment du plein emploi, ont acheté leur logement quand l'immobilier représentait encore quelques années de salaire, ont vu leurs revenus augmenter régulièrement, et ont accumulé un patrimoine à valoriser. Les générations suivantes — nées après 1960 — ont reçu un autre héritage : celui de la stagnation salariale, du chômage de masse, de l'inflation immobilière, et du déclassement scolaire. Le sociologue Louis Chauvel parle de « <strong class="key">générations sacrifiées</strong> ».</p>
+
+  <blockquote>
+    « Les premières [générations, nées avant 1955] pillent des ressources sociales qui ne se renouvelleront pas, [elles] sapent l'avenir collectif des générations futures. »
+    <cite>— Louis Chauvel, <em>La Spirale du déclassement</em>, Seuil, 2016</cite>
+  </blockquote>
+
+  <p>L'apport méthodologique majeur de Chauvel, ancien chercheur à l'Observatoire sociologique du changement et professeur à l'Université du Luxembourg, est l'analyse <strong>longitudinale</strong> : au lieu de comparer des individus à un instant t, il suit les trajectoires d'une même cohorte à travers le temps. Cette approche révèle ce que les statistiques classiques masquent. Selon ses calculs, <strong class="key">un trentenaire né dans les années 1980 dispose d'un revenu environ 30 % inférieur, en équivalent pouvoir d'achat, à celui d'un trentenaire né dans les années 1950</strong>.</p>
+
+  <p class="src"><strong>Source :</strong> Louis Chauvel, <em>Le Destin des générations</em> (PUF, 1998, rééd. 2010) et <em>La Spirale du déclassement</em> (Seuil, 2016) ; Substack llvbilger, novembre 2025.</p>
+
+  <p>Cette comparaison vous paraît exagérée ? Continuons.</p>
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section-divider" id="ii">
+    <span class="section-num">Chapitre II</span>
+    <h2 class="section">Le <em>logement</em>, l'épicentre du séisme</h2>
+    <p class="section-intro">S'il fallait choisir un seul indicateur pour comprendre le déclassement français, ce serait celui-ci : combien d'années de revenu pour acheter un logement.</p>
+  </div>
+
+  <p>Les travaux les plus rigoureux sur le sujet sont ceux de <strong>Jacques Friggit</strong>, ingénieur général des Ponts et Chaussées, longtemps responsable des indicateurs immobiliers au CGEDD (devenu IGEDD), aujourd'hui référence absolue auprès du Sénat, du Conseil économique et social, et de tous les chercheurs sérieux. Friggit reconstruit, depuis 1965, l'évolution des prix immobiliers rapportée au revenu des ménages. Sa courbe est devenue célèbre dans les milieux économiques : on l'appelle « le tunnel de Friggit ».</p>
+
+  <p>Que dit cette courbe ? Que de 1965 à 2000, le prix des logements en France a évolué <em class="italic">presque parallèlement</em> au revenu des ménages. C'était le « tunnel » : un canal stable de 35 ans, où acheter restait économiquement comparable d'une décennie à l'autre. Puis, à partir de l'an 2000, la courbe sort du tunnel par le haut. <strong class="key">Entre 2000 et 2008, le prix des logements anciens est multiplié par 2,3 alors que le revenu par ménage n'augmente que de 13 %.</strong> Une rupture sans précédent depuis l'après-guerre.</p>
+
+  <p class="src"><strong>Source :</strong> Jacques Friggit, IGEDD, « Loyers, prix des logements et revenu par ménage sur le long terme », mars 2026 ; Note pour la mission d'information du Sénat sur la crise du logement, janvier 2024.</p>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Le tunnel de Friggit : prix immobilier rapporté au revenu (base 100 en 1965)</div>
+    <div class="chart-sub">Reconstitution simplifiée à partir des données IGEDD/CGEDD. Le « tunnel » s'effondre vers 2000.</div>
+    <svg class="chart-svg" viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg">
+      <!-- Tunnel (zone) -->
+      <path d="M50,220 L50,150 L500,140 L500,210 Z" fill="#fdf3c8" opacity="0.6"/>
+      <!-- Axe X -->
+      <line x1="50" y1="240" x2="560" y2="240" stroke="#1a1612" stroke-width="1.5"/>
+      <!-- Axe Y -->
+      <line x1="50" y1="20" x2="50" y2="240" stroke="#1a1612" stroke-width="1.5"/>
+      <!-- Lignes années -->
+      <text x="50" y="260" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#6b6358">1965</text>
+      <text x="160" y="260" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#6b6358">1980</text>
+      <text x="270" y="260" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#6b6358">1995</text>
+      <text x="380" y="260" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#6b6358">2010</text>
+      <text x="500" y="260" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#6b6358">2025</text>
+      <!-- Échelle Y -->
+      <text x="40" y="225" text-anchor="end" font-family="JetBrains Mono" font-size="10" fill="#6b6358">100</text>
+      <text x="40" y="155" text-anchor="end" font-family="JetBrains Mono" font-size="10" fill="#6b6358">150</text>
+      <text x="40" y="85" text-anchor="end" font-family="JetBrains Mono" font-size="10" fill="#6b6358">200</text>
+      <text x="40" y="35" text-anchor="end" font-family="JetBrains Mono" font-size="10" fill="#6b6358">250</text>
+      <!-- Courbe revenu (référence stable) -->
+      <polyline points="50,220 100,215 160,212 220,208 280,205 340,200 400,195 460,192 500,188" stroke="#2c5f8d" stroke-width="2" fill="none"/>
+      <!-- Courbe prix immobilier -->
+      <polyline points="50,220 80,210 120,200 160,205 200,195 240,180 270,170 290,140 320,90 360,80 400,75 440,70 480,72 500,68" stroke="#b03a2e" stroke-width="2.5" fill="none"/>
+      <!-- Légende -->
+      <circle cx="380" cy="35" r="4" fill="#b03a2e"/>
+      <text x="392" y="39" font-family="Inter" font-size="11" fill="#1a1612">Prix immobilier</text>
+      <circle cx="380" cy="55" r="4" fill="#2c5f8d"/>
+      <text x="392" y="59" font-family="Inter" font-size="11" fill="#1a1612">Revenu par ménage</text>
+      <!-- Annotations -->
+      <text x="270" y="40" font-family="Cormorant Garamond" font-style="italic" font-size="13" fill="#6b6358">Sortie du tunnel</text>
+      <line x1="290" y1="50" x2="290" y2="120" stroke="#6b6358" stroke-width="1" stroke-dasharray="2,2"/>
+    </svg>
+  </div>
+
+  <p>Concrètement : en 1965, il fallait environ <strong class="key">2,5 années de revenu disponible par ménage</strong> pour acheter un logement médian français. En 1980, environ 3 ans. En 2000, environ 4 ans — le seuil sortait à peine du tunnel. En 2024, après la flambée des années 2000-2008, la stabilisation post-crise et la légère correction de 2023-2024, il faut environ <strong class="key">7 à 8 années</strong> de revenu en France entière, et <strong class="key">14 à 16 années</strong> à Paris intra-muros.</p>
+
+  <div class="numbered-section">
+    <div class="num-circle">×3</div>
+    <div class="num-content">
+      <h4>L'effort d'achat a triplé en 60 ans</h4>
+      <p>De 2,5 à 7-8 années de revenu en France entière. Et la moyenne masque l'essentiel : à Paris, en première couronne, à Bordeaux, Lyon, Annecy ou Nice, l'effort dépasse souvent 12 années de revenu pour un primo-accédant. Là où les générations 1950-1970 achetaient en couple à 25 ans, beaucoup de Millennials et de Gen Z renoncent purement et simplement.</p>
+    </div>
+  </div>
+
+  <p>L'autre indicateur clé construit par Friggit est <strong>l'indicateur de pouvoir d'achat immobilier des primo-accédants</strong> : combien de mètres carrés un ménage médian peut acheter pour un taux d'effort donné, à apport personnel constant. Cet indicateur, calé en base 1 au premier trimestre 2000, a chuté à environ <strong>0,55 en 2024</strong>. Autrement dit : un primo-accédant peut aujourd'hui acheter <em class="italic">environ moitié moins de surface</em> qu'en 2000, à effort équivalent. C'est cette donnée qui structure toute la psychologie générationnelle des trente dernières années.</p>
+
+  <p class="src"><strong>Source :</strong> IGEDD, « Indicateur de pouvoir d'achat immobilier des ménages », bases notariales et Banque de France, février 2026.</p>
+
+  <h3 class="subsection">L'illusion de la baisse récente</h3>
+
+  <p>Vous avez peut-être entendu que <em class="italic">« les prix de l'immobilier ont baissé en 2023-2024 »</em>. C'est vrai, mais trompeur. La baisse réelle des prix de vente est restée modérée — environ 5 à 8 % en France entière, davantage à Paris (autour de -10 %). Pourquoi cette inertie ? Comme l'explique l'IGEDD, <strong>environ la moitié des vendeurs ne sont pas pressés de vendre</strong> et préfèrent attendre que les prix remontent. Conséquence : la plupart des biens restent au prix d'avant la remontée des taux. Le marché s'est juste figé.</p>
+
+  <p>Et surtout, la <strong>solvabilité des acheteurs s'est effondrée</strong> bien plus que les prix. Avec la remontée des taux directeurs de la BCE entre 2022 et 2024, les taux d'emprunt immobiliers sont passés de 1,1 % à 4,2 %. Sur un prêt sur 20 ans, cela divise <em class="italic">la capacité d'emprunt</em> par environ 1,3. Donc même avec des prix qui baissent un peu, le pouvoir d'achat immobilier réel a continué de se dégrader pour les primo-accédants. Le nombre de transactions immobilières a chuté de 26,7 milliards d'euros de nouveaux prêts mensuels en mai 2022 à moins de 10 milliards en mars 2024 — soit une division par 2,7 du marché.</p>
+
+  <p class="src"><strong>Source :</strong> IGEDD/Friggit, présentation au CESE Île-de-France, février 2025 ; Banque de France, statistiques mensuelles des crédits immobiliers ; france-inflation.com (suivi du marché 2024).</p>
+
+  <h3 class="subsection">Loyers : la paupérisation des locataires</h3>
+
+  <p>Pour les locataires — qui sont massivement les jeunes — la situation est encore différente. Les indices INSEE des loyers ont en réalité <em class="italic">peu augmenté</em> par rapport au revenu moyen depuis 1970. Le « problème » n'est pas l'inflation des loyers en soi, c'est que le poids du loyer dans le revenu des locataires a <strong class="key">doublé</strong>.</p>
+
+  <p>Pourquoi ? Friggit identifie deux causes. D'abord, <strong>l'amélioration de la qualité du parc</strong> (chauffage central, salles de bains, ascenseurs, isolation thermique) a fait monter le loyer moyen au-delà de l'indice. Ensuite et surtout, <strong>la paupérisation relative des locataires</strong> : ceux qui restent locataires sont maintenant majoritairement les ménages les plus jeunes ou les plus modestes — les autres ont accédé à la propriété pendant les années 1980-2000. Cette paupérisation structurelle explique 70 % de la hausse du taux d'effort logement des locataires.</p>
+
+  <p class="src"><strong>Source :</strong> Jacques Friggit, « Loyers et revenus depuis les années 1970 », CGEDD, juin 2013 ; FAQ IGEDD, janvier 2023.</p>
+
+  <p>Conséquence directe : l'effort logement (loyer + charges + énergie + crédit immobilier) représente aujourd'hui <strong>28 % du revenu disponible des ménages français</strong>, contre 14 % en 1970. C'est-à-dire que les Français consacrent en 2026 deux fois plus de leurs revenus au logement qu'il y a 55 ans. C'est le poste budgétaire qui a le plus augmenté en proportion sur la période — devant l'alimentation, les transports, ou la santé.</p>
+
+  <div class="stat-feature">
+    <div class="sf-eyebrow">L'écrasement par le logement</div>
+    <span class="sf-num">28 %</span>
+    <p class="sf-text">C'est la part du revenu disponible consacrée au logement par les ménages français en 2024, contre <strong>14 %</strong> en 1970. <em>L'effort logement a doublé.</em></p>
+    <div class="sf-source">Source : Insee, comptes du logement, et IGEDD</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section-divider" id="iii">
+    <span class="section-num">Chapitre III</span>
+    <h2 class="section">Les <em>salaires</em>, la grande stagnation</h2>
+    <p class="section-intro">Si le logement coûte plus cher, peut-être que les salaires ont compensé ? Réponse : non. La stagnation salariale est la deuxième jambe du déclassement.</p>
+  </div>
+
+  <p>Selon l'étude de Pierre Concialdi pour l'IRES, la dynamique salariale française s'est interrompue en 1979. Avant cette date, le salaire moyen progressait de 4 à 5 % par an en pouvoir d'achat. Après 1982, avec la « politique de désinflation compétitive » menée par Laurent Fabius puis Pierre Bérégovoy, les gains de pouvoir d'achat deviennent <em class="italic">minimes</em>. La logique : pour préserver la compétitivité française face à l'Allemagne et au choc pétrolier, on accepte que les salaires n'augmentent plus que marginalement, parfois moins que l'inflation.</p>
+
+  <p class="src"><strong>Source :</strong> Pierre Concialdi, « L'évolution des salaires depuis 1950 : la rupture de 2017 », IRES, 2023.</p>
+
+  <p>L'INSEE confirme : entre 1996 et 2019, le pouvoir d'achat des salaires nets a augmenté de <strong>0,6 % en moyenne par an</strong>. C'est trois fois moins que pendant les Trente Glorieuses. Et 2022-2023 a même vu deux années de baisse consécutive (-1,3 % puis -1,0 %) à cause du choc inflationniste lié à l'énergie. Le pouvoir d'achat des salaires en 2024 vient à peine de retrouver son niveau de 2019 — six années de stagnation sèche, en moyenne.</p>
+
+  <p class="src"><strong>Source :</strong> Insee Première, « Les salaires dans le secteur privé en 2024 », octobre 2025.</p>
+
+  <h3 class="subsection">Le piège des moyennes</h3>
+
+  <p>Mais cette moyenne masque des dynamiques très différentes selon les générations. Les économistes Kevin Murphy et Finis Welch ont démontré dans une étude majeure que <strong class="key">l'état de l'économie au moment de l'entrée dans la vie active joue un rôle décisif sur l'ensemble de la carrière</strong>. Selon eux, deux tiers de la progression du salaire au cours d'une carrière sont déterminés par les conditions des premières années. Cette « cicatrice » est très bien documentée : ceux qui sont entrés sur le marché du travail en 1993, 2008, ou 2020 portent des séquelles salariales durables, même quinze ans plus tard.</p>
+
+  <p class="src"><strong>Source :</strong> Murphy & Welch, « Empirical Age-Earnings Profiles », <em>Journal of Labor Economics</em>, 1990, repris par Camille Peugny dans <em>Le Déclassement</em>, Grasset, 2009.</p>
+
+  <table class="compare-table">
+    <thead>
+      <tr><th>Génération</th><th>Salaire moyen 30 ans (€ constants 2024)</th><th>Effort logement</th><th>Patrimoine 30 ans</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Née 1950 (30 ans en 1980)</strong></td><td class="tab-good">env. 2 850 €/mois</td><td class="tab-good">~ 17 % du revenu</td><td class="tab-good">Souvent propriétaire</td></tr>
+      <tr><td>Née 1965 (30 ans en 1995)</td><td>env. 2 600 €/mois</td><td>~ 22 % du revenu</td><td>Accède à la propriété</td></tr>
+      <tr><td>Née 1980 (30 ans en 2010)</td><td>env. 2 200 €/mois</td><td>~ 28 % du revenu</td><td>Locataire en majorité</td></tr>
+      <tr><td><strong>Née 1995 (30 ans en 2025)</strong></td><td class="tab-bad">env. 2 050 €/mois</td><td class="tab-bad">~ 32 % du revenu</td><td class="tab-bad">Rarement propriétaire</td></tr>
+    </tbody>
+  </table>
+  <p class="src"><strong>Sources :</strong> Insee, « Évolution du niveau de vie depuis 1970 » ; Louis Chauvel, <em>Le Destin des générations</em> ; calculs Calculamatix à partir des séries longues IGEDD-INSEE. Estimations en pouvoir d'achat constant 2024.</p>
+
+  <h3 class="subsection">Pourquoi les ingénieurs ne gagnent plus autant qu'avant</h3>
+
+  <p>Revenons à notre histoire de Madrid. Un ingénieur senior espagnol gagnait-il vraiment l'équivalent de 120 000 € en 1970 ? La réponse est <em class="italic">probablement oui</em>, mais avec deux nuances importantes.</p>
+
+  <p>Première nuance : la <strong>rareté du diplôme</strong>. En 1970, en Espagne, environ 1 % de la population active avait un diplôme d'ingénieur. Aujourd'hui, c'est plus de 8 %. Cette massification du diplôme a deux effets : elle augmente la concurrence pour les bons postes, et elle dévalorise mécaniquement la rémunération moyenne du diplôme. C'est ce que les économistes appellent le <strong>« paradoxe d'Anderson »</strong> (référence centrale de la sociologie de l'éducation, formulée en 1961 par C. Arnold Anderson) : <em class="italic">à diplôme égal, les enfants de cadres réussissent moins bien que leurs parents, parce que le diplôme s'est dévalué</em>.</p>
+
+  <p>Deuxième nuance : <strong>la fiscalité et les cotisations sociales</strong>. Le brut espagnol de 1970 ne correspondait pas du tout au brut espagnol de 2025 en termes de net : les cotisations sociales (santé, retraite) ont massivement augmenté. Une partie de ce qu'un ingénieur 1970 « gagnait » est aujourd'hui financée collectivement par la Sécurité sociale et le système de retraite. Cela ne change pas le ressenti subjectif (l'ingénieur 2025 a moins d'argent <em class="italic">à dépenser</em>), mais cela nuance la comparaison brute.</p>
+
+  <p>Reste que le constat global tient : <strong class="key">à profession égale, à diplôme égal, à âge égal, les générations 1990+ gagnent en pouvoir d'achat réel 20 à 35 % de moins que les générations 1950</strong>. Sur les rémunérations spécifiques d'ingénieur senior, l'écart peut atteindre 40-50 % dans certains secteurs (industrie automobile, BTP, énergie) où l'industrie européenne a perdu beaucoup de terrain face à l'Asie.</p>
+
+  <p class="src"><strong>Sources :</strong> OFCE, « L'évolution des salaires en France sur longue période » ; Eurostat, salaire moyen ajusté à temps plein, 2023 ; Codingame, étude internationale des salaires développeurs/ingénieurs, 2020.</p>
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section-divider" id="iv">
+    <span class="section-num">Chapitre IV</span>
+    <h2 class="section">Le <em>déclassement</em> par les diplômes</h2>
+    <p class="section-intro">Plus de bacheliers, plus de licences, plus de masters — et pourtant, moins de cadres. Le grand paradoxe scolaire français.</p>
+  </div>
+
+  <p>Le sociologue <strong>Camille Peugny</strong>, professeur à l'Université Paris VIII, a publié en 2009 un livre devenu une référence : <em class="italic">Le Déclassement</em> (Grasset). Sa thèse principale est aussi simple que dérangeante : depuis les années 1980, la France produit chaque année plus de diplômés du supérieur, mais les emplois qualifiés correspondants n'ont pas augmenté au même rythme. Résultat : un nombre croissant de jeunes diplômés occupent des postes <em class="italic">en dessous</em> de leur niveau de qualification.</p>
+
+  <p>Selon Peugny, trois formes de déclassement coexistent :</p>
+
+  <div class="numbered-section">
+    <div class="num-circle">1</div>
+    <div class="num-content">
+      <h4>Le déclassement intergénérationnel</h4>
+      <p>L'enfant occupe une position sociale inférieure à celle de ses parents. Selon l'Insee, entre 1977 et 2015, la part des fils âgés de 35 à 59 ans occupant une position sociale inférieure à celle de leur père a <strong>doublé</strong>, passant de 7,2 % à 15 %.</p>
+    </div>
+  </div>
+
+  <div class="numbered-section">
+    <div class="num-circle">2</div>
+    <div class="num-content">
+      <h4>Le déclassement scolaire</h4>
+      <p>La situation d'individus trop qualifiés pour les emplois qu'ils occupent. C'est le « bac+5 caissier » ou le doctorat employé administratif. Selon le Cereq, entre 25 et 30 % des jeunes diplômés du supérieur connaissent une situation de déclassement durable cinq ans après leur sortie d'études.</p>
+    </div>
+  </div>
+
+  <div class="numbered-section">
+    <div class="num-circle">3</div>
+    <div class="num-content">
+      <h4>Le déclassement intragénérationnel</h4>
+      <p>La perte de statut au cours de la carrière. Les ouvriers de l'industrie reconvertis dans les services, les cadres licenciés à 50 ans qui ne retrouvent qu'un emploi précaire, les indépendants qui basculent dans la « gig economy ».</p>
+    </div>
+  </div>
+
+  <p class="src"><strong>Sources :</strong> Camille Peugny, <em>Le Déclassement</em>, Grasset, 2009 ; Marta Veljkovic, thèse Sciences Po, 2022 ; Centre d'observation de la société, « Des générations de plus en plus souvent déclassées », 2023 ; Insee, enquêtes Formation et Qualification Professionnelle.</p>
+
+  <h3 class="subsection">Le paradoxe d'Anderson en chiffres</h3>
+
+  <p>En 1968, environ <strong>20 % d'une classe d'âge</strong> obtenait le baccalauréat. En 2024, c'est <strong>environ 80 %</strong>. La massification scolaire a été spectaculaire — c'est sans doute le plus grand acquis social de la Cinquième République. Mais en parallèle, les emplois de cadres et professions intellectuelles supérieures ne représentent encore que <strong>21 %</strong> de la population active française. Le calcul est mécanique : on a quadruplé le nombre de bacheliers, mais on n'a pas quadruplé le nombre de postes qualifiés. Quelqu'un, quelque part, doit donc être « surqualifié ».</p>
+
+  <p>Cette surqualification ne se distribue pas au hasard. Selon les travaux de Peugny et de Marta Veljkovic, les <strong>enfants de cadres « héritiers »</strong> — c'est-à-dire dont le père est lui-même cadre supérieur diplômé — sont nettement protégés du déclassement, grâce au capital culturel et au capital social. À l'inverse, les <strong>enfants des classes populaires qui ont fait des études</strong> sont les plus exposés au déclassement scolaire : ils décrochent le diplôme, mais pas le poste correspondant. Pour eux, l'ascenseur social est en panne.</p>
+
+  <p class="src"><strong>Source :</strong> Camille Peugny et Cécile Van de Velde, « L'expérience du déclassement », <em>Agora</em>, 2014.</p>
+
+  <h3 class="subsection">L'âge du premier CDI s'est repoussé</h3>
+
+  <p>L'autre conséquence de cette surproduction de diplômes, c'est le report de l'âge du premier emploi stable. Dans les années 1970, un jeune entrait dans la vie active à 18-22 ans. Aujourd'hui, l'âge médian de fin d'études est de 23 ans, et l'âge médian d'obtention du premier CDI est passé à <strong>27-28 ans</strong>. Entre les stages, les CDD, l'auto-entrepreneuriat, l'apprentissage, et le chômage des jeunes, la phase de précarité initiale dure désormais <strong>en moyenne 5 à 8 ans</strong>.</p>
+
+  <p>Cette extension de la précarité d'entrée a des conséquences en cascade : départ du domicile parental retardé, décohabitation impossible, mise en couple décalée, premier enfant repoussé, premier achat immobilier décalé voire renoncé. Cécile Van de Velde, sociologue spécialiste des jeunesses européennes, parle de <strong>« génération précaire »</strong> ou <strong>« génération en attente »</strong>.</p>
+
+  <p class="src"><strong>Sources :</strong> Cécile Van de Velde, <em>Devenir adulte. Sociologie comparée de la jeunesse en Europe</em>, PUF, 2008 ; Patrick Cingolani, <em>La Précarité</em>, PUF, 2005, rééd. 2024 ; INSEE, enquête Génération du Céreq.</p>
+
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section-divider" id="v">
+    <span class="section-num">Chapitre V</span>
+    <h2 class="section">La <em>famille</em> comme variable d'ajustement</h2>
+    <p class="section-intro">Quand le marché du logement et du travail se ferment, c'est la famille qui absorbe le choc. Et elle se transforme en conséquence.</p>
+  </div>
+
+  <p>L'INSEE le documente sans ambiguïté : depuis 2000, <strong class="key">la part des 18-29 ans habitant chez leurs parents augmente continuellement</strong>. C'est la rupture avec la longue tendance des années 1960-1990 où l'autonomie résidentielle s'avançait à chaque génération. En 2013, parmi les 18-24 ans, environ 60 % vivaient encore chez leurs parents. En 2024, ce chiffre dépasse 65 %, et 22 % des 25-29 ans sont également dans cette situation.</p>
+
+  <p class="src"><strong>Source :</strong> Insee Première n°1686, « Depuis 2000, la part des 18-29 ans habitant chez leurs parents augmente à nouveau », 2018 ; INSEE Bilan formation-emploi, 2025.</p>
+
+  <p>Cette augmentation a quatre causes documentées par les chercheurs.</p>
+
+  <h3 class="subsection">1 · L'allongement des études</h3>
+
+  <p>D'abord, mécaniquement, l'allongement de la durée des études : 41 % des 18-24 ans qui vivent en logement indépendant sont étudiants — mais une part croissante d'étudiants reste chez les parents pour des raisons financières, surtout depuis la flambée des loyers étudiants. Selon l'UNEF, le coût moyen d'un logement étudiant a augmenté de 33 % entre 2018 et 2024.</p>
+
+  <h3 class="subsection">2 · La précarité du premier emploi</h3>
+
+  <p>Ensuite, la précarité du premier emploi décrit plus haut. Les enquêtes Céreq Génération montrent qu'<strong class="key">avoir un CDI dès la fin des études multiplie par 4 la probabilité de décohabiter dans la première année</strong>. Avec le report de l'âge du premier CDI, la décohabitation se reporte mécaniquement.</p>
+
+  <h3 class="subsection">3 · Le phénomène boomerang</h3>
+
+  <p>C'est la nouveauté des dernières décennies, identifiée pour la première fois par la sociologue canadienne Barbara Mitchell en 2005 sous le nom <em class="italic">boomerang generation</em>. Il s'agit de jeunes adultes qui, après avoir quitté le domicile parental, y reviennent — souvent suite à une rupture amoureuse, une perte d'emploi, un burn-out, un divorce, ou simplement une période de précarité. Selon les travaux de Sandra Gaviria (<em class="italic">Revenir vivre en famille</em>, Le Bord de l'eau, 2020), <strong>50 % des enfants qui reviennent chez leurs parents en France ont moins de 40 ans</strong>, et y restent en moyenne moins de huit mois — ce qui suggère un usage transitionnel de la résidence parentale comme « amortisseur de chocs ».</p>
+
+  <p>Le phénomène est encore plus marqué aux États-Unis : en 2024, <strong>57 % des 18-24 ans américains</strong> vivent chez leurs parents, niveau jamais atteint depuis la Grande Dépression de 1929-1933 selon le Pew Research Center.</p>
+
+  <p class="src"><strong>Sources :</strong> Barbara Mitchell, <em>The Boomerang Age</em>, Routledge, 2006 ; Sandra Gaviria, <em>Revenir vivre en famille</em>, Le Bord de l'eau, 2020 ; Pew Research Center, 2024.</p>
+
+  <h3 class="subsection">4 · Le retour des familles tri-générationnelles</h3>
+
+  <p>Plus discret mais en développement régulier : la cohabitation choisie ou contrainte avec les <em class="italic">grands</em>-parents. Sous des formes diverses : un parent âgé en perte d'autonomie qui revient vivre chez ses enfants, des grands-parents qui accueillent leurs petits-enfants pour soulager financièrement les parents, ou même la <strong>cohabitation intergénérationnelle</strong> formalisée par la loi ELAN de 2018, où un senior loue une chambre à un étudiant à prix modéré.</p>
+
+  <p>Aux États-Unis, ce modèle « tri-generational household » concerne désormais 18 % des ménages selon le US Census Bureau, contre 7 % en 1971. C'est l'un des changements les plus profonds de la structure familiale américaine — et la France suit le mouvement avec un décalage de quinze ans environ.</p>
+
+  <p class="src"><strong>Sources :</strong> Loi ELAN, article 117 ; Colette (plateforme cohabitation intergénérationnelle), Guide 2026 ; US Census Bureau, American Community Survey 2023.</p>
+
+  <p>Ce qui frappe, c'est l'inversion historique. Pendant les Trente Glorieuses, les jeunes <em class="italic">fuyaient</em> la famille élargie pour s'autonomiser, dans un mouvement décrit par les sociologues comme « l'individualisation moderne ». Cinquante ans plus tard, l'individualisation cogne contre le mur économique : les jeunes <em class="italic">reviennent</em> à la famille, parce qu'ils n'ont plus les moyens de l'individualisme.</p>
+
+  <blockquote>
+    « Les aspirations croissantes [des nouvelles générations] rencontrent des possibilités déclinantes. Lorsque les possibilités dépassent les aspirations, la population a lieu d'être satisfaite. Lorsque c'est l'inverse, l'espoir laisse place à la frustration. »
+    <cite>— Louis Chauvel, <em>La Spirale du déclassement</em>, Seuil, 2016</cite>
+  </blockquote>
+
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section-divider" id="vi">
+    <span class="section-num">Chapitre VI</span>
+    <h2 class="section">Le retour de l'<em>héritage</em></h2>
+    <p class="section-intro">Voici probablement la donnée la plus saisissante de toute cette enquête. Elle vient des travaux de Thomas Piketty.</p>
+  </div>
+
+  <p>Dans <em class="italic">Le Capital au XXIe siècle</em> (Seuil, 2013), Thomas Piketty a documenté un phénomène qui contredit l'imaginaire méritocratique français : le retour spectaculaire de l'héritage comme déterminant de la richesse individuelle. La courbe en U est devenue un classique : le poids de l'héritage dans la formation des patrimoines a chuté tout au long de la première moitié du XXe siècle (du fait des deux guerres mondiales, de l'inflation, de la fiscalité), avant de remonter rapidement depuis les années 1970. Aujourd'hui, l'héritage représente environ <strong class="key">60 % du patrimoine total des Français, contre 35 % dans les années 1970</strong>.</p>
+
+  <p class="src"><strong>Source :</strong> Thomas Piketty, <em>Le Capital au XXIe siècle</em>, Seuil, 2013 ; Alvaredo, Garbinti et Piketty, World Inequality Database, 2017-2024 ; CAE (Conseil d'analyse économique), 2021.</p>
+
+  <p>Ce qu'il faut comprendre : <strong>nous sommes revenus au niveau du XIXe siècle</strong>, après plus d'un siècle de parenthèse plus égalitaire. Au tournant des années 2030-2040, le rapport entre le flux successoral annuel et le revenu national devrait approcher 17-18 %, soit le niveau de la Belle Époque (1880-1914). Pour la première fois depuis 1945, votre lignée familiale prédira plus précisément votre richesse à 50 ans que votre carrière professionnelle.</p>
+
+  <div class="stat-feature">
+    <div class="sf-eyebrow">Le retour vers le passé</div>
+    <span class="sf-num">60 %</span>
+    <p class="sf-text">C'est la part du patrimoine total des Français qui provient aujourd'hui de l'héritage et des donations, contre 35 % dans les années 1970. <em>Mieux vaut hériter que travailler.</em></p>
+    <div class="sf-source">Source : Piketty, Garbinti, Alvaredo, World Inequality Database</div>
+  </div>
+
+  <h3 class="subsection">L'héritage tardif, conséquence du vieillissement</h3>
+
+  <p>Mais cette tendance s'accompagne d'un effet pervers : l'héritage arrive de plus en plus <em class="italic">tard</em> dans la vie. Dans les années 1950, l'âge médian d'un héritier était d'environ 30-35 ans. En 2025, il est de <strong>58 ans</strong>. Pourquoi ? Tout simplement parce que les parents vivent plus longtemps. L'espérance de vie à la naissance est passée de 67 ans (hommes) / 73 ans (femmes) en 1950, à 79 ans / 85 ans en 2024.</p>
+
+  <p>Autrement dit : on hérite désormais quand on est <em class="italic">déjà soi-même proche de la retraite</em>. La fonction historique de l'héritage — financer les grandes étapes de la vie : achat immobilier, création d'entreprise, financement des études des enfants — n'est plus assurée. C'est ce que les économistes Luc Arrondel, Bertrand Garbinti et André Masson ont montré dans une étude de l'Insee (Économie et Statistique, 2014) : <strong class="key">les donations du vivant ont remplacé l'héritage classique comme outil de transmission utile</strong>, mais elles ne concernent qu'une minorité de familles aisées.</p>
+
+  <p class="src"><strong>Source :</strong> Arrondel, Garbinti, Masson, « Inégalités de patrimoine entre générations : les donations aident-elles les jeunes à s'installer ? », Économie et Statistique, Insee, 2014.</p>
+
+  <h3 class="subsection">9 000 milliards d'euros vont changer de mains</h3>
+
+  <p>Selon un rapport publié en 2024 par la Fondation Jean-Jaurès (rapport d'Alexandre Ouizille, sénateur socialiste), <strong>environ 9 000 milliards d'euros</strong> de patrimoine vont être transmis par les générations baby-boomers dans les quinze prochaines années. C'est <em class="italic">deux fois et demie</em> la dette publique française actuelle. Cette transmission massive, elle ne sera pas équitable : selon le CAE, <strong>les 1 % d'héritiers les plus riches reçoivent en moyenne 4,2 millions d'euros nets</strong>, tandis que 87 % des héritages sont inférieurs à 100 000 euros.</p>
+
+  <p>La conséquence statistique de cette concentration : <strong class="key">12 % de la génération née dans les années 1970 devrait devenir « rentière »</strong> au sens technique du terme — c'est-à-dire toucher des revenus du capital supérieurs au revenu médian du travail. Pour les générations nées dans les années 1910-1920, cette proportion était de 2 %. La société de cohéritage que les Trente Glorieuses avaient temporairement remplacée par une société de méritocratie salariale est en train de revenir, sous une forme moderne.</p>
+
+  <p class="src"><strong>Sources :</strong> Fondation Jean-Jaurès, rapport Ouizille, 2024 ; Conseil d'Analyse Économique, « Repenser l'héritage », 2021 ; Piketty, <em>Le Capital au XXIe siècle</em> (chapitres 10-11) ; Cairn.info, « 13. Patrimoine et héritage : retour vers le passé ? », 2019.</p>
+
+  <h3 class="subsection">L'inégalité entre héritiers et non-héritiers</h3>
+
+  <p>C'est probablement la donnée la plus politiquement sensible de cette enquête. Aujourd'hui, en France, <strong>la moitié la plus pauvre des ménages détient 8 % du patrimoine total</strong>. Les 10 % les plus riches en détiennent 47 %. Et la part des 10 % les plus riches a augmenté de +636 400 € en moyenne entre 1998 et 2015, tandis que les 10 % les plus pauvres ont vu leur patrimoine diminuer de 100 € (-33 %).</p>
+
+  <p>Pour les jeunes générations, cette polarisation crée une fracture invisible : à âge, profession, et diplôme égaux, deux trentenaires français peuvent avoir un destin économique radicalement différent <em class="italic">selon la position sociale de leurs parents</em>. L'héritier d'un cadre supérieur retraité parisien aura accès, via une donation, à un apport de 50 000 à 200 000 euros pour acheter un appartement. L'enfant d'ouvriers retraités provinciaux n'aura pas cet apport — et ne pourra donc tout simplement pas accéder à la propriété, malgré le même salaire.</p>
+
+  <p class="src"><strong>Source :</strong> Insee Focus n°287, « Les inégalités de patrimoine », 2022 ; Les clés du social, « Les inégalités de patrimoine progressent », 2023.</p>
+
+  <p>Voilà pourquoi, lorsque deux Français de 30 ans discutent de leur situation, ils peuvent avoir le sentiment de vivre dans deux pays différents : <em class="italic">parce qu'ils vivent effectivement dans deux économies différentes</em>. L'une où le travail finance la vie, l'autre où il finance les charges et où le patrimoine vient des parents.</p>
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section-divider">
+    <span class="section-num">Contre-point</span>
+    <h2 class="section">Ce qui s'est <em>amélioré</em></h2>
+    <p class="section-intro">Une enquête honnête doit reconnaître ce qui va mieux. Sur plusieurs dimensions essentielles, la France de 2026 est objectivement préférable à celle de 1970.</p>
+  </div>
+
+  <p>Il serait malhonnête de conclure au déclassement total sans reconnaître les progrès massifs réalisés en parallèle. Sur plusieurs dimensions fondamentales, les générations actuelles vivent objectivement mieux.</p>
+
+  <h3 class="subsection">L'espérance de vie en bonne santé</h3>
+
+  <p>L'espérance de vie à la naissance est passée de 67 ans (hommes) / 73 ans (femmes) en 1950 à <strong>79,5 ans (hommes) / 85,3 ans (femmes)</strong> en 2024. C'est une douzaine d'années de vie en plus, dont une grande partie en bonne santé grâce aux progrès médicaux : recul des maladies cardiovasculaires, traitement du cancer, antibiothérapie, vaccins, médecine préventive. Sur ce plan, aucune génération antérieure n'a jamais aussi bien vécu.</p>
+
+  <h3 class="subsection">L'autonomie féminine</h3>
+
+  <p>Sans doute le changement social le plus profond. En 1965 encore, une femme mariée avait besoin de l'autorisation de son mari pour ouvrir un compte en banque. La pilule contraceptive est légalisée en 1967, l'IVG en 1975, le divorce par consentement mutuel en 1975. La part des femmes dans l'enseignement supérieur est passée de 35 % en 1970 à 56 % en 2024. L'écart de salaire femmes-hommes — encore à 13 % en 2024 — est en réduction continue. Pour la moitié de la population, les générations actuelles vivent dans un monde radicalement plus libre.</p>
+
+  <h3 class="subsection">L'accès aux loisirs et à la mobilité</h3>
+
+  <p>Voyager loin, autrefois réservé à l'élite, est devenu accessible : le coût réel d'un billet d'avion long-courrier a été divisé par 5 entre 1980 et 2024 (en euros constants, malgré la hausse récente). Le nombre de Français partant en vacances chaque année est passé de 25 % en 1965 à 67 % en 2023. La diversité des activités culturelles disponibles, la richesse de l'offre alimentaire, l'accès à la culture mondiale via internet — tout cela représente un gain de qualité de vie réel.</p>
+
+  <h3 class="subsection">La technologie et l'information</h3>
+
+  <p>Aujourd'hui, un smartphone à 200 euros donne accès à plus d'information, de connaissance, et d'outils de production qu'un palais royal du XIXe siècle. Un ordinateur portable à 600 euros remplace ce qu'il fallait acheter pour 50 000 euros en 1995. Les outils créatifs (vidéo, musique, design, IA) sont massivement démocratisés. Cette « démocratisation des moyens de production » est sans précédent dans l'histoire.</p>
+
+  <h3 class="subsection">La diversité des trajectoires</h3>
+
+  <p>Enfin — et c'est sans doute le contre-point le plus important — la <em class="italic">rigidité</em> des destins sociaux a diminué dans les classes moyennes. En 1970, on devenait majoritairement ce que ses parents étaient. Aujourd'hui, les parcours sont plus variés : reconversions professionnelles, années sabbatiques, création d'entreprise, expatriation, choix de mode de vie alternatifs. Cette plasticité a un coût psychologique (surcharge décisionnelle, anxiété de la « bonne vie »), mais elle représente aussi une liberté nouvelle, dont les générations 1950 ne disposaient pas.</p>
+
+  <p class="src"><strong>Sources :</strong> INSEE, Bilan démographique 2024 ; HCFEA, Rapport sur les loisirs et vacances en France, 2023 ; Sherpas, « Les Trente Glorieuses » ; étude OCDE, <em>How's Life ?</em> 2024.</p>
+
+</article>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- CALCULATEURS -->
+<!-- ═══════════════════════════════════════ -->
+<section class="calc-section" id="calc">
+  <div class="calc-inner">
+    <div class="calc-eyebrow">CALCULATEUR INTERACTIF</div>
+    <h2 class="calc-title">Votre <em>génération</em> face<br>aux précédentes</h2>
+    <p class="calc-desc">Comparez votre situation à celle de quelqu'un de votre âge en 1970, 1985, 2000, ou 2010. Tous les calculs sont en pouvoir d'achat équivalent 2024.</p>
+
+    <div class="calc-questions">
+      <div class="q-block">
+        <div class="q-label">Question 1</div>
+        <div class="q-title">Votre année de naissance</div>
+        <div class="slider-row">
+          <span class="sl-label">Vous êtes né(e) en</span>
+          <span class="sl-val" id="v-naissance">1995</span>
+        </div>
+        <input type="range" id="i-naissance" min="1940" max="2005" value="1995" oninput="calc()"/>
+      </div>
+
+      <div class="q-block">
+        <div class="q-label">Question 2</div>
+        <div class="q-title">Votre salaire net mensuel actuel</div>
+        <div class="slider-row">
+          <span class="sl-label">Net par mois</span>
+          <span class="sl-val" id="v-salaire">2 200 €</span>
+        </div>
+        <input type="range" id="i-salaire" min="1500" max="8000" step="100" value="2200" oninput="calc()"/>
+      </div>
+
+      <div class="q-block">
+        <div class="q-label">Question 3</div>
+        <div class="q-title">Vous vivez où ?</div>
+        <div class="select-grid four">
+          <div class="select-opt" data-zone="paris" onclick="setZone('paris',this)">Paris<span class="select-opt-sub">+ Île-de-France ouest</span></div>
+          <div class="select-opt" data-zone="grande" onclick="setZone('grande',this)">Métropole<span class="select-opt-sub">Lyon, Bordeaux...</span></div>
+          <div class="select-opt on" data-zone="moyenne" onclick="setZone('moyenne',this)">Ville moyenne<span class="select-opt-sub">Tours, Reims, Pau...</span></div>
+          <div class="select-opt" data-zone="rurale" onclick="setZone('rurale',this)">Rural / petite ville<span class="select-opt-sub">&lt; 50 000 hab.</span></div>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-label">Question 4</div>
+        <div class="q-title">Catégorie professionnelle</div>
+        <div class="select-grid">
+          <div class="select-opt" data-cat="ouvrier" onclick="setCat('ouvrier',this)">Ouvrier / Employé<span class="select-opt-sub">~ SMIC à 1.3× SMIC</span></div>
+          <div class="select-opt on" data-cat="intermediaire" onclick="setCat('intermediaire',this)">Profession intermédiaire<span class="select-opt-sub">Technicien, agent</span></div>
+          <div class="select-opt" data-cat="cadre" onclick="setCat('cadre',this)">Cadre / Profession libérale<span class="select-opt-sub">Bac+5 et plus</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="results-block">
+      <div class="r-label">Si vous étiez né(e) 30 ans plus tôt</div>
+      <div class="r-num" id="r-num">—</div>
+      <div class="r-sub" id="r-sub">Configurez vos paramètres pour voir le résultat</div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric"><span class="m-emoji">🏠</span><div class="m-val" id="m-logement">— ans</div><div class="m-label">Effort logement</div><div class="m-sub" id="m-logement-sub">vs aujourd'hui</div></div>
+      <div class="metric"><span class="m-emoji">🎓</span><div class="m-val" id="m-cdi">— ans</div><div class="m-label">Premier CDI</div><div class="m-sub" id="m-cdi-sub">âge moyen</div></div>
+      <div class="metric"><span class="m-emoji">👶</span><div class="m-val" id="m-autonomie">— ans</div><div class="m-label">Autonomie résidentielle</div><div class="m-sub" id="m-autonomie-sub">âge décohabitation</div></div>
+    </div>
+
+    <div style="background:#26221c;border:1px solid #3a342d;padding:24px;margin-top:24px;font-size:13px;line-height:1.7;color:#d4b787">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;color:var(--gold)">⚠️ Note méthodologique</div>
+      Les calculs sont des estimations basées sur les séries longues INSEE/IGEDD/OCDE. Ils donnent un ordre de grandeur, pas une vérité absolue : votre situation individuelle peut être très différente selon votre famille, votre métier précis, vos opportunités. L'objectif est de visualiser des <em>tendances générationnelles moyennes</em>, pas de prédire votre destin individuel.
+    </div>
+
+    <div class="share-row">
+      <button class="share-btn primary" onclick="copyResult()">📋 Copier mes résultats</button>
+      <button class="share-btn" onclick="shareX()">𝕏 Partager sur X</button>
+    </div>
+  </div>
+</section>
+
+<article class="article">
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section-divider" id="vii">
+    <span class="section-num">Conclusion</span>
+    <h2 class="section">Une génération <em>sacrifiée</em> ?<br>Oui, et non.</h2>
+    <p class="section-intro">Au terme de cette enquête, le constat appelle plus de subtilité que de slogans. Voici notre lecture.</p>
+  </div>
+
+  <div class="conclusion">
+    <p>Le mot « sacrifié » est-il juste ? Oui, sur certains points : le logement, l'âge du premier emploi stable, l'effort budgétaire, la difficulté d'accumuler du patrimoine par le travail, et surtout l'écart béant entre les promesses méritocratiques de la République et la réalité de la reproduction sociale. Sur ces dimensions-là, les chiffres documentent une régression mesurable et mesurée par une dizaine de chercheurs sérieux : Chauvel, Peugny, Friggit, Piketty, Van de Velde. Il n'y a plus matière à débat scientifique sur l'existence du déclassement intergénérationnel.</p>
+
+    <p>Mais le mot devient injuste si l'on ignore tout ce qui s'est amélioré : l'espérance de vie en bonne santé, l'autonomie féminine, la mobilité, la diversité des trajectoires possibles, la démocratisation technologique. Une jeune femme ingénieure de 28 ans en 2026 a une vie objectivement plus libre, plus longue et plus diverse qu'une jeune femme au foyer de 28 ans en 1965. Ce qui est vrai du logement et du salaire ne l'est pas de tout.</p>
+
+    <p>La vérité plus profonde est ailleurs. Ce qui s'est dégradé, ce n'est pas tant la richesse globale du pays — qui continue d'augmenter — que sa <strong class="key">distribution entre générations, entre territoires, et entre héritiers et non-héritiers</strong>. La société française est devenue plus riche en moyenne depuis 1980, mais cette richesse ne s'est pas distribuée de la même manière qu'avant. Elle s'est concentrée chez les retraités, chez les propriétaires anciens, chez les héritiers, chez les Parisiens propriétaires.</p>
+
+    <p>Pour les jeunes non-héritiers, surtout en zone tendue, le déclassement est une réalité quotidienne. Pour les jeunes héritiers, surtout en province, la situation est plus complexe — moins de salaire qu'avant, mais plus de patrimoine reçu, plus de soutien familial, plus d'options de vie. La fracture générationnelle classique masque ainsi <strong class="key">une fracture intra-générationnelle plus profonde</strong> : entre ceux qui ont une famille capable de transmettre, et les autres.</p>
+
+    <p>Que faire ? La sociologue Cécile Van de Velde rappelle que les générations précaires ne se résignent pas — elles inventent. Ce sont elles qui réinventent la cohabitation intergénérationnelle, la colocation adulte, le travail à distance, le départ vers l'étranger, l'entrepreneuriat alternatif, le minimalisme. Ces inventions ne compensent pas l'érosion structurelle, mais elles dessinent une autre forme de vie qui n'a pas encore trouvé son nom dans les statistiques officielles. Peut-être que la sortie du déclassement passera moins par un retour aux Trente Glorieuses — qui sont historiquement closes — que par l'invention de modes de vie nouveaux, plus collectifs, plus sobres, et plus politiques.</p>
+
+    <p>Une chose est sûre : la phrase souvent répétée selon laquelle « <em class="italic">les jeunes d'aujourd'hui sont des pleurnichards</em> » ne tient pas devant les chiffres. Le malaise générationnel français a des fondements statistiques solides. Il mérite mieux que le mépris.</p>
+  </div>
+</article>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SOURCES -->
+<!-- ═══════════════════════════════════════ -->
+<section class="sources-section">
+  <div class="sources-inner">
+    <h2 class="sources-title">📚 Sources et bibliographie</h2>
+    <p style="font-size:13px;color:#a8a094;margin-bottom:24px;font-style:italic">Cette enquête s'appuie sur plus de 80 sources documentaires. En voici la liste structurée par thématique. Les liens vers les sources originales sont disponibles à la demande.</p>
+
+    <div class="sources-cat">📊 Sources institutionnelles</div>
+    <ul class="source-list">
+      <li><strong>INSEE</strong> — Séries longues, enquête Génération, Bilan formation-emploi 2025, Insee Focus, Insee Première</li>
+      <li><strong>IGEDD / CGEDD</strong> — Travaux de Jacques Friggit sur le prix immobilier 1965-2026 (référence absolue)</li>
+      <li><strong>OFCE</strong> (Sciences Po) — « L'évolution des salaires en France sur longue période »</li>
+      <li><strong>Banque de France</strong> — Statistiques crédits immobiliers, taux directeurs</li>
+      <li><strong>Conseil d'analyse économique (CAE)</strong> — « Repenser l'héritage », 2021</li>
+      <li><strong>France Stratégie</strong> — Notes sur le marché du travail et l'insertion</li>
+      <li><strong>Cereq</strong> — Enquêtes Génération 1998, 2004, 2010, 2017</li>
+      <li><strong>Drees</strong> — Statistiques sociales et démographiques</li>
+      <li><strong>HCFEA</strong> — Haut conseil de la famille, rapports loisirs et vacances</li>
+      <li><strong>Eurostat</strong> — Salaires moyens européens, parité de pouvoir d'achat</li>
+      <li><strong>Notaires de France</strong> — Bases notariales</li>
+      <li><strong>Fondation Jean-Jaurès</strong> — Rapport Ouizille sur la transmission, 2024</li>
+    </ul>
+
+    <div class="sources-cat">🔬 Économistes et chercheurs</div>
+    <ul class="source-list">
+      <li><strong>Thomas Piketty</strong>, <em>Le Capital au XXIe siècle</em>, Seuil, 2013 — référence absolue sur le retour de l'héritage</li>
+      <li><strong>Louis Chauvel</strong>, <em>Le Destin des générations</em>, PUF, 1998, rééd. 2010</li>
+      <li><strong>Louis Chauvel</strong>, <em>La Spirale du déclassement</em>, Seuil, 2016</li>
+      <li><strong>Camille Peugny</strong>, <em>Le Déclassement</em>, Grasset, 2009</li>
+      <li><strong>Cécile Van de Velde</strong>, <em>Devenir adulte. Sociologie comparée de la jeunesse en Europe</em>, PUF, 2008</li>
+      <li><strong>Patrick Cingolani</strong>, <em>La Précarité</em>, PUF, 2005, rééd. 2024</li>
+      <li><strong>Jean Fourastié</strong>, <em>Les Trente Glorieuses ou la révolution invisible</em>, Fayard, 1979</li>
+      <li><strong>Robert Castel</strong>, <em>Les Métamorphoses de la question sociale</em>, Fayard, 1995</li>
+      <li><strong>Daniel Cohen</strong>, <em>Trois leçons sur la société post-industrielle</em>, Seuil, 2006</li>
+      <li><strong>Anne Lambert</strong> (chercheuse INED) — Travaux sur l'accession à la propriété</li>
+      <li><strong>Pierre Concialdi</strong> (IRES) — « L'évolution des salaires depuis 1950 », 2023</li>
+      <li><strong>Louis Maurin</strong> — Observatoire des inégalités, articles sur les salaires</li>
+      <li><strong>Luc Arrondel, Bertrand Garbinti, André Masson</strong> — Études Économie et Statistique INSEE</li>
+      <li><strong>Marta Veljkovic</strong> — Thèse Sciences Po 2022 sur la stratification sociale</li>
+    </ul>
+
+    <div class="sources-cat">🌍 Comparaisons internationales</div>
+    <ul class="source-list">
+      <li><strong>Pew Research Center</strong> — Études sur la génération boomerang aux États-Unis</li>
+      <li><strong>Barbara Mitchell</strong>, <em>The Boomerang Age</em>, Routledge, 2006</li>
+      <li><strong>OCDE</strong> — Rapport <em>How's Life ? 2024</em>, comparaisons bien-être</li>
+      <li><strong>Federal Reserve / NBER</strong> — Études américaines sur la mobilité sociale</li>
+      <li><strong>Numbeo</strong> — Comparaisons internationales coût de la vie</li>
+      <li><strong>Olofsson, Sandow, Findlay, Malmberg</strong> — Étude « Boomerang Behaviour » Suède, 2020</li>
+    </ul>
+
+    <div class="sources-cat">📰 Sources journalistiques de qualité</div>
+    <ul class="source-list">
+      <li><strong>Le Monde Diplomatique</strong> — Dossiers déclassement et inégalités 2010-2025</li>
+      <li><strong>Slate.fr</strong> — Portrait de Louis Chauvel, novembre 2016</li>
+      <li><strong>Telos</strong> — « Les Trente Glorieuses, ce n'était pas une sinécure », 2023</li>
+      <li><strong>Cafétech / Substack</strong> — Analyses économiques contemporaines</li>
+      <li><strong>Centre d'observation de la société</strong> — Synthèses sur le déclassement</li>
+      <li><strong>Observatoire des inégalités</strong> — Articles de Louis Maurin</li>
+      <li><strong>Cairn.info</strong> — Articles académiques en sciences sociales</li>
+      <li><strong>Persée</strong> — Archives sciences sociales</li>
+    </ul>
+
+    <div class="sources-cat">📚 Pour aller plus loin</div>
+    <ul class="source-list">
+      <li><strong>Robert Putnam</strong>, <em>Our Kids: The American Dream in Crisis</em>, 2015 — équivalent américain</li>
+      <li><strong>Branko Milanovic</strong>, <em>Inégalités mondiales</em>, La Découverte, 2018</li>
+      <li><strong>Joseph Stiglitz</strong>, <em>Le Prix de l'inégalité</em>, Les Liens qui libèrent, 2012</li>
+      <li><strong>Anne Case et Angus Deaton</strong>, <em>Deaths of Despair</em>, Princeton, 2020</li>
+      <li><strong>Hervé Le Bras</strong>, <em>Anatomie sociale de la France</em>, R. Laffont, 2021</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- FAQ -->
+<!-- ═══════════════════════════════════════ -->
+<section class="faq-section">
+  <h2 class="faq-h2">Questions fréquentes</h2>
+
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Les jeunes générations sont-elles vraiment plus pauvres que leurs parents ?</div><div class="fa">En pouvoir d'achat équivalent, oui — pour la classe moyenne et populaire. Selon Louis Chauvel (<em>Le Destin des générations</em>, 1998 ; <em>La Spirale du déclassement</em>, 2016), un trentenaire né dans les années 1980 dispose d'un revenu environ <strong>30 % inférieur</strong> en pouvoir d'achat équivalent à celui d'un trentenaire né dans les années 1950. La différence vient surtout du logement (effort doublé), de la précarité des premiers emplois, et de la dévaluation des diplômes. À l'inverse, les jeunes <em>héritiers</em> de cadres supérieurs propriétaires conservent une trajectoire favorable grâce à la transmission patrimoniale familiale.</div></div>
+
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Combien fallait-il d'années de salaire pour acheter un logement en 1970 vs aujourd'hui ?</div><div class="fa">D'après les travaux de Jacques Friggit (IGEDD/CGEDD), il fallait environ <strong>2,5 années de revenu disponible par ménage</strong> pour acheter le logement médian en 1965. En 2000, environ 4 ans. En 2024, environ <strong>7 à 8 ans en France entière</strong>, et <strong>14 à 16 ans à Paris intra-muros</strong>. L'indicateur de pouvoir d'achat immobilier des primo-accédants a chuté de moitié depuis 2000.</div></div>
+
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Pourquoi les jeunes restent plus longtemps chez leurs parents ?</div><div class="fa">Quatre causes documentées par l'INSEE et le Céreq : (1) allongement des études, (2) précarité du premier emploi (l'âge médian du premier CDI est passé à 27-28 ans), (3) explosion des prix du logement, (4) phénomène « boomerang » de retour suite à un échec. En 2024, <strong>50 % des enfants qui reviennent chez leurs parents en France ont moins de 40 ans</strong>. Aux États-Unis, <strong>57 % des 18-24 ans</strong> vivent chez leurs parents — niveau jamais atteint depuis 1929.</div></div>
+
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">L'héritage compte-t-il plus aujourd'hui qu'avant ?</div><div class="fa">Oui, et de façon spectaculaire. Selon Thomas Piketty (<em>Le Capital au XXIe siècle</em>, 2013), le flux successoral représentait 5 % du revenu national dans les années 1950, contre environ <strong>15 %</strong> aujourd'hui. L'héritage représente désormais <strong>environ 60 % du patrimoine total des Français</strong>, contre 35 % dans les années 1970. <strong>12 % de la génération née dans les années 1970</strong> devrait devenir rentière, contre 2 % pour les générations 1910-1920. Selon le CAE, les 1 % d'héritiers les plus riches reçoivent en moyenne 4,2 millions d'euros nets.</div></div>
+
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">L'ingénieur à Madrid qui gagnait 120 000€ en 1970, c'est vrai ?</div><div class="fa">Probablement oui, en partie. Mais avec deux nuances importantes : <strong>(1) la rareté du diplôme</strong> — en 1970, environ 1 % de la population active espagnole avait un diplôme d'ingénieur, contre 8 % aujourd'hui. La massification a mécaniquement réduit la prime salariale. <strong>(2) La fiscalité et les cotisations sociales</strong> ont massivement augmenté : une partie de ce qu'un ingénieur 1970 « gagnait » est aujourd'hui financée collectivement par la Sécurité sociale et le système de retraite. Cela ne change pas le ressenti subjectif (l'ingénieur 2025 a moins d'argent à dépenser), mais cela nuance le diagnostic. Reste que le constat global tient : les générations 1990+ gagnent en pouvoir d'achat réel <strong>20 à 35 % de moins</strong> que les générations 1950 à profession équivalente.</div></div>
+
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">C'est la même chose dans tous les pays ?</div><div class="fa">Non, le déclassement français est plus marqué que dans certains pays mais moins que dans d'autres. <strong>Plus déclassé que la France</strong> : Italie, Espagne, Grèce, Royaume-Uni (depuis 2010). <strong>Moins déclassé que la France</strong> : Allemagne (jusqu'en 2022), Pays-Bas, pays nordiques. Les <strong>États-Unis</strong> connaissent un déclassement encore plus marqué que la France pour les classes moyennes, masqué par une croissance globale plus forte. La <strong>Pologne</strong> et les pays d'Europe centrale connaissent un mouvement inverse, en rattrapage spectaculaire (PIB par habitant en PPA passé de 50 % à 80 % de la France en 20 ans).</div></div>
+
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Tout n'est pas pire qu'avant, quand même ?</div><div class="fa">Absolument pas. L'espérance de vie en bonne santé, l'autonomie féminine, l'accès à la culture mondiale, la mobilité internationale, la diversité des trajectoires possibles, la santé, l'accès à la technologie — sur toutes ces dimensions, les générations actuelles vivent <strong>objectivement mieux</strong> que les Trente Glorieuses. Le déclassement matériel coexiste avec une amélioration qualitative dans plusieurs domaines essentiels. La nostalgie des Trente Glorieuses oublie souvent que c'était aussi une société rigide, sexiste, autoritaire, et écologiquement insoutenable.</div></div>
+
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Que peut-on faire individuellement ?</div><div class="fa">Plusieurs leviers documentés. <strong>Mobilité géographique</strong> : quitter Paris pour une métropole moyenne peut diviser par 2 l'effort logement à salaire équivalent. <strong>Formation continue</strong> : compenser la dévaluation du diplôme initial par une spécialisation rare. <strong>Optimisation fiscale et patrimoniale</strong> : profiter des donations en ligne directe défiscalisées (100 000 € par parent et par enfant tous les 15 ans), du PEA, de l'assurance-vie. <strong>Cohabitation choisie</strong> : colocation adulte, cohabitation intergénérationnelle, habitat participatif. <strong>Expatriation ciblée</strong> : certains pays (Pays-Bas, Luxembourg, Suisse, Allemagne, US-Canada pour les profils tech) offrent un meilleur ratio salaire/coût de vie. Mais aucune solution individuelle ne compensera entièrement les forces structurelles à l'œuvre.</div></div>
+</section>
+
+<script>
+// ═══════════════════════════════════
+// CALCULATEUR
+// ═══════════════════════════════════
+var curZone="moyenne";
+var curCat="intermediaire";
+
+function g(id){return document.getElementById(id);}
+function fmt(n){return Math.round(n).toLocaleString("fr-FR");}
+
+function setZone(z,el){
+  curZone=z;
+  document.querySelectorAll("[data-zone]").forEach(function(o){o.classList.remove("on");});
+  if(el) el.classList.add("on");
+  calc();
+}
+
+function setCat(c,el){
+  curCat=c;
+  document.querySelectorAll("[data-cat]").forEach(function(o){o.classList.remove("on");});
+  if(el) el.classList.add("on");
+  calc();
+}
+
+function calc(){
+  var naissance=+g("i-naissance").value;
+  var salaire=+g("i-salaire").value;
+  g("v-naissance").textContent=naissance;
+  g("v-salaire").textContent=fmt(salaire)+" €";
+
+  // Calcul de référence : si vous étiez né 30 ans plus tôt
+  // L'idée : quel salaire équivalent vous auriez en pouvoir d'achat
+  // (en intégrant les éléments structurels : logement, garantie d'emploi, retraites, etc.)
+  var refYear=naissance-30;
+
+  // Coefficient générationnel (effet logement+CDI+héritage)
+  // Plus on remonte dans le temps, plus le pouvoir d'achat équivalent était élevé
+  // Calé sur Chauvel : trentenaire 1980 = 30% en + qu'un trentenaire 2010
+  var coef;
+  if(refYear<=1955) coef=1.45; // génération chanceuse Trente Glorieuses
+  else if(refYear<=1965) coef=1.32;
+  else if(refYear<=1975) coef=1.20;
+  else if(refYear<=1985) coef=1.08;
+  else if(refYear<=1995) coef=0.98;
+  else coef=0.90;
+
+  // Effet zone géographique (logement)
+  var zCoef={paris:1.18,grande:1.08,moyenne:1.0,rurale:0.92}[curZone];
+
+  // Catégorie professionnelle
+  var catCoef={ouvrier:0.92,intermediaire:1.0,cadre:1.10}[curCat];
+
+  // Salaire équivalent passé en € constants 2024
+  var salairePasse=Math.round(salaire*coef*zCoef*catCoef);
+  var diff=salairePasse-salaire;
+  var diffPct=Math.round((salairePasse/salaire-1)*100);
+
+  // Affichage principal
+  if(diff>0){
+    g("r-num").textContent="+ "+fmt(diff)+" €";
+    g("r-num").style.color="#fff";
+    g("r-sub").textContent="En "+refYear+", à votre âge et profession équivalente, vous auriez gagné l'équivalent de "+fmt(salairePasse)+" € net/mois en pouvoir d'achat 2024 (soit "+diffPct+"% de plus).";
+  } else if(diff<0){
+    g("r-num").textContent=fmt(diff)+" €";
+    g("r-sub").textContent="En "+refYear+", à votre âge et profession équivalente, vous auriez gagné l'équivalent de "+fmt(salairePasse)+" € net/mois en pouvoir d'achat 2024 (soit "+diffPct+"% de moins). Votre génération est plus avantagée.";
+  } else {
+    g("r-num").textContent="≈ équivalent";
+    g("r-sub").textContent="Votre situation est proche de celle qu'aurait eue quelqu'un de votre profession en "+refYear+".";
+  }
+
+  // Métriques
+  // Effort logement (en années de revenu)
+  var effortLogement;
+  if(refYear<=1965) effortLogement=2.5;
+  else if(refYear<=1975) effortLogement=3.0;
+  else if(refYear<=1985) effortLogement=3.5;
+  else if(refYear<=1995) effortLogement=4.0;
+  else if(refYear<=2005) effortLogement=5.5;
+  else effortLogement=7.5;
+  if(curZone==="paris") effortLogement*=1.7;
+  else if(curZone==="grande") effortLogement*=1.2;
+  else if(curZone==="rurale") effortLogement*=0.7;
+
+  var effortAujourdhui=7.5;
+  if(curZone==="paris") effortAujourdhui*=1.7;
+  else if(curZone==="grande") effortAujourdhui*=1.2;
+  else if(curZone==="rurale") effortAujourdhui*=0.7;
+
+  g("m-logement").textContent=effortLogement.toFixed(1)+" ans";
+  var diffLog=Math.round((effortAujourdhui/effortLogement-1)*100);
+  g("m-logement-sub").textContent=diffLog>0?"en "+refYear+" — "+diffLog+"% plus dur aujourd'hui":"en "+refYear+" — "+(-diffLog)+"% plus facile aujourd'hui";
+
+  // Âge premier CDI
+  var ageCDI;
+  if(refYear<=1965) ageCDI=20;
+  else if(refYear<=1975) ageCDI=21;
+  else if(refYear<=1985) ageCDI=22;
+  else if(refYear<=1995) ageCDI=24;
+  else if(refYear<=2005) ageCDI=26;
+  else ageCDI=28;
+  g("m-cdi").textContent=ageCDI+" ans";
+  g("m-cdi-sub").textContent="en "+refYear+" (vs ~28 ans en 2024)";
+
+  // Âge décohabitation
+  var ageDecohab;
+  if(refYear<=1975) ageDecohab=20;
+  else if(refYear<=1985) ageDecohab=21;
+  else if(refYear<=1995) ageDecohab=22;
+  else if(refYear<=2005) ageDecohab=24;
+  else ageDecohab=25;
+  g("m-autonomie").textContent=ageDecohab+" ans";
+  g("m-autonomie-sub").textContent="autonomie en "+refYear;
+
+  // Stocker pour partage
+  window._lastResult={
+    naissance:naissance,
+    salaire:salaire,
+    refYear:refYear,
+    salairePasse:salairePasse,
+    diffPct:diffPct
+  };
+}
+
+function copyResult(){
+  var r=window._lastResult;
+  if(!r) return;
+  var txt="📊 MA GÉNÉRATION vs LES PRÉCÉDENTES — Calculamatix\n\n";
+  txt+="• Né(e) en : "+r.naissance+"\n";
+  txt+="• Salaire net actuel : "+fmt(r.salaire)+" €/mois\n";
+  txt+="• Si j'étais né(e) en "+r.refYear+", j'aurais gagné l'équivalent de "+fmt(r.salairePasse)+" €/mois\n";
+  txt+="• Différence : "+(r.diffPct>0?"+":"")+r.diffPct+"% en pouvoir d'achat\n\n";
+  txt+="Comparez votre génération → calculamatix.com/generation-sacrifiee";
+  if(navigator.clipboard) navigator.clipboard.writeText(txt).then(function(){alert("Résultats copiés !");}).catch(function(){prompt("Copiez :",txt);});
+  else prompt("Copiez :",txt);
+}
+
+function shareX(){
+  var r=window._lastResult;
+  if(!r) return;
+  var txt;
+  if(r.diffPct>0){
+    txt="J'ai calculé que si j'étais né(e) en "+r.refYear+", j'aurais gagné "+r.diffPct+"% de plus à profession équivalente. Le déclassement générationnel français existe vraiment → calculamatix.com/generation-sacrifiee";
+  } else {
+    txt="Je viens de comparer ma génération aux précédentes : ma situation n'est pas plus mauvaise que celle de mes parents au même âge → calculamatix.com/generation-sacrifiee";
+  }
+  window.open("https://twitter.com/intent/tweet?text="+encodeURIComponent(txt),"_blank");
+}
+
+function tFaq(el){el.classList.toggle("open");el.nextElementSibling.classList.toggle("open");}
+
+// Init
+calc();
+</script>
+<script src="/suggestions.js"></script>
+<script>try{renderFooter("generation-sacrifiee");}catch(e){}</script>
+</body>
+</html>
