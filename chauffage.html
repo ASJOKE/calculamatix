@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Comparateur Chauffage 2026 — Pompe à chaleur, gaz, bois, fioul : quel est le plus rentable ? | Calculamatix</title>
+<meta name="description" content="Le simulateur de chauffage le plus complet de France : comparez 10 modes de chauffage (PAC, gaz, fioul, bois, granulés, électrique) sur 15 ans. Coûts réels, aides MaPrimeRénov 2026, ROI, CO₂."/>
+<link rel="canonical" href="https://calculamatix.com/chauffage"/>
+<meta property="og:title" content="Comparateur Chauffage 2026 — Le simulateur le plus complet de France"/>
+<meta property="og:description" content="Comparez 10 modes de chauffage sur 15 ans : PAC air/eau, gaz condensation, granulés, fioul, électrique. Coûts réels, aides 2026, ROI, CO₂. Gratuit et sans inscription."/>
+<meta property="og:type" content="website"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Comparateur Chauffage Calculamatix","applicationCategory":"FinanceApplication","description":"Simulateur comparatif de chauffage : comparez 10 modes sur 15 ans avec aides MaPrimeRénov 2026","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quel est le chauffage le moins cher en 2026 ?","acceptedAnswer":{"@type":"Answer","text":"En coût du kWh, le bois bûche est le moins cher (4,9 c€/kWh), suivi des granulés (7,5 c€/kWh) et du gaz naturel (10,4 c€/kWh). Mais la pompe à chaleur air/eau, grâce à son COP de 3, ramène le coût effectif à environ 6,5 c€/kWh. En coût total sur 15 ans (investissement + énergie + entretien - aides), la PAC air/eau et la chaudière à granulés sont souvent les plus rentables. Sources : ADEME, CRE, Propellet, Selectra (données avril 2026)."}},{"@type":"Question","name":"Combien coûte une pompe à chaleur air/eau en 2026 ?","acceptedAnswer":{"@type":"Answer","text":"Le prix moyen d'une PAC air/eau installée est de 11 000 à 15 000€ selon la puissance et le logement. Avec MaPrimeRénov' (2 000 à 5 000€), la Prime CEE/Coup de Pouce Chauffage (2 500 à 4 500€) et la TVA à 5,5%, le reste à charge peut descendre à 4 000-8 000€. L'amortissement est de 5 à 9 ans selon le système remplacé. Sources : ANAH, Service-Public.fr, barèmes 2026."}},{"@type":"Question","name":"Vaut-il mieux garder sa chaudière gaz ou passer à la pompe à chaleur ?","acceptedAnswer":{"@type":"Answer","text":"Si votre chaudière gaz a moins de 10 ans et est à condensation, la garder est souvent plus rentable à court terme. Si elle a plus de 15 ans ou est basse température, le remplacement par une PAC est rentable en 5-8 ans grâce aux aides 2026 et à la différence de coût kWh (gaz ~10,4 c€ vs PAC ~6,5 c€ effectif). Le calculateur ci-dessous vous donne le seuil de rentabilité précis pour votre situation."}},{"@type":"Question","name":"Quelles aides pour changer de chauffage en 2026 ?","acceptedAnswer":{"@type":"Answer","text":"Les principales aides en 2026 sont : MaPrimeRénov' (2 000 à 11 000€ selon revenus et système), Prime CEE / Coup de Pouce Chauffage (2 500 à 4 500€ pour remplacement chaudière fossile), TVA réduite à 5,5%, Éco-PTZ (prêt à taux zéro jusqu'à 50 000€ sur 20 ans), et aides locales variables. Ces aides sont cumulables. Sources : ANAH février 2026, Service-Public.fr."}}]}</script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f5f0;--bg2:#ffffff;--ink:#1c1917;--soft:#44403c;--muted:#78716c;--light:#a8a29e;
+  --border:#e7e5e4;--dim:#f5f3ee;--card:#ffffff;
+  --fire:#e85d2a;--fire-light:#fef0e8;--fire-dark:#b94a1e;
+  --blue:#2563eb;--blue-light:#eff6ff;--green:#16a34a;--green-light:#f0fdf4;
+  --amber:#d97706;--amber-light:#fffbeb;--red:#dc2626;--red-light:#fef2f2;
+  --purple:#7c3aed;--teal:#0d9488;
+  --shadow:0 4px 16px rgba(0,0,0,.06);
+}
+body{background:var(--bg);color:var(--ink);font-family:"DM Sans",sans-serif;font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+
+nav{max-width:1200px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.logo{font-family:"DM Serif Display",serif;font-size:20px;text-decoration:none;color:var(--ink)}
+.logo em{font-style:normal;color:var(--fire)}
+.back{font-size:13px;color:var(--muted);text-decoration:none}
+
+/* ═══ HERO ═══ */
+.hero{max-width:1200px;margin:0 auto;padding:40px 24px 20px;text-align:center}
+.hero-badge{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--fire);text-transform:uppercase;letter-spacing:3px;font-weight:600;background:var(--fire-light);border:1px solid rgba(232,93,42,.2);padding:6px 16px;border-radius:100px;margin-bottom:18px}
+h1{font-family:"DM Serif Display",serif;font-size:clamp(30px,5vw,50px);line-height:1.05;letter-spacing:-1.5px;margin-bottom:14px}
+h1 .hl{color:var(--fire)}
+.hero-desc{font-size:15px;color:var(--muted);max-width:640px;margin:0 auto 20px;line-height:1.7}
+.hero-tags{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:6px}
+.hero-tag{font-size:11px;font-family:"JetBrains Mono",monospace;color:var(--soft);background:var(--dim);padding:5px 12px;border-radius:100px;font-weight:600}
+
+/* ═══ ÉTAPES PROGRESSIVES ═══ */
+.calc-wrap{max-width:860px;margin:24px auto 0;padding:0 24px}
+.progress-bar{display:flex;gap:4px;margin-bottom:28px;align-items:center}
+.prog-step{flex:1;height:4px;background:var(--border);border-radius:2px;transition:background .3s}
+.prog-step.done{background:var(--fire)}
+.prog-step.cur{background:linear-gradient(90deg,var(--fire),rgba(232,93,42,.3))}
+.prog-label{font-size:11px;font-family:"JetBrains Mono",monospace;color:var(--muted);margin-left:10px;font-weight:600;white-space:nowrap}
+
+.step{display:none;animation:fadeIn .25s ease}
+.step.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.step-eyebrow{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--fire);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;font-weight:600}
+.step-title{font-family:"DM Serif Display",serif;font-size:28px;letter-spacing:-.5px;margin-bottom:6px;line-height:1.15}
+.step-desc{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.7}
+
+/* CARDS DE SELECTION */
+.opt-grid{display:grid;gap:10px}
+.opt-grid.cols2{grid-template-columns:1fr 1fr}
+.opt-grid.cols3{grid-template-columns:repeat(3,1fr)}
+.opt-grid.cols4{grid-template-columns:repeat(4,1fr)}
+.opt-card{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;transition:all .15s;text-align:center;position:relative}
+.opt-card:hover{border-color:var(--fire);transform:translateY(-2px)}
+.opt-card.sel{border-color:var(--fire);background:var(--fire-light)}
+.opt-emoji{font-size:30px;display:block;margin-bottom:8px}
+.opt-title{font-weight:700;font-size:14px;margin-bottom:4px}
+.opt-sub{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* SLIDERS */
+.slider-block{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px}
+.sl-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.sl-label{font-weight:600;font-size:14px}
+.sl-value{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:20px;color:var(--fire)}
+input[type=range]{width:100%;-webkit-appearance:none;height:5px;background:var(--border);border-radius:3px;cursor:pointer;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;background:var(--fire);border-radius:50%;border:3px solid var(--bg2);box-shadow:0 2px 8px rgba(232,93,42,.3);cursor:pointer}
+.sl-marks{display:flex;justify-content:space-between;font-size:10px;color:var(--light);margin-top:6px;font-family:"JetBrains Mono",monospace}
+
+/* INPUTS */
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.input-block{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+.ib-label{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.ib-input{width:100%;border:1.5px solid var(--border);background:var(--dim);padding:10px 14px;border-radius:10px;font-size:15px;font-family:"DM Sans",sans-serif;color:var(--ink);outline:none;transition:border-color .15s}
+.ib-input:focus{border-color:var(--fire)}
+.ib-hint{font-size:11px;color:var(--light);margin-top:4px;font-style:italic}
+select.ib-input{cursor:pointer}
+
+/* NAV BUTTONS */
+.step-nav{display:flex;gap:10px;margin-top:28px}
+.btn{padding:14px 24px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:"DM Sans",sans-serif;transition:all .15s}
+.btn-back{background:var(--dim);color:var(--muted);border:1px solid var(--border)}
+.btn-back:hover{color:var(--ink)}
+.btn-next{background:var(--fire);color:#fff;flex:1}
+.btn-next:hover{background:var(--fire-dark);transform:translateY(-1px);box-shadow:0 6px 16px rgba(232,93,42,.25)}
+.btn-next:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* ═══ RÉSULTATS ═══ */
+.results-section{max-width:1100px;margin:40px auto 0;padding:0 24px 80px}
+
+/* WINNER CARD */
+.winner-card{background:linear-gradient(135deg,var(--ink) 0%,#292524 100%);color:#fafaf9;border-radius:20px;padding:36px 32px;margin-bottom:28px;position:relative;overflow:hidden}
+.winner-card::before{content:"";position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:rgba(232,93,42,.15)}
+.wc-eyebrow{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--fire);text-transform:uppercase;letter-spacing:3px;margin-bottom:12px;font-weight:600;position:relative}
+.wc-title{font-family:"DM Serif Display",serif;font-size:clamp(24px,4vw,36px);line-height:1.1;margin-bottom:8px;position:relative}
+.wc-sub{font-size:14px;color:#a8a29e;line-height:1.7;max-width:580px;position:relative}
+.wc-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px;position:relative}
+.wc-metric{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px 12px;text-align:center}
+.wm-val{font-family:"DM Serif Display",serif;font-size:24px;color:var(--fire);display:block;margin-bottom:4px}
+.wm-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#a8a29e;font-family:"JetBrains Mono",monospace;font-weight:600}
+
+/* COMPARISON TABLE */
+.compare-wrap{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:28px}
+.compare-header{background:var(--ink);color:#fff;padding:20px 24px;display:flex;justify-content:space-between;align-items:center}
+.compare-title{font-family:"DM Serif Display",serif;font-size:20px}
+.compare-toggle{display:flex;gap:6px}
+.ct-btn{font-size:11px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#d6d3d1;padding:6px 14px;border-radius:100px;cursor:pointer;font-weight:600;transition:all .15s;font-family:"DM Sans",sans-serif}
+.ct-btn:hover,.ct-btn.on{background:var(--fire);border-color:var(--fire);color:#fff}
+.compare-body{overflow-x:auto}
+.compare-table{width:100%;border-collapse:collapse;font-size:13px;min-width:700px}
+.compare-table th{background:var(--dim);padding:12px 14px;text-align:left;font-family:"JetBrains Mono",monospace;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border);position:sticky;top:0}
+.compare-table th:not(:first-child){text-align:right}
+.compare-table td{padding:14px;border-bottom:1px solid var(--border);vertical-align:middle}
+.compare-table td:not(:first-child){text-align:right;font-family:"JetBrains Mono",monospace;font-weight:500}
+.compare-table tr:hover{background:var(--dim)}
+.compare-table tr.best{background:var(--fire-light)}
+.compare-table tr.best td:first-child::after{content:" 🏆";font-size:14px}
+.sys-name{font-weight:700;display:flex;align-items:center;gap:8px}
+.sys-emoji{font-size:18px}
+.sys-tag{font-size:9px;background:var(--fire);color:#fff;padding:2px 6px;border-radius:100px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.val-good{color:var(--green);font-weight:700}
+.val-bad{color:var(--red)}
+.val-mid{color:var(--amber)}
+
+/* GRAPHIQUE SVG */
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px 24px;margin-bottom:28px;box-shadow:var(--shadow)}
+.chart-title{font-family:"DM Serif Display",serif;font-size:20px;margin-bottom:6px}
+.chart-sub{font-size:12px;color:var(--muted);margin-bottom:20px;font-style:italic}
+.chart-svg{width:100%;height:auto}
+.chart-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:16px;font-size:12px;color:var(--soft)}
+.legend-item{display:flex;align-items:center;gap:6px}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+/* AIDES BLOCK */
+.aides-card{background:var(--green-light);border:1px solid rgba(22,163,74,.2);border-radius:18px;padding:28px 24px;margin-bottom:28px}
+.aides-title{font-family:"DM Serif Display",serif;font-size:20px;color:var(--green);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.aides-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.aide-item{background:var(--bg2);border:1px solid rgba(22,163,74,.15);border-radius:12px;padding:16px}
+.ai-name{font-weight:700;font-size:13px;margin-bottom:4px}
+.ai-amount{font-family:"JetBrains Mono",monospace;font-weight:700;color:var(--green);font-size:18px;margin-bottom:4px}
+.ai-note{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* DETAIL CARDS */
+.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:28px}
+.detail-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;box-shadow:var(--shadow)}
+.dc-title{font-family:"DM Serif Display",serif;font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.dc-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.dc-row:last-child{border-bottom:none}
+.dc-label{color:var(--muted)}
+.dc-val{font-family:"JetBrains Mono",monospace;font-weight:600}
+
+/* SHARE */
+.share-row{display:flex;gap:8px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+.share-btn{background:var(--card);border:1.5px solid var(--border);color:var(--soft);padding:11px 22px;font-size:13px;font-weight:600;cursor:pointer;font-family:"DM Sans",sans-serif;border-radius:12px;transition:all .15s}
+.share-btn:hover{border-color:var(--fire);color:var(--fire)}
+.share-btn.primary{background:var(--fire);border-color:var(--fire);color:#fff}
+
+/* FAQ */
+.faq-section{max-width:860px;margin:60px auto 0;padding:0 24px 60px}
+.faq-h2{font-family:"DM Serif Display",serif;font-size:28px;margin-bottom:20px}
+.fitem{border-bottom:1px solid var(--border);padding:16px 0}
+.fq{font-family:"DM Sans",sans-serif;font-weight:700;font-size:16px;cursor:pointer;display:flex;justify-content:space-between;gap:12px;line-height:1.35}
+.fq::after{content:"+";font-size:22px;color:var(--fire);flex-shrink:0;line-height:1;font-weight:400}
+.fq.open::after{content:"−"}
+.fa{font-size:14px;color:var(--soft);line-height:1.85;max-height:0;overflow:hidden;transition:max-height .35s}
+.fa.open{max-height:800px;padding-top:12px}
+
+.disclaimer{max-width:860px;margin:0 auto;padding:0 24px 40px;font-size:11px;color:var(--light);text-align:center;line-height:1.7;font-style:italic}
+
+@media(max-width:700px){
+  .opt-grid.cols3,.opt-grid.cols4{grid-template-columns:1fr 1fr}
+  .input-row{grid-template-columns:1fr}
+  .wc-metrics{grid-template-columns:1fr 1fr}
+  .aides-grid,.detail-grid{grid-template-columns:1fr}
+  .compare-table{min-width:600px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">Calcula<em>matix</em></a>
+  <a class="back" href="index.html">← Retour</a>
+</nav>
+
+<div class="hero">
+  <span class="hero-badge">Le simulateur le plus complet de France · Avril 2026</span>
+  <h1>Quel <span class="hl">chauffage</span> est vraiment<br>le plus rentable ?</h1>
+  <p class="hero-desc">Comparez 10 systèmes de chauffage sur 15 ans : investissement, énergie, entretien, aides MaPrimeRénov' 2026, CO₂. Basé sur les prix officiels ADEME, CRE et ANAH.</p>
+  <div class="hero-tags">
+    <span class="hero-tag">🔥 10 systèmes comparés</span>
+    <span class="hero-tag">📊 Projection 15 ans</span>
+    <span class="hero-tag">💰 Aides 2026 intégrées</span>
+    <span class="hero-tag">🌍 Bilan CO₂</span>
+  </div>
+</div>
+
+<div class="calc-wrap">
+  <div class="progress-bar" id="progress-bar"></div>
+
+  <!-- ÉTAPE 1 : LOGEMENT -->
+  <div class="step on" id="step-0">
+    <div class="step-eyebrow">Étape 1 / 5</div>
+    <div class="step-title">Votre logement</div>
+    <p class="step-desc">Ces informations nous permettent d'estimer vos besoins en chauffage réels.</p>
+    <div class="input-row">
+      <div class="input-block">
+        <div class="ib-label">Type de logement</div>
+        <select class="ib-input" id="i-type" onchange="updateStep()">
+          <option value="maison">Maison individuelle</option>
+          <option value="appartement">Appartement</option>
+        </select>
+      </div>
+      <div class="input-block">
+        <div class="ib-label">Surface habitable (m²)</div>
+        <input class="ib-input" type="number" id="i-surface" value="100" min="20" max="400" onchange="updateStep()"/>
+        <div class="ib-hint">Surface chauffée, pas la surface au sol</div>
+      </div>
+    </div>
+    <div class="input-row">
+      <div class="input-block">
+        <div class="ib-label">Année de construction</div>
+        <select class="ib-input" id="i-annee" onchange="updateStep()">
+          <option value="avant1975">Avant 1975 (peu ou pas isolé)</option>
+          <option value="1975-2000" selected>1975–2000 (isolation partielle)</option>
+          <option value="2000-2012">2000–2012 (RT 2000/2005)</option>
+          <option value="apres2012">Après 2012 (RT 2012 / RE 2020)</option>
+        </select>
+      </div>
+      <div class="input-block">
+        <div class="ib-label">Zone climatique</div>
+        <select class="ib-input" id="i-zone" onchange="updateStep()">
+          <option value="H1" selected>H1 — Nord, Est, Centre (la plus froide)</option>
+          <option value="H2">H2 — Ouest, Sud-Ouest (intermédiaire)</option>
+          <option value="H3">H3 — Méditerranée (la plus douce)</option>
+        </select>
+        <div class="ib-hint">La zone influence fortement la consommation</div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-next" onclick="nextStep()">Suivant →</button>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 2 : CHAUFFAGE ACTUEL -->
+  <div class="step" id="step-1">
+    <div class="step-eyebrow">Étape 2 / 5</div>
+    <div class="step-title">Votre chauffage actuel</div>
+    <p class="step-desc">Quel système de chauffage avez-vous actuellement ? Cela sert à estimer votre consommation réelle et à calculer les aides "remplacement".</p>
+    <div class="opt-grid cols3" id="current-system-grid">
+      <div class="opt-card sel" data-cur="gaz-ancien" onclick="setCur('gaz-ancien',this)">
+        <span class="opt-emoji">🔵</span>
+        <div class="opt-title">Chaudière gaz ancienne</div>
+        <div class="opt-sub">Standard ou basse température (>10 ans)</div>
+      </div>
+      <div class="opt-card" data-cur="gaz-condensation" onclick="setCur('gaz-condensation',this)">
+        <span class="opt-emoji">🔷</span>
+        <div class="opt-title">Chaudière gaz condensation</div>
+        <div class="opt-sub">Récente, à condensation (<10 ans)</div>
+      </div>
+      <div class="opt-card" data-cur="fioul" onclick="setCur('fioul',this)">
+        <span class="opt-emoji">⛽</span>
+        <div class="opt-title">Chaudière fioul</div>
+        <div class="opt-sub">Fioul domestique, cuve</div>
+      </div>
+      <div class="opt-card" data-cur="elec-convecteur" onclick="setCur('elec-convecteur',this)">
+        <span class="opt-emoji">🔌</span>
+        <div class="opt-title">Convecteurs électriques</div>
+        <div class="opt-sub">"Grille-pains" ou panneaux rayonnants</div>
+      </div>
+      <div class="opt-card" data-cur="elec-inertie" onclick="setCur('elec-inertie',this)">
+        <span class="opt-emoji">♨️</span>
+        <div class="opt-title">Radiateurs à inertie</div>
+        <div class="opt-sub">Électrique à inertie (fonte, céramique)</div>
+      </div>
+      <div class="opt-card" data-cur="pac-existante" onclick="setCur('pac-existante',this)">
+        <span class="opt-emoji">❄️</span>
+        <div class="opt-title">Pompe à chaleur</div>
+        <div class="opt-sub">PAC air/eau ou géothermique existante</div>
+      </div>
+      <div class="opt-card" data-cur="bois" onclick="setCur('bois',this)">
+        <span class="opt-emoji">🪵</span>
+        <div class="opt-title">Poêle / insert bois</div>
+        <div class="opt-sub">Bûches ou granulés en appoint/principal</div>
+      </div>
+      <div class="opt-card" data-cur="neuf" onclick="setCur('neuf',this)">
+        <span class="opt-emoji">🏗️</span>
+        <div class="opt-title">Construction neuve</div>
+        <div class="opt-sub">Pas de système existant</div>
+      </div>
+      <div class="opt-card" data-cur="autre" onclick="setCur('autre',this)">
+        <span class="opt-emoji">❓</span>
+        <div class="opt-title">Autre / Je ne sais pas</div>
+        <div class="opt-sub">On estimera pour vous</div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-back" onclick="prevStep()">← Retour</button>
+      <button class="btn btn-next" onclick="nextStep()">Suivant →</button>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 3 : FACTURE ACTUELLE (optionnel) -->
+  <div class="step" id="step-2">
+    <div class="step-eyebrow">Étape 3 / 5</div>
+    <div class="step-title">Votre consommation actuelle</div>
+    <p class="step-desc">Si vous connaissez votre facture annuelle ou votre consommation, c'est le meilleur moyen d'avoir un résultat précis. Sinon, on estime pour vous.</p>
+    <div class="opt-grid cols2" style="margin-bottom:18px">
+      <div class="opt-card sel" data-conso="estimer" onclick="setConsoMode('estimer',this)">
+        <span class="opt-emoji">🤖</span>
+        <div class="opt-title">Estimer pour moi</div>
+        <div class="opt-sub">À partir de la surface, l'isolation et la zone climatique</div>
+      </div>
+      <div class="opt-card" data-conso="saisir" onclick="setConsoMode('saisir',this)">
+        <span class="opt-emoji">📊</span>
+        <div class="opt-title">Je connais ma consommation</div>
+        <div class="opt-sub">Saisir ma facture ou ma consommation en kWh</div>
+      </div>
+    </div>
+    <div id="conso-detail" style="display:none">
+      <div class="input-row">
+        <div class="input-block">
+          <div class="ib-label">Facture annuelle chauffage (€)</div>
+          <input class="ib-input" type="number" id="i-facture" placeholder="Ex : 1400" min="0" max="10000"/>
+          <div class="ib-hint">Tout compris (abonnement + consommation)</div>
+        </div>
+        <div class="input-block">
+          <div class="ib-label">OU consommation annuelle (kWh)</div>
+          <input class="ib-input" type="number" id="i-kwh" placeholder="Ex : 15000" min="0" max="100000"/>
+          <div class="ib-hint">Visible sur votre facture ou compteur Linky</div>
+        </div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-back" onclick="prevStep()">← Retour</button>
+      <button class="btn btn-next" onclick="nextStep()">Suivant →</button>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 4 : REVENUS (pour les aides) -->
+  <div class="step" id="step-3">
+    <div class="step-eyebrow">Étape 4 / 5</div>
+    <div class="step-title">Vos revenus fiscaux</div>
+    <p class="step-desc">Nécessaire pour calculer vos aides MaPrimeRénov' et CEE. Toutes les données restent dans votre navigateur — rien n'est envoyé.</p>
+    <div class="input-row">
+      <div class="input-block">
+        <div class="ib-label">Revenu fiscal de référence (€/an)</div>
+        <input class="ib-input" type="number" id="i-revenu" placeholder="Ex : 32000" min="0" max="500000"/>
+        <div class="ib-hint">Ligne 25 de votre avis d'imposition</div>
+      </div>
+      <div class="input-block">
+        <div class="ib-label">Nombre de personnes dans le foyer</div>
+        <select class="ib-input" id="i-personnes">
+          <option value="1">1 personne</option>
+          <option value="2" selected>2 personnes</option>
+          <option value="3">3 personnes</option>
+          <option value="4">4 personnes</option>
+          <option value="5">5 personnes ou plus</option>
+        </select>
+      </div>
+    </div>
+    <div style="background:var(--dim);border:1px solid var(--border);border-radius:12px;padding:16px;font-size:12px;color:var(--muted);line-height:1.7;margin-top:8px">
+      <strong style="color:var(--ink)">🔒 Confidentialité :</strong> Votre revenu sert uniquement à estimer votre catégorie MaPrimeRénov' (bleu, jaune, violet, rose). Le calcul est fait localement dans votre navigateur. Aucune donnée n'est transmise.
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-back" onclick="prevStep()">← Retour</button>
+      <button class="btn btn-next" onclick="nextStep()">Suivant →</button>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 5 : CONTRAINTES -->
+  <div class="step" id="step-4">
+    <div class="step-eyebrow">Étape 5 / 5</div>
+    <div class="step-title">Vos contraintes et préférences</div>
+    <p class="step-desc">Dernières questions pour affiner les recommandations.</p>
+    <div class="opt-grid cols2" style="margin-bottom:18px">
+      <div class="opt-card sel" data-ecs="oui" onclick="setECS('oui',this)">
+        <span class="opt-emoji">🚿</span>
+        <div class="opt-title">Eau chaude sanitaire incluse</div>
+        <div class="opt-sub">Le nouveau système doit aussi produire l'eau chaude</div>
+      </div>
+      <div class="opt-card" data-ecs="non" onclick="setECS('non',this)">
+        <span class="opt-emoji">🔥</span>
+        <div class="opt-title">Chauffage seul</div>
+        <div class="opt-sub">L'eau chaude est gérée séparément (cumulus, etc.)</div>
+      </div>
+    </div>
+    <div class="slider-block">
+      <div class="sl-head">
+        <span class="sl-label">Horizon de projection</span>
+        <span class="sl-value" id="v-horizon">15 ans</span>
+      </div>
+      <input type="range" id="i-horizon" min="5" max="25" value="15" oninput="g('v-horizon').textContent=this.value+' ans'"/>
+      <div class="sl-marks"><span>5 ans</span><span>10</span><span>15</span><span>20</span><span>25 ans</span></div>
+    </div>
+    <div class="slider-block">
+      <div class="sl-head">
+        <span class="sl-label">Scénario d'évolution des prix de l'énergie</span>
+        <span class="sl-value" id="v-scenario">Réaliste</span>
+      </div>
+      <input type="range" id="i-scenario" min="0" max="2" value="1" oninput="updateScenario()"/>
+      <div class="sl-marks"><span>Optimiste</span><span>Réaliste</span><span>Pessimiste</span></div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-back" onclick="prevStep()">← Retour</button>
+      <button class="btn btn-next" onclick="calculate()" style="background:var(--green)">🔍 Lancer la comparaison →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RÉSULTATS (cachés au départ) -->
+<div class="results-section" id="results" style="display:none">
+  <div class="winner-card" id="winner-card"></div>
+  <div class="compare-wrap">
+    <div class="compare-header">
+      <div class="compare-title">Comparaison détaillée</div>
+      <div class="compare-toggle">
+        <button class="ct-btn on" onclick="setView('annuel',this)">Coût annuel</button>
+        <button class="ct-btn" onclick="setView('total',this)">Coût total</button>
+        <button class="ct-btn" onclick="setView('co2',this)">CO₂</button>
+      </div>
+    </div>
+    <div class="compare-body"><table class="compare-table" id="compare-table"></table></div>
+  </div>
+  <div class="chart-card" id="chart-card"></div>
+  <div class="aides-card" id="aides-card" style="display:none"></div>
+  <div class="detail-grid" id="detail-grid"></div>
+  <div class="share-row">
+    <button class="share-btn primary" onclick="copyResults()">📋 Copier mes résultats</button>
+    <button class="share-btn" onclick="shareX()">𝕏 Partager</button>
+  </div>
+</div>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <h2 class="faq-h2">Questions fréquentes</h2>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Quel est le chauffage le moins cher en 2026 ?</div><div class="fa">En coût du kWh brut, le <strong>bois bûche</strong> est le moins cher (4,9 c€/kWh), suivi des <strong>granulés</strong> (7,5 c€/kWh) et du <strong>gaz naturel</strong> (10,4 c€/kWh). Mais la <strong>pompe à chaleur air/eau</strong>, grâce à son COP de 3, ramène le coût effectif à environ 6,5 c€/kWh. En coût total sur 15 ans (investissement + énergie + entretien - aides), la PAC air/eau et la chaudière à granulés sont souvent les plus rentables pour une maison individuelle. Sources : ADEME, CRE, Propellet, Selectra (données avril 2026).</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Combien coûte une pompe à chaleur air/eau en 2026 ?</div><div class="fa">Le prix moyen d'une PAC air/eau installée est de <strong>11 000 à 15 000€</strong> selon la puissance et le logement. Avec <strong>MaPrimeRénov'</strong> (2 000 à 5 000€), la <strong>Prime CEE/Coup de Pouce Chauffage</strong> (2 500 à 4 500€) et la <strong>TVA à 5,5%</strong>, le reste à charge peut descendre à <strong>4 000-8 000€</strong>. L'amortissement est de 5 à 9 ans selon le système remplacé. Sources : ANAH, Service-Public.fr, barèmes février 2026.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Vaut-il mieux garder sa chaudière gaz ou passer à la pompe à chaleur ?</div><div class="fa">Si votre chaudière gaz a <strong>moins de 10 ans et est à condensation</strong>, la garder est souvent plus rentable à court terme (pas d'investissement). Si elle a <strong>plus de 15 ans ou est basse température</strong>, le remplacement par une PAC est rentable en 5-8 ans grâce aux aides 2026. Le gaz naturel reste à ~10,4 c€/kWh, la PAC à ~6,5 c€/kWh effectif. Le calculateur ci-dessus vous donne le seuil de rentabilité précis pour votre situation.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Quelles aides pour changer de chauffage en 2026 ?</div><div class="fa">Les principales aides en 2026 : <strong>MaPrimeRénov'</strong> (2 000 à 11 000€ selon revenus et système), <strong>Prime CEE / Coup de Pouce Chauffage</strong> (2 500 à 4 500€ pour remplacement chaudière fossile), <strong>TVA réduite à 5,5%</strong>, <strong>Éco-PTZ</strong> (prêt à taux zéro jusqu'à 50 000€ sur 20 ans), et <strong>aides locales</strong> variables. Ces aides sont cumulables. Depuis janvier 2026, les PAC hybrides ne sont plus éligibles au Coup de Pouce. Sources : ANAH février 2026, Service-Public.fr.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Quelle est la durée de vie d'une pompe à chaleur ?</div><div class="fa">La durée de vie moyenne d'une PAC air/eau est de <strong>12 à 17 ans</strong> selon les sources (12 ans ADEME, 15-17 ans syndicats fabricants). En pratique, après 10 ans, les réparations du compresseur peuvent être coûteuses (1 500-3 000€). Une chaudière gaz à condensation dure 15-20 ans, une chaudière bois/granulés 20-25 ans. Le simulateur intègre ces durées de vie pour calculer le coût réel sur la période choisie.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Peut-on installer une pompe à chaleur en appartement ?</div><div class="fa"><strong>PAC air/air (climatisation réversible)</strong> : oui mais nécessite l'accord de la copropriété pour le groupe extérieur. <strong>PAC air/eau</strong> : très difficile en appartement (bruit, encombrement, réseau hydraulique). En copropriété, les solutions les plus fréquentes sont le raccordement au réseau de chaleur, la chaudière gaz collective, ou les radiateurs électriques à inertie. En individuel, les granulés et le bois ne sont généralement pas possibles en appartement (stockage, conduit de fumée).</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Le fioul est-il interdit en 2026 ?</div><div class="fa">Depuis le 1er juillet 2022, l'installation de <strong>nouvelles chaudières fioul</strong> est interdite dans les logements neufs et en remplacement dans l'existant. Les chaudières fioul existantes peuvent continuer à fonctionner et être entretenues, mais ne peuvent plus être remplacées par du fioul. Le biofioul (F30) est autorisé comme alternative. En pratique, les aides massives (MaPrimeRénov', Coup de Pouce) rendent le remplacement économiquement très intéressant. Source : Décret n°2022-8 du 5 janvier 2022.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Comment sont calculés les résultats ?</div><div class="fa">Le simulateur utilise les <strong>prix officiels 2026</strong> (CRE pour l'électricité/gaz, SDES pour le fioul, Propellet pour les granulés, ADEME pour le bois). Les rendements sont basés sur les données ADEME : COP moyen PAC air/eau = 3, rendement chaudière gaz condensation = 97%, etc. Les aides sont calculées selon les barèmes ANAH février 2026. Les projections d'évolution des prix utilisent 3 scénarios (optimiste, réaliste, pessimiste) basés sur les tendances historiques 2011-2026. <strong>Les résultats sont indicatifs</strong> et ne remplacent pas un audit thermique professionnel.</div></div>
+</section>
+
+<p class="disclaimer">⚠️ Simulation indicative basée sur les données ADEME, CRE, ANAH et Propellet (avril 2026). Les résultats dépendent de nombreux facteurs (isolation réelle, habitudes, météo, entretien). Consultez un professionnel RGE ou un conseiller France Rénov' pour un dimensionnement précis. Calculamatix ne vend aucun équipement et n'est affilié à aucun fabricant ni installateur.</p>
+<script>
+// ════════════════════════════════════════════════════════
+// DONNÉES DE RÉFÉRENCE — Sources : ADEME, CRE, ANAH, Propellet, Selectra, SDES — Avril 2026
+// ════════════════════════════════════════════════════════
+var SYSTEMES={
+  "pac-air-eau":{nom:"Pompe à chaleur air/eau",emoji:"❄️",type:"renouvelable",
+    prixKwh:0.194, rendement:3.0, // COP moyen annuel ADEME
+    investMin:11000,investMax:15000,entretienAn:200,dureeVie:15,
+    co2:0.052, // kg CO₂/kWh (électricité FR décarboné)
+    mpr:{bleu:5000,jaune:4000,violet:3000,rose:2000},cee:4000,coupDePouce:true,
+    pros:["Coût kWh le plus bas grâce au COP","Éligible à toutes les aides 2026","Peut chauffer ET rafraîchir"],
+    cons:["Investissement initial élevé","Bruit du groupe extérieur","Performance réduite par grand froid (-10°C)"]},
+  "pac-geothermie":{nom:"PAC géothermique",emoji:"🌍",type:"renouvelable",
+    prixKwh:0.194, rendement:4.0, // SCOP moyen
+    investMin:18000,investMax:28000,entretienAn:250,dureeVie:20,
+    co2:0.052,
+    mpr:{bleu:11000,jaune:9000,violet:6000,rose:4000},cee:4500,coupDePouce:true,
+    pros:["COP le plus élevé (4.0)","Stable toute l'année (pas sensible au froid)","Durée de vie 20+ ans"],
+    cons:["Investissement très élevé","Nécessite forage ou capteurs au sol","Pas possible partout (terrain)"]},
+  "gaz-condensation":{nom:"Chaudière gaz condensation",emoji:"🔵",type:"fossile",
+    prixKwh:0.1042, rendement:0.97, // rendement 97% condensation
+    investMin:4000,investMax:7000,entretienAn:180,dureeVie:18,
+    co2:0.227, // kg CO₂/kWh gaz naturel
+    mpr:{bleu:0,jaune:0,violet:0,rose:0},cee:0,coupDePouce:false,
+    pros:["Investissement modéré","Technologie éprouvée","Confort thermique régulier"],
+    cons:["Énergie fossile (CO₂)","Prix du gaz volatile","Plus aucune aide depuis 2023","Interdite en neuf depuis 2022"]},
+  "gaz-ancien":{nom:"Chaudière gaz ancienne",emoji:"🔵",type:"fossile",
+    prixKwh:0.1042, rendement:0.82,
+    investMin:0,investMax:0,entretienAn:180,dureeVie:0,
+    co2:0.227,
+    mpr:{bleu:0,jaune:0,violet:0,rose:0},cee:0,coupDePouce:false,
+    pros:["Pas d'investissement (existant)"],
+    cons:["Rendement médiocre (82%)","Facture élevée","Remplacement à prévoir"]},
+  "granules":{nom:"Chaudière à granulés",emoji:"🪵",type:"renouvelable",
+    prixKwh:0.075, rendement:0.92,
+    investMin:12000,investMax:18000,entretienAn:300,dureeVie:22,
+    co2:0.030,
+    mpr:{bleu:7000,jaune:5500,violet:4000,rose:3000},cee:4000,coupDePouce:true,
+    pros:["kWh le moins cher du marché","Énergie renouvelable locale","Éligible à toutes les aides"],
+    cons:["Stockage silo obligatoire","Entretien régulier (cendrier, ramonage)","Panne possible du système d'alimentation"]},
+  "poele-granules":{nom:"Poêle à granulés",emoji:"🔥",type:"renouvelable",
+    prixKwh:0.075, rendement:0.87,
+    investMin:3500,investMax:6000,entretienAn:150,dureeVie:18,
+    co2:0.030,
+    mpr:{bleu:2500,jaune:2000,violet:1500,rose:1000},cee:800,coupDePouce:false,
+    pros:["Investissement modéré","kWh très compétitif","Chauffage d'appoint ou principal (< 100 m²)"],
+    cons:["Ne chauffe qu'une zone ouverte","Bruit du ventilateur","Rechargement manuel du réservoir"]},
+  "bois-buche":{nom:"Poêle / insert bois bûche",emoji:"🪵",type:"renouvelable",
+    prixKwh:0.049, rendement:0.75,
+    investMin:2500,investMax:5000,entretienAn:120,dureeVie:25,
+    co2:0.030,
+    mpr:{bleu:2500,jaune:2000,violet:1500,rose:1000},cee:800,coupDePouce:false,
+    pros:["kWh le moins cher de tous","Ambiance et chaleur rayonnante","Très longue durée de vie"],
+    cons:["Manutention (bûches lourdes)","Ne chauffe qu'une pièce/zone","Stockage bois nécessaire"]},
+  "fioul":{nom:"Chaudière fioul (existante)",emoji:"⛽",type:"fossile",
+    prixKwh:0.1169, rendement:0.82,
+    investMin:0,investMax:0,entretienAn:200,dureeVie:0,
+    co2:0.324,
+    mpr:{bleu:0,jaune:0,violet:0,rose:0},cee:0,coupDePouce:false,
+    pros:["Pas d'investissement (existant)"],
+    cons:["Le plus polluant","Installation interdite","Prix volatile","Cuve encombrante"]},
+  "elec-inertie":{nom:"Radiateurs électriques à inertie",emoji:"♨️",type:"electrique",
+    prixKwh:0.194, rendement:1.0,
+    investMin:3000,investMax:6000,entretienAn:0,dureeVie:25,
+    co2:0.052,
+    mpr:{bleu:0,jaune:0,violet:0,rose:0},cee:0,coupDePouce:false,
+    pros:["Aucun entretien","Installation simple","Pas de conduit de fumée"],
+    cons:["kWh le plus cher","Facture très élevée en grande surface","Confort moyen en grand logement"]},
+  "elec-convecteur":{nom:"Convecteurs électriques",emoji:"🔌",type:"electrique",
+    prixKwh:0.194, rendement:1.0,
+    investMin:0,investMax:0,entretienAn:0,dureeVie:0,
+    co2:0.052,
+    mpr:{bleu:0,jaune:0,violet:0,rose:0},cee:0,coupDePouce:false,
+    pros:["Pas d'investissement (existant)"],
+    cons:["Très énergivore","Confort médiocre (air sec)","Facture astronomique en grand logement"]}
+};
+
+// Besoins en kWh/m²/an selon isolation et zone climatique (source ADEME, DPE simplifié)
+var BESOINS={
+  "avant1975":  {H1:220,H2:180,H3:130},
+  "1975-2000":  {H1:150,H2:120,H3:90},
+  "2000-2012":  {H1:100,H2:80,H3:60},
+  "apres2012":  {H1:60,H2:50,H3:40}
+};
+
+// Hausse annuelle estimée des prix par énergie (% / an)
+var HAUSSE={
+  optimiste:{elec:1.5,gaz:1.0,fioul:1.5,bois:1.0,granules:1.0},
+  realiste: {elec:3.0,gaz:2.5,fioul:3.0,bois:1.5,granules:1.5},
+  pessimiste:{elec:5.0,gaz:4.0,fioul:5.0,bois:2.5,granules:2.5}
+};
+
+// Seuils MaPrimeRénov' 2026 (revenu fiscal de référence, Île-de-France)
+var MPR_SEUILS={
+  1:{bleu:22461,jaune:27343,violet:38184,rose:999999},
+  2:{bleu:32967,jaune:40130,violet:56130,rose:999999},
+  3:{bleu:39591,jaune:48197,violet:67585,rose:999999},
+  4:{bleu:46226,jaune:56277,violet:79041,rose:999999},
+  5:{bleu:52886,jaune:64380,violet:90496,rose:999999}
+};
+
+// ════════════════════════════════════════════════════════
+// ÉTAT
+// ════════════════════════════════════════════════════════
+var state={step:0,curSystem:"gaz-ancien",consoMode:"estimer",ecs:"oui",view:"annuel"};
+var totalSteps=5;
+
+function g(id){return document.getElementById(id);}
+function fmt(n){return Math.round(n).toLocaleString("fr-FR");}
+
+// ═══ NAVIGATION ═══
+function renderProgress(){
+  var html="";
+  for(var i=0;i<totalSteps;i++){
+    var cls="prog-step";
+    if(i<state.step) cls+=" done";
+    else if(i===state.step) cls+=" cur";
+    html+='<div class="'+cls+'"></div>';
+  }
+  html+='<span class="prog-label">'+(state.step+1)+'/'+totalSteps+'</span>';
+  g("progress-bar").innerHTML=html;
+}
+
+function showStep(n){
+  document.querySelectorAll(".step").forEach(function(s){s.classList.remove("on")});
+  var el=g("step-"+n);
+  if(el) el.classList.add("on");
+  state.step=n;
+  renderProgress();
+  window.scrollTo({top:document.querySelector(".calc-wrap").offsetTop-80,behavior:"smooth"});
+}
+
+function nextStep(){
+  if(state.step<totalSteps-1) showStep(state.step+1);
+}
+function prevStep(){
+  if(state.step>0) showStep(state.step-1);
+}
+
+function setCur(val,el){
+  state.curSystem=val;
+  document.querySelectorAll("#current-system-grid .opt-card").forEach(function(c){c.classList.remove("sel")});
+  el.classList.add("sel");
+}
+
+function setConsoMode(val,el){
+  state.consoMode=val;
+  document.querySelectorAll("[data-conso]").forEach(function(c){c.classList.remove("sel")});
+  el.classList.add("sel");
+  g("conso-detail").style.display=val==="saisir"?"block":"none";
+}
+
+function setECS(val,el){
+  state.ecs=val;
+  document.querySelectorAll("[data-ecs]").forEach(function(c){c.classList.remove("sel")});
+  el.classList.add("sel");
+}
+
+function updateStep(){}
+
+function updateScenario(){
+  var v=+g("i-scenario").value;
+  var labels=["Optimiste","Réaliste","Pessimiste"];
+  g("v-scenario").textContent=labels[v];
+}
+
+// ═══ CALCUL PRINCIPAL ═══
+function calculate(){
+  var surface=+g("i-surface").value||100;
+  var annee=g("i-annee").value;
+  var zone=g("i-zone").value;
+  var horizon=+g("i-horizon").value||15;
+  var scenarioIdx=+g("i-scenario").value;
+  var scenarios=["optimiste","realiste","pessimiste"];
+  var scenario=scenarios[scenarioIdx];
+  var revenu=+g("i-revenu").value||30000;
+  var personnes=+g("i-personnes").value||2;
+  var ecsInclu=state.ecs==="oui";
+
+  // 1. Calculer les besoins en kWh
+  var besoinBase=BESOINS[annee][zone]*surface;
+  if(ecsInclu) besoinBase*=1.25; // +25% pour ECS
+
+  // Si l'utilisateur a saisi sa conso
+  if(state.consoMode==="saisir"){
+    var facture=+g("i-facture").value;
+    var kwhSaisi=+g("i-kwh").value;
+    if(kwhSaisi>0) besoinBase=kwhSaisi;
+    else if(facture>0){
+      var curSys=SYSTEMES[state.curSystem]||SYSTEMES["gaz-ancien"];
+      besoinBase=Math.round(facture/(curSys.prixKwh/curSys.rendement));
+    }
+  }
+
+  // 2. Déterminer la catégorie MaPrimeRénov'
+  var p=Math.min(personnes,5);
+  var mprCat="rose";
+  if(revenu<=MPR_SEUILS[p].bleu) mprCat="bleu";
+  else if(revenu<=MPR_SEUILS[p].jaune) mprCat="jaune";
+  else if(revenu<=MPR_SEUILS[p].violet) mprCat="violet";
+
+  // 3. Calculer pour chaque système
+  var results=[];
+  var sysKeys=["pac-air-eau","pac-geothermie","gaz-condensation","granules","poele-granules","bois-buche","elec-inertie"];
+  // Ajouter le système actuel s'il n'est pas déjà dans la liste
+  if(state.curSystem && SYSTEMES[state.curSystem] && sysKeys.indexOf(state.curSystem)<0){
+    sysKeys.push(state.curSystem);
+  }
+
+  sysKeys.forEach(function(key){
+    var sys=SYSTEMES[key];
+    if(!sys) return;
+    var invest=(sys.investMin+sys.investMax)/2;
+
+    // Aides
+    var mprAmount=sys.mpr[mprCat]||0;
+    var ceeAmount=sys.cee||0;
+    // Coup de Pouce seulement si remplacement chaudière fossile
+    var isFossilReplace=["gaz-ancien","fioul","gaz-condensation"].indexOf(state.curSystem)>=0;
+    if(!sys.coupDePouce || !isFossilReplace) {
+      // Pas de coup de pouce mais CEE standard
+    }
+    var totalAides=mprAmount+ceeAmount;
+    if(totalAides>invest*0.9) totalAides=Math.round(invest*0.9); // Écrêtement 90%
+    var investNet=Math.max(0,invest-totalAides);
+
+    // Consommation annuelle en kWh énergie finale
+    var consoAn=besoinBase/sys.rendement;
+
+    // Coût énergie année 1
+    var coutEnergieAn1=consoAn*sys.prixKwh;
+
+    // Déterminer la catégorie hausse
+    var hausseCat;
+    if(sys.type==="electrique"||key.indexOf("pac")>=0) hausseCat="elec";
+    else if(key.indexOf("gaz")>=0) hausseCat="gaz";
+    else if(key==="fioul") hausseCat="fioul";
+    else if(key.indexOf("granule")>=0||key.indexOf("poele-granule")>=0) hausseCat="granules";
+    else hausseCat="bois";
+
+    var hausse=HAUSSE[scenario][hausseCat]/100;
+
+    // Projection sur N ans
+    var coutEnergieTotal=0;
+    var anneesData=[];
+    for(var y=1;y<=horizon;y++){
+      var coutY=coutEnergieAn1*Math.pow(1+hausse,y-1);
+      coutEnergieTotal+=coutY;
+      anneesData.push({annee:y,coutCumule:investNet+coutEnergieTotal+sys.entretienAn*y});
+    }
+
+    var coutEntretienTotal=sys.entretienAn*horizon;
+    var coutTotal=investNet+coutEnergieTotal+coutEntretienTotal;
+
+    // CO₂
+    var co2An=consoAn*sys.co2;
+
+    results.push({
+      key:key,sys:sys,invest:invest,totalAides:totalAides,investNet:investNet,
+      consoAn:consoAn,coutEnergieAn1:coutEnergieAn1,coutEnergieTotal:coutEnergieTotal,
+      coutEntretienTotal:coutEntretienTotal,coutTotal:coutTotal,
+      co2An:co2An,co2Total:co2An*horizon,
+      anneesData:anneesData,mprCat:mprCat
+    });
+  });
+
+  // Tri par coût total
+  results.sort(function(a,b){return a.coutTotal-b.coutTotal});
+
+  // Stocker
+  window._results=results;
+  window._horizon=horizon;
+  window._besoin=besoinBase;
+
+  // Afficher
+  renderResults(results,horizon,besoinBase);
+}
+
+// ═══ RENDU DES RÉSULTATS ═══
+function renderResults(results,horizon,besoin){
+  // Cacher le calculateur, montrer les résultats
+  g("results").style.display="block";
+  document.querySelector(".calc-wrap").style.display="none";
+
+  var best=results[0];
+  var worst=results[results.length-1];
+
+  // Winner card
+  var economie=worst.coutTotal-best.coutTotal;
+  g("winner-card").innerHTML=
+    '<div class="wc-eyebrow">🏆 Le plus rentable sur '+horizon+' ans</div>'+
+    '<div class="wc-title">'+best.sys.emoji+' '+best.sys.nom+'</div>'+
+    '<div class="wc-sub">Sur '+horizon+' ans, c\'est la solution la plus économique pour votre logement — '+fmt(economie)+' € d\'économies par rapport à la solution la plus chère ('+worst.sys.nom+').</div>'+
+    '<div class="wc-metrics">'+
+      '<div class="wc-metric"><span class="wm-val">'+fmt(best.coutTotal)+' €</span><span class="wm-label">Coût total '+horizon+' ans</span></div>'+
+      '<div class="wc-metric"><span class="wm-val">'+fmt(best.coutEnergieAn1)+' €</span><span class="wm-label">Facture an 1</span></div>'+
+      '<div class="wc-metric"><span class="wm-val">'+fmt(best.investNet)+' €</span><span class="wm-label">Invest. net (après aides)</span></div>'+
+      '<div class="wc-metric"><span class="wm-val">'+fmt(best.co2An)+' kg</span><span class="wm-label">CO₂ / an</span></div>'+
+    '</div>';
+
+  // Table
+  renderTable(results,"annuel");
+
+  // Graphique
+  renderChart(results,horizon);
+
+  // Aides
+  if(best.totalAides>0){
+    g("aides-card").style.display="block";
+    var aHtml='<div class="aides-title">💰 Vos aides estimées pour '+best.sys.nom+'</div>'+
+      '<div class="aides-grid">'+
+        '<div class="aide-item"><div class="ai-name">MaPrimeRénov\' ('+best.mprCat+')</div><div class="ai-amount">'+fmt(best.sys.mpr[best.mprCat])+' €</div><div class="ai-note">Selon votre revenu fiscal et composition du foyer</div></div>'+
+        '<div class="aide-item"><div class="ai-name">Prime CEE'+(best.sys.coupDePouce?" / Coup de Pouce":"")+'</div><div class="ai-amount">'+fmt(best.sys.cee)+' €</div><div class="ai-note">'+(best.sys.coupDePouce?"Bonifiée car remplacement chaudière fossile":"Prime CEE standard")+'</div></div>'+
+        '<div class="aide-item"><div class="ai-name">TVA réduite 5,5%</div><div class="ai-amount">incluse</div><div class="ai-note">Appliquée automatiquement par l\'installateur RGE</div></div>'+
+        '<div class="aide-item"><div class="ai-name">Éco-PTZ</div><div class="ai-amount">jusqu\'à 50 000 €</div><div class="ai-note">Prêt à taux zéro sur 20 ans, sous conditions</div></div>'+
+      '</div>';
+    g("aides-card").innerHTML=aHtml;
+  }
+
+  // Détails des 3 meilleurs
+  var dHtml="";
+  results.slice(0,4).forEach(function(r){
+    dHtml+='<div class="detail-card">'+
+      '<div class="dc-title">'+r.sys.emoji+' '+r.sys.nom+'</div>'+
+      '<div class="dc-row"><span class="dc-label">Investissement brut</span><span class="dc-val">'+fmt(r.invest)+' €</span></div>'+
+      '<div class="dc-row"><span class="dc-label">Aides déduites</span><span class="dc-val val-good">- '+fmt(r.totalAides)+' €</span></div>'+
+      '<div class="dc-row"><span class="dc-label">Investissement net</span><span class="dc-val">'+fmt(r.investNet)+' €</span></div>'+
+      '<div class="dc-row"><span class="dc-label">Conso annuelle</span><span class="dc-val">'+fmt(r.consoAn)+' kWh</span></div>'+
+      '<div class="dc-row"><span class="dc-label">Facture énergie an 1</span><span class="dc-val">'+fmt(r.coutEnergieAn1)+' €</span></div>'+
+      '<div class="dc-row"><span class="dc-label">Entretien / an</span><span class="dc-val">'+fmt(r.sys.entretienAn)+' €</span></div>'+
+      '<div class="dc-row"><span class="dc-label">Coût total '+horizon+' ans</span><span class="dc-val" style="font-size:16px;color:var(--fire)">'+fmt(r.coutTotal)+' €</span></div>'+
+      '<div class="dc-row"><span class="dc-label">CO₂ / an</span><span class="dc-val">'+fmt(r.co2An)+' kg</span></div>'+
+      '<div class="dc-row"><span class="dc-label">Durée de vie</span><span class="dc-val">'+r.sys.dureeVie+' ans</span></div>'+
+    '</div>';
+  });
+  g("detail-grid").innerHTML=dHtml;
+
+  window.scrollTo({top:g("results").offsetTop-40,behavior:"smooth"});
+}
+
+function renderTable(results,view){
+  state.view=view;
+  var horizon=window._horizon;
+  var html='<thead><tr><th>Système</th>';
+  if(view==="annuel") html+='<th>Facture an 1</th><th>Entretien/an</th><th>Invest. net</th><th>Coût total '+horizon+' ans</th>';
+  else if(view==="total") html+='<th>Invest. brut</th><th>Aides</th><th>Invest. net</th><th>Énergie '+horizon+' ans</th><th>Total</th>';
+  else html+='<th>CO₂/an</th><th>CO₂ '+horizon+' ans</th><th>Type énergie</th>';
+  html+='</tr></thead><tbody>';
+
+  var bestTotal=results[0].coutTotal;
+  results.forEach(function(r,i){
+    var isBest=i===0;
+    html+='<tr class="'+(isBest?"best":"")+'"><td><div class="sys-name"><span class="sys-emoji">'+r.sys.emoji+'</span>'+r.sys.nom+'</div></td>';
+    if(view==="annuel"){
+      html+='<td>'+fmt(r.coutEnergieAn1)+' €</td>';
+      html+='<td>'+fmt(r.sys.entretienAn)+' €</td>';
+      html+='<td>'+fmt(r.investNet)+' €</td>';
+      var cls=isBest?"val-good":(r.coutTotal>bestTotal*1.5?"val-bad":"val-mid");
+      html+='<td class="'+cls+'">'+fmt(r.coutTotal)+' €</td>';
+    } else if(view==="total"){
+      html+='<td>'+fmt(r.invest)+' €</td>';
+      html+='<td class="val-good">-'+fmt(r.totalAides)+' €</td>';
+      html+='<td>'+fmt(r.investNet)+' €</td>';
+      html+='<td>'+fmt(r.coutEnergieTotal)+' €</td>';
+      var cls2=isBest?"val-good":"";
+      html+='<td class="'+cls2+'">'+fmt(r.coutTotal)+' €</td>';
+    } else {
+      var co2cls=r.co2An<200?"val-good":(r.co2An>1000?"val-bad":"val-mid");
+      html+='<td class="'+co2cls+'">'+fmt(r.co2An)+' kg</td>';
+      html+='<td>'+fmt(r.co2Total)+' kg</td>';
+      var typeLabel=r.sys.type==="renouvelable"?"🌿 Renouvelable":(r.sys.type==="fossile"?"⛽ Fossile":"⚡ Électrique");
+      html+='<td>'+typeLabel+'</td>';
+    }
+    html+='</tr>';
+  });
+  html+='</tbody>';
+  g("compare-table").innerHTML=html;
+}
+
+function setView(v,el){
+  document.querySelectorAll(".ct-btn").forEach(function(b){b.classList.remove("on")});
+  el.classList.add("on");
+  renderTable(window._results,v);
+}
+
+// ═══ GRAPHIQUE SVG ═══
+function renderChart(results,horizon){
+  var top4=results.slice(0,4);
+  var colors=["#e85d2a","#2563eb","#16a34a","#7c3aed"];
+  var maxVal=0;
+  top4.forEach(function(r){
+    r.anneesData.forEach(function(d){if(d.coutCumule>maxVal) maxVal=d.coutCumule;});
+  });
+  maxVal=Math.ceil(maxVal/10000)*10000;
+
+  var W=700,H=320,PAD_L=65,PAD_R=20,PAD_T=20,PAD_B=40;
+  var chartW=W-PAD_L-PAD_R,chartH=H-PAD_T-PAD_B;
+
+  var svg='<svg class="chart-svg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">';
+  // Grille
+  for(var g2=0;g2<=4;g2++){
+    var y2=PAD_T+(chartH/4)*g2;
+    var val2=maxVal-maxVal/4*g2;
+    svg+='<line x1="'+PAD_L+'" y1="'+y2+'" x2="'+(W-PAD_R)+'" y2="'+y2+'" stroke="#e7e5e4" stroke-width="1"/>';
+    svg+='<text x="'+(PAD_L-8)+'" y="'+(y2+4)+'" text-anchor="end" font-family="JetBrains Mono" font-size="10" fill="#78716c">'+fmt(val2)+'€</text>';
+  }
+  // Axe X
+  for(var x2=0;x2<=horizon;x2+=Math.max(1,Math.floor(horizon/6))){
+    var xp=PAD_L+(chartW/horizon)*x2;
+    svg+='<text x="'+xp+'" y="'+(H-8)+'" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#78716c">An '+x2+'</text>';
+  }
+  // Courbes
+  top4.forEach(function(r,idx){
+    var points=[];
+    r.anneesData.forEach(function(d){
+      var x3=PAD_L+(chartW/horizon)*d.annee;
+      var y3=PAD_T+chartH*(1-d.coutCumule/maxVal);
+      points.push(x3+","+y3);
+    });
+    // Point de départ (investissement net)
+    var x0=PAD_L;
+    var y0=PAD_T+chartH*(1-r.investNet/maxVal);
+    svg+='<polyline points="'+x0+','+y0+' '+points.join(" ")+'" stroke="'+colors[idx]+'" stroke-width="2.5" fill="none" stroke-linejoin="round"/>';
+    // Label fin
+    var lastPt=points[points.length-1].split(",");
+    svg+='<circle cx="'+lastPt[0]+'" cy="'+lastPt[1]+'" r="4" fill="'+colors[idx]+'"/>';
+    svg+='<text x="'+(+lastPt[0]+6)+'" y="'+(+lastPt[1]+4)+'" font-family="DM Sans" font-size="10" font-weight="700" fill="'+colors[idx]+'">'+fmt(r.coutTotal)+'€</text>';
+  });
+  svg+='</svg>';
+
+  // Légende
+  var legend='<div class="chart-legend">';
+  top4.forEach(function(r,idx){
+    legend+='<div class="legend-item"><div class="legend-dot" style="background:'+colors[idx]+'"></div>'+r.sys.emoji+' '+r.sys.nom+'</div>';
+  });
+  legend+='</div>';
+
+  g("chart-card").innerHTML=
+    '<div class="chart-title">Coût cumulé sur '+horizon+' ans</div>'+
+    '<div class="chart-sub">Investissement net (après aides) + énergie + entretien, scénario d\'évolution des prix inclus</div>'+
+    svg+legend;
+}
+
+// ═══ PARTAGE ═══
+function copyResults(){
+  var r=window._results;
+  if(!r||!r.length) return;
+  var best=r[0];
+  var h=window._horizon;
+  var txt="🔥 MON COMPARATIF CHAUFFAGE — Calculamatix\n\n";
+  txt+="🏆 Le plus rentable sur "+h+" ans : "+best.sys.nom+"\n";
+  txt+="💰 Coût total : "+fmt(best.coutTotal)+" €\n";
+  txt+="📊 Facture an 1 : "+fmt(best.coutEnergieAn1)+" €\n";
+  txt+="🌍 CO₂/an : "+fmt(best.co2An)+" kg\n\n";
+  txt+="Comparez votre chauffage → calculamatix.com/chauffage";
+  if(navigator.clipboard) navigator.clipboard.writeText(txt).then(function(){alert("Résultats copiés !")}).catch(function(){prompt("Copiez :",txt)});
+  else prompt("Copiez :",txt);
+}
+
+function shareX(){
+  var r=window._results;
+  if(!r||!r.length) return;
+  var best=r[0];
+  var txt=encodeURIComponent("J'ai comparé 10 modes de chauffage sur "+window._horizon+" ans — le plus rentable : "+best.sys.nom+" ("+fmt(best.coutTotal)+"€ sur la période). Faites le test → calculamatix.com/chauffage");
+  window.open("https://twitter.com/intent/tweet?text="+txt,"_blank");
+}
+
+function tFaq(el){el.classList.toggle("open");el.nextElementSibling.classList.toggle("open")}
+
+// Init
+renderProgress();
+</script>
+<script src="/suggestions.js"></script>
+<script>try{renderFooter("chauffage");}catch(e){}</script>
+</body>
+</html>
