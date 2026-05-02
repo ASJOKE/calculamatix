@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Combien coûte un enfant de 0 à 18 ans ? (Spoiler : 180 000€) — Simulateur 2026</title>
+<meta name="description" content="147 000 à 250 000€ : c'est le vrai coût d'un enfant en France. Calculez le montant exact selon VOTRE situation (garde, école, activités) avec aides CAF déduites. Résultat en 2 min. Sources INSEE &amp; UNAF."/>
+<link rel="canonical" href="https://calculamatix.com/cout-enfant"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Combien coûte un enfant de 0 à 18 ans ?","acceptedAnswer":{"@type":"Answer","text":"En France 2026, entre 140 000 et 260 000€ selon le niveau de vie. Soit 650 à 1 200€/mois. Source DREES 2024."}},{"@type":"Question","name":"Quel est le coût mensuel d'un enfant ?","acceptedAnswer":{"@type":"Answer","text":"630-820€ de 0 à 3 ans, 400-600€ de 3 à 12 ans, 600-900€ de 12 à 18 ans. Source DREES 2024."}},{"@type":"Question","name":"Quelles aides la CAF verse-t-elle ?","acceptedAnswer":{"@type":"Answer","text":"Prime naissance 1 046€, PAJE 184€/mois jusqu'à 3 ans, CMG jusqu'à 85% du salaire de la nounou, allocations familiales 148€/mois dès 2 enfants."}},{"@type":"Question","name":"Un enfant coûte-t-il plus cher à Paris ?","acceptedAnswer":{"@type":"Answer","text":"Oui, 25 à 30% de plus. Logement, gardes et activités sont significativement plus chers en Île-de-France."}}]}</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fef9f3;--bg2:#fff7ed;--card:#ffffff;--border:#f0e6d6;--text:#2d1f0e;--muted:#9b8a75;--dim:#f5ede0;
+--orange:#f97316;--yellow:#eab308;--teal:#16a34a;--purple:#a855f7;--pink:#ec4899;}
+body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;min-height:100vh;font-size:15px}
+body::before{display:none}
+nav{position:relative;z-index:10;max-width:1100px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:"Outfit",sans-serif;font-weight:800;font-size:18px;text-decoration:none;color:var(--text)}
+.logo em{font-style:normal;color:var(--orange)}
+.back{font-size:13px;color:var(--muted);text-decoration:none}.back:hover{color:var(--text)}
+.hero{position:relative;z-index:10;max-width:1100px;margin:20px auto 0;padding:0 24px 50px;display:grid;grid-template-columns:1fr 400px;gap:50px;align-items:center}
+.eyebrow{font-size:11px;font-family:"JetBrains Mono",monospace;color:var(--orange);text-transform:uppercase;letter-spacing:3px;margin-bottom:14px}
+h1{font-family:"Outfit",sans-serif;font-weight:800;font-size:clamp(28px,4.5vw,50px);letter-spacing:-1.5px;line-height:1.08;margin-bottom:14px}
+h1 .accent{color:var(--orange)}
+.hero-desc{font-size:15px;color:var(--muted);line-height:1.85;margin-bottom:22px;max-width:480px}
+.tags{display:flex;gap:8px;flex-wrap:wrap}
+.tag{font-size:11px;font-family:"JetBrains Mono",monospace;padding:5px 12px;border-radius:100px;background:var(--dim);color:var(--muted);border:1px solid var(--border)}
+.shock{background:linear-gradient(135deg,var(--orange),#e8520a);border-radius:24px;padding:28px;color:#fff;position:relative;overflow:hidden}
+.shock::after{content:"👶";position:absolute;right:-5px;bottom:-15px;font-size:90px;opacity:.18;transform:rotate(-10deg);pointer-events:none}
+.shock-lbl{font-size:10px;font-family:"JetBrains Mono",monospace;opacity:.7;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
+.shock-num{font-family:"Outfit",sans-serif;font-size:54px;font-weight:800;line-height:1;margin-bottom:4px}
+.shock-sub{font-size:12px;opacity:.75;line-height:1.6;margin-bottom:18px}
+.shock-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sg{background:rgba(0,0,0,.2);border-radius:12px;padding:12px;text-align:center}
+.sg-v{font-family:"Outfit",sans-serif;font-size:18px;font-weight:800}
+.sg-l{font-size:10px;opacity:.6;margin-top:2px;line-height:1.4}
+.wrap{position:relative;z-index:10;max-width:1100px;margin:0 auto;padding:0 24px 60px;display:grid;grid-template-columns:350px 1fr;gap:22px}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px;margin-bottom:16px;box-shadow:0 2px 12px rgba(45,31,14,.06)}
+.panel:last-child{margin-bottom:0}
+.ptitle{font-size:10px;font-family:"JetBrains Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.ptitle::after{content:"";flex:1;height:1px;background:var(--border)}
+.f{margin-bottom:16px}.f:last-child{margin-bottom:0}
+.f label{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;font-weight:600;margin-bottom:8px}
+.fv{font-family:"JetBrains Mono",monospace;color:var(--orange);font-size:12px;font-weight:700}
+.fh{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5}
+input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:var(--dim);border-radius:2px;cursor:pointer;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;background:var(--orange);border-radius:50%;box-shadow:0 2px 8px rgba(249,115,22,.3);border:3px solid var(--card)}
+select{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:11px;color:var(--text);padding:11px 14px;font-size:13px;font-family:"DM Sans",sans-serif;outline:none;cursor:pointer}
+select:focus{border-color:var(--orange)}
+.res{display:flex;flex-direction:column;gap:14px}
+.stats4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.sbox{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:15px;text-align:center;position:relative;overflow:hidden}
+.sbox::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0}
+.so::before{background:var(--orange)}.sy::before{background:var(--yellow)}.st::before{background:var(--teal)}.sp::before{background:var(--purple)}
+.sv{font-family:"Outfit",sans-serif;font-size:19px;font-weight:800;line-height:1;margin-bottom:4px}
+.sl{font-size:10px;font-family:"JetBrains Mono",monospace;color:var(--muted);line-height:1.4}
+.phasegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pcard{border-radius:14px;padding:16px;border:2px solid var(--border);transition:border-color .25s}
+.pcard.on{box-shadow:0 0 20px rgba(255,107,53,.18)}
+.pemoji{font-size:22px;margin-bottom:6px}
+.page{font-size:10px;font-family:"JetBrains Mono",monospace;color:var(--muted);text-transform:uppercase;margin-bottom:3px}
+.plabel{font-size:12px;font-weight:700;margin-bottom:8px}
+.pamount{font-family:"Outfit",sans-serif;font-size:24px;font-weight:800;margin-bottom:2px}
+.pmonth{font-size:10px;color:var(--muted)}
+.pbar{height:3px;background:var(--dim);border-radius:2px;margin:10px 0 8px;overflow:hidden}
+.pbfill{height:100%;border-radius:2px;transition:width .6s ease}
+.prow{display:flex;justify-content:space-between;font-size:11px;padding:4px 7px;background:var(--bg);border-radius:6px;margin-bottom:3px}
+.prn{color:var(--muted)}.prv{font-family:"JetBrains Mono",monospace;font-weight:600}
+.acard{background:rgba(22,163,74,.05);border:1.5px solid rgba(78,205,196,.2);border-radius:16px;padding:18px}
+.ahead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.atitle{font-size:13px;font-weight:700;color:var(--teal)}
+.atotal{font-family:"Outfit",sans-serif;font-size:20px;font-weight:800;color:var(--teal)}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.aitem{background:rgba(22,163,74,.07);border:1px solid rgba(22,163,74,.15);border-radius:9px;padding:9px 12px;display:flex;justify-content:space-between;align-items:center}
+.an{font-size:11px;font-weight:500}.av{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:700;color:var(--teal)}
+.compcard{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px}
+.ctitle{font-size:10px;font-family:"JetBrains Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px}
+.crow{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.crow:last-child{margin-bottom:0}
+.clabel{font-size:12px;min-width:130px;font-weight:500}
+.ctrack{flex:1;height:8px;background:var(--dim);border-radius:4px;overflow:hidden}
+.cfill{height:100%;border-radius:4px;transition:width .7s ease}
+.cnum{font-family:"JetBrains Mono",monospace;font-size:12px;min-width:80px;text-align:right;font-weight:700}
+.conseil{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--orange);border-radius:14px;padding:16px;font-size:13px;color:var(--muted);line-height:1.8}
+.conseil strong{color:var(--text)}
+.disc{font-size:10px;font-family:"JetBrains Mono",monospace;color:var(--muted);line-height:1.7;padding:12px;background:var(--dim);border-radius:10px}
+.faq-section{position:relative;z-index:10;max-width:1100px;margin:0 auto;padding:0 24px 60px}
+.faq-h{font-family:"Outfit",sans-serif;font-size:26px;font-weight:800;letter-spacing:-1px;margin-bottom:20px}
+.fitem{border-bottom:1px solid var(--border);padding:16px 0}
+.fq{font-size:14px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;gap:10px;user-select:none}
+.fq::after{content:"+";font-size:20px;color:var(--orange);flex-shrink:0;line-height:1;transition:transform .2s}
+.fq.open::after{transform:rotate(45deg)}
+.fa{font-size:13px;color:var(--muted);line-height:1.8;max-height:0;overflow:hidden;transition:max-height .3s ease}
+.fa.open{max-height:200px;padding-top:10px}
+@media(max-width:900px){.hero,.wrap{grid-template-columns:1fr}.stats4{grid-template-columns:1fr 1fr}.phasegrid{grid-template-columns:1fr}.agrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav><a class="logo" href="index.html">Calcula<em>matix</em></a><a class="back" href="index.html">← Retour</a></nav>
+<section class="hero">
+  <div>
+    <div class="eyebrow">Calculateur 2026 · Barèmes CAF actualisés</div>
+    <h1>Combien coûte<br>un <span class="accent">enfant</span> ?</h1>
+    <p class="hero-desc">Alimentation, garde, école, loisirs, vêtements… Le chiffre réel surprend toujours. Calculez votre situation personnelle avec toutes les aides CAF déduites.</p>
+    <div class="tags">
+      <span class="tag">✓ Données DREES 2024</span>
+      <span class="tag">✓ Aides CAF incluses</span>
+      <span class="tag">✓ Gratuit</span>
+    </div>
+  </div>
+  <div class="shock">
+    <div class="shock-lbl">Coût moyen national 2026</div>
+    <div class="shock-num">180 k€</div>
+    <div class="shock-sub">pour élever un enfant de 0 à 18 ans<br>Source : Ministère de la Santé &amp; DREES</div>
+    <div class="shock-grid">
+      <div class="sg"><div class="sg-v">750€</div><div class="sg-l">par mois en moyenne</div></div>
+      <div class="sg"><div class="sg-v">25 000€</div><div class="sg-l">d'aides CAF possibles</div></div>
+      <div class="sg"><div class="sg-v">8 500€</div><div class="sg-l">la 1ère année</div></div>
+      <div class="sg"><div class="sg-v">10 000€</div><div class="sg-l">par an à l'ado</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div>
+    <div class="panel">
+      <div class="ptitle">🧒 Votre enfant</div>
+      <div class="f"><label>Âge actuel <span class="fv" id="v-age">Naissance</span></label>
+        <input type="range" id="i-age" min="0" max="17" value="0" oninput="calc()"/></div>
+      <div class="f"><label>Niveau de vie du foyer</label>
+        <select id="i-niveau" onchange="calc()">
+          <option value="modeste">💚 Modeste (< 2 500€/mois)</option>
+          <option value="moyen" selected>🔵 Moyen (2 500 – 5 000€)</option>
+          <option value="aise">✨ Aisé (> 5 000€/mois)</option>
+        </select></div>
+      <div class="f"><label>Zone géographique</label>
+        <select id="i-zone" onchange="calc()">
+          <option value="paris">🗼 Paris / Île-de-France</option>
+          <option value="grande" selected>🏙️ Grande ville</option>
+          <option value="moyenne">🏘️ Ville moyenne</option>
+          <option value="rurale">🌿 Zone rurale</option>
+        </select></div>
+      <div class="f"><label>Scolarité</label>
+        <select id="i-ecole" onchange="calc()">
+          <option value="public" selected>🏫 École publique</option>
+          <option value="prive">📚 Privé sous contrat (+80€/mois)</option>
+          <option value="hors">🎓 Privé hors contrat (+600€/mois)</option>
+        </select></div>
+    </div>
+    <div class="panel">
+      <div class="ptitle">🍼 Garde &amp; quotidien</div>
+      <div class="f"><label>Mode de garde (0-3 ans)</label>
+        <select id="i-garde" onchange="calc()">
+          <option value="creche">🏢 Crèche (tarif CAF)</option>
+          <option value="nounou" selected>🤱 Assistante maternelle</option>
+          <option value="domicile">🏠 Garde à domicile</option>
+          <option value="parentale">👨‍👩‍👧 Garde parentale</option>
+        </select></div>
+      <div class="f"><label>Activités extra-scolaires</label>
+        <select id="i-activites" onchange="calc()">
+          <option value="peu">Peu ou pas</option>
+          <option value="standard" selected>1 à 2 activités</option>
+          <option value="intense">Compétition / école de musique</option>
+        </select></div>
+      <div class="f"><label>Vacances famille</label>
+        <select id="i-vacances" onchange="calc()">
+          <option value="maison">À la maison</option>
+          <option value="france" selected>Vacances en France</option>
+          <option value="etranger">Voyages à l'étranger</option>
+        </select></div>
+    </div>
+  </div>
+
+  <div class="res">
+    <div class="stats4">
+      <div class="sbox so"><div class="sv" id="r-total" style="color:#ff6b35">—</div><div class="sl">Coût total<br>0 → 18 ans</div></div>
+      <div class="sbox sy"><div class="sv" id="r-mensuel" style="color:#ffd93d">—</div><div class="sl">Coût mensuel<br>à votre âge</div></div>
+      <div class="sbox st"><div class="sv" id="r-aides" style="color:var(--teal)">—</div><div class="sl">Aides CAF<br>estimées</div></div>
+      <div class="sbox sp"><div class="sv" id="r-net" style="color:#c77dff">—</div><div class="sl">Coût net<br>après aides</div></div>
+    </div>
+    <div style="font-size:10px;font-family:JetBrains Mono,monospace;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Les 3 grandes phases de vie</div>
+    <div class="phasegrid" id="phasegrid"></div>
+    <div class="acard">
+      <div class="ahead"><div class="atitle">💚 Vos aides CAF estimées</div><div class="atotal" id="atotal">—</div></div>
+      <div class="agrid" id="agrid"></div>
+    </div>
+    <div class="compcard">
+      <div class="ctitle">📊 Comparaison avec d'autres foyers</div>
+      <div id="comprows"></div>
+    </div>
+    <div class="conseil" id="conseil"></div>
+    <div class="disc">Sources : DREES 2024, INSEE, CAF.fr (barèmes 2026). Surcoût logement estimé à 30% des dépenses totales. Vérifiez vos droits exacts sur caf.fr.</div>
+  </div>
+</div>
+
+<section class="faq-section">
+  <h2 class="faq-h">Questions fréquentes</h2>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Combien coûte un enfant par mois en moyenne ?</div><div class="fa">Le coût mensuel varie selon l'âge : 630 à 820€ de 0 à 3 ans (garde incluse), 400 à 600€ de 3 à 12 ans, 600 à 900€ de 12 à 18 ans. Ces chiffres incluent la quote-part de logement supplémentaire. Source : DREES 2024.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">La CAF rembourse-t-elle la garde d'enfant ?</div><div class="fa">Oui, significativement. Le CMG (Complément Mode de Garde) couvre jusqu'à 85% du salaire d'une assistante maternelle pour les familles modestes. Pour la crèche, le tarif est calculé selon votre quotient familial CAF (entre 0,93€ et 8,51€/heure en 2026).</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Les allocations familiales commencent à quel enfant ?</div><div class="fa">À partir du 2ème enfant en France : 148€/mois pour 2 enfants, 338€/mois pour 3 enfants. La PAJE (184€/mois) est versée dès le 1er enfant de moins de 3 ans.</div></div>
+  <div class="fitem"><div class="fq" onclick="tFaq(this)">Un enfant coûte-t-il plus cher à Paris ?</div><div class="fa">Oui, environ 25 à 30% de plus. Logement, gardes et activités sont significativement plus chers en Île-de-France. Les crèches municipales restent accessibles via le quotient familial CAF.</div></div>
+</section>
+
+<script>
+var AGES=["Naissance","1 an","2 ans","3 ans","4 ans","5 ans","6 ans","7 ans","8 ans","9 ans","10 ans","11 ans","12 ans","13 ans","14 ans","15 ans","16 ans","17 ans"];
+var ZC={paris:1.28,grande:1.10,moyenne:1.0,rurale:0.87};
+var BASE={
+  modeste:{p0:{garde:280,alim:55,veto:30,sante:22,loisirs:25,divers:12},
+           p1:{alim:62,veto:32,sante:28,loisirs:45,ecole:5,transport:18,divers:15},
+           p2:{alim:88,veto:45,sante:30,loisirs:60,transport:28,divers:22}},
+  moyen:{p0:{garde:480,alim:85,veto:52,sante:33,loisirs:55,divers:22},
+         p1:{alim:90,veto:52,sante:38,loisirs:72,ecole:8,transport:28,divers:24},
+         p2:{alim:125,veto:70,sante:38,loisirs:95,transport:42,divers:35}},
+  aise:{p0:{garde:880,alim:125,veto:95,sante:55,loisirs:110,divers:42},
+        p1:{alim:130,veto:95,sante:58,loisirs:140,ecole:15,transport:48,divers:45},
+        p2:{alim:185,veto:120,sante:58,loisirs:185,transport:70,divers:65}}
+};
+var ESUP={public:0,prive:80,hors:600};
+var GSUP={creche:0,nounou:0,domicile:350,parentale:-280};
+var ASUP={peu:0,standard:85,intense:220};
+var VSUP={maison:0,france:95,etranger:250};
+var COL=["#ff6b35","#ffd93d","#c77dff"];
+var EMO=["🍼","🎒","📱"];
+var LAB=["Tout-petit (0-3 ans)","Enfance (3-12 ans)","Adolescence (12-18 ans)"];
+
+function g(id){return document.getElementById(id);}
+function fmt(n){return Math.round(n).toLocaleString("fr-FR");}
+function fE(n){return fmt(n)+"€";}
+
+function calc(){
+  var age=+g("i-age").value;
+  var niv=g("i-niveau").value;
+  var zone=g("i-zone").value;
+  var ecole=g("i-ecole").value;
+  var garde=g("i-garde").value;
+  var act=g("i-activites").value;
+  var vac=g("i-vacances").value;
+  var zc=ZC[zone];
+
+  g("v-age").textContent=AGES[age];
+
+  var cmgC={modeste:0.80,moyen:0.60,aise:0.35}[niv];
+
+  var phases=[
+    {id:"p0",d:0,f:3,dur:3},
+    {id:"p1",d:3,f:12,dur:9},
+    {id:"p2",d:12,f:18,dur:6}
+  ];
+
+  var totalBrut=0;
+  var aidesTotal=0;
+
+  var pdata=phases.map(function(ph,idx){
+    var b=BASE[niv][ph.id];
+    var mensuel=0;
+    var postes=[];
+    if(ph.id==="p0"){
+      var gBase=b.garde+GSUP[garde];
+      var cmg=Math.max(0,gBase)*cmgC;
+      var gNet=Math.max(0,gBase-cmg);
+      mensuel=(gNet+b.alim+b.veto+b.sante+b.loisirs+b.divers)*zc;
+      postes=[
+        {n:"Garde (net après CMG)",v:fE(Math.round(gNet*zc))},
+        {n:"Alimentation",v:fE(Math.round(b.alim*zc))},
+        {n:"Vêtements & équipement",v:fE(Math.round(b.veto*zc))}
+      ];
+      aidesTotal+=cmg*zc*12*3;
+    } else if(ph.id==="p1"){
+      mensuel=(b.alim+b.veto+b.sante+b.loisirs+b.ecole+ESUP[ecole]+ASUP[act]+VSUP[vac]+b.transport+b.divers)*zc;
+      postes=[
+        {n:"Alimentation",v:fE(Math.round(b.alim*zc))},
+        {n:"Scolarité & activités",v:fE(Math.round((b.ecole+ESUP[ecole]+ASUP[act])*zc))},
+        {n:"Loisirs & vacances",v:fE(Math.round((b.loisirs+VSUP[vac])*zc))}
+      ];
+    } else {
+      mensuel=(b.alim*1.4+b.veto*1.2+b.sante+b.loisirs*1.5+ESUP[ecole]+ASUP[act]*1.2+VSUP[vac]*1.3+b.transport*1.6+b.divers*1.4+85)*zc;
+      postes=[
+        {n:"Alimentation (ado ×1.4)",v:fE(Math.round(b.alim*1.4*zc))},
+        {n:"Téléphone & sorties",v:fE(Math.round(b.loisirs*1.5*zc))},
+        {n:"Transport & autonomie",v:fE(Math.round(b.transport*1.6*zc))}
+      ];
+    }
+    mensuel+=mensuel*0.30; // surcoût logement
+    var total=mensuel*12*ph.dur;
+    totalBrut+=total;
+    return{id:ph.id,d:ph.d,f:ph.f,mensuel:Math.round(mensuel),total:Math.round(total),postes:postes,col:COL[idx],emo:EMO[idx],lab:LAB[idx]};
+  });
+
+  // Aides
+  var aides=[];
+  if(age===0) aides.push({n:"Prime naissance",v:1046});
+  if(age<3){var paje={modeste:184,moyen:92,aise:0}[niv];if(paje>0)aides.push({n:"PAJE (0-3 ans)",v:paje});}
+  if(age<6){var ci={modeste:350,moyen:600,aise:1100}[niv];aides.push({n:"Crédit impôt garde 50%",v:ci});}
+  aides.push({n:"Alloc. familiales (≥2 enfants)",v:148});
+  if(age>=6&&age<18) aides.push({n:"Prime rentrée scolaire",v:416});
+  var aidesAnnuelles=aides.reduce(function(s,a){return s+a.v;},0);
+  aidesTotal+=aidesAnnuelles*(18-age);
+  var net=Math.max(0,totalBrut-aidesTotal);
+
+  var phaseNow=age<3?pdata[0]:age<12?pdata[1]:pdata[2];
+  g("r-total").textContent=fE(Math.round(totalBrut/1000)*1000);
+  g("r-mensuel").textContent=fE(phaseNow.mensuel);
+  g("r-aides").textContent="-"+fE(Math.round(aidesTotal));
+  g("r-net").textContent=fE(Math.round(net/1000)*1000);
+
+  var maxT=Math.max.apply(null,pdata.map(function(p){return p.total;}));
+  g("phasegrid").innerHTML=pdata.map(function(ph){
+    var on=age>=ph.d&&age<ph.f;
+    return "<div class='pcard"+(on?" on":"")+"' style='border-color:"+(on?ph.col:"var(--border)")+"'>"
+      +"<div class='pemoji'>"+ph.emo+"</div>"
+      +"<div class='page'>"+ph.d+" – "+ph.f+" ans</div>"
+      +"<div class='plabel'>"+ph.lab.split(" (")[0]+(on?" <span style='font-size:10px;color:var(--orange)'>◀ vous êtes ici</span>":"")+"</div>"
+      +"<div class='pamount' style='color:"+ph.col+"'>"+fE(ph.total)+"</div>"
+      +"<div class='pmonth'>≈ "+fE(ph.mensuel)+"/mois</div>"
+      +"<div class='pbar'><div class='pbfill' style='width:"+(ph.total/maxT*100)+"%;background:"+ph.col+"'></div></div>"
+      +"<div>"+ph.postes.map(function(p){return "<div class='prow'><span class='prn'>"+p.n+"</span><span class='prv'>"+p.v+"</span></div>";}).join("")+"</div>"
+      +"</div>";
+  }).join("");
+
+  g("atotal").textContent="-"+fE(Math.round(aidesTotal));
+  g("agrid").innerHTML=aides.map(function(a){
+    return "<div class='aitem'><span class='an'>"+a.n+"</span><span class='av'>+"+fE(a.v)+"</span></div>";
+  }).join("");
+
+  var refs=[{label:"Foyer modeste",mult:0.72,col:"var(--teal)"},{label:"Foyer moyen",mult:1.0,col:"#ffd93d"},{label:"Foyer aisé",mult:1.52,col:"#c77dff"}];
+  var maxR=totalBrut*1.55;
+  g("comprows").innerHTML=refs.map(function(r){
+    var val=Math.round(totalBrut*r.mult);
+    var moi=(r.label.includes("modeste")&&niv==="modeste")||(r.label.includes("moyen")&&niv==="moyen")||(r.label.includes("aisé")&&niv==="aise");
+    return "<div class='crow'><div class='clabel' style='font-weight:"+(moi?700:400)+"'>"+r.label+(moi?" ✦":"")+"</div>"
+      +"<div class='ctrack'><div class='cfill' style='width:"+(val/maxR*100)+"%;background:"+r.col+"'></div></div>"
+      +"<div class='cnum' style='color:"+r.col+"'>"+fE(val)+"</div></div>";
+  }).join("");
+
+  var txt=net<140000?"<strong>En dessous de la moyenne nationale</strong> — vos aides CAF et votre zone jouent en votre faveur. Vérifiez tous vos droits sur caf.fr."
+    :net<200000?"<strong>Dans la moyenne nationale</strong> (~180 000€). Pensez à vérifier tous vos droits CAF — beaucoup de familles laissent de l'argent sur la table."
+    :"<strong>Au-dessus de la moyenne.</strong> Leviers possibles : comparer les modes de garde, optimiser les activités, vérifier le crédit d'impôt garde à 50%.";
+  g("conseil").innerHTML=txt;
+}
+
+function tFaq(el){el.classList.toggle("open");el.nextElementSibling.classList.toggle("open");}
+calc();
+</script>
+<script src="/suggestions.js"></script>
+<script>try{renderFooter("cout-enfant");}catch(e){}</script>
+</body>
+</html>
