@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Mon Potager 2026 — Planificateur intelligent : quoi planter, quand et où | Calculamatix</title>
+<meta name="description" content="Le planificateur potager le plus complet de France : entrez votre espace, zone climatique et préférences → recevez un plan personnalisé avec calendrier de semis, associations de plantes et estimation de récolte. Données Rustica, Gerbeaud &amp; INRAE."/>
+<link rel="canonical" href="https://calculamatix.com/potager"/>
+<meta property="og:title" content="Mon Potager 2026 — Planificateur intelligent gratuit"/>
+<meta property="og:description" content="Espace, climat, budget, préférences → plan de potager personnalisé en 2 minutes. Calendrier, associations, récoltes estimées."/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quoi planter en mai au potager ?","acceptedAnswer":{"@type":"Answer","text":"En mai, après les Saints de Glace (13-14 mai), c'est le moment de planter les tomates, courgettes, concombres, poivrons, aubergines, haricots verts, basilic et courges. Semez en pleine terre : carottes, radis, betteraves, épinards d'été, salades. Source : calendrier des semis 2026."}},{"@type":"Question","name":"Quelle surface pour un potager familial ?","acceptedAnswer":{"@type":"Answer","text":"Pour une famille de 4, comptez 30-50 m² pour une production significative. Un carré potager de 3-4 m² suffit pour les herbes et quelques salades. 10 m² permettent de cultiver tomates, salades et aromates. 100 m²+ permettent une quasi-autonomie en légumes d'été."}},{"@type":"Question","name":"Quelles sont les meilleures associations de légumes ?","acceptedAnswer":{"@type":"Answer","text":"Les associations star : tomate+basilic (le basilic repousse les mouches blanches), carotte+oignon (protection mutuelle contre les mouches), haricot+maïs+courge (les trois sœurs amérindiennes), salade+radis (le radis pousse vite et libère la place). À éviter : tomate+fenouil, haricot+oignon, pomme de terre+tomate."}},{"@type":"Question","name":"Combien rapporte un potager de 20m² ?","acceptedAnswer":{"@type":"Answer","text":"Un potager de 20 m² bien géré produit environ 40-80 kg de légumes par saison, soit 150 à 350€ d'économies sur les courses. L'investissement initial (terreau, graines, outils) est de 50-150€. Rentabilisé dès la première saison si vous cultivez des tomates, courgettes et herbes aromatiques (les plus chers au kg en magasin)."}}]}</script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f6f9f2;--card:#ffffff;--border:#dde8d0;--ink:#1a2e0a;--soft:#3d5429;--muted:#7a8c6a;
+  --green:#2d7a20;--green-light:#eaf5e5;--green-dark:#1d5415;
+  --brown:#8b5e3c;--brown-light:#faf3eb;--earth:#d4a76a;
+  --red:#c0392b;--red-light:#fdecea;--blue:#2980b9;--blue-light:#eaf4fc;
+  --sun:#f39c12;--sun-light:#fef8e7;--purple:#8e44ad;
+  --shadow:0 2px 12px rgba(45,122,32,.06);
+}
+body{background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif;font-size:15px;line-height:1.65}
+nav{max-width:1100px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.logo{font-family:"Outfit",sans-serif;font-weight:800;font-size:19px;text-decoration:none;color:var(--ink)}.logo em{font-style:normal;color:var(--green)}
+.back{font-size:13px;color:var(--muted);text-decoration:none}
+
+.hero{max-width:1100px;margin:0 auto;padding:36px 24px 20px;text-align:center}
+.hero-badge{display:inline-block;font-size:11px;font-family:"JetBrains Mono",monospace;color:var(--green);background:var(--green-light);border:1px solid rgba(45,122,32,.15);padding:5px 14px;border-radius:100px;font-weight:600;margin-bottom:14px}
+h1{font-family:"Outfit",sans-serif;font-weight:800;font-size:clamp(28px,5vw,48px);letter-spacing:-1.5px;line-height:1.08;margin-bottom:12px}
+h1 .hl{color:var(--green)}
+.hero-desc{font-size:15px;color:var(--muted);max-width:620px;margin:0 auto 18px;line-height:1.7}
+.hero-tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.hero-tag{font-size:11px;padding:5px 12px;border-radius:100px;background:var(--card);border:1px solid var(--border);color:var(--soft);font-weight:500}
+
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:0 24px 60px}
+
+/* PROGRESS */
+.progress{display:flex;gap:4px;margin-bottom:24px;align-items:center}
+.prog{flex:1;height:4px;background:var(--border);border-radius:2px;transition:background .3s}
+.prog.done{background:var(--green)}
+.prog.cur{background:linear-gradient(90deg,var(--green),rgba(45,122,32,.3))}
+.prog-label{font-size:11px;font-family:"JetBrains Mono",monospace;color:var(--muted);margin-left:10px;font-weight:600;white-space:nowrap}
+
+/* STEPS */
+.step{display:none;animation:fadeIn .25s}.step.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.step-eye{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;font-weight:600}
+.step-title{font-family:"Outfit",sans-serif;font-size:28px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px}
+.step-desc{font-size:14px;color:var(--muted);margin-bottom:22px;line-height:1.7}
+
+/* OPTIONS */
+.opt-grid{display:grid;gap:10px}
+.opt-grid.c2{grid-template-columns:1fr 1fr}
+.opt-grid.c3{grid-template-columns:repeat(3,1fr)}
+.opt-grid.c4{grid-template-columns:repeat(4,1fr)}
+.opt{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all .15s;text-align:center}
+.opt:hover{border-color:var(--green);transform:translateY(-2px)}
+.opt.sel{border-color:var(--green);background:var(--green-light)}
+.opt-emoji{font-size:28px;display:block;margin-bottom:6px}
+.opt-name{font-weight:700;font-size:14px;margin-bottom:3px}
+.opt-sub{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* SLIDER */
+.slider-block{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
+.sl-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.sl-label{font-weight:600;font-size:14px}
+.sl-val{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:18px;color:var(--green)}
+input[type=range]{width:100%;-webkit-appearance:none;height:5px;background:var(--border);border-radius:3px;cursor:pointer;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;background:var(--green);border-radius:50%;box-shadow:0 2px 8px rgba(45,122,32,.3);border:3px solid var(--card)}
+.sl-marks{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:6px;font-family:"JetBrains Mono",monospace}
+
+/* CHECKBOXES LEGUMES */
+.veg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.veg{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:10px 8px;cursor:pointer;transition:all .12s;text-align:center;font-size:12px;font-weight:600}
+.veg:hover{border-color:var(--green)}
+.veg.sel{border-color:var(--green);background:var(--green-light)}
+.veg-emoji{font-size:22px;display:block;margin-bottom:3px}
+.veg.veg-no{opacity:.35;cursor:not-allowed;border-style:dashed}
+.veg.veg-no:hover{border-color:var(--border);transform:none}
+.veg.veg-late{border-color:var(--sun);border-style:dashed}
+.veg.veg-late.sel{background:var(--sun-light);border-color:var(--sun);border-style:solid}
+
+/* NAV */
+.step-nav{display:flex;gap:10px;margin-top:26px}
+.btn{padding:14px 22px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:"Inter",sans-serif;transition:all .15s}
+.btn-back{background:var(--card);color:var(--muted);border:1px solid var(--border)}
+.btn-next{background:var(--green);color:#fff;flex:1}
+.btn-next:hover{background:var(--green-dark);transform:translateY(-1px);box-shadow:0 6px 16px rgba(45,122,32,.25)}
+
+/* ═══ RÉSULTATS ═══ */
+.results{display:none;animation:fadeIn .3s}.results.on{display:block}
+
+.plan-header{background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff;border-radius:20px;padding:32px;margin-bottom:20px;position:relative;overflow:hidden}
+.plan-header::after{content:"🌱";position:absolute;right:20px;bottom:-10px;font-size:80px;opacity:.15}
+.ph-eye{font-size:10px;font-family:"JetBrains Mono",monospace;text-transform:uppercase;letter-spacing:2px;opacity:.8;margin-bottom:8px}
+.ph-title{font-family:"Outfit",sans-serif;font-weight:800;font-size:clamp(22px,3.5vw,32px);line-height:1.15;margin-bottom:8px}
+.ph-sub{font-size:14px;opacity:.85;line-height:1.7;max-width:600px}
+
+/* PLAN VISUEL */
+.garden-plan{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:20px;box-shadow:var(--shadow)}
+.gp-title{font-family:"Outfit",sans-serif;font-weight:700;font-size:18px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.garden-grid{display:grid;gap:6px;margin-bottom:16px}
+.garden-cell{border-radius:10px;padding:12px 8px;text-align:center;border:1px solid rgba(0,0,0,.06);min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .15s}
+.garden-cell:hover{transform:scale(1.03)}
+.gc-emoji{font-size:24px;margin-bottom:4px}
+.gc-name{font-size:11px;font-weight:700;line-height:1.3}
+.gc-info{font-size:9px;color:rgba(0,0,0,.5);margin-top:2px}
+
+/* CALENDRIER */
+.calendar{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:20px;box-shadow:var(--shadow);overflow-x:auto}
+.cal-title{font-family:"Outfit",sans-serif;font-weight:700;font-size:18px;margin-bottom:14px}
+.cal-table{width:100%;border-collapse:collapse;font-size:11px;min-width:600px}
+.cal-table th{padding:8px 6px;text-align:center;font-family:"JetBrains Mono",monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)}
+.cal-table td{padding:6px 4px;text-align:center;border-bottom:1px solid var(--border);vertical-align:middle}
+.cal-table td:first-child{text-align:left;font-weight:600;font-size:12px;padding-left:8px;min-width:100px}
+.cal-dot{display:inline-block;width:18px;height:18px;border-radius:4px;line-height:18px;font-size:9px;font-weight:700}
+.cal-semis{background:#a8d5e2;color:#1a5276}
+.cal-plant{background:#82c785;color:#145a14}
+.cal-recolte{background:#f5b041;color:#7d4e00}
+.cal-legend{display:flex;gap:14px;margin-top:12px;font-size:11px;color:var(--soft)}
+.cal-leg-dot{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:middle;margin-right:4px}
+
+/* ASSOCIATIONS */
+.assoc-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:20px;box-shadow:var(--shadow)}
+.assoc-title{font-family:"Outfit",sans-serif;font-weight:700;font-size:18px;margin-bottom:14px}
+.assoc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.assoc-item{border-radius:12px;padding:12px 14px;font-size:13px;display:flex;align-items:center;gap:10px;line-height:1.5}
+.assoc-good{background:var(--green-light);border:1px solid rgba(45,122,32,.15)}
+.assoc-bad{background:var(--red-light);border:1px solid rgba(192,57,43,.15)}
+.assoc-icon{font-size:18px;flex-shrink:0}
+
+/* RÉCOLTE */
+.harvest{background:var(--sun-light);border:1px solid rgba(243,156,18,.2);border-radius:18px;padding:24px;margin-bottom:20px}
+.harvest-title{font-family:"Outfit",sans-serif;font-weight:700;font-size:18px;margin-bottom:14px;color:var(--brown)}
+.harvest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.hv-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.hv-emoji{font-size:24px;margin-bottom:4px}
+.hv-name{font-size:12px;font-weight:700;margin-bottom:4px}
+.hv-kg{font-family:"JetBrains Mono",monospace;font-size:16px;font-weight:700;color:var(--green)}
+.hv-val{font-size:10px;color:var(--muted)}
+
+/* BUDGET */
+.budget-card{background:var(--brown-light);border:1px solid rgba(139,94,60,.15);border-radius:18px;padding:24px;margin-bottom:20px}
+.budget-title{font-family:"Outfit",sans-serif;font-weight:700;font-size:18px;margin-bottom:14px;color:var(--brown)}
+.budget-row{display:flex;justify-content:space-between;padding:8px 12px;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:6px;font-size:13px}
+.budget-row:last-child{margin-bottom:0}
+.br-label{color:var(--soft)}
+.br-val{font-family:"JetBrains Mono",monospace;font-weight:700}
+
+/* TIPS */
+.tips{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:20px;box-shadow:var(--shadow)}
+.tips-title{font-family:"Outfit",sans-serif;font-weight:700;font-size:18px;margin-bottom:14px}
+.tip{display:flex;gap:10px;padding:8px 0;font-size:13px;color:var(--soft);line-height:1.65;border-bottom:1px solid var(--border)}
+.tip:last-child{border-bottom:none}
+.tip-icon{font-size:16px;flex-shrink:0;margin-top:2px}
+
+.share-row{display:flex;gap:8px;justify-content:center;margin:24px 0;flex-wrap:wrap}
+.share-btn{background:var(--card);border:1.5px solid var(--border);color:var(--soft);padding:11px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:"Inter",sans-serif;border-radius:12px;transition:all .15s}
+.share-btn:hover{border-color:var(--green);color:var(--green)}
+.share-btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+
+/* FAQ */
+.faq-section{margin-top:40px}
+.faq-h2{font-family:"Outfit",sans-serif;font-size:24px;font-weight:800;margin-bottom:16px}
+.fitem{border-bottom:1px solid var(--border);padding:14px 0}
+.fq{font-weight:600;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;gap:10px}
+.fq::after{content:"+";font-size:20px;color:var(--green);flex-shrink:0;font-weight:400}
+.fq.open::after{content:"−"}
+.fa{font-size:13px;color:var(--soft);line-height:1.85;max-height:0;overflow:hidden;transition:max-height .3s}
+.fa.open{max-height:300px;padding-top:10px}
+
+.disc{font-size:10px;color:var(--muted);text-align:center;margin-top:30px;line-height:1.7;font-style:italic}
+.kokopelli-note{font-size:11px;color:var(--muted);text-align:center;margin-top:16px;padding:12px;background:var(--green-light);border-radius:12px;line-height:1.7}
+.kokopelli-note a{color:var(--green);font-weight:600}
+
+/* EASTER EGG */
+.ee-flower{position:fixed;top:0;font-size:24px;pointer-events:none;z-index:9999;animation:flowerFall linear forwards;opacity:1}
+@keyframes flowerFall{0%{transform:translateY(-40px) rotate(0deg);opacity:1}80%{opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
+.logo-bloom{position:relative;display:inline-block}
+.logo-bloom .sprout{position:absolute;top:-18px;left:50%;transform:translateX(-50%) scale(0);font-size:16px;transition:transform .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
+.logo-bloom.bloomed .sprout{transform:translateX(-50%) scale(1)}
+
+@media(max-width:700px){.opt-grid.c3,.opt-grid.c4,.veg-grid{grid-template-columns:1fr 1fr}.assoc-grid,.harvest-grid{grid-template-columns:1fr}.garden-grid{grid-template-columns:repeat(2,1fr) !important}}
+</style>
+</head>
+<body>
+<nav><a class="logo logo-bloom" href="index.html" onclick="bloomLogo(event)">Calcula<em>matix</em><span class="sprout">🌸</span></a><a class="back" href="index.html">← Retour</a></nav>
+
+<div class="hero">
+  <div style="font-size:28px;letter-spacing:6px;margin-bottom:12px;opacity:.7;user-select:none">🥕🍅🥬🌽🫑🥒🌿🍓🧅🫘</div>
+  <span class="hero-badge">🌱 Planificateur potager · 2026</span>
+  <h1>Mon <span class="hl">potager</span> sur mesure</h1>
+  <p class="hero-desc">Entrez votre espace, votre climat et vos envies — recevez un plan de plantation personnalisé avec calendrier, associations et estimation de récolte.</p>
+  <div class="hero-tags">
+    <span class="hero-tag">🌍 5 zones climatiques</span>
+    <span class="hero-tag">🥬 30+ légumes</span>
+    <span class="hero-tag">📅 Calendrier personnalisé</span>
+    <span class="hero-tag">🤝 Associations de plantes</span>
+  </div>
+  <div style="font-size:14px;letter-spacing:4px;margin-top:14px;opacity:.4;user-select:none">· · 🌱 · · 🌱 · · 🌱 · · 🌱 · · 🌱 · ·</div>
+</div>
+
+<div class="main">
+  <div class="progress" id="progress"></div>
+  <div id="steps-container"></div>
+  <div class="results" id="results"></div>
+
+  <div class="faq-section">
+    <h2 class="faq-h2">Questions fréquentes</h2>
+    <div class="fitem"><div class="fq" onclick="tFaq(this)">Quoi planter en mai au potager ?</div><div class="fa">Après les Saints de Glace (13-14 mai), plantez les <strong>tomates, courgettes, concombres, poivrons, aubergines, haricots, basilic et courges</strong>. Semez en pleine terre : carottes, radis, betteraves, épinards d'été, salades. En climat montagnard, attendez mi-juin. Source : calendrier des semis 2026.</div></div>
+    <div class="fitem"><div class="fq" onclick="tFaq(this)">Quelle surface pour un potager familial ?</div><div class="fa"><strong>3-5 m²</strong> (balcon) : herbes aromatiques + quelques salades. <strong>10-20 m²</strong> : tomates, salades, aromates, radis. <strong>30-50 m²</strong> : production significative pour une famille de 4. <strong>100 m²+</strong> : quasi-autonomie en légumes d'été. Commencez petit et agrandissez l'année suivante.</div></div>
+    <div class="fitem"><div class="fq" onclick="tFaq(this)">Quelles sont les meilleures associations de légumes ?</div><div class="fa">Les classiques : <strong>tomate+basilic</strong> (repousse les mouches blanches), <strong>carotte+oignon</strong> (protection mutuelle), <strong>haricot+maïs+courge</strong> (les trois sœurs), <strong>salade+radis</strong> (le radis libère la place). À éviter : tomate+fenouil, haricot+oignon, pomme de terre+tomate (même famille = même maladie).</div></div>
+    <div class="fitem"><div class="fq" onclick="tFaq(this)">Combien rapporte un potager de 20 m² ?</div><div class="fa">Un potager de 20 m² produit <strong>40-80 kg de légumes</strong> par saison, soit <strong>150 à 350€ d'économies</strong>. Investissement initial : 50-150€ (graines, terreau, outils). Rentabilisé dès la première saison avec tomates, courgettes et herbes aromatiques — les plus chers au kg en magasin.</div></div>
+    <div class="fitem"><div class="fq" onclick="tFaq(this)">Où acheter des graines bio et reproductibles ?</div><div class="fa"><strong>Kokopelli</strong> (kokopelli-semences.fr) : semences bio, libres de droits et reproductibles. Association engagée pour la biodiversité cultivée depuis 1999. Aussi : <strong>La Ferme de Sainte-Marthe</strong>, <strong>Germinance</strong>, <strong>Le Biau Germe</strong>. Évitez les graines hybrides F1 de grandes surfaces (non reproductibles).</div></div>
+  </div>
+
+  <p class="disc">⚠️ Conseils basés sur les données Kokopelli, Rustica, Gerbeaud et INRAE. Les résultats dépendent de votre sol, micro-climat et entretien. Les rendements sont des estimations moyennes. Calculamatix n'est pas affilié aux semenciers mentionnés.</p>
+</div>
+<script>
+// ════════════════════════════════════════════════════════
+// BASE DE DONNÉES LÉGUMES — Sources : Rustica, Gerbeaud, Kokopelli, INRAE
+// ════════════════════════════════════════════════════════
+var LEGUMES={
+  tomate:{nom:"Tomate",emoji:"🍅",famille:"solanacée",espacement:50,hauteur:"haute",soleil:"plein",eau:2,difficulte:2,
+    semisInterieur:[2,3,4],plantation:[5,6],recolte:[7,8,9,10],rendementsM2:4,prixKg:3.5,
+    amis:["basilic","carotte","persil","oignon","poireau","salade"],ennemis:["fenouil","chou","pomme_de_terre","concombre"],
+    conseil:"Tailler les gourmands. Tuteurer. Arroser au pied (jamais les feuilles). Pailler."},
+  courgette:{nom:"Courgette",emoji:"🥒",famille:"cucurbitacée",espacement:80,hauteur:"rampante",soleil:"plein",eau:3,difficulte:1,
+    semisInterieur:[4],plantation:[5,6],recolte:[6,7,8,9],rendementsM2:3,prixKg:2.0,
+    amis:["haricot","mais","basilic","capucine"],ennemis:["pomme_de_terre","concombre"],
+    conseil:"1-2 plants suffisent pour une famille ! Récolter jeune (20 cm). Très productive."},
+  salade:{nom:"Salade / Laitue",emoji:"🥬",famille:"astéracée",espacement:25,hauteur:"basse",soleil:"mi-ombre",eau:2,difficulte:1,
+    semisInterieur:[2,3],plantation:[3,4,5,6,7,8],recolte:[4,5,6,7,8,9,10],rendementsM2:2,prixKg:5.0,
+    amis:["radis","carotte","chou","fraise","oignon"],ennemis:["persil","tournesol"],
+    conseil:"Semer toutes les 3 semaines pour récolter en continu. Mi-ombre en été."},
+  carotte:{nom:"Carotte",emoji:"🥕",famille:"apiacée",espacement:5,hauteur:"basse",soleil:"plein",eau:1,difficulte:2,
+    semisInterieur:[],plantation:[3,4,5,6,7],recolte:[6,7,8,9,10,11],rendementsM2:3,prixKg:1.5,
+    amis:["oignon","poireau","tomate","salade","radis","ciboulette"],ennemis:["aneth","fenouil"],
+    conseil:"Sol meuble et sans caillou. Semer clair. Éclaircir à 5 cm. Patience : 3-4 mois."},
+  radis:{nom:"Radis",emoji:"🔴",famille:"brassicacée",espacement:3,hauteur:"basse",soleil:"mi-ombre",eau:1,difficulte:1,
+    semisInterieur:[],plantation:[3,4,5,6,7,8,9],recolte:[4,5,6,7,8,9,10],rendementsM2:1.5,prixKg:4.0,
+    amis:["salade","carotte","haricot","tomate","persil"],ennemis:["hysope"],
+    conseil:"Le plus facile et rapide : 3-4 semaines ! Parfait avec les enfants. Semer en continu."},
+  haricot:{nom:"Haricot vert",emoji:"🫘",famille:"légumineuse",espacement:20,hauteur:"moyenne",soleil:"plein",eau:2,difficulte:1,
+    semisInterieur:[],plantation:[5,6,7],recolte:[7,8,9],rendementsM2:2,prixKg:5.0,
+    amis:["mais","courge","carotte","chou","salade","courgette"],ennemis:["oignon","ail","echalote","fenouil"],
+    conseil:"Fixe l'azote dans le sol. Semer en poquets de 5 graines. Récolter avant que les grains ne gonflent."},
+  basilic:{nom:"Basilic",emoji:"🌿",famille:"lamiacée",espacement:20,hauteur:"basse",soleil:"plein",eau:2,difficulte:1,
+    semisInterieur:[3,4],plantation:[5,6],recolte:[6,7,8,9],rendementsM2:0.5,prixKg:30,
+    amis:["tomate","poivron","aubergine"],ennemis:["rue","sauge"],
+    conseil:"Le compagnon idéal de la tomate. Pincer les fleurs. 30€/kg en magasin = très rentable à cultiver !"},
+  poivron:{nom:"Poivron",emoji:"🫑",famille:"solanacée",espacement:40,hauteur:"moyenne",soleil:"plein",eau:2,difficulte:3,
+    semisInterieur:[2,3],plantation:[5,6],recolte:[7,8,9,10],rendementsM2:2,prixKg:4.0,
+    amis:["basilic","carotte","oignon"],ennemis:["fenouil","pomme_de_terre"],
+    conseil:"A besoin de chaleur. Semer très tôt en intérieur (février). Long à mûrir."},
+  concombre:{nom:"Concombre",emoji:"🥒",famille:"cucurbitacée",espacement:60,hauteur:"grimpante",soleil:"plein",eau:3,difficulte:2,
+    semisInterieur:[4],plantation:[5,6],recolte:[7,8,9],rendementsM2:3,prixKg:2.0,
+    amis:["haricot","salade","chou","aneth","capucine"],ennemis:["tomate","pomme_de_terre","melon"],
+    conseil:"Tuteurer pour gagner de la place. Arroser régulièrement (sensible au stress hydrique)."},
+  oignon:{nom:"Oignon",emoji:"🧅",famille:"alliacée",espacement:10,hauteur:"basse",soleil:"plein",eau:1,difficulte:1,
+    semisInterieur:[],plantation:[2,3,4,9,10],recolte:[7,8,9],rendementsM2:3,prixKg:1.5,
+    amis:["carotte","tomate","salade","fraise","betterave"],ennemis:["haricot","pois","chou"],
+    conseil:"Protège la carotte de la mouche. Planter les bulbilles au printemps ou automne."},
+  ail:{nom:"Ail",emoji:"🧄",famille:"alliacée",espacement:10,hauteur:"basse",soleil:"plein",eau:0,difficulte:1,
+    semisInterieur:[],plantation:[10,11,2,3],recolte:[6,7],rendementsM2:1.5,prixKg:8.0,
+    amis:["carotte","tomate","fraise","betterave"],ennemis:["haricot","pois","chou"],
+    conseil:"Planter les caïeux pointe en haut en automne. Pas d'arrosage. Récolte quand les feuilles jaunissent."},
+  epinard:{nom:"Épinard",emoji:"🥬",famille:"chénopodiacée",espacement:15,hauteur:"basse",soleil:"mi-ombre",eau:2,difficulte:1,
+    semisInterieur:[],plantation:[3,4,8,9,10],recolte:[4,5,6,9,10,11],rendementsM2:1.5,prixKg:6.0,
+    amis:["fraise","haricot","chou","radis","salade"],ennemis:["betterave"],
+    conseil:"Préfère le frais. Semer au printemps et en automne (monte en graines en été)."},
+  persil:{nom:"Persil",emoji:"🌿",famille:"apiacée",espacement:15,hauteur:"basse",soleil:"mi-ombre",eau:2,difficulte:2,
+    semisInterieur:[3,4],plantation:[4,5,6],recolte:[5,6,7,8,9,10,11],rendementsM2:0.5,prixKg:25,
+    amis:["tomate","asperge","radis"],ennemis:["salade"],
+    conseil:"Germination lente (3-4 semaines). Tremper les graines 24h avant. Très rentable (25€/kg en magasin)."},
+  ciboulette:{nom:"Ciboulette",emoji:"🌱",famille:"alliacée",espacement:15,hauteur:"basse",soleil:"mi-ombre",eau:1,difficulte:1,
+    semisInterieur:[3],plantation:[4,5],recolte:[4,5,6,7,8,9,10],rendementsM2:0.3,prixKg:30,
+    amis:["carotte","tomate","rosier"],ennemis:["haricot","pois"],
+    conseil:"Vivace. Repousse les pucerons. Idéale en bordure ou en pot. Couper régulièrement."},
+  betterave:{nom:"Betterave",emoji:"🟣",famille:"chénopodiacée",espacement:15,hauteur:"basse",soleil:"plein",eau:1,difficulte:1,
+    semisInterieur:[],plantation:[4,5,6,7],recolte:[7,8,9,10,11],rendementsM2:3,prixKg:2.0,
+    amis:["oignon","ail","salade","chou"],ennemis:["epinard","haricot_grimpant"],
+    conseil:"Facile et productive. Éclaircir à 15 cm. Se conserve bien en cave."},
+  pois:{nom:"Petit pois",emoji:"🟢",famille:"légumineuse",espacement:5,hauteur:"grimpante",soleil:"plein",eau:2,difficulte:1,
+    semisInterieur:[],plantation:[2,3,4],recolte:[5,6,7],rendementsM2:1,prixKg:6.0,
+    amis:["carotte","navet","radis","concombre","mais"],ennemis:["oignon","ail","echalote"],
+    conseil:"Semer tôt ! Tuteurer avec un grillage. Fixe l'azote dans le sol."},
+  courge:{nom:"Courge / Potiron",emoji:"🎃",famille:"cucurbitacée",espacement:100,hauteur:"rampante",soleil:"plein",eau:2,difficulte:1,
+    semisInterieur:[4],plantation:[5,6],recolte:[9,10],rendementsM2:3,prixKg:1.5,
+    amis:["mais","haricot","capucine"],ennemis:["pomme_de_terre"],
+    conseil:"Gourmande en place (1m² par plant min). Se conserve tout l'hiver. Sur compost = rendements fous."},
+  pomme_de_terre:{nom:"Pomme de terre",emoji:"🥔",famille:"solanacée",espacement:30,hauteur:"moyenne",soleil:"plein",eau:1,difficulte:1,
+    semisInterieur:[],plantation:[3,4],recolte:[6,7,8],rendementsM2:3,prixKg:1.0,
+    amis:["haricot","pois","chou","ail","raifort"],ennemis:["tomate","concombre","courge","aubergine"],
+    conseil:"Butter régulièrement. Ne JAMAIS planter à côté des tomates (mildiou). Récolter quand le feuillage jaunit."},
+  menthe:{nom:"Menthe",emoji:"🌿",famille:"lamiacée",espacement:30,hauteur:"basse",soleil:"mi-ombre",eau:2,difficulte:1,
+    semisInterieur:[],plantation:[4,5],recolte:[5,6,7,8,9,10],rendementsM2:0.5,prixKg:20,
+    amis:["chou","tomate"],ennemis:[],
+    conseil:"ATTENTION : très envahissante ! Planter en pot ou bac enterré. Vivace."},
+  fraise:{nom:"Fraise",emoji:"🍓",famille:"rosacée",espacement:30,hauteur:"basse",soleil:"plein",eau:2,difficulte:2,
+    semisInterieur:[],plantation:[3,4,8,9],recolte:[5,6,7,8,9],rendementsM2:0.8,prixKg:8.0,
+    amis:["oignon","ail","salade","epinard","thym"],ennemis:["chou"],
+    conseil:"Pailler abondamment. Remontantes = récolte tout l'été. Supprimer les stolons ou les replanter."},
+  chou:{nom:"Chou (tous types)",emoji:"🥦",famille:"brassicacée",espacement:40,hauteur:"moyenne",soleil:"plein",eau:2,difficulte:2,
+    semisInterieur:[3,4],plantation:[4,5,6,7],recolte:[6,7,8,9,10,11],rendementsM2:2.5,prixKg:2.0,
+    amis:["salade","epinard","haricot","betterave","oignon"],ennemis:["tomate","fraise","ail"],
+    conseil:"Gourmand en nutriments. Bien amender le sol. Protéger des piérides (voile ou Bt)."},
+  aubergine:{nom:"Aubergine",emoji:"🍆",famille:"solanacée",espacement:50,hauteur:"moyenne",soleil:"plein",eau:2,difficulte:3,
+    semisInterieur:[2,3],plantation:[5,6],recolte:[7,8,9,10],rendementsM2:2.5,prixKg:3.0,
+    amis:["basilic","haricot"],ennemis:["pomme_de_terre","fenouil"],
+    conseil:"Exige beaucoup de chaleur. Semer en février en intérieur. Tuteurer."},
+  navet:{nom:"Navet",emoji:"🟡",famille:"brassicacée",espacement:15,hauteur:"basse",soleil:"mi-ombre",eau:1,difficulte:1,
+    semisInterieur:[],plantation:[3,4,8,9],recolte:[5,6,9,10,11],rendementsM2:2,prixKg:2.0,
+    amis:["pois","salade","epinard"],ennemis:["ail","oignon"],
+    conseil:"Pousse vite (2 mois). Idéal en culture d'automne. Éclaircir."},
+  thym:{nom:"Thym",emoji:"🌿",famille:"lamiacée",espacement:20,hauteur:"basse",soleil:"plein",eau:0,difficulte:1,
+    semisInterieur:[],plantation:[4,5],recolte:[1,2,3,4,5,6,7,8,9,10,11,12],rendementsM2:0.3,prixKg:35,
+    amis:["tomate","aubergine","fraise"],ennemis:[],
+    conseil:"Vivace. Quasi indestructible. En plein soleil, sol drainé. 35€/kg en magasin !"},
+  romarin:{nom:"Romarin",emoji:"🌿",famille:"lamiacée",espacement:40,hauteur:"moyenne",soleil:"plein",eau:0,difficulte:1,
+    semisInterieur:[],plantation:[4,5],recolte:[1,2,3,4,5,6,7,8,9,10,11,12],rendementsM2:0.3,prixKg:30,
+    amis:["chou","haricot","carotte"],ennemis:[],
+    conseil:"Vivace. Éloigne la mouche de la carotte. En pot ou pleine terre."},
+  poireau:{nom:"Poireau",emoji:"🥬",famille:"alliacée",espacement:15,hauteur:"moyenne",soleil:"plein",eau:2,difficulte:2,
+    semisInterieur:[2,3],plantation:[5,6],recolte:[9,10,11,12,1,2],rendementsM2:3,prixKg:3.0,
+    amis:["carotte","tomate","salade","fraise"],ennemis:["haricot","pois"],
+    conseil:"Repiquer profond pour blanchir le fût. Récolte d'automne-hiver. Résiste au gel."},
+  mais:{nom:"Maïs doux",emoji:"🌽",famille:"poacée",espacement:30,hauteur:"haute",soleil:"plein",eau:2,difficulte:2,
+    semisInterieur:[],plantation:[5,6],recolte:[8,9],rendementsM2:1,prixKg:3.0,
+    amis:["haricot","courge","concombre","pois"],ennemis:["tomate"],
+    conseil:"Les 3 sœurs : maïs + haricot + courge. Semer en carré (pas en ligne) pour la pollinisation."},
+  capucine:{nom:"Capucine (fleur)",emoji:"🌺",famille:"tropaeolacée",espacement:30,hauteur:"grimpante",soleil:"plein",eau:1,difficulte:1,
+    semisInterieur:[],plantation:[4,5],recolte:[6,7,8,9],rendementsM2:0,prixKg:0,
+    amis:["tomate","courgette","chou","concombre"],ennemis:[],
+    conseil:"Attire les pucerons loin des légumes ! Fleurs comestibles. Indispensable au potager bio."}
+};
+
+// Zones climatiques (sources : Rustica, Kokopelli)
+var ZONES={
+  oceanique:{nom:"Océanique",desc:"Bretagne, Normandie, Aquitaine côte",gelTardif:3,premierSemis:2,saison:"longue",emoji:"🌊"},
+  semi_oceanique:{nom:"Semi-océanique",desc:"Centre, Loire, Poitou",gelTardif:4,premierSemis:3,saison:"moyenne",emoji:"🌤️"},
+  continental:{nom:"Continental",desc:"Est, Bourgogne, Auvergne",gelTardif:5,premierSemis:3,saison:"moyenne",emoji:"❄️"},
+  mediterraneen:{nom:"Méditerranéen",desc:"Provence, Languedoc, Corse",gelTardif:2,premierSemis:2,saison:"longue",emoji:"☀️"},
+  montagnard:{nom:"Montagnard",desc:"Alpes, Pyrénées, Massif Central",gelTardif:6,premierSemis:5,saison:"courte",emoji:"🏔️"}
+};
+
+var MOIS=["Jan","Fév","Mar","Avr","Mai","Jun","Jul","Aoû","Sep","Oct","Nov","Déc"];
+
+// ════════════════════════════════════════════════════════
+// ÉTAT
+// ════════════════════════════════════════════════════════
+var S={step:0,espace:"petit",zone:"semi_oceanique",niveau:"debutant",budget:"moyen",
+  surface:10,selectedVeg:[],soleil:"plein",moisDebut:5};
+var TOTAL_STEPS=5;
+
+function g(id){return document.getElementById(id);}
+function fmt(n){return Math.round(n).toLocaleString("fr-FR");}
+
+// ═══ STEPS ═══
+var STEPS=[
+  {eye:"Étape 1 / 5",title:"Votre espace",desc:"Quel type d'espace avez-vous pour votre potager ?",
+   render:function(){
+     return '<div class="opt-grid c4">'+
+       '<div class="opt'+(S.espace==="balcon"?" sel":"")+'" onclick="S.espace=\'balcon\';S.surface=3;reStep()"><span class="opt-emoji">🌿</span><div class="opt-name">Balcon / Terrasse</div><div class="opt-sub">2-5 m² · Pots et jardinières</div></div>'+
+       '<div class="opt'+(S.espace==="petit"?" sel":"")+'" onclick="S.espace=\'petit\';S.surface=10;reStep()"><span class="opt-emoji">🏡</span><div class="opt-name">Petit jardin</div><div class="opt-sub">5-20 m² · Carrés potagers</div></div>'+
+       '<div class="opt'+(S.espace==="moyen"?" sel":"")+'" onclick="S.espace=\'moyen\';S.surface=40;reStep()"><span class="opt-emoji">🌳</span><div class="opt-name">Jardin moyen</div><div class="opt-sub">20-60 m² · Belles planches</div></div>'+
+       '<div class="opt'+(S.espace==="grand"?" sel":"")+'" onclick="S.espace=\'grand\';S.surface=100;reStep()"><span class="opt-emoji">🚜</span><div class="opt-name">Grand potager</div><div class="opt-sub">60 m²+ · Semi-autonomie</div></div>'+
+     '</div>'+
+     '<div class="slider-block" style="margin-top:14px"><div class="sl-head"><span class="sl-label">Surface exacte</span><span class="sl-val" id="v-surface">'+S.surface+' m²</span></div>'+
+     '<input type="range" min="1" max="200" value="'+S.surface+'" oninput="S.surface=+this.value;g(\'v-surface\').textContent=this.value+\' m²\'"/>'+
+     '<div class="sl-marks"><span>1 m²</span><span>50</span><span>100</span><span>200 m²</span></div></div>'+
+     '<div class="slider-block"><div class="sl-head"><span class="sl-label">Ensoleillement</span><span class="sl-val" id="v-soleil">'+(S.soleil==="plein"?"Plein soleil ☀️":"Mi-ombre 🌤️")+'</span></div>'+
+     '<div class="opt-grid c2" style="margin-top:8px">'+
+       '<div class="opt'+(S.soleil==="plein"?" sel":"")+'" onclick="S.soleil=\'plein\';reStep()" style="padding:10px"><span class="opt-emoji">☀️</span><div class="opt-name">Plein soleil</div><div class="opt-sub">6h+ de soleil direct</div></div>'+
+       '<div class="opt'+(S.soleil==="mi-ombre"?" sel":"")+'" onclick="S.soleil=\'mi-ombre\';reStep()" style="padding:10px"><span class="opt-emoji">🌤️</span><div class="opt-name">Mi-ombre</div><div class="opt-sub">3-5h de soleil</div></div>'+
+     '</div></div>';
+  }},
+  {eye:"Étape 2 / 5",title:"Votre climat",desc:"Votre zone climatique détermine les dates de semis et les variétés adaptées.",
+   render:function(){
+     var h='<div class="opt-grid c3">';
+     Object.keys(ZONES).forEach(function(k){var z=ZONES[k];
+       h+='<div class="opt'+(S.zone===k?" sel":"")+'" onclick="S.zone=\''+k+'\';reStep()"><span class="opt-emoji">'+z.emoji+'</span><div class="opt-name">'+z.nom+'</div><div class="opt-sub">'+z.desc+'</div></div>';
+     });
+     h+='</div>';
+     return h;
+  }},
+  {eye:"Étape 3 / 5",title:"Votre profil",desc:"Votre expérience et budget nous aident à adapter les recommandations.",
+   render:function(){
+     return '<div class="opt-grid c3" style="margin-bottom:14px">'+
+       '<div class="opt'+(S.niveau==="debutant"?" sel":"")+'" onclick="S.niveau=\'debutant\';reStep()"><span class="opt-emoji">🌱</span><div class="opt-name">Débutant total</div><div class="opt-sub">Jamais fait pousser</div></div>'+
+       '<div class="opt'+(S.niveau==="intermediaire"?" sel":"")+'" onclick="S.niveau=\'intermediaire\';reStep()"><span class="opt-emoji">🌿</span><div class="opt-name">J\'ai déjà fait</div><div class="opt-sub">Quelques saisons</div></div>'+
+       '<div class="opt'+(S.niveau==="expert"?" sel":"")+'" onclick="S.niveau=\'expert\';reStep()"><span class="opt-emoji">🌳</span><div class="opt-name">Confirmé</div><div class="opt-sub">Plusieurs années</div></div>'+
+     '</div>'+
+     '<div class="opt-grid c3">'+
+       '<div class="opt'+(S.budget==="mini"?" sel":"")+'" onclick="S.budget=\'mini\';reStep()"><span class="opt-emoji">💚</span><div class="opt-name">Mini budget</div><div class="opt-sub">0-30€ · Récup & graines</div></div>'+
+       '<div class="opt'+(S.budget==="moyen"?" sel":"")+'" onclick="S.budget=\'moyen\';reStep()"><span class="opt-emoji">💰</span><div class="opt-name">Budget moyen</div><div class="opt-sub">30-100€ · Graines + terreau</div></div>'+
+       '<div class="opt'+(S.budget==="confort"?" sel":"")+'" onclick="S.budget=\'confort\';reStep()"><span class="opt-emoji">✨</span><div class="opt-name">Confort</div><div class="opt-sub">100€+ · Carrés, outils, bio</div></div>'+
+     '</div>';
+  }},
+  {eye:"Étape 4 / 5",title:"Quand commencer ?",desc:"Nous adapterons les recommandations au mois de démarrage.",
+   render:function(){
+     var h='<div class="opt-grid c4">';
+     var moisDispo=[3,4,5,6,7,8,9,10];
+     moisDispo.forEach(function(m){
+       h+='<div class="opt'+(S.moisDebut===m?" sel":"")+'" onclick="S.moisDebut='+m+';reStep()"><span class="opt-emoji">📅</span><div class="opt-name">'+MOIS[m-1]+'</div></div>';
+     });
+     h+='</div>';
+     return h;
+  }},
+  {eye:"Étape 5 / 5",title:"Vos envies",desc:"Sélectionnez les légumes qui vous font envie. Les indicateurs montrent si c'est encore le bon moment pour les planter.",
+   render:function(){
+     if(S.selectedVeg.length===0){
+       if(S.niveau==="debutant") S.selectedVeg=["tomate","salade","radis","basilic","ciboulette"];
+       else if(S.niveau==="intermediaire") S.selectedVeg=["tomate","courgette","salade","carotte","radis","haricot","basilic","persil"];
+       else S.selectedVeg=Object.keys(LEGUMES).slice(0,15);
+     }
+     // Filter pre-selection to only plantable vegs
+     S.selectedVeg=S.selectedVeg.filter(function(k){return canPlant(k)!=="no"});
+     var h='<div style="margin-bottom:12px;font-size:13px;color:var(--muted)">Cliquez pour ajouter/retirer. <strong style="color:var(--green)">'+S.selectedVeg.length+'</strong> sélectionné(s). Les légumes grisés ne sont plus plantables en '+MOIS[S.moisDebut-1]+'.</div>';
+     h+='<div class="veg-grid">';
+     Object.keys(LEGUMES).forEach(function(k){var v=LEGUMES[k];
+       var sel=S.selectedVeg.indexOf(k)>=0;
+       var status=canPlant(k);
+       var cls="veg"+(sel?" sel":"")+(status==="no"?" veg-no":"")+(status==="late"?" veg-late":"");
+       var badge=status==="ok"?"🟢":status==="late"?"🟡":"🔴";
+       h+='<div class="'+cls+'" onclick="'+(status==="no"?"":"togVeg(\'"+k+"\')")+'"><span class="veg-emoji">'+v.emoji+'</span>'+v.nom+'<span style="font-size:10px;display:block;margin-top:2px">'+badge+(status==="no"?" Trop tard":status==="late"?" Dernier moment":"")+'</span></div>';
+     });
+     h+='</div>';
+     return h;
+  }}
+];
+
+function togVeg(k){
+  if(canPlant(k)==="no") return; // Can't select impossible vegs
+  var i=S.selectedVeg.indexOf(k);
+  if(i>=0) S.selectedVeg.splice(i,1);
+  else S.selectedVeg.push(k);
+  reStep();
+}
+
+// Check if a veggie can still be planted given the start month
+function canPlant(k){
+  var v=LEGUMES[k];
+  if(!v) return "no";
+  var m=S.moisDebut;
+  // Can plant if start month falls within plantation or semisInterieur window
+  // Also ok if start month is 1-2 months before plantation (can start semis)
+  var allMonths=v.plantation.concat(v.semisInterieur);
+  // Direct match: can plant this month or next month
+  if(allMonths.indexOf(m)>=0) return "ok";
+  if(allMonths.indexOf(m+1)>=0) return "ok";
+  // Late but still possible: can plant within 2 months
+  if(allMonths.indexOf(m+2)>=0) return "late";
+  // For perennials and year-round (thym, romarin, ciboulette, menthe) - always ok in spring/summer
+  if(v.recolte.length>=8 && m>=3 && m<=9) return "ok";
+  // Still possible if the month is before the last plantation month
+  var lastPlant=Math.max.apply(null,v.plantation.length?v.plantation:[0]);
+  if(m<=lastPlant) return "ok";
+  if(m<=lastPlant+1) return "late";
+  return "no";
+}
+
+function renderProgress(){
+  var h="";
+  for(var i=0;i<TOTAL_STEPS;i++){
+    h+='<div class="prog'+(i<S.step?" done":i===S.step?" cur":"")+'"></div>';
+  }
+  h+='<span class="prog-label">'+(S.step+1)+'/'+TOTAL_STEPS+'</span>';
+  g("progress").innerHTML=h;
+}
+
+function reStep(){renderStep(S.step);}
+
+function renderStep(n){
+  S.step=n;renderProgress();
+  var step=STEPS[n];
+  var h='<div class="step on">'+
+    '<div class="step-eye">'+step.eye+'</div>'+
+    '<div class="step-title">'+step.title+'</div>'+
+    '<p class="step-desc">'+step.desc+'</p>'+
+    step.render()+
+    '<div class="step-nav">';
+  if(n>0) h+='<button class="btn btn-back" onclick="renderStep('+(n-1)+')">← Retour</button>';
+  if(n<TOTAL_STEPS-1) h+='<button class="btn btn-next" onclick="renderStep('+(n+1)+')">Suivant →</button>';
+  else h+='<button class="btn btn-next" style="background:#2d7a20" onclick="generatePlan()">🌱 Générer mon plan potager →</button>';
+  h+='</div></div>';
+  g("steps-container").innerHTML=h;
+}
+
+// ═══ GÉNÉRATION DU PLAN ═══
+function generatePlan(){
+  var zone=ZONES[S.zone];
+  var rejected=[];
+  var late=[];
+  var vegs=S.selectedVeg.map(function(k){return{key:k,data:LEGUMES[k]}}).filter(function(v){
+    // Filtrer selon ensoleillement
+    if(S.soleil==="mi-ombre" && v.data.soleil==="plein" && ["tomate","poivron","aubergine","mais"].indexOf(v.key)>=0){
+      rejected.push({key:v.key,data:v.data,reason:"Besoin de plein soleil"});return false;}
+    // Filtrer selon saison
+    var status=canPlant(v.key);
+    if(status==="no"){rejected.push({key:v.key,data:v.data,reason:"Trop tard pour planter en "+MOIS[S.moisDebut-1]});return false;}
+    if(status==="late") late.push(v.key);
+    return true;
+  });
+
+  // Calculer combien de plants de chaque par surface
+  var surfaceUtile=S.surface*0.7; // 70% planté, 30% allées
+  var totalEspace=0;
+  vegs.forEach(function(v){totalEspace+=v.data.espacement*v.data.espacement/10000;});
+  var ratio=Math.min(1,surfaceUtile/Math.max(1,totalEspace*vegs.length));
+
+  var plan=vegs.map(function(v){
+    var m2=Math.max(0.5,Math.min(surfaceUtile/vegs.length,surfaceUtile*0.3));
+    var plants=Math.max(1,Math.round(m2*10000/(v.data.espacement*v.data.espacement)));
+    var recolteKg=m2*v.data.rendementsM2;
+    var valeurEuro=recolteKg*v.data.prixKg;
+    return{key:v.key,data:v.data,m2:m2,plants:plants,recolteKg:recolteKg,valeur:valeurEuro};
+  });
+
+  // Build HTML
+  var html='';
+
+  // Header
+  var totalRecolte=plan.reduce(function(s,p){return s+p.recolteKg},0);
+  var totalValeur=plan.reduce(function(s,p){return s+p.valeur},0);
+  html+='<div class="plan-header">'+
+    '<div class="ph-eye">🌱 Votre plan potager personnalisé</div>'+
+    '<div class="ph-title">'+vegs.length+' cultures sur '+S.surface+' m² en zone '+zone.nom+'</div>'+
+    '<div class="ph-sub">Estimation : ~'+fmt(totalRecolte)+' kg de récolte soit ~'+fmt(totalValeur)+' € d\'économies sur la saison. Démarrage en '+MOIS[S.moisDebut-1]+'.</div>'+
+  '</div>';
+
+  // Warnings
+  if(rejected.length>0){
+    html+='<div style="background:var(--red-light);border:1.5px solid rgba(192,57,43,.2);border-radius:14px;padding:18px;margin-bottom:16px">';
+    html+='<div style="font-weight:700;font-size:14px;color:var(--red);margin-bottom:8px">⛔ '+rejected.length+' culture(s) retirée(s) du plan</div>';
+    rejected.forEach(function(r){
+      html+='<div style="font-size:13px;color:var(--soft);padding:4px 0">'+r.data.emoji+' <strong>'+r.data.nom+'</strong> — '+r.reason+'</div>';
+    });
+    html+='</div>';
+  }
+  if(late.length>0){
+    html+='<div style="background:var(--sun-light);border:1.5px solid rgba(243,156,18,.2);border-radius:14px;padding:18px;margin-bottom:16px">';
+    html+='<div style="font-weight:700;font-size:14px;color:var(--brown);margin-bottom:8px">⚠️ '+late.length+' culture(s) au dernier moment</div>';
+    html+='<div style="font-size:13px;color:var(--soft);line-height:1.7">';
+    late.forEach(function(k){var v=LEGUMES[k];html+=v.emoji+' <strong>'+v.nom+'</strong> — plantez très vite, c\'est la dernière fenêtre. ';});
+    html+='</div></div>';
+  }
+
+  // Plan visuel (grille)
+  var cols=Math.min(5,Math.ceil(Math.sqrt(plan.length)));
+  var colors=["#e8f5e9","#fff3e0","#e3f2fd","#f3e5f5","#fce4ec","#e0f2f1","#fff8e1","#f1f8e9","#e8eaf6","#fbe9e7"];
+  html+='<div class="garden-plan"><div class="gp-title">📐 Plan de votre potager</div>'+
+    '<div class="garden-grid" style="grid-template-columns:repeat('+cols+',1fr)">';
+  plan.forEach(function(p,i){
+    html+='<div class="garden-cell" style="background:'+colors[i%colors.length]+'">'+
+      '<span class="gc-emoji">'+p.data.emoji+'</span>'+
+      '<div class="gc-name">'+p.data.nom+'</div>'+
+      '<div class="gc-info">'+p.plants+' plants · '+p.m2.toFixed(1)+' m²</div>'+
+    '</div>';
+  });
+  html+='</div></div>';
+
+  // Calendrier
+  html+='<div class="calendar"><div class="cal-title">📅 Calendrier de semis, plantation et récolte</div>';
+  html+='<table class="cal-table"><thead><tr><th></th>';
+  MOIS.forEach(function(m){html+='<th>'+m+'</th>';});
+  html+='</tr></thead><tbody>';
+  plan.forEach(function(p){
+    html+='<tr><td>'+p.data.emoji+' '+p.data.nom+'</td>';
+    for(var m=1;m<=12;m++){
+      var cls="";var txt="";
+      if(p.data.semisInterieur.indexOf(m)>=0){cls="cal-semis";txt="S";}
+      else if(p.data.plantation.indexOf(m)>=0){cls="cal-plant";txt="P";}
+      else if(p.data.recolte.indexOf(m)>=0){cls="cal-recolte";txt="R";}
+      html+='<td>'+(cls?'<span class="cal-dot '+cls+'">'+txt+'</span>':"·")+'</td>';
+    }
+    html+='</tr>';
+  });
+  html+='</tbody></table>';
+  html+='<div class="cal-legend"><span><span class="cal-leg-dot cal-semis"></span>S = Semis intérieur</span><span><span class="cal-leg-dot cal-plant"></span>P = Plantation</span><span><span class="cal-leg-dot cal-recolte"></span>R = Récolte</span></div>';
+  html+='</div>';
+
+  // Associations
+  var goods=[],bads=[];
+  plan.forEach(function(p1){
+    plan.forEach(function(p2){
+      if(p1.key>=p2.key) return;
+      if(p1.data.amis.indexOf(p2.key)>=0) goods.push(p1.data.emoji+" "+p1.data.nom+" + "+p2.data.emoji+" "+p2.data.nom);
+      if(p1.data.ennemis.indexOf(p2.key)>=0) bads.push(p1.data.emoji+" "+p1.data.nom+" ✕ "+p2.data.emoji+" "+p2.data.nom);
+    });
+  });
+  if(goods.length||bads.length){
+    html+='<div class="assoc-card"><div class="assoc-title">🤝 Associations dans votre potager</div><div class="assoc-grid">';
+    goods.slice(0,8).forEach(function(g2){html+='<div class="assoc-item assoc-good"><span class="assoc-icon">✅</span>'+g2+'</div>';});
+    bads.slice(0,6).forEach(function(b){html+='<div class="assoc-item assoc-bad"><span class="assoc-icon">⚠️</span>'+b+' — éloigner !</div>';});
+    html+='</div></div>';
+  }
+
+  // Récoltes estimées
+  html+='<div class="harvest"><div class="harvest-title">🧺 Récoltes estimées sur la saison</div><div class="harvest-grid">';
+  plan.filter(function(p){return p.recolteKg>0.1}).sort(function(a,b){return b.valeur-a.valeur}).forEach(function(p){
+    html+='<div class="hv-item"><div class="hv-emoji">'+p.data.emoji+'</div><div class="hv-name">'+p.data.nom+'</div><div class="hv-kg">~'+p.recolteKg.toFixed(1)+' kg</div><div class="hv-val">≈ '+fmt(p.valeur)+' € en magasin</div></div>';
+  });
+  html+='</div></div>';
+
+  // Budget
+  var budgetGraines=plan.length*3;
+  var budgetTerreau=S.surface*2;
+  var budgetOutils=S.budget==="mini"?0:S.budget==="moyen"?40:120;
+  var budgetTotal=budgetGraines+budgetTerreau+budgetOutils;
+  html+='<div class="budget-card"><div class="budget-title">💰 Budget estimé</div>'+
+    '<div class="budget-row"><span class="br-label">Graines bio (~3€/sachet)</span><span class="br-val">~'+fmt(budgetGraines)+' €</span></div>'+
+    '<div class="budget-row"><span class="br-label">Terreau / compost</span><span class="br-val">~'+fmt(budgetTerreau)+' €</span></div>'+
+    '<div class="budget-row"><span class="br-label">Outils de base</span><span class="br-val">~'+fmt(budgetOutils)+' €</span></div>'+
+    '<div class="budget-row" style="background:var(--green-light);border-color:rgba(45,122,32,.2)"><span class="br-label" style="font-weight:700;color:var(--ink)">Total investissement</span><span class="br-val" style="color:var(--green);font-size:16px">~'+fmt(budgetTotal)+' €</span></div>'+
+    '<div class="budget-row" style="background:var(--sun-light);border-color:rgba(243,156,18,.2)"><span class="br-label" style="font-weight:700;color:var(--ink)">Récolte estimée en valeur</span><span class="br-val" style="color:var(--brown);font-size:16px">~'+fmt(totalValeur)+' €</span></div>'+
+    '<div class="budget-row"><span class="br-label" style="font-weight:700">Rentabilité</span><span class="br-val" style="color:var(--green)">×'+((totalValeur/Math.max(1,budgetTotal))).toFixed(1)+'</span></div>'+
+  '</div>';
+
+  // Tips personnalisés
+  html+='<div class="tips"><div class="tips-title">💡 Conseils personnalisés pour votre potager</div>';
+  plan.forEach(function(p){
+    html+='<div class="tip"><span class="tip-icon">'+p.data.emoji+'</span><span><strong>'+p.data.nom+' :</strong> '+p.data.conseil+'</span></div>';
+  });
+  html+='</div>';
+
+  // Kokopelli note
+  // Sources citées en bas de page
+
+  html+='<div class="share-row">'+
+    '<button class="share-btn primary" onclick="copyPlan()">📋 Copier mon plan</button>'+
+    '<button class="share-btn" onclick="shareX()">𝕏 Partager</button>'+
+    '<button class="share-btn" onclick="restart()">↻ Recommencer</button>'+
+  '</div>';
+
+  g("results").innerHTML=html;
+  g("results").classList.add("on");
+  g("steps-container").style.display="none";
+  g("progress").style.display="none";
+  window.scrollTo({top:g("results").offsetTop-40,behavior:"smooth"});
+}
+
+function restart(){
+  g("results").classList.remove("on");
+  g("results").innerHTML="";
+  g("steps-container").style.display="block";
+  g("progress").style.display="flex";
+  S.step=0;S.selectedVeg=[];
+  renderStep(0);
+}
+
+function copyPlan(){
+  var vegs=S.selectedVeg.map(function(k){return LEGUMES[k]});
+  var txt="🌱 MON PLAN POTAGER — Calculamatix\n\n";
+  txt+="Surface : "+S.surface+" m² · Zone : "+ZONES[S.zone].nom+"\n";
+  txt+="Cultures : "+vegs.map(function(v){return v.emoji+" "+v.nom}).join(", ")+"\n\n";
+  txt+="Planifiez le vôtre → calculamatix.com/potager";
+  if(navigator.clipboard) navigator.clipboard.writeText(txt).then(function(){alert("Plan copié !")}).catch(function(){prompt("Copiez :",txt)});
+  else prompt("Copiez :",txt);
+}
+
+function shareX(){
+  var txt="Je viens de planifier mon potager "+S.surface+"m² avec "+S.selectedVeg.length+" cultures — le planificateur est incroyable → calculamatix.com/potager";
+  window.open("https://twitter.com/intent/tweet?text="+encodeURIComponent(txt),"_blank");
+}
+
+function tFaq(el){el.classList.toggle("open");el.nextElementSibling.classList.toggle("open")}
+
+// ═══ EASTER EGGS 🌸 ═══
+var bloomCount=0;
+function bloomLogo(e){
+  e.preventDefault();
+  bloomCount++;
+  var logo=document.querySelector(".logo-bloom");
+  logo.classList.add("bloomed");
+  var flowers=["🌸","🌺","🌻","🌷","🌹","💐","🌼","🏵️"];
+  // Sprout changes each click
+  logo.querySelector(".sprout").textContent=flowers[bloomCount%flowers.length];
+  // Drop a flower
+  var f=document.createElement("div");
+  f.className="ee-flower";
+  f.textContent=flowers[Math.floor(Math.random()*flowers.length)];
+  f.style.left=Math.random()*80+10+"%";
+  f.style.animationDuration=(2+Math.random()*3)+"s";
+  document.body.appendChild(f);
+  setTimeout(function(){f.remove()},5000);
+  // Secret: 10 clicks = flower rain!
+  if(bloomCount===10){
+    flowerRain();
+    bloomCount=0;
+  }
+}
+function flowerRain(){
+  var flowers=["🌸","🌺","🌻","🌷","🌹","🌼","🏵️","💮","🪻","🪷"];
+  for(var i=0;i<40;i++){
+    (function(delay){
+      setTimeout(function(){
+        var f=document.createElement("div");
+        f.className="ee-flower";
+        f.textContent=flowers[Math.floor(Math.random()*flowers.length)];
+        f.style.left=Math.random()*100+"%";
+        f.style.fontSize=(16+Math.random()*24)+"px";
+        f.style.animationDuration=(2+Math.random()*4)+"s";
+        document.body.appendChild(f);
+        setTimeout(function(){f.remove()},6000);
+      },delay);
+    })(i*80);
+  }
+}
+
+// Init
+renderStep(0);
+</script>
+<script src="/suggestions.js"></script>
+<script>try{renderFooter("potager");}catch(e){}</script>
+</body>
+</html>
