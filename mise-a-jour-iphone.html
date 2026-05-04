@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dois-je faire la mise à jour iOS ? Guide par modèle d'iPhone (2026) | Calculamatix</title>
+<meta name="description" content="Faut-il mettre à jour votre iPhone ? Sélectionnez votre modèle et découvrez quelle version d'iOS installer sans ralentir votre appareil. Conseils personnalisés, compatibilité iOS 26, état de batterie."/>
+<link rel="canonical" href="https://calculamatix.com/mise-a-jour-iphone"/>
+<meta property="og:title" content="Dois-je faire la mise à jour iOS ? Le guide ultime par modèle d'iPhone"/>
+<meta property="og:description" content="iPhone 11, 12, 13, 14, 15, 16 — quelle version d'iOS installer sans ralentir ? Réponse personnalisée en 30 secondes."/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Dois-je mettre à jour mon iPhone vers iOS 26 ?","acceptedAnswer":{"@type":"Answer","text":"Ça dépend de votre modèle. Les iPhone 14 et plus récents tournent iOS 26 sans problème. Les iPhone 12-13 le supportent bien mais avec quelques lenteurs possibles sur les fonctions IA. Les iPhone 11 sont en limite de support (dernière mise à jour majeure probable). Les iPhone XS/XR ne sont plus compatibles avec iOS 26."}},{"@type":"Question","name":"Est-ce que iOS 26 ralentit les anciens iPhone ?","acceptedAnswer":{"@type":"Answer","text":"Un ralentissement temporaire de 2-3 jours est normal après toute mise à jour majeure (réindexation). Sur iPhone 12+, les performances reviennent à la normale. Sur iPhone 11, des lenteurs persistantes sont signalées par certains utilisateurs, surtout avec les effets Liquid Glass. Astuce : désactiver la transparence dans Réglages > Accessibilité améliore significativement la fluidité."}},{"@type":"Question","name":"Comment savoir si ma batterie iPhone est encore bonne ?","acceptedAnswer":{"@type":"Answer","text":"Allez dans Réglages > Batterie > État et charge de la batterie. Au-dessus de 80% : tout va bien. Entre 70-80% : remplacement recommandé, surtout avant une mise à jour majeure. En dessous de 70% : remplacement nécessaire, les performances sont bridées par iOS pour protéger la batterie."}},{"@type":"Question","name":"Peut-on revenir en arrière après une mise à jour iOS ?","acceptedAnswer":{"@type":"Answer","text":"Non, Apple empêche le retour aux versions précédentes une fois qu'une mise à jour est installée. C'est pourquoi il est important de bien réfléchir avant de mettre à jour un ancien iPhone. La seule exception : pendant quelques jours après la sortie d'une nouvelle version, Apple signe encore l'ancienne, permettant un downgrade via iTunes/Finder."}}]}</script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8f9fc;--card:#fff;--border:#e5e7eb;--ink:#111827;--soft:#374151;--muted:#9ca3af;
+  --blue:#2563eb;--blue-light:#eff6ff;--green:#16a34a;--green-light:#f0fdf4;
+  --amber:#d97706;--amber-light:#fffbeb;--red:#dc2626;--red-light:#fef2f2;
+  --purple:#7c3aed;--purple-light:#f5f3ff;
+  --shadow:0 1px 8px rgba(0,0,0,.06);
+}
+body{background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif;font-size:15px;line-height:1.65}
+nav{max-width:900px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.logo{font-family:"Outfit",sans-serif;font-weight:800;font-size:19px;text-decoration:none;color:var(--ink)}.logo em{font-style:normal;color:var(--blue)}
+.back{font-size:13px;color:var(--muted);text-decoration:none}
+
+.hero{max-width:900px;margin:0 auto;padding:36px 24px 0;text-align:center}
+.hero-badge{display:inline-block;font-size:11px;font-family:"JetBrains Mono",monospace;color:var(--blue);background:var(--blue-light);border:1px solid rgba(37,99,235,.15);padding:5px 14px;border-radius:100px;font-weight:600;margin-bottom:14px}
+h1{font-family:"Outfit",sans-serif;font-weight:800;font-size:clamp(26px,4.5vw,44px);letter-spacing:-1.5px;line-height:1.1;margin-bottom:12px}
+h1 .hl{color:var(--blue)}
+.hero-desc{font-size:15px;color:var(--muted);max-width:560px;margin:0 auto 24px;line-height:1.7}
+
+/* MAIN */
+.main{max-width:900px;margin:0 auto;padding:0 24px 60px}
+
+/* SÉLECTEUR */
+.selector{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;box-shadow:var(--shadow);margin-bottom:20px}
+.sel-title{font-family:"Outfit",sans-serif;font-weight:700;font-size:18px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.sel-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+.sel-btn{background:var(--bg);border:2px solid var(--border);border-radius:14px;padding:14px 8px;cursor:pointer;text-align:center;transition:all .15s;position:relative}
+.sel-btn:hover{border-color:var(--blue);transform:translateY(-2px)}
+.sel-btn.on{border-color:var(--blue);background:var(--blue-light);box-shadow:0 2px 12px rgba(37,99,235,.12)}
+.sel-emoji{font-size:26px;display:block;margin-bottom:6px}
+.sel-name{font-weight:700;font-size:13px;margin-bottom:2px}
+.sel-year{font-size:10px;color:var(--muted);font-family:"JetBrains Mono",monospace}
+.sel-chip{font-size:8px;position:absolute;top:6px;right:6px;background:var(--red);color:#fff;padding:2px 6px;border-radius:100px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.sel-chip.ok{background:var(--green)}
+.sel-chip.warn{background:var(--amber)}
+
+/* BATTERIE */
+.batt-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.batt-block{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:16px}
+.batt-label{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:8px}
+.batt-input{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;font-size:14px;font-family:"Inter",sans-serif;color:var(--ink);outline:none}
+.batt-input:focus{border-color:var(--blue)}
+.batt-hint{font-size:10px;color:var(--muted);margin-top:4px;font-style:italic}
+
+/* RÉSULTAT */
+.result{display:none;animation:fadeIn .3s ease}
+.result.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.verdict-card{border-radius:20px;padding:28px;margin-bottom:16px;position:relative;overflow:hidden}
+.verdict-card.go{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff}
+.verdict-card.caution{background:linear-gradient(135deg,#d97706,#b45309);color:#fff}
+.verdict-card.stop{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
+.verdict-card.info{background:linear-gradient(135deg,var(--blue),#1d4ed8);color:#fff}
+.verdict-emoji{font-size:48px;position:absolute;right:16px;top:16px;opacity:.2}
+.verdict-label{font-size:10px;font-family:"JetBrains Mono",monospace;text-transform:uppercase;letter-spacing:2px;opacity:.8;margin-bottom:8px}
+.verdict-title{font-family:"Outfit",sans-serif;font-weight:800;font-size:clamp(22px,3.5vw,32px);line-height:1.15;margin-bottom:8px;position:relative}
+.verdict-text{font-size:14px;opacity:.9;line-height:1.7;max-width:600px;position:relative}
+
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.detail-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.dc-icon{font-size:22px;margin-bottom:8px}
+.dc-title{font-weight:700;font-size:14px;margin-bottom:6px}
+.dc-text{font-size:13px;color:var(--soft);line-height:1.7}
+.dc-val{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:16px;margin-bottom:4px}
+
+/* iOS VERSION TIMELINE */
+.timeline{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow)}
+.tl-title{font-family:"Outfit",sans-serif;font-weight:700;font-size:16px;margin-bottom:14px}
+.tl-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.tl-row:last-child{border-bottom:none}
+.tl-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.tl-dot.best{background:var(--green);box-shadow:0 0 8px rgba(22,163,74,.3)}
+.tl-dot.ok{background:var(--amber)}
+.tl-dot.no{background:var(--red)}
+.tl-dot.cur{background:var(--blue);box-shadow:0 0 8px rgba(37,99,235,.3)}
+.tl-version{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:13px;min-width:70px}
+.tl-label{font-size:13px;color:var(--soft);flex:1}
+.tl-badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.5px}
+.tl-badge.recommended{background:var(--green-light);color:var(--green)}
+.tl-badge.current{background:var(--blue-light);color:var(--blue)}
+.tl-badge.risky{background:var(--amber-light);color:var(--amber)}
+.tl-badge.blocked{background:var(--red-light);color:var(--red)}
+
+/* TIPS */
+.tips-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow)}
+.tips-title{font-family:"Outfit",sans-serif;font-weight:700;font-size:16px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.tip{display:flex;gap:10px;padding:8px 0;font-size:13px;color:var(--soft);line-height:1.6}
+.tip-icon{font-size:16px;flex-shrink:0;margin-top:2px}
+
+/* SHARE */
+.share-row{display:flex;gap:8px;justify-content:center;margin:20px 0;flex-wrap:wrap}
+.share-btn{background:var(--card);border:1.5px solid var(--border);color:var(--soft);padding:11px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:"Inter",sans-serif;border-radius:12px;transition:all .15s}
+.share-btn:hover{border-color:var(--blue);color:var(--blue)}
+.share-btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* FAQ */
+.faq-section{margin-top:40px}
+.faq-h2{font-family:"Outfit",sans-serif;font-size:24px;font-weight:800;margin-bottom:16px}
+.fitem{border-bottom:1px solid var(--border);padding:14px 0}
+.fq{font-weight:600;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;gap:10px}
+.fq::after{content:"+";font-size:20px;color:var(--blue);flex-shrink:0;font-weight:400}
+.fq.open::after{content:"−"}
+.fa{font-size:13px;color:var(--soft);line-height:1.85;max-height:0;overflow:hidden;transition:max-height .3s}
+.fa.open{max-height:300px;padding-top:10px}
+
+.disc{font-size:10px;color:var(--muted);text-align:center;margin-top:30px;line-height:1.7;font-style:italic}
+
+@media(max-width:700px){.sel-grid{grid-template-columns:repeat(3,1fr)}.detail-grid{grid-template-columns:1fr}.batt-row{grid-template-columns:1fr}}
+@media(max-width:500px){.sel-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<nav><a class="logo" href="index.html">Calcula<em>matix</em></a><a class="back" href="index.html">← Retour</a></nav>
+
+<div class="hero">
+  <span class="hero-badge">📱 Guide iOS · Mai 2026</span>
+  <h1>Dois-je faire la <span class="hl">mise à jour</span> iOS ?</h1>
+  <p class="hero-desc">Sélectionnez votre iPhone et découvrez quelle version d'iOS installer sans ralentir votre appareil. Réponse personnalisée en 30 secondes.</p>
+</div>
+
+<div class="main">
+  <div class="selector">
+    <div class="sel-title">📱 Quel est votre iPhone ?</div>
+    <div class="sel-grid" id="phone-grid"></div>
+    <div class="batt-row">
+      <div class="batt-block">
+        <div class="batt-label">🔋 Santé de votre batterie (%)</div>
+        <input class="batt-input" type="number" id="i-batt" value="87" min="50" max="100" onchange="analyze()"/>
+        <div class="batt-hint">Réglages → Batterie → État et charge</div>
+      </div>
+      <div class="batt-block">
+        <div class="batt-label">📦 Stockage libre (Go)</div>
+        <input class="batt-input" type="number" id="i-storage" value="32" min="0" max="512" onchange="analyze()"/>
+        <div class="batt-hint">Réglages → Général → Stockage iPhone</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="result" id="result"></div>
+
+  <div class="faq-section">
+    <h2 class="faq-h2">Questions fréquentes</h2>
+    <div class="fitem"><div class="fq" onclick="tFaq(this)">Dois-je mettre à jour mon iPhone vers iOS 26 ?</div><div class="fa">Ça dépend de votre modèle. Les <strong>iPhone 14 et plus récents</strong> tournent iOS 26 sans problème. Les <strong>iPhone 12-13</strong> le supportent bien mais avec quelques lenteurs possibles sur les fonctions IA/Liquid Glass. Les <strong>iPhone 11</strong> sont en limite de support (dernière mise à jour majeure probable). Les <strong>iPhone XS/XR</strong> ne sont plus compatibles.</div></div>
+    <div class="fitem"><div class="fq" onclick="tFaq(this)">Est-ce que iOS 26 ralentit les anciens iPhone ?</div><div class="fa">Un <strong>ralentissement temporaire de 2-3 jours</strong> est normal après toute mise à jour majeure (réindexation). Sur iPhone 12+, les performances reviennent à la normale. Sur iPhone 11, des lenteurs sont signalées, surtout avec les effets Liquid Glass. <strong>Astuce</strong> : désactiver la transparence dans Réglages → Accessibilité améliore la fluidité.</div></div>
+    <div class="fitem"><div class="fq" onclick="tFaq(this)">Comment savoir si ma batterie est encore bonne ?</div><div class="fa">Réglages → Batterie → État et charge. <strong>Au-dessus de 80%</strong> : tout va bien. <strong>70-80%</strong> : remplacement recommandé. <strong>En dessous de 70%</strong> : remplacement nécessaire — iOS bride les performances pour protéger la batterie (depuis l'affaire des 25M€ d'amende en 2020).</div></div>
+    <div class="fitem"><div class="fq" onclick="tFaq(this)">Peut-on revenir en arrière après une mise à jour ?</div><div class="fa"><strong>Non</strong>, Apple bloque le downgrade une fois la mise à jour installée. C'est pourquoi il faut bien réfléchir avant de mettre à jour un ancien iPhone. Exception : pendant quelques jours après la sortie, Apple signe encore l'ancienne version.</div></div>
+    <div class="fitem"><div class="fq" onclick="tFaq(this)">Les mises à jour mineures (ex: 18.7.2) sont-elles sûres ?</div><div class="fa"><strong>Oui, toujours les faire.</strong> Les mises à jour mineures (x.x.x) corrigent des failles de sécurité sans changer les performances. Ne jamais ignorer une mise à jour de sécurité, même sur un ancien iPhone. Seules les mises à jour majeures (iOS 18 → iOS 26) peuvent impacter les performances.</div></div>
+  </div>
+
+  <p class="disc">⚠️ Conseils basés sur les retours utilisateurs, tests indépendants et données Apple (avril 2026). Les résultats varient selon l'usage, les apps installées et l'état de la batterie. Calculamatix n'est pas affilié à Apple.</p>
+</div>
+
+<script>
+// ═══ BASE DE DONNÉES iPhone ═══
+var PHONES=[
+  {id:"se2",name:"iPhone SE (2e gen)",year:2020,chip:"A13",emoji:"📱",maxIOS:"26",lastMajor:true,
+   rec:"ios26",note:"Dernière version majeure probable. iOS 26 tourne bien grâce à l'écran petit (4.7\"). Liquid Glass allégé.",
+   perf:7,risk:3,security:9},
+  {id:"se3",name:"iPhone SE (3e gen)",year:2022,chip:"A15",emoji:"📱",maxIOS:"26+",lastMajor:false,
+   rec:"ios26",note:"Puce A15 puissante, iOS 26 tourne très bien. Support jusqu'en 2028 minimum.",
+   perf:9,risk:1,security:10},
+  {id:"11",name:"iPhone 11",year:2019,chip:"A13",emoji:"📱",maxIOS:"26",lastMajor:true,
+   rec:"ios26-prudent",note:"iOS 26 compatible mais c'est la dernière MAJ majeure. Certains signalent des lenteurs avec Liquid Glass. Désactiver la transparence recommandé.",
+   perf:6,risk:5,security:9},
+  {id:"11pro",name:"iPhone 11 Pro / Max",year:2019,chip:"A13",emoji:"📱",maxIOS:"26",lastMajor:true,
+   rec:"ios26-prudent",note:"Même puce A13, mais 4 Go de RAM. iOS 26 correct avec quelques compromis. Dernière MAJ majeure.",
+   perf:6,risk:4,security:9},
+  {id:"12mini",name:"iPhone 12 mini",year:2020,chip:"A14",emoji:"📱",maxIOS:"26+",lastMajor:false,
+   rec:"ios26",note:"A14 + petit écran = très fluide sur iOS 26. Attention à l'autonomie (batterie petite). Support jusqu'en 2027.",
+   perf:8,risk:2,security:10},
+  {id:"12",name:"iPhone 12 / 12 Pro",year:2020,chip:"A14",emoji:"📱",maxIOS:"26+",lastMajor:false,
+   rec:"ios26",note:"iOS 26 tourne bien. Liquid Glass fluide. Quelques fonctions Apple Intelligence non disponibles (puce trop ancienne). Support jusqu'en 2027.",
+   perf:8,risk:2,security:10},
+  {id:"12promax",name:"iPhone 12 Pro Max",year:2020,chip:"A14",emoji:"📱",maxIOS:"26+",lastMajor:false,
+   rec:"ios26",note:"Grand écran + A14 = iOS 26 fluide. 6 Go de RAM suffisent. Support jusqu'en 2027.",
+   perf:8,risk:2,security:10},
+  {id:"13mini",name:"iPhone 13 mini",year:2021,chip:"A15",emoji:"📱",maxIOS:"26+",lastMajor:false,
+   rec:"ios26",note:"A15 excellente sur iOS 26. Performances améliorées par rapport à iOS 18 selon les tests. Support jusqu'en 2028.",
+   perf:9,risk:1,security:10},
+  {id:"13",name:"iPhone 13 / 13 Pro",year:2021,chip:"A15",emoji:"📱",maxIOS:"26+",lastMajor:false,
+   rec:"ios26",note:"Aucun souci avec iOS 26. Apple Intelligence basique disponible. Meilleur rapport qualité-prix en reconditionné 2026.",
+   perf:9,risk:1,security:10},
+  {id:"13promax",name:"iPhone 13 Pro Max",year:2021,chip:"A15",emoji:"📱",maxIOS:"26+",lastMajor:false,
+   rec:"ios26",note:"120Hz ProMotion + A15 = iOS 26 ultra-fluide. Apple Intelligence basique disponible. Support jusqu'en 2028.",
+   perf:9,risk:1,security:10},
+  {id:"14",name:"iPhone 14 / 14 Plus",year:2022,chip:"A15",emoji:"📱",maxIOS:"26+",lastMajor:false,
+   rec:"ios26",note:"A15, iOS 26 parfait. Toutes les fonctions disponibles sauf Apple Intelligence avancée. Support jusqu'en 2029.",
+   perf:9,risk:1,security:10},
+  {id:"14pro",name:"iPhone 14 Pro / Max",year:2022,chip:"A16",emoji:"📱",maxIOS:"26+",lastMajor:false,
+   rec:"ios26",note:"A16 + ProMotion + Dynamic Island = iOS 26 parfaitement optimisé. Apple Intelligence complète. Aucun compromis.",
+   perf:10,risk:0,security:10},
+  {id:"15",name:"iPhone 15 / 15 Plus",year:2023,chip:"A16",emoji:"📱",maxIOS:"26+",lastMajor:false,
+   rec:"ios26",note:"USB-C + A16. iOS 26 natif, zéro problème. Apple Intelligence complète. Support jusqu'en 2030.",
+   perf:10,risk:0,security:10},
+  {id:"15pro",name:"iPhone 15 Pro / Max",year:2023,chip:"A17Pro",emoji:"📱",maxIOS:"26+",lastMajor:false,
+   rec:"ios26",note:"A17 Pro, la puce de référence pour iOS 26. Toutes fonctions IA, jeux AAA, ray tracing. Aucune limite.",
+   perf:10,risk:0,security:10},
+  {id:"16",name:"iPhone 16 / 16 Plus",year:2024,chip:"A18",emoji:"📱",maxIOS:"26+",lastMajor:false,
+   rec:"ios26",note:"Conçu pour iOS 26. Bouton Action, Capture. Apple Intelligence complète. Support jusqu'en 2031.",
+   perf:10,risk:0,security:10},
+  {id:"16pro",name:"iPhone 16 Pro / Max",year:2024,chip:"A18Pro",emoji:"📱",maxIOS:"26+",lastMajor:false,
+   rec:"ios26",note:"Le meilleur iPhone pour iOS 26. Toutes les fonctions, zero compromis, support jusqu'en 2031+.",
+   perf:10,risk:0,security:10},
+  {id:"17",name:"iPhone 17 / Air",year:2025,chip:"A19",emoji:"📱",maxIOS:"26+",lastMajor:false,
+   rec:"ios26",note:"iPhone 2025 livré avec iOS 26. Parfaitement optimisé, c'est son OS natif.",
+   perf:10,risk:0,security:10},
+  {id:"xs",name:"iPhone XS / XS Max",year:2018,chip:"A12",emoji:"📱",maxIOS:"18.7",lastMajor:false,
+   rec:"rester",note:"iOS 26 NON compatible. Restez sur iOS 18.7.x pour les correctifs de sécurité. L'iPhone fonctionne très bien sur iOS 18.",
+   perf:7,risk:0,security:6},
+  {id:"xr",name:"iPhone XR",year:2018,chip:"A12",emoji:"📱",maxIOS:"18.7",lastMajor:false,
+   rec:"rester",note:"iOS 26 NON compatible. iOS 18.7.x est votre version finale. Pensez à un remplacement d'ici 2027 pour la sécurité.",
+   perf:7,risk:0,security:6}
+];
+
+var selectedPhone=null;
+
+function g(id){return document.getElementById(id);}
+
+// Render phone grid
+function renderGrid(){
+  var html="";
+  PHONES.forEach(function(p){
+    var chip=p.maxIOS==="18.7"?"sel-chip":"sel-chip ok";
+    if(p.lastMajor) chip="sel-chip warn";
+    var chipText=p.maxIOS==="18.7"?"Fin support":p.lastMajor?"Dernier iOS":"OK";
+    html+='<div class="sel-btn" id="btn-'+p.id+'" onclick="selectPhone(\''+p.id+'\')">'+
+      '<span class="'+chip+'">'+chipText+'</span>'+
+      '<span class="sel-emoji">'+p.emoji+'</span>'+
+      '<div class="sel-name">'+p.name.replace("iPhone ","")+'</div>'+
+      '<div class="sel-year">'+p.year+' · '+p.chip+'</div>'+
+    '</div>';
+  });
+  g("phone-grid").innerHTML=html;
+}
+
+function selectPhone(id){
+  selectedPhone=PHONES.find(function(p){return p.id===id});
+  document.querySelectorAll(".sel-btn").forEach(function(b){b.classList.remove("on")});
+  g("btn-"+id).classList.add("on");
+  analyze();
+}
+
+function analyze(){
+  if(!selectedPhone) return;
+  var p=selectedPhone;
+  var batt=+(g("i-batt").value)||87;
+  var storage=+(g("i-storage").value)||32;
+
+  var verdictClass, verdictEmoji, verdictLabel, verdictTitle, verdictText;
+
+  // Determine verdict
+  if(p.maxIOS==="18.7"){
+    verdictClass="stop";verdictEmoji="🚫";verdictLabel="Non compatible";
+    verdictTitle="iOS 26 n'est pas disponible pour votre "+p.name;
+    verdictText="Votre "+p.name+" (puce "+p.chip+") n'est plus supporté par iOS 26. Restez sur iOS "+p.maxIOS+" et faites toutes les mises à jour de sécurité mineures. "+p.note;
+  } else if(p.rec==="ios26-prudent"){
+    verdictClass="caution";verdictEmoji="⚠️";verdictLabel="Possible mais avec précautions";
+    verdictTitle="Vous pouvez installer iOS 26, mais soyez prudent";
+    verdictText=p.note+" Batterie à "+batt+"% : "+(batt>=80?"c'est bon.":"⚠️ Remplacez-la d'abord, sinon les performances seront bridées.");
+  } else if(p.perf>=9){
+    verdictClass="go";verdictEmoji="✅";verdictLabel="Foncez !";
+    verdictTitle="Mettez à jour vers iOS 26 sans hésiter";
+    verdictText=p.note+" Batterie à "+batt+"% : "+(batt>=80?"parfait, aucun souci.":"pensez à remplacer la batterie pour en profiter pleinement.");
+  } else {
+    verdictClass="info";verdictEmoji="ℹ️";verdictLabel="Recommandé";
+    verdictTitle="iOS 26 tourne bien sur votre "+p.name;
+    verdictText=p.note;
+  }
+
+  // Battery warning
+  var battWarn="";
+  if(batt<70) battWarn='<div class="tip"><span class="tip-icon">🔴</span><span><strong>Batterie critique ('+batt+'%)</strong> — iOS bride les performances. Remplacez la batterie AVANT de mettre à jour. Coût : 75-110€ chez Apple, 40-60€ en réparateur indépendant.</span></div>';
+  else if(batt<80) battWarn='<div class="tip"><span class="tip-icon">🟡</span><span><strong>Batterie usée ('+batt+'%)</strong> — Remplacement recommandé, surtout avant une mise à jour majeure. L\'autonomie et les performances s\'amélioreront significativement.</span></div>';
+
+  // Storage warning
+  var storWarn="";
+  if(storage<5) storWarn='<div class="tip"><span class="tip-icon">🔴</span><span><strong>Stockage critique ('+storage+' Go)</strong> — iOS 26 nécessite ~6 Go pour l\'installation. Libérez de l\'espace avant de mettre à jour. Supprimez les anciennes photos/vidéos ou utilisez iCloud.</span></div>';
+  else if(storage<10) storWarn='<div class="tip"><span class="tip-icon">🟡</span><span><strong>Stockage serré ('+storage+' Go)</strong> — Suffisant pour l\'installation mais l\'iPhone sera lent si le stockage est quasi-plein. Visez 10%+ de libre.</span></div>';
+
+  // Timeline
+  var tlHtml='<div class="timeline"><div class="tl-title">📋 Historique des versions pour votre '+p.name+'</div>';
+  var versions=[];
+  if(p.maxIOS==="18.7"){
+    versions=[
+      {v:"iOS 18.7.x",dot:"best",label:"Version optimale — stable et sécurisée",badge:"recommended",bt:"Recommandé"},
+      {v:"iOS 18.0",dot:"ok",label:"Version de base iOS 18",badge:"",bt:""},
+      {v:"iOS 26",dot:"no",label:"Non compatible (nécessite puce A13+)",badge:"blocked",bt:"Bloqué"}
+    ];
+  } else if(p.lastMajor){
+    versions=[
+      {v:"iOS 26.x",dot:"ok",label:"Compatible mais dernière MAJ majeure — lenteurs possibles",badge:"risky",bt:"Prudence"},
+      {v:"iOS 18.7.x",dot:"best",label:"Version la plus stable et fluide pour votre appareil",badge:"recommended",bt:"Recommandé"},
+      {v:"iOS 18.0",dot:"cur",label:"Version de base iOS 18",badge:"",bt:""}
+    ];
+  } else if(p.year<=2021){
+    versions=[
+      {v:"iOS 26.x",dot:"best",label:"Compatible et fluide — mettez à jour",badge:"recommended",bt:"Recommandé"},
+      {v:"iOS 18.7.x",dot:"ok",label:"Alternative stable si vous ne voulez pas changer",badge:"",bt:""},
+    ];
+  } else {
+    versions=[
+      {v:"iOS 26.x",dot:"best",label:"Parfaitement optimisé pour votre appareil",badge:"recommended",bt:"Recommandé"},
+    ];
+  }
+  versions.forEach(function(ver){
+    tlHtml+='<div class="tl-row"><div class="tl-dot '+ver.dot+'"></div><div class="tl-version">'+ver.v+'</div><div class="tl-label">'+ver.label+'</div>'+(ver.badge?'<span class="tl-badge '+ver.badge+'">'+ver.bt+'</span>':'')+'</div>';
+  });
+  tlHtml+='</div>';
+
+  // Build result HTML
+  var html='<div class="verdict-card '+verdictClass+'">'+
+    '<div class="verdict-emoji">'+verdictEmoji+'</div>'+
+    '<div class="verdict-label">'+verdictLabel+'</div>'+
+    '<div class="verdict-title">'+verdictTitle+'</div>'+
+    '<div class="verdict-text">'+verdictText+'</div>'+
+  '</div>';
+
+  html+='<div class="detail-grid">'+
+    '<div class="detail-card"><div class="dc-icon">⚡</div><div class="dc-title">Performance estimée</div><div class="dc-val" style="color:'+(p.perf>=8?"var(--green)":p.perf>=6?"var(--amber)":"var(--red)")+'">'+p.perf+'/10</div><div class="dc-text">Fluidité attendue avec la dernière version iOS compatible.</div></div>'+
+    '<div class="detail-card"><div class="dc-icon">⚠️</div><div class="dc-title">Risque de ralentissement</div><div class="dc-val" style="color:'+(p.risk<=2?"var(--green)":p.risk<=4?"var(--amber)":"var(--red)")+'">'+p.risk+'/10</div><div class="dc-text">'+(p.risk<=2?"Quasi nul — votre puce gère très bien.":p.risk<=4?"Faible — quelques ralentissements possibles sur les effets visuels.":"Modéré — désactivez Liquid Glass / transparence pour plus de fluidité.")+'</div></div>'+
+    '<div class="detail-card"><div class="dc-icon">🔐</div><div class="dc-title">Niveau de sécurité</div><div class="dc-val" style="color:'+(p.security>=8?"var(--green)":p.security>=5?"var(--amber)":"var(--red)")+'">'+p.security+'/10</div><div class="dc-text">'+(p.security>=9?"Toutes les corrections de sécurité récentes.":p.security>=6?"Correctifs de sécurité limités, mises à jour mineures uniquement.":"Plus de mises à jour de sécurité — risque pour les données bancaires.")+'</div></div>'+
+    '<div class="detail-card"><div class="dc-icon">📅</div><div class="dc-title">Support restant estimé</div><div class="dc-val">'+(p.maxIOS==="18.7"?"Terminé":p.lastMajor?"~1 an":p.year>=2023?"4-5 ans":p.year>=2021?"2-3 ans":"1-2 ans")+'</div><div class="dc-text">Estimation basée sur l\'historique Apple (5-7 ans de support par modèle).</div></div>'+
+  '</div>';
+
+  html+=tlHtml;
+
+  // Tips
+  if(battWarn||storWarn){
+    html+='<div class="tips-card"><div class="tips-title">💡 Avant de mettre à jour</div>'+battWarn+storWarn+'</div>';
+  }
+
+  // Always show general tips
+  html+='<div class="tips-card"><div class="tips-title">🛠️ Astuces pour garder votre iPhone rapide</div>'+
+    '<div class="tip"><span class="tip-icon">1️⃣</span><span><strong>Après la MAJ, attendez 48h</strong> — iOS réindexe les fichiers en arrière-plan. Les lenteurs initiales sont normales et temporaires.</span></div>'+
+    '<div class="tip"><span class="tip-icon">2️⃣</span><span><strong>Désactivez la transparence</strong> — Réglages → Accessibilité → Affichage → Réduire la transparence. Gain de fluidité énorme sur les anciens modèles.</span></div>'+
+    '<div class="tip"><span class="tip-icon">3️⃣</span><span><strong>Redémarrez après la MAJ</strong> — Un redémarrage forcé (volume haut → volume bas → maintenir power) résout souvent les bugs post-installation.</span></div>'+
+    '<div class="tip"><span class="tip-icon">4️⃣</span><span><strong>Gardez 10%+ de stockage libre</strong> — Un iPhone plein = un iPhone lent. iOS a besoin d\'espace pour fonctionner correctement.</span></div>'+
+    '<div class="tip"><span class="tip-icon">5️⃣</span><span><strong>Faites les MAJ mineures</strong> — Les iOS x.x.1, x.x.2 corrigent les bugs sans affecter les performances. Toujours les installer.</span></div>'+
+  '</div>';
+
+  html+='<div class="share-row">'+
+    '<button class="share-btn primary" onclick="copyResult()">📋 Copier le conseil</button>'+
+    '<button class="share-btn" onclick="shareX()">𝕏 Partager</button>'+
+  '</div>';
+
+  g("result").innerHTML=html;
+  g("result").classList.add("on");
+  setTimeout(function(){g("result").scrollIntoView({behavior:"smooth",block:"start"});},100);
+}
+
+function copyResult(){
+  if(!selectedPhone) return;
+  var p=selectedPhone;
+  var txt="📱 MON CONSEIL iOS — Calculamatix\n\n";
+  txt+="Appareil : "+p.name+" ("+p.year+")\n";
+  txt+="iOS max : "+p.maxIOS+"\n";
+  txt+="Performance : "+p.perf+"/10\n";
+  txt+="Risque ralentissement : "+p.risk+"/10\n\n";
+  txt+="→ "+p.note+"\n\n";
+  txt+="Testez votre iPhone → calculamatix.com/mise-a-jour-iphone";
+  if(navigator.clipboard) navigator.clipboard.writeText(txt).then(function(){alert("Copié !")}).catch(function(){prompt("Copiez :",txt)});
+  else prompt("Copiez :",txt);
+}
+
+function shareX(){
+  if(!selectedPhone) return;
+  var txt="Mon "+selectedPhone.name+" peut-il tourner iOS 26 sans ramer ? Réponse : "+selectedPhone.perf+"/10 en performance. Testez le vôtre → calculamatix.com/mise-a-jour-iphone";
+  window.open("https://twitter.com/intent/tweet?text="+encodeURIComponent(txt),"_blank");
+}
+
+function tFaq(el){el.classList.toggle("open");el.nextElementSibling.classList.toggle("open")}
+
+renderGrid();
+</script>
+<script src="/suggestions.js"></script>
+<script>try{renderFooter("mise-a-jour-iphone");}catch(e){}</script>
+</body>
+</html>
